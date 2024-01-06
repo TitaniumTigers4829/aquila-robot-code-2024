@@ -19,6 +19,14 @@ import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.swerve.DriveSubsystem;
 import frc.robot.subsystems.vision.VisionSubsystem;
 
+/**
+ * make base methods
+ *  shoot speaker - Raina
+ *  shoot amp - 
+ *  intake - Quinn
+ * make base subsystems (motors & whatnot) - Ryan
+ */
+
 public class RobotContainer {
 
   private final VisionSubsystem visionSubsystem;

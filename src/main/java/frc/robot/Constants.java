@@ -44,7 +44,6 @@ public final class Constants {
   }
 
   public static final class DriveConstants {
-
     public static final double X_POS_TRUST = 0-9; //meters
     public static final double Y_POS_TRUST = 0-9; //meters
     public static final double ANGLE_TRUST = 0-9; //radians
@@ -202,7 +201,20 @@ public final class Constants {
     public static final int DRIVER_LEFT_STICK_Y = 0-9;
     public static final int DRIVER_RIGHT_STICK_X = 0-9;
     public static final int DRIVER_RIGHT_BUMPER_ID = 0-9;
-
   }
   
+  public static final class IntakeConstants {
+    public static final int INTAKE_MOTOR_ID = 0-9;
+  }
+
+  public static final class ShooterConstants {
+    public static final int SHOOTER_MOTOR_ID = 0-9;
+
+    public static final double SPEAKER_SHOOT_RPM = 0-9;
+    public static final double AMP_SHOOT_RPM = 0-9;
+
+    public static final double SHOOT_P = 0.0;
+    public static final double SHOOT_I = 0.0;
+    public static final double SHOOT_D = 0.0;
+  }
 }
