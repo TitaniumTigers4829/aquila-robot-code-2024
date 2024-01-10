@@ -102,10 +102,10 @@ public class SwerveModule {
     turnEncoderPos = turnEncoder.getAbsolutePosition();
     driveMotorVelocity = driveMotor.getVelocity();
 
-    BaseStatusSignal.setUpdateFrequencyForAll(250, turnEncoderPos, driveMotorVelocity);
+    BaseStatusSignal.setUpdateFrequencyForAll(HardwareConstants.SIGNAL_FREQUENCY, turnEncoderPos, driveMotorVelocity);
 
-    turnEncoder.optimizeBusUtilization(30);
-    driveMotor.optimizeBusUtilization(30);
+    turnEncoder.optimizeBusUtilization(HardwareConstants.TIMEOUT_S);
+    driveMotor.optimizeBusUtilization(HardwareConstants.TIMEOUT_S);
   }
 
   /**

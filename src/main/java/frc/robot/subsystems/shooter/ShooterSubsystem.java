@@ -9,6 +9,7 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.HardwareConstants;
 import frc.robot.Constants.ShooterConstants;
 
 public class ShooterSubsystem extends SubsystemBase {
@@ -25,13 +26,13 @@ public class ShooterSubsystem extends SubsystemBase {
 
     shooterMotor.getConfigurator().apply(shooterConfig);
 
-    BaseStatusSignal.setUpdateFrequencyForAll(250, 
+    BaseStatusSignal.setUpdateFrequencyForAll(HardwareConstants.SIGNAL_FREQUENCY, 
     shooterMotor.getPosition(), 
     shooterMotor.getVelocity(), 
     shooterMotor.getAcceleration(), 
     shooterMotor.getMotorVoltage());
-//e
-    shooterMotor.optimizeBusUtilization(30);
+    
+    shooterMotor.optimizeBusUtilization(HardwareConstants.TIMEOUT_S);
   }
 
 
