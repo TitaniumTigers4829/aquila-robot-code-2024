@@ -4,7 +4,11 @@
 
 package frc.robot.subsystems.shooter;
 
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.hardware.TalonFX;
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.ShooterConstants;
 
 public class ShooterSubsystem extends SubsystemBase {
   private final TalonFX shooterMotor;
@@ -17,6 +21,8 @@ public class ShooterSubsystem extends SubsystemBase {
     shooterConfig.Slot0.kP = ShooterConstants.SHOOT_P;
     shooterConfig.Slot0.kI = ShooterConstants.SHOOT_I;
     shooterConfig.Slot0.kD = ShooterConstants.SHOOT_D;
+
+    shooterMotor.getConfigurator().apply(shooterConfig);
   }
 
   public void shootSpeaker() {

@@ -158,7 +158,6 @@ gradle-app.setting
 .settings/
 bin/
 
-<<<<<<< HEAD
 # IntelliJ
 *.iml
 *.ipr
@@ -169,7 +168,11 @@ out/
 # Fleet
 .fleet
 
-=======
->>>>>>> 2bc7cd4c30493cd5a451d8cc67c603d450dcb57d
 # Simulation GUI and other tools window save file
 *-window.json
+
+# Simulation data log directory
+logs/
+
+# Folder that has CTRE Phoenix Sim device config storage
+ctre_sim/
