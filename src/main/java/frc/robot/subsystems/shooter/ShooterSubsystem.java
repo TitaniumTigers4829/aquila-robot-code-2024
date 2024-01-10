@@ -4,10 +4,12 @@
 
 package frc.robot.subsystems.shooter;
 
+import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.HardwareConstants;
 import frc.robot.Constants.ShooterConstants;
 
 public class ShooterSubsystem extends SubsystemBase {
@@ -23,7 +25,16 @@ public class ShooterSubsystem extends SubsystemBase {
     shooterConfig.Slot0.kD = ShooterConstants.SHOOT_D;
 
     shooterMotor.getConfigurator().apply(shooterConfig);
+
+    BaseStatusSignal.setUpdateFrequencyForAll(HardwareConstants.SIGNAL_FREQUENCY, 
+    shooterMotor.getPosition(), 
+    shooterMotor.getVelocity(), 
+    shooterMotor.getAcceleration(), 
+    shooterMotor.getMotorVoltage());
+    
+    shooterMotor.optimizeBusUtilization(HardwareConstants.TIMEOUT_S);
   }
+
 
   public void shootSpeaker() {
   }
