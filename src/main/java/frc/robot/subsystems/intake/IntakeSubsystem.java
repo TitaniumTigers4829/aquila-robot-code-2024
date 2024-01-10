@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems.intake;
 
+import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -14,6 +15,14 @@ public class IntakeSubsystem extends SubsystemBase {
   /** Creates a new IntakeSubsystem. */
   public IntakeSubsystem() {
     intakeMotor = new TalonFX(0-9);
+
+    BaseStatusSignal.setUpdateFrequencyForAll(250, 
+    intakeMotor.getPosition(), 
+    intakeMotor.getVelocity(), 
+    intakeMotor.getAcceleration(), 
+    intakeMotor.getMotorVoltage());
+
+    intakeMotor.optimizeBusUtilization(30);
   }
 
   public void intake(double speed) {

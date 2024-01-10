@@ -1,5 +1,6 @@
 package frc.robot.subsystems.swerve;
 
+import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.Slot0Configs;
@@ -100,6 +101,11 @@ public class SwerveModule {
 
     turnEncoderPos = turnEncoder.getAbsolutePosition();
     driveMotorVelocity = driveMotor.getVelocity();
+
+    BaseStatusSignal.setUpdateFrequencyForAll(250, turnEncoderPos, driveMotorVelocity);
+
+    turnEncoder.optimizeBusUtilization(30);
+    driveMotor.optimizeBusUtilization(30);
   }
 
   /**
