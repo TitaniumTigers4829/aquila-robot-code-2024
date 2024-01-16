@@ -61,9 +61,9 @@ public class SwerveModule {
     ) {
     this.name = name;
     
-    turnEncoder = new CANcoder(turnEncoderChannel, HardwareConstants.CANIVORE_CAN_BUS_STRING);
-    driveMotor = new TalonFX(driveMotorChannel, HardwareConstants.CANIVORE_CAN_BUS_STRING);
-    turnMotor = new TalonFX(turnMotorChannel, HardwareConstants.CANIVORE_CAN_BUS_STRING);
+    turnEncoder = new CANcoder(turnEncoderChannel);
+    driveMotor = new TalonFX(driveMotorChannel);
+    turnMotor = new TalonFX(turnMotorChannel);
     
     CANcoderConfiguration turnEncoderConfig = new CANcoderConfiguration();
     turnEncoderConfig.MagnetSensor.MagnetOffset = -angleZero;
@@ -81,6 +81,7 @@ public class SwerveModule {
     driveConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     driveConfig.MotorOutput.Inverted = driveReversed;
     driveConfig.MotorOutput.DutyCycleNeutralDeadband = HardwareConstants.MIN_FALCON_DEADBAND;
+    
     // TODO: current limits & optimize status signals
     driveMotor.getConfigurator().apply(driveConfig, HardwareConstants.TIMEOUT_S);
 
@@ -108,27 +109,27 @@ public class SwerveModule {
     driveMotor.optimizeBusUtilization(HardwareConstants.TIMEOUT_S);
   }
 
-  /**
-   * @param currentAngle what the controller currently reads (radians)
-   * @param targetAngleSetpoint the desired angle (radians)
-   * @return the target angle in controller's scope (radians)
-   */
-  public static double calculateContinuousInputSetpoint(double currentAngle, double targetAngleSetpoint) {
-    targetAngleSetpoint = Math.IEEEremainder(targetAngleSetpoint, Math.PI * 2);
+  // /**
+  //  * @param currentAngle what the controller currently reads (radians)
+  //  * @param targetAngleSetpoint the desired angle (radians)
+  //  * @return the target angle in controller's scope (radians)
+  //  */
+  // public static double calculateContinuousInputSetpoint(double currentAngle, double targetAngleSetpoint) {
+  //   targetAngleSetpoint = Math.IEEEremainder(targetAngleSetpoint, Math.PI * 2);
 
-    double remainder = currentAngle % (Math.PI * 2);
-    double adjustedAngleSetpoint = targetAngleSetpoint + (currentAngle - remainder);
+  //   double remainder = currentAngle % (Math.PI * 2);
+  //   double adjustedAngleSetpoint = targetAngleSetpoint + (currentAngle - remainder);
 
-    // We don't want to rotate over 180 degrees, so just rotate the other way (add a
-    // full rotation)
-    if (adjustedAngleSetpoint - currentAngle > Math.PI) {
-        adjustedAngleSetpoint -= Math.PI * 2;
-    } else if (adjustedAngleSetpoint - currentAngle < -Math.PI) {
-        adjustedAngleSetpoint += Math.PI * 2;
-    }
+  //   // We don't want to rotate over 180 degrees, so just rotate the other way (add a
+  //   // full rotation)
+  //   if (adjustedAngleSetpoint - currentAngle > Math.PI) {
+  //       adjustedAngleSetpoint -= Math.PI * 2;
+  //   } else if (adjustedAngleSetpoint - currentAngle < -Math.PI) {
+  //       adjustedAngleSetpoint += Math.PI * 2;
+  //   }
 
-    return adjustedAngleSetpoint;
-  }
+  //   return adjustedAngleSetpoint;
+  // }
 
   /**
    * Gets the heading of the module
@@ -149,6 +150,7 @@ public class SwerveModule {
     double speedMetersPerSecond = ModuleConstants.DRIVE_TO_METERS_PER_SECOND * driveMotorVelocity.getValue();
     // double turnRadians = (Math.PI / 180) * turnEncoder.getAbsolutePosition();
     double turnRadians = Rotation2d.fromRotations(getModuleHeading()).getRadians();
+
     return new SwerveModuleState(speedMetersPerSecond, new Rotation2d(turnRadians));
   }
 
@@ -157,6 +159,7 @@ public class SwerveModule {
 
     double position = ModuleConstants.DRIVE_TO_METERS * driveMotorVelocity.getValue();;
     Rotation2d rotation = Rotation2d.fromDegrees(getCANCoderABS());
+
     return new SwerveModulePosition(position, rotation);
   }
 
@@ -171,11 +174,11 @@ public class SwerveModule {
     SwerveModuleState optimizedDesiredState = SwerveModuleState.optimize(desiredState, new Rotation2d(turnRadians));
 
     // Converts meters per second to rpm
-    double desiredDriveRPM = optimizedDesiredState.speedMetersPerSecond * 60 
-      * ModuleConstants.DRIVE_GEAR_RATIO / ModuleConstants.WHEEL_CIRCUMFERENCE_METERS;
+    // double desiredDriveRPM = optimizedDesiredState.speedMetersPerSecond * 60 
+    //   * ModuleConstants.DRIVE_GEAR_RATIO / ModuleConstants.WHEEL_CIRCUMFERENCE_METERS;
       
     // Converts rpm to encoder units per 100 milliseconds
-    double desiredDriveEncoderUnitsPer100MS = desiredDriveRPM / 600.0 * 1;  // TODO: check if 1 is falcon resolution
+    // double desiredDriveEncoderUnitsPer100MS = desiredDriveRPM / 600.0 * 1;  // TODO: check if 1 is falcon resolution
 
     VelocityVoltage driveOutput = new VelocityVoltage(optimizedDesiredState.speedMetersPerSecond); // test this... might not work.
     driveMotor.setControl(driveOutput);

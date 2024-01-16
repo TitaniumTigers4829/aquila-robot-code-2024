@@ -175,63 +175,12 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public void periodic() {
-    // Pose2d estimatedPose = odometry.getEstimatedPosition();
-    // SmartDashboardLogger.infoString("Estimated pose", estimatedPose.toString());
-    
-    // //smarterdashboard:
-    // SmarterDashboardRegistry.setPose(estimatedPose);
-    //                                         //  pitch, roll, yaw
-    // SmarterDashboardRegistry.setOrientation(getHeading(), 0, 0);
+    SmartDashboard.putNumber("current speed", frontLeftSwerveModule.getState().speedMetersPerSecond);
 
     frontLeftSwerveModule.periodicFunction();
     frontRightSwerveModule.periodicFunction();
     rearLeftSwerveModule.periodicFunction();
     rearRightSwerveModule.periodicFunction();
   }
-  // commented out pathplanner beta code:
-  // public ChassisSpeeds getRobotRelativeSpeeds(){
-  //   return DriveConstants.DRIVE_KINEMATICS.toChassisSpeeds(getModuleStates());
-  // }
 
-  // public void driveRobotRelative(ChassisSpeeds robotRelativeSpeeds){
-  //     SwerveModuleState[] states = DriveConstants.DRIVE_KINEMATICS.toSwerveModuleStates(robotRelativeSpeeds);
-
-  //     SwerveDriveKinematics.desaturateWheelSpeeds(states, DriveConstants.MAX_SPEED_METERS_PER_SECOND);
-
-  //     setModuleStates(states);
-  // }
-
-  // public void driveFieldRelative(ChassisSpeeds fieldRelativeSpeeds){
-  //     ChassisSpeeds robotRelative = ChassisSpeeds.fromFieldRelativeSpeeds(fieldRelativeSpeeds, getPose().getRotation());
-
-  //     driveRobotRelative(robotRelative);
-  // }
-
-  // public SwerveModuleState[] getModuleStates(){
-  //   SwerveModuleState[] swerveModuleStates = {
-  //       frontLeftSwerveModule.getState(),
-  //       frontRightSwerveModule.getState(),
-  //       rearLeftSwerveModule.getState(),
-  //       rearRightSwerveModule.getState()
-  //     };
-  //   return swerveModuleStates;
-  // }
-
-  // private void configurePath() {
-  //   // Configure the AutoBuilder last
-  //   AutoBuilder.configureHolonomic(
-  //     this::getPose, // Robot pose supplier
-  //     this::resetOdometry, // Method to reset odometry (will be called if your auto has a starting pose)
-  //     this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
-  //     this::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
-  //     new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
-  //         new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
-  //         new PIDConstants(5.0, 0.0, 0.0), // Rotation PID constants
-  //         4.5, // Max module speed, in m/s
-  //         0.4, // Drive base radius in meters. Distance from robot center to furthest module.
-  //         new ReplanningConfig() // Default path replanning config. See the API for the options here
-  //     ),
-  //     this // Reference to this subsystem to set requirements
-  //   );
-  // };
 }

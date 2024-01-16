@@ -55,7 +55,7 @@ public class Drive extends DriveCommandBase {
       isFieldRelative.getAsBoolean()
     );
 
-    super.execute();
+    // super.execute();
   }
 
   @Override
