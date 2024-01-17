@@ -96,6 +96,8 @@ public class SwerveModule {
     turnConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
     turnConfig.MotorOutput.DutyCycleNeutralDeadband = HardwareConstants.MIN_FALCON_DEADBAND;
     turnConfig.ClosedLoopGeneral.ContinuousWrap = true; // enables continuous input
+    turnConfig.MotionMagic.MotionMagicCruiseVelocity = ModuleConstants.MAX_ANGULAR_SPEED_RADIANS_PER_SECOND;
+    turnConfig.MotionMagic.MotionMagicAcceleration = ModuleConstants.MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND_SQUARED;
     // TODO: config current limits & optimize status signals
     turnMotor.getConfigurator().apply(turnConfig, HardwareConstants.TIMEOUT_S);
 
@@ -174,13 +176,13 @@ public class SwerveModule {
     SwerveModuleState optimizedDesiredState = SwerveModuleState.optimize(desiredState, new Rotation2d(turnRadians));
 
     // Converts meters per second to rpm
-    // double desiredDriveRPM = optimizedDesiredState.speedMetersPerSecond * 60 
-    //   * ModuleConstants.DRIVE_GEAR_RATIO / ModuleConstants.WHEEL_CIRCUMFERENCE_METERS;
+    double desiredDriveRPM = optimizedDesiredState.speedMetersPerSecond * 60 
+      * ModuleConstants.DRIVE_GEAR_RATIO / ModuleConstants.WHEEL_CIRCUMFERENCE_METERS;
       
     // Converts rpm to encoder units per 100 milliseconds
-    // double desiredDriveEncoderUnitsPer100MS = desiredDriveRPM / 600.0 * 1;  // TODO: check if 1 is falcon resolution
+    double desiredDriveEncoderUnitsPer100MS = desiredDriveRPM / 600.0 * 1;  // TODO: check if 1 is falcon resolution
 
-    VelocityVoltage driveOutput = new VelocityVoltage(optimizedDesiredState.speedMetersPerSecond); // test this... might not work.
+    VelocityVoltage driveOutput = new VelocityVoltage(desiredDriveEncoderUnitsPer100MS); // test this... might not work.
     driveMotor.setControl(driveOutput);
 
     
