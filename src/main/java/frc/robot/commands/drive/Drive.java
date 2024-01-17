@@ -2,14 +2,13 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands;
+package frc.robot.commands.drive;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.DriveConstants;
-import frc.robot.commands.DriveCommandBase;
 import frc.robot.subsystems.PoseEstimationSubsystem;
 import frc.robot.subsystems.swerve.DriveSubsystem;
 import frc.robot.subsystems.vision.VisionSubsystem;
@@ -32,7 +31,7 @@ public class Drive extends DriveCommandBase {
    * field relative
    */
   public Drive(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, DoubleSupplier leftY, DoubleSupplier leftX, DoubleSupplier rightX, BooleanSupplier isFieldRelative) {
-    super(visionSubsystem);
+    super(driveSubsystem, visionSubsystem);
     this.driveSubsystem = driveSubsystem;
     addRequirements(driveSubsystem, visionSubsystem);
     this.leftY = leftY;
