@@ -190,7 +190,7 @@ public final class Constants {
 
     public static final double RED_AMP_X = 14.649;
     public static final double RED_AMP_Y = 7.713;
-
+ 
     public static final double BLUE_AMP_X = 1.9;
     public static final double BLUE_AMP_Y = 7.713;
     public static final Rotation2d AMP_ROTATION = Rotation2d.fromDegrees(90);

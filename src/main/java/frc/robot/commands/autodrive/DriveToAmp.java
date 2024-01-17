@@ -9,20 +9,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.BooleanSupplier;
 
-import com.pathplanner.lib.commands.PathPlannerAuto;
-import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.path.GoalEndState;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.path.PathPlannerTrajectory;
-import com.pathplanner.lib.path.PathPlannerTrajectory.State;
-import com.pathplanner.lib.util.PIDConstants;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.proto.Trajectory;
-import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.Constants.FieldConstants;
@@ -49,6 +42,7 @@ public class DriveToAmp extends DriveCommandBase {
   public void initialize() {
     List<Translation2d> pathPoints = new ArrayList<Translation2d>();
     pathPoints.add(driveSubsystem.getPose().getTranslation());
+
     Optional<Alliance> alliance = DriverStation.getAlliance();
     if (alliance.isPresent()) {
       if (alliance.get() == Alliance.Red) {
@@ -59,10 +53,12 @@ public class DriveToAmp extends DriveCommandBase {
     } else {
       pathPoints.add(new Translation2d(FieldConstants.RED_AMP_X, FieldConstants.RED_AMP_Y));
     }
+
     endPose = new Pose2d(pathPoints.get(pathPoints.size() - 1), FieldConstants.AMP_ROTATION);
     Rotation2d startRotation = driveSubsystem.getRotation2d();
-    PathPlannerPath path = new PathPlannerPath(pathPoints, TrajectoryConstants.PATH_CONSTRAINTS, new GoalEndState(0, Rotation2d.fromDegrees(-90)));
+    PathPlannerPath path = new PathPlannerPath(pathPoints, TrajectoryConstants.PATH_CONSTRAINTS, new GoalEndState(0, FieldConstants.AMP_ROTATION));
     PathPlannerTrajectory trajectory = new PathPlannerTrajectory(path, new ChassisSpeeds(), startRotation);
+
     new RealTimeSwerveControllerCommand(
       trajectory, 
       driveSubsystem::getPose, 
