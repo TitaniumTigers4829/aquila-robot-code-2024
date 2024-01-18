@@ -76,10 +76,10 @@ public final class Constants {
     public static final int REAR_LEFT_CANCODER_ID = 13;
     public static final int REAR_RIGHT_CANCODER_ID = 14;
 
-    public static final double FRONT_LEFT_ZERO_ANGLE = -0.48876953125;
-    public static final double FRONT_RIGHT_ZERO_ANGLE = 0.2255859375;
-    public static final double REAR_LEFT_ZERO_ANGLE = -0.121826171875;
-    public static final double REAR_RIGHT_ZERO_ANGLE = 0.1962890625;
+    public static final double FRONT_LEFT_ZERO_ANGLE = -0.024658203125;
+    public static final double FRONT_RIGHT_ZERO_ANGLE = -0.214599609375;
+    public static final double REAR_LEFT_ZERO_ANGLE = 0.12548828125;
+    public static final double REAR_RIGHT_ZERO_ANGLE = -0.2294921875;
 
     //inverts may vary
     public static final SensorDirectionValue FRONT_LEFT_CANCODER_REVERSED = SensorDirectionValue.CounterClockwise_Positive;
@@ -87,6 +87,11 @@ public final class Constants {
     public static final SensorDirectionValue REAR_LEFT_CANCODER_REVERSED = SensorDirectionValue.CounterClockwise_Positive;
     public static final SensorDirectionValue REAR_RIGHT_CANCODER_REVERSED = SensorDirectionValue.CounterClockwise_Positive;
     
+    public static final InvertedValue FRONT_LEFT_TURN_MOTOR_REVERSED = InvertedValue.Clockwise_Positive;
+    public static final InvertedValue FRONT_RIGHT_TURN_MOTOR_REVERSED = InvertedValue.CounterClockwise_Positive;
+    public static final InvertedValue REAR_LEFT_TURN_MOTOR_REVERSED = InvertedValue.Clockwise_Positive;
+    public static final InvertedValue REAR_RIGHT_TURN_MOTOR_REVERSED = InvertedValue.Clockwise_Positive;
+
     public static final InvertedValue FRONT_LEFT_DRIVE_ENCODER_REVERSED = InvertedValue.CounterClockwise_Positive;
     public static final InvertedValue FRONT_RIGHT_DRIVE_ENCODER_REVERSED = InvertedValue.Clockwise_Positive; 
     public static final InvertedValue REAR_LEFT_DRIVE_ENCODER_REVERSED = InvertedValue.CounterClockwise_Positive;
@@ -103,26 +108,26 @@ public final class Constants {
     public static final double DRIVE_GEAR_RATIO = 5.6;
     public static final double WHEEL_DIAMETER_METERS = Units.inchesToMeters(4);
     public static final double WHEEL_CIRCUMFERENCE_METERS = WHEEL_DIAMETER_METERS * Math.PI;
-    public static final double DRIVE_TO_METERS =  WHEEL_CIRCUMFERENCE_METERS / (DRIVE_GEAR_RATIO);
+    public static final double DRIVE_TO_METERS =  WHEEL_CIRCUMFERENCE_METERS / DRIVE_GEAR_RATIO;
     public static final double DRIVE_TO_METERS_PER_SECOND = (WHEEL_CIRCUMFERENCE_METERS) / (DRIVE_GEAR_RATIO);
 
-    public static final double TURN_P = 0-9; 
-    public static final double TURN_I = 0-9;
-    public static final double TURN_D = 0-9;
+    public static final double TURN_P = 2.5; 
+    public static final double TURN_I = 0;
+    public static final double TURN_D = 0;
 
-    public static final double TURN_S = 0-9;
-    public static final double TURN_V = 0-9;
-    public static final double TURN_A = 0-9;
+    public static final double TURN_S = 0;
+    public static final double TURN_V = 0;
+    public static final double TURN_A = 0;
 
-    public static final double MAX_ANGULAR_SPEED_RADIANS_PER_SECOND = 5.7; 
-    public static final double MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND_SQUARED = 6;
+    public static final double MAX_ANGULAR_SPEED_ROTATIONS_PER_SECOND = 7; 
+    public static final double MAX_ANGULAR_ACCELERATION_ROTATIONS_PER_SECOND_SQUARED = 9;
     public static final TrapezoidProfile.Constraints TURN_CONSTRAINTS =
       new TrapezoidProfile.Constraints(
-        MAX_ANGULAR_SPEED_RADIANS_PER_SECOND,
-        MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND_SQUARED
+        MAX_ANGULAR_SPEED_ROTATIONS_PER_SECOND,
+        MAX_ANGULAR_ACCELERATION_ROTATIONS_PER_SECOND_SQUARED
       );
 
-    public static final double DRIVE_P = 1;
+    public static final double DRIVE_P = 0.09;
     public static final double DRIVE_I = 0;
     public static final double DRIVE_D = 0;
 
@@ -189,10 +194,10 @@ public final class Constants {
   }
 
   public static final class JoystickConstants {
-    public static final int DRIVER_LEFT_STICK_X = 0-9;
-    public static final int DRIVER_LEFT_STICK_Y = 0-9;
-    public static final int DRIVER_RIGHT_STICK_X = 0-9;
-    public static final int DRIVER_RIGHT_BUMPER_ID = 0-9;
+    public static final int DRIVER_LEFT_STICK_X = 0;
+    public static final int DRIVER_LEFT_STICK_Y = 1;
+    public static final int DRIVER_RIGHT_STICK_X = 4;
+    public static final int DRIVER_RIGHT_BUMPER_ID = 6;
   }
   
   public static final class IntakeConstants {

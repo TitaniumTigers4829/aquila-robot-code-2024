@@ -3,31 +3,24 @@ package frc.robot.subsystems.swerve;
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
-import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.configs.TalonFXConfigurator;
-import com.ctre.phoenix6.controls.DynamicMotionMagicVoltage;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
-import com.ctre.phoenix6.hardware.DeviceIdentifier;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
-import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.HardwareConstants;
 import frc.robot.Constants.ModuleConstants;
-// import frc.robot.extras.SmartDashboardLogger;
 
 public class SwerveModule {
 
@@ -35,9 +28,11 @@ public class SwerveModule {
   private final TalonFX driveMotor;
   private final TalonFX turnMotor;
 
+  private final ProfiledPIDController turnController;
  
   StatusSignal<Double> turnEncoderPos;
   StatusSignal<Double> driveMotorVelocity;
+  StatusSignal<Double> turnMotorPos;
 
   private String name;
 
@@ -56,6 +51,7 @@ public class SwerveModule {
     int turnEncoderChannel,
     double angleZero,
     SensorDirectionValue encoderReversed,
+    InvertedValue turnReversed,
     InvertedValue driveReversed,
     String name
     ) {
@@ -85,24 +81,28 @@ public class SwerveModule {
     // TODO: current limits & optimize status signals
     driveMotor.getConfigurator().apply(driveConfig, HardwareConstants.TIMEOUT_S);
 
+    turnController = new ProfiledPIDController(ModuleConstants.TURN_P, ModuleConstants.TURN_I, ModuleConstants.TURN_S, new Constraints(ModuleConstants.MAX_ANGULAR_SPEED_ROTATIONS_PER_SECOND, ModuleConstants.MAX_ANGULAR_ACCELERATION_ROTATIONS_PER_SECOND_SQUARED));
+    turnController.enableContinuousInput(-0.5, 0.5);
+
     TalonFXConfiguration turnConfig = new TalonFXConfiguration();
-    turnConfig.Slot0.kP = ModuleConstants.TURN_P;
-    turnConfig.Slot0.kI = ModuleConstants.TURN_I;
-    turnConfig.Slot0.kD = ModuleConstants.TURN_D;
-    turnConfig.Slot0.kS = ModuleConstants.TURN_S;
-    turnConfig.Slot0.kV = ModuleConstants.TURN_V;
-    turnConfig.Slot0.kA = ModuleConstants.TURN_A;
+    // turnConfig.Slot0.kP = ModuleConstants.TURN_P;
+    // turnConfig.Slot0.kI = ModuleConstants.TURN_I;
+    // turnConfig.Slot0.kD = ModuleConstants.TURN_D;
+    // turnConfig.Slot0.kS = ModuleConstants.TURN_S;
+    // turnConfig.Slot0.kV = ModuleConstants.TURN_V;
+    // turnConfig.Slot0.kA = ModuleConstants.TURN_A;
     turnConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    turnConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+    turnConfig.MotorOutput.Inverted = turnReversed;
     turnConfig.MotorOutput.DutyCycleNeutralDeadband = HardwareConstants.MIN_FALCON_DEADBAND;
-    turnConfig.ClosedLoopGeneral.ContinuousWrap = true; // enables continuous input
-    turnConfig.MotionMagic.MotionMagicCruiseVelocity = ModuleConstants.MAX_ANGULAR_SPEED_RADIANS_PER_SECOND;
-    turnConfig.MotionMagic.MotionMagicAcceleration = ModuleConstants.MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND_SQUARED;
-    turnConfig.MotionMagic.MotionMagicJerk = 0;
+    // turnConfig.ClosedLoopGeneral.ContinuousWrap = true; // enables continuous input
+    // turnConfig.MotionMagic.MotionMagicCruiseVelocity = ModuleConstants.MAX_ANGULAR_SPEED_RADIANS_PER_SECOND;
+    // turnConfig.MotionMagic.MotionMagicAcceleration = ModuleConstants.MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND_SQUARED;
+    // turnConfig.MotionMagic.MotionMagicJerk = 0;
+    // turnConfig.DifferentialSensors.DifferentialSensorSource = DifferentialSensorSourceValue.RemoteCANcoder;
+    // turnConfig.DifferentialSensors.DifferentialRemoteSensorID = turnEncoder.getDeviceID();
 
     // TODO: config current limits & optimize status signals
     turnMotor.getConfigurator().apply(turnConfig, HardwareConstants.TIMEOUT_S);
-
 
     turnEncoderPos = turnEncoder.getAbsolutePosition();
     driveMotorVelocity = driveMotor.getVelocity();
@@ -152,10 +152,8 @@ public class SwerveModule {
     driveMotorVelocity.refresh();
 
     double speedMetersPerSecond = ModuleConstants.DRIVE_TO_METERS_PER_SECOND * driveMotorVelocity.getValue();
-    // double turnRadians = (Math.PI / 180) * turnEncoder.getAbsolutePosition();
-    double turnRadians = Rotation2d.fromRotations(getModuleHeading()).getRadians();
 
-    return new SwerveModuleState(speedMetersPerSecond, new Rotation2d(turnRadians));
+    return new SwerveModuleState(speedMetersPerSecond, Rotation2d.fromRotations(getModuleHeading()));
   }
 
   public SwerveModulePosition getPosition() {
@@ -167,26 +165,34 @@ public class SwerveModule {
     return new SwerveModulePosition(position, rotation);
   }
 
+  // public void setPos(double pos) {
+  //   double output = turnController.calculate(getModuleHeading(), pos);
+  //   SmartDashboard.putNumber(name + " output", output);
+  //   SmartDashboard.putNumber(name + " error", getState().angle.getRotations() - pos);
+  //   turnMotor.set(output);
+  // } 
+
   /**
    * Sets the desired state for the module and sends calculated output from controller to the motor.
    * @param desiredState Desired state with speed and angle.
    */
   public void setDesiredState(SwerveModuleState desiredState) {
     double turnRadians = getTurnRadians();
-
+ 
     // Optimize the reference state to avoid spinning further than 90 degrees
     SwerveModuleState optimizedDesiredState = SwerveModuleState.optimize(desiredState, new Rotation2d(turnRadians));
 
+    SmartDashboard.putNumber(name + " desired speed", optimizedDesiredState.speedMetersPerSecond);
     // Converts meters per second to rotations per second
     double desiredDriveRPS = optimizedDesiredState.speedMetersPerSecond 
      * ModuleConstants.DRIVE_GEAR_RATIO / ModuleConstants.WHEEL_CIRCUMFERENCE_METERS;
-      
+
     VelocityVoltage driveOutput = new VelocityVoltage(desiredDriveRPS); // test this... might not work.
     driveMotor.setControl(driveOutput);
 
     
-    MotionMagicVoltage turnOutput = new MotionMagicVoltage(optimizedDesiredState.angle.getRotations()); 
-    turnMotor.setControl(turnOutput);
+    double output = turnController.calculate(getModuleHeading(), optimizedDesiredState.angle.getRotations());
+    turnMotor.set(output);
   }
 
   public double getTurnRadians() {
@@ -218,5 +224,6 @@ public class SwerveModule {
   }
 
   public void periodicFunction() {
+    SmartDashboard.putNumber(name + " speed", getState().speedMetersPerSecond);
   }
 }

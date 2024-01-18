@@ -1,16 +1,11 @@
 package frc.robot.subsystems.swerve;
 
-import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import java.util.Optional;
 
 import com.kauailabs.navx.frc.AHRS;
 
-import edu.wpi.first.hal.AllianceStationID;
-import edu.wpi.first.math.VecBuilder;
-import edu.wpi.first.math.Vector;
-import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -18,15 +13,10 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.math.numbers.N3;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SPI;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
-import frc.robot.Constants.VisionConstants;
 
 public class DriveSubsystem extends SubsystemBase {
 
@@ -51,6 +41,7 @@ public class DriveSubsystem extends SubsystemBase {
       DriveConstants.FRONT_LEFT_CANCODER_ID,
       DriveConstants.FRONT_LEFT_ZERO_ANGLE,
       DriveConstants.FRONT_LEFT_CANCODER_REVERSED,
+      DriveConstants.FRONT_LEFT_TURN_MOTOR_REVERSED,
       DriveConstants.FRONT_LEFT_DRIVE_ENCODER_REVERSED,
       "FL"
     );
@@ -61,6 +52,7 @@ public class DriveSubsystem extends SubsystemBase {
       DriveConstants.FRONT_RIGHT_CANCODER_ID,
       DriveConstants.FRONT_RIGHT_ZERO_ANGLE,
       DriveConstants.FRONT_RIGHT_CANCODER_REVERSED,
+      DriveConstants.FRONT_RIGHT_TURN_MOTOR_REVERSED,
       DriveConstants.FRONT_RIGHT_DRIVE_ENCODER_REVERSED,
       "FR"
     );
@@ -71,6 +63,7 @@ public class DriveSubsystem extends SubsystemBase {
       DriveConstants.REAR_LEFT_CANCODER_ID,
       DriveConstants.REAR_LEFT_ZERO_ANGLE,
       DriveConstants.REAR_LEFT_CANCODER_REVERSED,
+      DriveConstants.REAR_LEFT_TURN_MOTOR_REVERSED,
       DriveConstants.REAR_LEFT_DRIVE_ENCODER_REVERSED,
       "RL"
     );
@@ -81,6 +74,7 @@ public class DriveSubsystem extends SubsystemBase {
       DriveConstants.REAR_RIGHT_CANCODER_ID,
       DriveConstants.REAR_RIGHT_ZERO_ANGLE,
       DriveConstants.REAR_RIGHT_CANCODER_REVERSED,
+      DriveConstants.REAR_RIGHT_TURN_MOTOR_REVERSED,
       DriveConstants.REAR_RIGHT_DRIVE_ENCODER_REVERSED,
       "RR"
     );
@@ -133,6 +127,13 @@ public class DriveSubsystem extends SubsystemBase {
                                                                        
   public void setGyroOffset(double gyroOffset) {
     this.gyroOffset = gyroOffset;
+  }
+
+  public void setMotorPos(double pos) {
+    // frontLeftSwerveModule.setPos(pos);
+    // frontRightSwerveModule.setPos(pos);
+    // rearLeftSwerveModule.setPos(pos);
+    // rearRightSwerveModule.setPos(pos);
   }
 
   public void zeroHeading() {
