@@ -14,7 +14,7 @@ public class SmarterDashboardRegistry {
   private static double[] pose = new double[]{0, 0, 0};
   private static double[] limelight_pose = new double[]{0, 0, 0};
   private static double[] orientation = new double[]{0, 0, 0};
-  // isactive, alliance, setpoint (1=speaker, 2=amp)
+  // isActive, isRedAlliance, isSpeaker
   private static boolean[] pathData = new boolean[]{false, false, false};
 
   public static void setPose(Pose2d robotPose) {
