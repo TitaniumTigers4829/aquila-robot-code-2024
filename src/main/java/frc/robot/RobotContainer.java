@@ -16,13 +16,7 @@ import frc.robot.commands.Drive;
 import frc.robot.subsystems.swerve.DriveSubsystem;
 import frc.robot.subsystems.vision.VisionSubsystem;
 
-/**
- * make base methods
- *  shoot speaker - Raina
- *  shoot amp - 
- *  intake - Quinn
- * make base subsystems (motors & whatnot) - Ryan
- */
+
 
 public class RobotContainer {
 
@@ -31,9 +25,12 @@ public class RobotContainer {
   private final Joystick driverJoystick;
   
   public RobotContainer() {
+    
     visionSubsystem = new VisionSubsystem();
     driverJoystick = new Joystick(0);
     driveSubsystem = new DriveSubsystem(); 
+
+    configureButtonBindings();
   }
   
   private static double deadband(double value, double deadband) {
