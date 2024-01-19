@@ -164,13 +164,6 @@ public class SwerveModule {
     return new SwerveModulePosition(position, rotation);
   }
 
-  // public void setPos(double pos) {
-  //   double output = turnController.calculate(getModuleHeading(), pos);
-  //   SmartDashboard.putNumber(name + " output", output);
-  //   SmartDashboard.putNumber(name + " error", getState().angle.getRotations() - pos);
-  //   turnMotor.set(output);
-  // } 
-
   /**
    * Sets the desired state for the module and sends calculated output from controller to the motor.
    * @param desiredState Desired state with speed and angle.

@@ -82,7 +82,6 @@ public class RobotContainer {
     );
 
     driveSubsystem.setDefaultCommand(driveCommand);
-    // new JoystickButton(driverJoystick, 1).whileTrue(new SetMotorPos(driveSubsystem, driverLeftStickX));
   }
 
   public Command getAutonomousCommand() {

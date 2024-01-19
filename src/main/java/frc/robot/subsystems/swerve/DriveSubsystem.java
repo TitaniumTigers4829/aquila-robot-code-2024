@@ -129,13 +129,6 @@ public class DriveSubsystem extends SubsystemBase {
     this.gyroOffset = gyroOffset;
   }
 
-  public void setMotorPos(double pos) {
-    // frontLeftSwerveModule.setPos(pos);
-    // frontRightSwerveModule.setPos(pos);
-    // rearLeftSwerveModule.setPos(pos);
-    // rearRightSwerveModule.setPos(pos);
-  }
-
   public void zeroHeading() {
     double rotationDegrees = getHeading();
     if (alliance.isPresent() && alliance.get()==DriverStation.Alliance.Blue) {
