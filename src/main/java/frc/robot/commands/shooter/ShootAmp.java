@@ -4,18 +4,12 @@
 
 package frc.robot.commands.shooter;
 
-import java.util.Optional;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.TowerConstants;
-import frc.robot.extras.SmarterDashboardRegistry;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.swerve.DriveSubsystem;
 import frc.robot.subsystems.tower.TowerSubsystem;
@@ -29,7 +23,6 @@ public class ShootAmp extends Command {
 
   private DoubleSupplier leftX, leftY;
 
-  private double desiredHeading;
   private double headingError = 0;
   private double[] stuff;
 
@@ -66,25 +59,15 @@ public class ShootAmp extends Command {
     stuff = limelight.getAmpStuff();
     shooterSubsystem.setRPM(stuff[0], stuff[1]);
 
-    shooterSubsystem.setAmpPosition(stuff[2]);
+    shooterSubsystem.setShooterPosition(stuff[2]);
 
     if (isReadyToShoot()) {
       towerSubsystem.setTowerSpeed(TowerConstants.TOWER_MOTOR_SPEED);
     } else {
       towerSubsystem.setTowerSpeed(0);
     }
-    Optional<Alliance> alliance = DriverStation.getAlliance();
-    boolean isRed;
-    if (alliance.isPresent()) {
-      isRed = alliance.get() == Alliance.Red;
-    } else {
-      isRed = true;
-    }
-    Translation2d targetLocation = isRed ? new Translation2d(FieldConstants.RED_SPEAKER_X, FieldConstants.RED_SPEAKER_Y) : new Translation2d(FieldConstants.BLUE_SPEAKER_X, FieldConstants.BLUE_SPEAKER_Y);
-    targetLocation.minus(SmarterDashboardRegistry.getPose().getTranslation());
-    desiredHeading = Math.atan(targetLocation.getY() / targetLocation.getX());
-    headingError = SmarterDashboardRegistry.getPose().getRotation().getRadians() - desiredHeading;
 
+    headingError = stuff[3];
     double output = turnController.calculate(headingError, 0);
     driveSubsystem.drive(leftX.getAsDouble(), leftY.getAsDouble(), output, true);
   }

@@ -4,18 +4,12 @@
 
 package frc.robot.commands.shooter;
 
-import java.util.Optional;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.TowerConstants;
-import frc.robot.extras.SmarterDashboardRegistry;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.swerve.DriveSubsystem;
 import frc.robot.subsystems.tower.TowerSubsystem;
@@ -27,11 +21,11 @@ public class ShootSpeaker extends Command {
   private final TowerSubsystem towerSubsystem;
   private final DriveSubsystem driveSubsystem;
   private double headingError = 0;
-  private double desiredHeading = 0;
-  private double[] stuff;
+  private double[] shooterData;
 
   private DoubleSupplier leftX, leftY;
-  ProfiledPIDController turnController = new ProfiledPIDController(ShooterConstants.AUTO_SHOOT_P, ShooterConstants.AUTO_SHOOT_I, ShooterConstants.AUTO_SHOOT_D, null);
+  ProfiledPIDController turnController = new ProfiledPIDController(
+    ShooterConstants.AUTO_SHOOT_P, ShooterConstants.AUTO_SHOOT_I, ShooterConstants.AUTO_SHOOT_D, null);
   
   /** Creates a new ShootSpeaker. */
   public ShootSpeaker(ShooterSubsystem shooterSubsystem, VisionSubsystem visionSubsystem, TowerSubsystem towerSubsystem, DriveSubsystem driveSubsystem) {
@@ -54,31 +48,20 @@ public class ShootSpeaker extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    Optional<Alliance> alliance = DriverStation.getAlliance();
-    boolean isRed;
-    if (alliance.isPresent()) {
-      isRed = alliance.get() == Alliance.Red;
-    } else {
-      isRed = true;
-    }
-    Translation2d targetLocation = isRed ? new Translation2d(FieldConstants.RED_SPEAKER_X, FieldConstants.RED_SPEAKER_Y) : new Translation2d(FieldConstants.BLUE_SPEAKER_X, FieldConstants.BLUE_SPEAKER_Y);
-    targetLocation.minus(SmarterDashboardRegistry.getPose().getTranslation());
-    desiredHeading = Math.atan(targetLocation.getY() / targetLocation.getX());
-    headingError = SmarterDashboardRegistry.getPose().getRotation().getRadians() - desiredHeading;
+    shooterData = limelight.getSpeakerStuff();
+    shooterSubsystem.setRPM(shooterData[0], shooterData[1]);
 
-    double output = turnController.calculate(headingError, 0);
-    driveSubsystem.drive(leftX.getAsDouble(), leftY.getAsDouble(), output, true);
-
-    stuff = limelight.getSpeakerStuff();
-    shooterSubsystem.setRPM(stuff[0], stuff[1]);
-
-    shooterSubsystem.setSpeakerPosition(stuff[2]);
+    shooterSubsystem.setShooterPosition(shooterData[2]);
 
     if (isReadyToShoot()) {
       towerSubsystem.setTowerSpeed(TowerConstants.TOWER_MOTOR_SPEED);
     } else {
       towerSubsystem.setTowerSpeed(0);
     }
+
+    headingError = shooterData[3];
+    double output = turnController.calculate(headingError, 0);
+    driveSubsystem.drive(leftX.getAsDouble(), leftY.getAsDouble(), output, true);
   }
 
   // Called once the command ends or is interrupted.

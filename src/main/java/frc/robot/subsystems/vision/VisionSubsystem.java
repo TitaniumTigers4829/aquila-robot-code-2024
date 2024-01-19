@@ -16,6 +16,7 @@ import frc.robot.extras.LimelightHelpers;
 import frc.robot.extras.LimelightHelpers.LimelightResults;
 import frc.robot.extras.LimelightHelpers.LimelightTarget_Fiducial;
 import frc.robot.extras.SingleLinearInterpolator;
+import frc.robot.extras.SmarterDashboardRegistry;
 
 public class VisionSubsystem extends SubsystemBase {
 
@@ -154,8 +155,12 @@ public class VisionSubsystem extends SubsystemBase {
     }
   }
 
+  /**
+   * Gets the data needed for shooting into the amp
+   * @return double[leftFlywheelSpeed, rightFlywheelSpeed, shooterAngle, desiredHeading]
+   */
   public double[] getSpeakerStuff() {
-    double[] to_return = new double[3];
+    double[] to_return = new double[4];
     Translation2d pose = getPoseFromAprilTags().getTranslation();
     Optional<Alliance> alliance = DriverStation.getAlliance();
     boolean isRed;
@@ -170,12 +175,17 @@ public class VisionSubsystem extends SubsystemBase {
     to_return[0] = leftSpeakerLookupValues.getLookupValue(distance);
     to_return[1] = rightSpeakerLookupValues.getLookupValue(distance);
     to_return[2] = speakerAngleLookupValues.getLookupValue(distance);
+    to_return[3] = Math.atan2(other.getY() - pose.getY(), other.getX() - pose.getX());
     return to_return;
   }
 
+  /**
+   * Gets the data needed for shooting into the amp
+   * @return double[leftFlywheelSpeed, rightFlywheelSpeed, shooterAngle, desiredHeading]
+   */
   public double[] getAmpStuff() {
-    double[] to_return = new double[3];
-    Translation2d pose = getPoseFromAprilTags().getTranslation();
+    double[] to_return = new double[4];
+    Translation2d pose = SmarterDashboardRegistry.getPose().getTranslation();
     Optional<Alliance> alliance = DriverStation.getAlliance();
     boolean isRed;
     if (alliance.isPresent()) {
@@ -188,6 +198,7 @@ public class VisionSubsystem extends SubsystemBase {
     to_return[0] = leftAmpLookupValues.getLookupValue(distance);
     to_return[1] = rightAmpLookupValues.getLookupValue(distance);
     to_return[2] = ampAngleLookupValues.getLookupValue(distance);
+    to_return[3] = Math.atan2(other.getY() - pose.getY(), other.getX() - pose.getX());
     return to_return;
   }
 

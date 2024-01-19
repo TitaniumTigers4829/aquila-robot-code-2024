@@ -12,7 +12,6 @@ import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.HardwareConstants;
@@ -63,13 +62,8 @@ public class ShooterSubsystem extends SubsystemBase {
     pivotSpeakerPosition = pivotEncoder.getAbsolutePosition();
   }
 
-  public void setSpeakerPosition(double targetPivotSpeakerPosition) {
+  public void setShooterPosition(double targetPivotSpeakerPosition) {
     MotionMagicVoltage position = new MotionMagicVoltage(targetPivotSpeakerPosition / 360);
-    pivotMotor.setControl(position);
-  }
-
-  public void setAmpPosition(double targetPivotAmpPosition) {
-    MotionMagicVoltage position = new MotionMagicVoltage(targetPivotAmpPosition / 360);
     pivotMotor.setControl(position);
   }
 
