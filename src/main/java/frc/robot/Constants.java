@@ -14,9 +14,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.PneumaticsControlModule;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
-import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
@@ -159,15 +157,15 @@ public final class Constants {
       {Units.inchesToMeters(0-9), Units.inchesToMeters(0-9), Units.inchesToMeters(0-9)} // 8
     };
 
-    public static final double[][] CAMERA_CROP_LOOKUP_TABLE = {
-      // TODO: All of these are placeholder values
-      // {x position in meters, limelight lower y crop}
-      {0-9, 0-9},
-      {0-9, 0-9},
-      {0-9, 0-9},
-      {0-9, 0-9},
-      {0-9, 0-9}
-    };
+    // public static final double[][] CAMERA_CROP_LOOKUP_TABLE = {
+    //   // TODO: All of these are placeholder values
+    //   // {x position in meters, limelight lower y crop}
+    //   {0-9, 0-9},
+    //   {0-9, 0-9},
+    //   {0-9, 0-9},
+    //   {0-9, 0-9},
+    //   {0-9, 0-9}
+    // };
 
     public static final double[][] ONE_APRIL_TAG_LOOKUP_TABLE = {
       // {distance in meters, x std deviation, y std deviation, r (in degrees) std deviation}
