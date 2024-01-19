@@ -1,15 +1,21 @@
 package frc.robot.subsystems.vision;
 
+import java.util.Optional;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.Constants.FieldConstants;
+import frc.robot.Constants.ShooterConstants;
 import frc.robot.extras.LimelightHelpers;
 // import frc.robot.extras.SmartDashboardLogger;
 import frc.robot.extras.LimelightHelpers.LimelightResults;
 import frc.robot.extras.LimelightHelpers.LimelightTarget_Fiducial;
+import frc.robot.extras.SingleLinearInterpolator;
 
 public class VisionSubsystem extends SubsystemBase {
 
@@ -19,8 +25,24 @@ public class VisionSubsystem extends SubsystemBase {
   private String currentlyUsedLimelight = VisionConstants.FRONT_LIMELIGHT_NAME;
   private boolean wasFrontLimelightUsedLast = false;
   
+  SingleLinearInterpolator leftSpeakerLookupValues;
+  SingleLinearInterpolator rightSpeakerLookupValues;
+  SingleLinearInterpolator speakerAngleLookupValues;
+
+  SingleLinearInterpolator leftAmpLookupValues;
+  SingleLinearInterpolator rightAmpLookupValues;
+  SingleLinearInterpolator ampAngleLookupValues;
+
   public VisionSubsystem() {
     currentlyUsedLimelightResults = LimelightHelpers.getLatestResults(VisionConstants.FRONT_LIMELIGHT_NAME);
+    
+    leftSpeakerLookupValues = new SingleLinearInterpolator(ShooterConstants.LEFT_MOTOR_SPEAKER_VALUES);
+    rightSpeakerLookupValues = new SingleLinearInterpolator(ShooterConstants.RIGHT_MOTOR_SPEAKER_VALUES);
+    speakerAngleLookupValues = new SingleLinearInterpolator(ShooterConstants.SPEAKER_PIVOT_SPEAKER_POSITION);
+
+    leftAmpLookupValues = new SingleLinearInterpolator(ShooterConstants.LEFT_MOTOR_AMP_VALUES);
+    rightAmpLookupValues = new SingleLinearInterpolator(ShooterConstants.RIGHT_MOTOR_AMP_VALUES);
+    ampAngleLookupValues = new SingleLinearInterpolator(ShooterConstants.SPEAKER_PIVOT_AMP_POSITION);
   }
 
   public boolean canSeeAprilTags() {
@@ -130,6 +152,43 @@ public class VisionSubsystem extends SubsystemBase {
       LimelightHelpers.setLEDMode_ForceOff(VisionConstants.FRONT_LIMELIGHT_NAME);
       LimelightHelpers.setLEDMode_ForceOff(VisionConstants.BACK_LIMELIGHT_NAME);
     }
+  }
+
+  public double[] getSpeakerStuff() {
+    double[] to_return = new double[3];
+    Translation2d pose = getPoseFromAprilTags().getTranslation();
+    Optional<Alliance> alliance = DriverStation.getAlliance();
+    boolean isRed;
+    if (alliance.isPresent()) {
+      isRed = alliance.get() == Alliance.Red;
+    } else {
+      isRed = true;
+    }
+    Translation2d other = isRed ? new Translation2d(FieldConstants.RED_SPEAKER_X, FieldConstants.RED_SPEAKER_Y) : new Translation2d(FieldConstants.BLUE_SPEAKER_X, FieldConstants.BLUE_SPEAKER_Y);
+
+    double distance = pose.getDistance(other);
+    to_return[0] = leftSpeakerLookupValues.getLookupValue(distance);
+    to_return[1] = rightSpeakerLookupValues.getLookupValue(distance);
+    to_return[2] = speakerAngleLookupValues.getLookupValue(distance);
+    return to_return;
+  }
+
+  public double[] getAmpStuff() {
+    double[] to_return = new double[3];
+    Translation2d pose = getPoseFromAprilTags().getTranslation();
+    Optional<Alliance> alliance = DriverStation.getAlliance();
+    boolean isRed;
+    if (alliance.isPresent()) {
+      isRed = alliance.get() == Alliance.Red;
+    } else {
+      isRed = true;
+    }
+    Translation2d other = isRed ? new Translation2d(FieldConstants.RED_AMP_X, FieldConstants.RED_AMP_Y) : new Translation2d(FieldConstants.BLUE_AMP_X, FieldConstants.BLUE_AMP_Y);
+    double distance = pose.getDistance(other);
+    to_return[0] = leftAmpLookupValues.getLookupValue(distance);
+    to_return[1] = rightAmpLookupValues.getLookupValue(distance);
+    to_return[2] = ampAngleLookupValues.getLookupValue(distance);
+    return to_return;
   }
 
 }

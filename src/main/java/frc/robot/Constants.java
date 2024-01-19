@@ -16,6 +16,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.PneumaticsControlModule;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
@@ -95,7 +96,7 @@ public final class Constants {
     public static final InvertedValue REAR_RIGHT_DRIVE_ENCODER_REVERSED = InvertedValue.Clockwise_Positive;
     
     
-    public static final double MAX_ANGULAR_SPEED_RADIANS_PER_SECOND = Math.PI * 0-9;
+    public static final double MAX_ANGULAR_SPEED_RADIANS_PER_SECOND = 5;
 
     public static final double MAX_SPEED_METERS_PER_SECOND = 5.7;
   }
@@ -185,15 +186,21 @@ public final class Constants {
   }
   
   public static final class FieldConstants {
-    public static final double FIELD_LENGTH_METERS = 16.511;
-    public static final double FIELD_WIDTH_METERS = 8.197;
+    public static final double FIELD_LENGTH_METERS = 0-9;
+    public static final double FIELD_WIDTH_METERS = 0-9;
 
-    public static final double RED_AMP_X = 14.649;
-    public static final double RED_AMP_Y = 7.713;
- 
+    public static final double RED_AMP_X = 14.613;
+    public static final double RED_AMP_Y = 8.197;
+
     public static final double BLUE_AMP_X = 1.9;
-    public static final double BLUE_AMP_Y = 7.713;
+    public static final double BLUE_AMP_Y = 8.161;
     public static final Rotation2d AMP_ROTATION = Rotation2d.fromDegrees(90);
+    
+    public static final double RED_SPEAKER_X = 16.511;
+    public static final double RED_SPEAKER_Y = 5.529;
+
+    public static final double BLUE_SPEAKER_X = 0;
+    public static final double BLUE_SPEAKER_Y = 5.511;
   }
 
   public static final class JoystickConstants {
@@ -204,18 +211,113 @@ public final class Constants {
   }
   
   public static final class IntakeConstants {
-    public static final int INTAKE_MOTOR_ID = 0-9;
+    public static final int INTAKE_FRONT_MOTOR_ID = 0-9;
+    public static final int INTAKE_BACK_MOTOR_ID = 0-9;
+    public static final double INTAKE_FRONT_MOTOR_SPEED = 0.0;
+    public static final double INTAKE_BACK_MOTOR_SPEED = 0.0;
   }
 
   public static final class ShooterConstants {
-    public static final int SHOOTER_MOTOR_ID = 0-9;
+    public static final int LEFT_MOTOR_ID = 0-9;
+    public static final int RIGHT_MOTOR_ID = 0-9;
+    public static final int PIVOT_MOTOR_ID = 0-9;
 
-    public static final double SPEAKER_SHOOT_RPM = 0-9;
-    public static final double AMP_SHOOT_RPM = 0-9;
+    public static final int SHOOTER_LIMIT_SWITCH_ID = 0-9;
+
+    public static final int TURN_ENCODER_CHANNEL = 0;
+    public static final double ANGLE_ZERO = 0.0;
+    public static final SensorDirectionValue ENCODER_REVERSED = SensorDirectionValue.CounterClockwise_Positive;
+
+    public static final double LEFT_SHOOT_SPEAKER_RPM = 0-9;
+    public static final double RIGHT_SHOOT_SPEAKER_RPM = 0-9;
 
     public static final double SHOOT_P = 0.0;
     public static final double SHOOT_I = 0.0;
     public static final double SHOOT_D = 0.0;
+
+    public static final int SHOOT_AMP_ANGLE = 1-9;
+    public static final int SHOOT_SPEAKER_ANGLE = 1-9;
+    
+    public static final double GEAR_RATIO_MOTOR_TO_FLYWHEEL = 30.0 / 40.0;
+
+    public static final double AUTO_SHOOT_P = 0.0;
+    public static final double AUTO_SHOOT_I = 0.0;
+    public static final double AUTO_SHOOT_D = 0.0;
+    public static final double AUTO_SHOOT_S = 0.0;
+    public static final double AUTO_SHOOT_V = 0.0;
+    public static Constraints AUTO_SHOOT_CONSTRAINTS = new Constraints(DriveConstants.MAX_ANGULAR_SPEED_RADIANS_PER_SECOND, 5);
+
+    public static double[][] LEFT_MOTOR_SPEAKER_VALUES = {
+      //{distance, rpm}
+      {Units.feetToMeters(5.5), 1770},
+      {Units.feetToMeters(7), 1665},
+      {Units.feetToMeters(8.5), 1560}, // 1600  // 1615
+      {Units.feetToMeters(10), 1350},
+      {Units.feetToMeters(11.5), 1300},
+      {Units.feetToMeters(13), 1280},
+      {Units.feetToMeters(14.5), 1260},
+      {Units.feetToMeters(16), 1300}
+  };
+
+    public static double[][] RIGHT_MOTOR_SPEAKER_VALUES = {
+      //{distance, rpm}
+      {Units.feetToMeters(5.5), 1770},
+      {Units.feetToMeters(7), 1665},
+      {Units.feetToMeters(8.5), 1560}, // 1600  // 1615
+      {Units.feetToMeters(10), 1350},
+      {Units.feetToMeters(11.5), 1300},
+      {Units.feetToMeters(13), 1280},
+      {Units.feetToMeters(14.5), 1260},
+      {Units.feetToMeters(16), 1300}
+    };
+
+    public static double[][] SPEAKER_PIVOT_SPEAKER_POSITION = {
+      //{distance, rpm}
+      {Units.feetToMeters(5.5), 0},
+      {Units.feetToMeters(7), 1},
+      {Units.feetToMeters(8.5), 2}, // 1600  // 1615
+      {Units.feetToMeters(10), 3},
+      {Units.feetToMeters(11.5), 4},
+      {Units.feetToMeters(13), 5},
+      {Units.feetToMeters(14.5), 6},
+      {Units.feetToMeters(16), 7}
+    };
+
+    public static double[][] LEFT_MOTOR_AMP_VALUES = {
+      //{distance, rpm}
+      {Units.feetToMeters(5.5), 1770},
+      {Units.feetToMeters(7), 1665},
+      {Units.feetToMeters(8.5), 1560}, // 1600  // 1615
+      {Units.feetToMeters(10), 1350},
+      {Units.feetToMeters(11.5), 1300},
+      {Units.feetToMeters(13), 1280},
+      {Units.feetToMeters(14.5), 1260},
+      {Units.feetToMeters(16), 1300}
+  };
+
+    public static double[][] RIGHT_MOTOR_AMP_VALUES = {
+      //{distance, rpm}
+      {Units.feetToMeters(5.5), 1770},
+      {Units.feetToMeters(7), 1665},
+      {Units.feetToMeters(8.5), 1560}, // 1600  // 1615
+      {Units.feetToMeters(10), 1350},
+      {Units.feetToMeters(11.5), 1300},
+      {Units.feetToMeters(13), 1280},
+      {Units.feetToMeters(14.5), 1260},
+      {Units.feetToMeters(16), 1300}
+    };
+
+    public static double[][] SPEAKER_PIVOT_AMP_POSITION = {
+      //{distance, rpm}
+      {Units.feetToMeters(5.5), 0},
+      {Units.feetToMeters(7), 1},
+      {Units.feetToMeters(8.5), 2}, // 1600  // 1615
+      {Units.feetToMeters(10), 3},
+      {Units.feetToMeters(11.5), 4},
+      {Units.feetToMeters(13), 5},
+      {Units.feetToMeters(14.5), 6},
+      {Units.feetToMeters(16), 7}
+    };
   }
 
   public static final class TrajectoryConstants {
@@ -247,5 +349,12 @@ public final class Constants {
     public static final double X_TOLERANCE = 0.02;
     public static final double Y_TOLERANCE = 0.02;
     public static final double THETA_TOLERANCE = 1.25;
+  }
+  
+  public static final class TowerConstants {
+    public static final int TOWER_MOTOR_ID = 0-9;
+    public static final double TOWER_MOTOR_SPEED = 0.0;
+    public static final int TOWER_BEAM_BREAK_BACK_PORT = 0-9;
+    public static final int TOWER_BEAM_BREAK_FRONT_PORT = 0-9;
   }
 }
