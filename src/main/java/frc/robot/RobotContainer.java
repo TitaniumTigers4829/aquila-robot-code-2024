@@ -6,9 +6,7 @@ package frc.robot;
 
 import java.util.function.DoubleSupplier;
 
-import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.JoystickConstants;
@@ -16,23 +14,14 @@ import frc.robot.commands.Drive;
 import frc.robot.subsystems.swerve.DriveSubsystem;
 import frc.robot.subsystems.vision.VisionSubsystem;
 
-/**
- * make base methods
- *  shoot speaker - Raina
- *  shoot amp - 
- *  intake - Quinn
- * make base subsystems (motors & whatnot) - Ryan
- */
-
 public class RobotContainer {
 
   private final VisionSubsystem visionSubsystem;
   private final DriveSubsystem driveSubsystem;
-  private final Joystick driverJoystick;
+  private final Joystick driverJoystick = new Joystick(0);
   
   public RobotContainer() {
     visionSubsystem = new VisionSubsystem();
-    driverJoystick = new Joystick(0);
     driveSubsystem = new DriveSubsystem(); 
   }
   
@@ -93,7 +82,6 @@ public class RobotContainer {
     );
 
     driveSubsystem.setDefaultCommand(driveCommand);
-
   }
 
   public Command getAutonomousCommand() {

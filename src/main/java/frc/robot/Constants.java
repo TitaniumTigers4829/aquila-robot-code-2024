@@ -14,9 +14,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.PneumaticsControlModule;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
-import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
@@ -50,9 +48,9 @@ public final class Constants {
     public static final double ANGLE_TRUST = 0-9; //radians
 
     // Distance between centers of right and left wheels on robot
-    public static final double TRACK_WIDTH = Units.inchesToMeters(0-9);
+    public static final double TRACK_WIDTH = Units.inchesToMeters(26.0);
     // Distance between front and back wheels on robot
-    public static final double WHEEL_BASE = Units.inchesToMeters(0-9);
+    public static final double WHEEL_BASE = Units.inchesToMeters(26.0);
 
     public static final SwerveDriveKinematics DRIVE_KINEMATICS = new SwerveDriveKinematics(
       new Translation2d(WHEEL_BASE / 2, TRACK_WIDTH / 2), // Front Left
@@ -76,10 +74,10 @@ public final class Constants {
     public static final int REAR_LEFT_CANCODER_ID = 13;
     public static final int REAR_RIGHT_CANCODER_ID = 14;
 
-    public static final double FRONT_LEFT_ZERO_ANGLE = 0-9;
-    public static final double FRONT_RIGHT_ZERO_ANGLE = 0-9;
-    public static final double REAR_LEFT_ZERO_ANGLE = 0-9;
-    public static final double REAR_RIGHT_ZERO_ANGLE = 0-9;
+    public static final double FRONT_LEFT_ZERO_ANGLE = -0.024658203125;
+    public static final double FRONT_RIGHT_ZERO_ANGLE = -0.214599609375;
+    public static final double REAR_LEFT_ZERO_ANGLE = 0.12548828125;
+    public static final double REAR_RIGHT_ZERO_ANGLE = -0.2294921875;
 
     //inverts may vary
     public static final SensorDirectionValue FRONT_LEFT_CANCODER_REVERSED = SensorDirectionValue.CounterClockwise_Positive;
@@ -87,48 +85,53 @@ public final class Constants {
     public static final SensorDirectionValue REAR_LEFT_CANCODER_REVERSED = SensorDirectionValue.CounterClockwise_Positive;
     public static final SensorDirectionValue REAR_RIGHT_CANCODER_REVERSED = SensorDirectionValue.CounterClockwise_Positive;
     
+    public static final InvertedValue FRONT_LEFT_TURN_MOTOR_REVERSED = InvertedValue.Clockwise_Positive;
+    public static final InvertedValue FRONT_RIGHT_TURN_MOTOR_REVERSED = InvertedValue.CounterClockwise_Positive;
+    public static final InvertedValue REAR_LEFT_TURN_MOTOR_REVERSED = InvertedValue.Clockwise_Positive;
+    public static final InvertedValue REAR_RIGHT_TURN_MOTOR_REVERSED = InvertedValue.Clockwise_Positive;
+
     public static final InvertedValue FRONT_LEFT_DRIVE_ENCODER_REVERSED = InvertedValue.CounterClockwise_Positive;
     public static final InvertedValue FRONT_RIGHT_DRIVE_ENCODER_REVERSED = InvertedValue.Clockwise_Positive; 
     public static final InvertedValue REAR_LEFT_DRIVE_ENCODER_REVERSED = InvertedValue.CounterClockwise_Positive;
     public static final InvertedValue REAR_RIGHT_DRIVE_ENCODER_REVERSED = InvertedValue.Clockwise_Positive;
     
     
-    public static final double MAX_ANGULAR_SPEED_RADIANS_PER_SECOND = Math.PI * 0-9;
+    public static final double MAX_ANGULAR_SPEED_RADIANS_PER_SECOND = Math.PI * 4;
 
-    public static final double MAX_SPEED_METERS_PER_SECOND = 0-9;
+    public static final double MAX_SPEED_METERS_PER_SECOND = 5.7;
 
   }
   
   public static final class ModuleConstants { 
-    public static final double DRIVE_GEAR_RATIO = 0-9;
-    public static final double WHEEL_DIAMETER_METERS = Units.inchesToMeters(0-9);
+    public static final double DRIVE_GEAR_RATIO = 5.6;
+    public static final double WHEEL_DIAMETER_METERS = Units.inchesToMeters(4);
     public static final double WHEEL_CIRCUMFERENCE_METERS = WHEEL_DIAMETER_METERS * Math.PI;
-    public static final double DRIVE_TO_METERS =  WHEEL_CIRCUMFERENCE_METERS / (DRIVE_GEAR_RATIO);
+    public static final double DRIVE_TO_METERS =  WHEEL_CIRCUMFERENCE_METERS / DRIVE_GEAR_RATIO;
     public static final double DRIVE_TO_METERS_PER_SECOND = (WHEEL_CIRCUMFERENCE_METERS) / (DRIVE_GEAR_RATIO);
 
-    public static final double TURN_P = 0-9; 
-    public static final double TURN_I = 0-9;
-    public static final double TURN_D = 0-9;
+    public static final double TURN_P = 2.5; 
+    public static final double TURN_I = 0;
+    public static final double TURN_D = 0;
 
-    public static final double TURN_S = 0-9;
-    public static final double TURN_V = 0-9;
-    public static final double TURN_A = 0-9;
+    public static final double TURN_S = 0;
+    public static final double TURN_V = 0;
+    public static final double TURN_A = 0;
 
-    public static final double MAX_ANGULAR_SPEED_RADIANS_PER_SECOND = 0-9; 
-    public static final double MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND_SQUARED = 0-9;
+    public static final double MAX_ANGULAR_SPEED_ROTATIONS_PER_SECOND = 7; 
+    public static final double MAX_ANGULAR_ACCELERATION_ROTATIONS_PER_SECOND_SQUARED = 9;
     public static final TrapezoidProfile.Constraints TURN_CONSTRAINTS =
       new TrapezoidProfile.Constraints(
-        MAX_ANGULAR_SPEED_RADIANS_PER_SECOND,
-        MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND_SQUARED
+        MAX_ANGULAR_SPEED_ROTATIONS_PER_SECOND,
+        MAX_ANGULAR_ACCELERATION_ROTATIONS_PER_SECOND_SQUARED
       );
 
-    public static final double DRIVE_P = 0-9;
-    public static final double DRIVE_I = 0-9;
-    public static final double DRIVE_D = 0-9;
+    public static final double DRIVE_P = 0.09;
+    public static final double DRIVE_I = 0;
+    public static final double DRIVE_D = 0;
 
-    public static final double DRIVE_S = 0-9;
-    public static final double DRIVE_V = 0-9;
-    public static final double DRIVE_A = 0-9;
+    public static final double DRIVE_S = 0;
+    public static final double DRIVE_V = 0;
+    public static final double DRIVE_A = 0;
   }
 
   public static final class VisionConstants {
@@ -154,15 +157,15 @@ public final class Constants {
       {Units.inchesToMeters(0-9), Units.inchesToMeters(0-9), Units.inchesToMeters(0-9)} // 8
     };
 
-    public static final double[][] CAMERA_CROP_LOOKUP_TABLE = {
-      // TODO: All of these are placeholder values
-      // {x position in meters, limelight lower y crop}
-      {0-9, 0-9},
-      {0-9, 0-9},
-      {0-9, 0-9},
-      {0-9, 0-9},
-      {0-9, 0-9}
-    };
+    // public static final double[][] CAMERA_CROP_LOOKUP_TABLE = {
+    //   // TODO: All of these are placeholder values
+    //   // {x position in meters, limelight lower y crop}
+    //   {0-9, 0-9},
+    //   {0-9, 0-9},
+    //   {0-9, 0-9},
+    //   {0-9, 0-9},
+    //   {0-9, 0-9}
+    // };
 
     public static final double[][] ONE_APRIL_TAG_LOOKUP_TABLE = {
       // {distance in meters, x std deviation, y std deviation, r (in degrees) std deviation}
@@ -183,25 +186,16 @@ public final class Constants {
     };
   }
 
-  public static final class ExampleConstants {
-    public static final int SOLENOID_FORWARD = 0;
-    public static final int SOLENOID_BACKWARD = 1;
-
-    public static final Value SOLENOID_REVERSE_VALUE = Value.kReverse;
-    public static final Value SOLENOID_FORWARD_VALUE = Value.kForward;
-    public static final Value SOLENOID_OFF = Value.kOff;
-  }
-
   public static final class FieldConstants {
     public static final double FIELD_LENGTH_METERS = 0-9;
     public static final double FIELD_WIDTH_METERS = 0-9;
   }
 
   public static final class JoystickConstants {
-    public static final int DRIVER_LEFT_STICK_X = 0-9;
-    public static final int DRIVER_LEFT_STICK_Y = 0-9;
-    public static final int DRIVER_RIGHT_STICK_X = 0-9;
-    public static final int DRIVER_RIGHT_BUMPER_ID = 0-9;
+    public static final int DRIVER_LEFT_STICK_X = 0;
+    public static final int DRIVER_LEFT_STICK_Y = 1;
+    public static final int DRIVER_RIGHT_STICK_X = 4;
+    public static final int DRIVER_RIGHT_BUMPER_ID = 6;
   }
   
   public static final class IntakeConstants {

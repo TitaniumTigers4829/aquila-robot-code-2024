@@ -13,20 +13,17 @@ import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.FieldConstants;
-import frc.robot.Constants.ModuleConstants;
 import frc.robot.Constants.VisionConstants;
+import frc.robot.extras.SmarterDashboardRegistry;
 import frc.robot.subsystems.swerve.DriveSubsystem;
 
 public class PoseEstimationSubsystem extends SubsystemBase {
@@ -104,6 +101,7 @@ public class PoseEstimationSubsystem extends SubsystemBase {
       double robotY = botPose[1] + FieldConstants.FIELD_WIDTH_METERS / 2;
       Rotation2d robotRotation = Rotation2d.fromDegrees(botPose[5]);
       Pose2d limelightVisionMeasurement = new Pose2d(robotX, robotY, robotRotation);
+      SmarterDashboardRegistry.setLimelightPose(limelightVisionMeasurement);
       poseEstimator.addVisionMeasurement(limelightVisionMeasurement, currentTimeStampSeconds);
       SmartDashboard.putString("Limelight Pose", limelightVisionMeasurement.toString());
     }
@@ -116,13 +114,13 @@ public class PoseEstimationSubsystem extends SubsystemBase {
       driveSubsystem.getModulePositions()
     );
 
-
+    Pose2d pose = getPose();
     // Updates the odometry to the pose estimator's pose
-    driveSubsystem.resetOdometry(getPose());
+    driveSubsystem.resetOdometry(pose);
+    SmarterDashboardRegistry.setPose(pose);
 
     //returns pose in meters
-    SmartDashboard.putString("Estimated Pose", getPose().toString()); 
-    SmartDashboard.putString("Odometry Pose", driveSubsystem.getPose().toString());
+    SmartDashboard.putString("Estimated Pose", pose.toString());
   }
 
   public Pose2d getPose() {
