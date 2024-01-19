@@ -170,7 +170,6 @@ public class DriveSubsystem extends SubsystemBase {
 
   public void periodic() {
     SmartDashboard.putNumber("current speed", frontLeftSwerveModule.getState().speedMetersPerSecond);
-
     frontLeftSwerveModule.periodicFunction();
     frontRightSwerveModule.periodicFunction();
     rearLeftSwerveModule.periodicFunction();

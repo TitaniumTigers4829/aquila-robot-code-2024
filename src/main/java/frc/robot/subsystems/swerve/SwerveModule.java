@@ -174,10 +174,19 @@ public class SwerveModule {
     // Optimize the reference state to avoid spinning further than 90 degrees
     SwerveModuleState optimizedDesiredState = SwerveModuleState.optimize(desiredState, new Rotation2d(turnRadians));
 
+    if (Math.abs(optimizedDesiredState.speedMetersPerSecond) < 0.01) {
+      driveMotor.set(0);
+      turnMotor.set(0);
+      return;
+    }
+
     SmartDashboard.putNumber(name + " desired speed", optimizedDesiredState.speedMetersPerSecond);
     // Converts meters per second to rotations per second
     double desiredDriveRPS = optimizedDesiredState.speedMetersPerSecond 
      * ModuleConstants.DRIVE_GEAR_RATIO / ModuleConstants.WHEEL_CIRCUMFERENCE_METERS;
+
+    SmartDashboard.putNumber(name + "velocity output error", (optimizedDesiredState.speedMetersPerSecond - getState().speedMetersPerSecond));
+
 
     VelocityVoltage driveOutput = new VelocityVoltage(desiredDriveRPS); // test this... might not work.
     driveMotor.setControl(driveOutput);
@@ -217,5 +226,6 @@ public class SwerveModule {
 
   public void periodicFunction() {
     SmartDashboard.putNumber(name + " speed", getState().speedMetersPerSecond);
+
   }
 }

@@ -35,7 +35,7 @@ public final class Constants {
     public static final String CANIVORE_CAN_BUS_STRING = "canivore 1";
     public static final String RIO_CAN_BUS_STRING = "rio";
 
-    public static final double MIN_FALCON_DEADBAND = 0.0001;
+    public static final double MIN_FALCON_DEADBAND = 0.001;
 
     public static final PneumaticsModuleType PNEUMATICS_MODULE_TYPE = PneumaticsModuleType.CTREPCM;
 
@@ -125,12 +125,12 @@ public final class Constants {
         MAX_ANGULAR_ACCELERATION_ROTATIONS_PER_SECOND_SQUARED
       );
 
-    public static final double DRIVE_P = 0.09;
+    public static final double DRIVE_P = 0.391;
     public static final double DRIVE_I = 0;
     public static final double DRIVE_D = 0;
 
-    public static final double DRIVE_S = 0;
-    public static final double DRIVE_V = 0;
+    public static final double DRIVE_S = 0.10;
+    public static final double DRIVE_V = 0.09;
     public static final double DRIVE_A = 0;
   }
 
