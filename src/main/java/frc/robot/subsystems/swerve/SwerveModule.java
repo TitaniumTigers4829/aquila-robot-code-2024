@@ -110,29 +110,8 @@ public class SwerveModule {
 
     turnEncoder.optimizeBusUtilization(HardwareConstants.TIMEOUT_S);
     driveMotor.optimizeBusUtilization(HardwareConstants.TIMEOUT_S);
+
   }
-
-  // /**
-  //  * @param currentAngle what the controller currently reads (radians)
-  //  * @param targetAngleSetpoint the desired angle (radians)
-  //  * @return the target angle in controller's scope (radians)
-  //  */
-  // public static double calculateContinuousInputSetpoint(double currentAngle, double targetAngleSetpoint) {
-  //   targetAngleSetpoint = Math.IEEEremainder(targetAngleSetpoint, Math.PI * 2);
-
-  //   double remainder = currentAngle % (Math.PI * 2);
-  //   double adjustedAngleSetpoint = targetAngleSetpoint + (currentAngle - remainder);
-
-  //   // We don't want to rotate over 180 degrees, so just rotate the other way (add a
-  //   // full rotation)
-  //   if (adjustedAngleSetpoint - currentAngle > Math.PI) {
-  //       adjustedAngleSetpoint -= Math.PI * 2;
-  //   } else if (adjustedAngleSetpoint - currentAngle < -Math.PI) {
-  //       adjustedAngleSetpoint += Math.PI * 2;
-  //   }
-
-  //   return adjustedAngleSetpoint;
-  // }
 
   /**
    * Gets the heading of the module
