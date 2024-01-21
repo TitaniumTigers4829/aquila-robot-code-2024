@@ -30,10 +30,10 @@ public abstract class DriveCommandBase extends Command {
    * @param driveSubsystem The subsystem for the swerve drive
    * @param visionSubsystem The subsystem for vision measurements
    */
-  public DriveCommandBase(VisionSubsystem visionSubsystem) {
+  public DriveCommandBase(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem) {
     this.visionSubsystem = visionSubsystem;
-    this.driveSubsystem = new DriveSubsystem();
-    this.poseEstimator = new PoseEstimationSubsystem(driveSubsystem);
+    this.driveSubsystem = driveSubsystem;
+    this.poseEstimator = new PoseEstimationSubsystem(this.driveSubsystem);
   }
 
   @Override
