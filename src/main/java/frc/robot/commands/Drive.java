@@ -29,7 +29,7 @@ public class Drive extends DriveCommandBase {
    * field relative
    */
   public Drive(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, DoubleSupplier leftY, DoubleSupplier leftX, DoubleSupplier rightX, BooleanSupplier isFieldRelative) {
-    super(visionSubsystem);
+    super(driveSubsystem, visionSubsystem);
     this.driveSubsystem = driveSubsystem;
     addRequirements(driveSubsystem, visionSubsystem);
     this.leftY = leftY;
