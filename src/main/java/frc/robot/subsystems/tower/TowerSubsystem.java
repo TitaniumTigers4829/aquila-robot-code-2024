@@ -12,14 +12,14 @@ import frc.robot.Constants.TowerConstants;
 
 public class TowerSubsystem extends SubsystemBase {
   private final TalonFX towerMotor;
-  DigitalInput beamBreakBack;
-  DigitalInput beamBreakFront;
+  private final DigitalInput bottomBeamBreak;
+  private final DigitalInput topBeamBreak;
 
   /** Creates a new TowerSubsystem. */
   public TowerSubsystem() {
     towerMotor = new TalonFX(TowerConstants.TOWER_MOTOR_ID);
-    beamBreakBack = new DigitalInput(TowerConstants.TOWER_BEAM_BREAK_BACK_PORT);
-    beamBreakFront = new DigitalInput(TowerConstants.TOWER_BEAM_BREAK_FRONT_PORT);
+    bottomBeamBreak = new DigitalInput(TowerConstants.TOWER_BOTTOM_BEAMBREAK_PORT);
+    topBeamBreak = new DigitalInput(TowerConstants.TOWER_TOP_BEAMBREAK_PORT);
   }
   
   public void setTowerSpeed(double speed) {
@@ -27,11 +27,11 @@ public class TowerSubsystem extends SubsystemBase {
   }
 
   public boolean hasNoteBottom() {
-    return beamBreakBack.get();
+    return bottomBeamBreak.get();
   }
 
   public boolean hasNoteTop() {
-    return beamBreakFront.get();
+    return topBeamBreak.get();
   }
 
   @Override

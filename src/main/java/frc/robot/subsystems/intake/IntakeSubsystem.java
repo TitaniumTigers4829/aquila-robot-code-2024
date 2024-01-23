@@ -6,6 +6,7 @@ package frc.robot.subsystems.intake;
 
 import com.ctre.phoenix6.hardware.TalonFX;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.IntakeConstants;
 
@@ -14,7 +15,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
   /** Creates a new IntakeSubsystem. */
   public IntakeSubsystem() {
-    intakeFrontMotor = new TalonFX(IntakeConstants.INTAKE_FRONT_MOTOR_ID);
+    intakeFrontMotor = new TalonFX(IntakeConstants.INTAKE_MOTOR_ID);
   }
 
   public void setIntakeFrontSpeed(double speed) {

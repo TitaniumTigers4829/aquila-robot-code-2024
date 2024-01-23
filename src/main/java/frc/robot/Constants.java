@@ -209,10 +209,8 @@ public final class Constants {
   }
   
   public static final class IntakeConstants {
-    public static final int INTAKE_FRONT_MOTOR_ID = 0;
-    public static final int INTAKE_BACK_MOTOR_ID = 0-9;
-    public static final double INTAKE_FRONT_MOTOR_SPEED = 0.0;
-    public static final double INTAKE_BACK_MOTOR_SPEED = 0.0;
+    public static final int INTAKE_MOTOR_ID = 0;
+    public static final double INTAKE_MOTOR_SPEED = 0.75;
   }
 
   public static final class ShooterConstants {
@@ -352,7 +350,7 @@ public final class Constants {
   public static final class TowerConstants {
     public static final int TOWER_MOTOR_ID = 0-9;
     public static final double TOWER_MOTOR_SPEED = 0.0;
-    public static final int TOWER_BEAM_BREAK_BACK_PORT = 0-9;
-    public static final int TOWER_BEAM_BREAK_FRONT_PORT = 0-9;
+    public static final int TOWER_BOTTOM_BEAMBREAK_PORT = 0-9;
+    public static final int TOWER_TOP_BEAMBREAK_PORT = 0-9;
   }
 }

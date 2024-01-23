@@ -13,6 +13,7 @@ import frc.robot.subsystems.tower.TowerSubsystem;
 public class TowerIntake extends Command {
   private final TowerSubsystem tower;
   private final IntakeSubsystem intake;
+  
   /** Creates a new TowerIntake. */
   public TowerIntake(TowerSubsystem towerSubsystem, IntakeSubsystem intakeSubsystem) {
     this.tower = towerSubsystem;
@@ -25,17 +26,14 @@ public class TowerIntake extends Command {
     if (tower.hasNoteBottom()) {
       tower.setTowerSpeed(TowerConstants.TOWER_MOTOR_SPEED);
       intake.setIntakeFrontSpeed(0);
-      intake.setIntakeBackSpeed(IntakeConstants.INTAKE_BACK_MOTOR_SPEED);
     }
     if (tower.hasNoteTop()) {
-        tower.setTowerSpeed(0);
-        intake.setIntakeFrontSpeed(0);
-        intake.setIntakeBackSpeed(0); 
-      }
+      tower.setTowerSpeed(0);
+      intake.setIntakeFrontSpeed(0);
+    }
     else {
       tower.setTowerSpeed(TowerConstants.TOWER_MOTOR_SPEED);
-      intake.setIntakeFrontSpeed(IntakeConstants.INTAKE_FRONT_MOTOR_SPEED);
-      intake.setIntakeBackSpeed(IntakeConstants.INTAKE_BACK_MOTOR_SPEED);
+      intake.setIntakeFrontSpeed(IntakeConstants.INTAKE_MOTOR_SPEED);
     }
   }
 
