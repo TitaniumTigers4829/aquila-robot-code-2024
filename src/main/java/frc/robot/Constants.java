@@ -209,7 +209,7 @@ public final class Constants {
   }
   
   public static final class IntakeConstants {
-    public static final int INTAKE_FRONT_MOTOR_ID = 0-9;
+    public static final int INTAKE_FRONT_MOTOR_ID = 0;
     public static final int INTAKE_BACK_MOTOR_ID = 0-9;
     public static final double INTAKE_FRONT_MOTOR_SPEED = 0.0;
     public static final double INTAKE_BACK_MOTOR_SPEED = 0.0;

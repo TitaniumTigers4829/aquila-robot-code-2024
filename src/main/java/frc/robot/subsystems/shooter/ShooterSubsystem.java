@@ -12,6 +12,7 @@ import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.DifferentialSensorSourceValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
@@ -40,6 +41,7 @@ public class ShooterSubsystem extends SubsystemBase {
     leftMotor = new TalonFX(ShooterConstants.LEFT_MOTOR_ID);
     rightMotor = new TalonFX(ShooterConstants.RIGHT_MOTOR_ID);
     pivotMotor = new TalonFX(ShooterConstants.PIVOT_MOTOR_ID);
+    pivotEncoder = new CANcoder(ShooterConstants.TURN_ENCODER_CHANNEL, HardwareConstants.CANIVORE_CAN_BUS_STRING);
 
     TalonFXConfiguration shooterConfig = new TalonFXConfiguration();
     shooterConfig.Slot0.kP = ShooterConstants.SHOOT_P;
@@ -62,9 +64,10 @@ public class ShooterSubsystem extends SubsystemBase {
     rotationConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     rotationConfig.MotorOutput.DutyCycleNeutralDeadband = HardwareConstants.MIN_FALCON_DEADBAND;
 
-    pivotMotor.getConfigurator().apply(rotationConfig, HardwareConstants.TIMEOUT_S);
+    rotationConfig.DifferentialSensors.DifferentialSensorSource = DifferentialSensorSourceValue.RemoteCANcoder;
+    rotationConfig.DifferentialSensors.DifferentialRemoteSensorID = pivotEncoder.getDeviceID();
 
-    pivotEncoder = new CANcoder(ShooterConstants.TURN_ENCODER_CHANNEL, HardwareConstants.CANIVORE_CAN_BUS_STRING);
+    pivotMotor.getConfigurator().apply(rotationConfig, HardwareConstants.TIMEOUT_S);
 
     CANcoderConfiguration turnEncoderConfig = new CANcoderConfiguration();
     turnEncoderConfig.MagnetSensor.MagnetOffset = -ShooterConstants.ANGLE_ZERO;
@@ -121,11 +124,6 @@ public class ShooterSubsystem extends SubsystemBase {
     rightMotor.setControl(rightSpeed);
   }
 
-  public void setSpeedPivot(double pivotRPMMotor) {
-    VelocityVoltage speed = new VelocityVoltage(pivotRPMMotor * 60);
-    pivotMotor.setControl(speed);
-  }
-
   public void setLeftMotorToNeutral() {
     rightMotor.set(0);
   }
@@ -144,8 +142,9 @@ public class ShooterSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
-    
+    if (isLimitSwitchPressed()) {
+      pivotMotor.setPosition(0);
+    }    
   }
 
 }

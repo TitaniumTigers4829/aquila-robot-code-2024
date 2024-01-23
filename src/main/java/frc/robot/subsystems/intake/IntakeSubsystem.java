@@ -11,22 +11,14 @@ import frc.robot.Constants.IntakeConstants;
 
 public class IntakeSubsystem extends SubsystemBase {
   private final TalonFX intakeFrontMotor;
-  private final TalonFX intakeBackMotor;
 
   /** Creates a new IntakeSubsystem. */
   public IntakeSubsystem() {
     intakeFrontMotor = new TalonFX(IntakeConstants.INTAKE_FRONT_MOTOR_ID);
-    intakeBackMotor = new TalonFX(IntakeConstants.INTAKE_BACK_MOTOR_ID);
   }
 
   public void setIntakeFrontSpeed(double speed) {
-    // TODO: set front intake motor speed
     intakeFrontMotor.set(speed);
-  }
-
-  public void setIntakeBackSpeed(double speed) {
-    // TODO: set back intake motor speed
-    intakeBackMotor.set(speed);
   }
 
   @Override
