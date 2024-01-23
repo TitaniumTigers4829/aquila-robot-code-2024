@@ -130,13 +130,14 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public void zeroHeading() {
-    double rotationDegrees = getHeading();
-    if (alliance.isPresent() && alliance.get()==DriverStation.Alliance.Blue) {
-      rotationDegrees += 0;
-    } else {
-      rotationDegrees += 180;
-    }
-    gyroOffset = (rotationDegrees % 360);
+    gyroOffset = 0;
+    // double rotationDegrees = getHeading();
+    // if (alliance.isPresent() && alliance.get()==DriverStation.Alliance.Blue) {
+    //   rotationDegrees += 0;
+    // } else {
+    //   rotationDegrees += 180;
+    // }
+    // gyroOffset = (rotationDegrees % 360);
     gyro.reset();
   }
 

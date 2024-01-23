@@ -193,6 +193,9 @@ public class SwerveModule {
 
     
     double output = turnController.calculate(getModuleHeading(), optimizedDesiredState.angle.getRotations());
+    if (Math.abs(output) < 0.05) {
+      output = 0;
+    }
     turnMotor.set(output);
   }
 

@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.Constants.JoystickConstants;
 import frc.robot.commands.Drive;
 import frc.robot.commands.auto.FollowChoreoTrajectory;
+import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.swerve.DriveSubsystem;
 import frc.robot.subsystems.vision.VisionSubsystem;
 
@@ -21,11 +22,14 @@ public class RobotContainer {
 
   private final VisionSubsystem visionSubsystem;
   private final DriveSubsystem driveSubsystem;
+  private final IntakeSubsystem intakeSubsystem;
+
   private final Joystick driverJoystick = new Joystick(0);
   
   public RobotContainer() {
     visionSubsystem = new VisionSubsystem();
     driveSubsystem = new DriveSubsystem(); 
+    intakeSubsystem = new IntakeSubsystem();
   }
   
   private static double deadband(double value, double deadband) {
@@ -87,6 +91,10 @@ public class RobotContainer {
 
     POVButton driverRightDpad = new POVButton(driverJoystick, 90);
     driverRightDpad.onTrue(new InstantCommand(driveSubsystem::zeroHeading));
+    
+    JoystickButton button = new JoystickButton(driverJoystick, 2);
+    button.onTrue(new InstantCommand(()->intakeSubsystem.intake(0.60)));
+    button.onFalse(new InstantCommand(()->intakeSubsystem.intake(0)));
   }
 
   public Command getAutonomousCommand() {
