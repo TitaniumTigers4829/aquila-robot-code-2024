@@ -8,7 +8,9 @@ import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.Constants.JoystickConstants;
 import frc.robot.commands.Drive;
 import frc.robot.commands.auto.FollowChoreoTrajectory;
@@ -69,7 +71,6 @@ public class RobotContainer {
   }
 
   private void configureButtonBindings() {
-
     DoubleSupplier driverLeftStickX = () -> driverJoystick.getRawAxis(JoystickConstants.DRIVER_LEFT_STICK_X);
     DoubleSupplier driverLeftStickY = () -> driverJoystick.getRawAxis(JoystickConstants.DRIVER_LEFT_STICK_Y);
     DoubleSupplier driverRightStickX = () -> driverJoystick.getRawAxis(JoystickConstants.DRIVER_RIGHT_STICK_X);
@@ -83,9 +84,13 @@ public class RobotContainer {
     );
 
     driveSubsystem.setDefaultCommand(driveCommand);
+
+    POVButton driverRightDpad = new POVButton(driverJoystick, 90);
+    driverRightDpad.onTrue(new InstantCommand(driveSubsystem::zeroHeading));
   }
 
   public Command getAutonomousCommand() {
-    return new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "1mtrfwd");
+    // return new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "1mtrfwd");
+    return null;
   }
 }
