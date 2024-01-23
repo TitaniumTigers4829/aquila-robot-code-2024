@@ -12,8 +12,7 @@ import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.DifferentialSensorSourceValue;
-import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -25,21 +24,17 @@ public class ShooterSubsystem extends SubsystemBase {
   DigitalInput limitSwitch;
   private final CANcoder pivotEncoder;
   private final TalonFX leftMotor;
-  private final TalonFX rightMotor;
   private final TalonFX pivotMotor;
-  private double rightMotorTargetRPM;
   private double leftMotorTargetRPM;
   private double pivotMotorTargetPosition;
 
   StatusSignal<Double> shooterLeftMotorVelocity;
-  StatusSignal<Double> shooterRightMotorVelocity;
   StatusSignal<Double> pivotSpeakerPosition;
 
   /** Creates a new ShooterSubsystem. */
   public ShooterSubsystem() { 
     limitSwitch = new DigitalInput(ShooterConstants.SHOOTER_LIMIT_SWITCH_ID);
     leftMotor = new TalonFX(ShooterConstants.LEFT_MOTOR_ID);
-    rightMotor = new TalonFX(ShooterConstants.RIGHT_MOTOR_ID);
     pivotMotor = new TalonFX(ShooterConstants.PIVOT_MOTOR_ID);
     pivotEncoder = new CANcoder(ShooterConstants.TURN_ENCODER_CHANNEL, HardwareConstants.CANIVORE_CAN_BUS_STRING);
 
@@ -52,9 +47,6 @@ public class ShooterSubsystem extends SubsystemBase {
     shooterConfig.MotorOutput.DutyCycleNeutralDeadband = HardwareConstants.MIN_FALCON_DEADBAND;
 
     leftMotor.getConfigurator().apply(shooterConfig, HardwareConstants.TIMEOUT_S);
-
-    shooterConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
-    rightMotor.getConfigurator().apply(shooterConfig, HardwareConstants.TIMEOUT_S);
     
     TalonFXConfiguration rotationConfig = new TalonFXConfiguration();
     rotationConfig.Slot0.kP = ShooterConstants.SHOOT_P;
@@ -64,9 +56,8 @@ public class ShooterSubsystem extends SubsystemBase {
     rotationConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     rotationConfig.MotorOutput.DutyCycleNeutralDeadband = HardwareConstants.MIN_FALCON_DEADBAND;
 
-    rotationConfig.DifferentialSensors.DifferentialSensorSource = DifferentialSensorSourceValue.RemoteCANcoder;
-    rotationConfig.DifferentialSensors.DifferentialRemoteSensorID = pivotEncoder.getDeviceID();
-
+    rotationConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
+    rotationConfig.Feedback.FeedbackRemoteSensorID = pivotEncoder.getDeviceID();
     pivotMotor.getConfigurator().apply(rotationConfig, HardwareConstants.TIMEOUT_S);
 
     CANcoderConfiguration turnEncoderConfig = new CANcoderConfiguration();
@@ -76,12 +67,10 @@ public class ShooterSubsystem extends SubsystemBase {
     pivotEncoder.getConfigurator().apply(turnEncoderConfig, HardwareConstants.TIMEOUT_S);
 
     shooterLeftMotorVelocity = leftMotor.getVelocity();
-    shooterRightMotorVelocity = rightMotor.getVelocity();
     pivotSpeakerPosition = pivotEncoder.getAbsolutePosition();
 
-    BaseStatusSignal.setUpdateFrequencyForAll(250, shooterLeftMotorVelocity, shooterRightMotorVelocity, pivotSpeakerPosition);
+    BaseStatusSignal.setUpdateFrequencyForAll(250, shooterLeftMotorVelocity, pivotSpeakerPosition);
     leftMotor.optimizeBusUtilization(HardwareConstants.TIMEOUT_S);
-    rightMotor.optimizeBusUtilization(HardwareConstants.TIMEOUT_S);
     pivotMotor.optimizeBusUtilization(HardwareConstants.TIMEOUT_S);
     pivotEncoder.optimizeBusUtilization(HardwareConstants.TIMEOUT_S);
   }
@@ -102,33 +91,25 @@ public class ShooterSubsystem extends SubsystemBase {
     return shooterLeftMotorVelocity.getValueAsDouble() * 60;
   }
 
-  public double getRightShooterRPM() {
-    shooterRightMotorVelocity.refresh();
-    return shooterRightMotorVelocity.getValue() * 60;
+  public void setShooterSpeed(double speed) {
+    leftMotor.set(speed);
   }
 
   public boolean isShooterWithinAcceptableError() {
-    return Math.abs(leftMotorTargetRPM - getLeftShooterRPM()) < 20 && Math.abs(rightMotorTargetRPM - getRightShooterRPM()) < 20;
+    return Math.abs(leftMotorTargetRPM - getLeftShooterRPM()) < 20;
   }
 
   public boolean isPivotWithinAcceptableError() {
     return Math.abs(pivotMotorTargetPosition - getRotation()) < 2;
   }
 
-  public void setRPM(double leftRPMMotor, double rightRPMMotor) {
+  public void setRPM(double leftRPMMotor) {
     leftMotorTargetRPM = leftRPMMotor;
-    rightMotorTargetRPM = rightRPMMotor;
     VelocityVoltage leftSpeed = new VelocityVoltage(leftRPMMotor / 60.0);
-    VelocityVoltage rightSpeed = new VelocityVoltage(rightRPMMotor / 60.0);
     leftMotor.setControl(leftSpeed);
-    rightMotor.setControl(rightSpeed);
   }
 
   public void setLeftMotorToNeutral() {
-    rightMotor.set(0);
-  }
-
-  public void setRightMotorToNeutral() {
     leftMotor.set(0);
   }
 

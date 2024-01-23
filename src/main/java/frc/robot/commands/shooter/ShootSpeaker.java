@@ -49,9 +49,9 @@ public class ShootSpeaker extends Command {
   @Override
   public void execute() {
     shooterData = limelight.getSpeakerStuff();
-    shooterSubsystem.setRPM(shooterData[0], shooterData[1]);
+    shooterSubsystem.setRPM(shooterData[0]);
 
-    shooterSubsystem.setShooterPosition(shooterData[2]);
+    shooterSubsystem.setShooterPosition(shooterData[1]);
 
     if (isReadyToShoot()) {
       towerSubsystem.setTowerSpeed(TowerConstants.TOWER_MOTOR_SPEED);
@@ -59,7 +59,7 @@ public class ShootSpeaker extends Command {
       towerSubsystem.setTowerSpeed(0);
     }
 
-    headingError = shooterData[3];
+    headingError = shooterData[2];
     double output = turnController.calculate(headingError, 0);
     driveSubsystem.drive(leftX.getAsDouble(), leftY.getAsDouble(), output, true);
   }
@@ -68,7 +68,6 @@ public class ShootSpeaker extends Command {
   @Override
   public void end(boolean interrupted) {
     shooterSubsystem.setLeftMotorToNeutral();
-    shooterSubsystem.setRightMotorToNeutral();
     shooterSubsystem.setPivotMotorToNeutral();
   }
 

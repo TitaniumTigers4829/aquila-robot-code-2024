@@ -57,9 +57,9 @@ public class ShootAmp extends Command {
   @Override
   public void execute() {
     stuff = limelight.getAmpStuff();
-    shooterSubsystem.setRPM(stuff[0], stuff[1]);
+    shooterSubsystem.setRPM(stuff[0]);
 
-    shooterSubsystem.setShooterPosition(stuff[2]);
+    shooterSubsystem.setShooterPosition(stuff[1]);
 
     if (isReadyToShoot()) {
       towerSubsystem.setTowerSpeed(TowerConstants.TOWER_MOTOR_SPEED);
@@ -67,7 +67,7 @@ public class ShootAmp extends Command {
       towerSubsystem.setTowerSpeed(0);
     }
 
-    headingError = stuff[3];
+    headingError = stuff[2];
     double output = turnController.calculate(headingError, 0);
     driveSubsystem.drive(leftX.getAsDouble(), leftY.getAsDouble(), output, true);
   }
@@ -76,7 +76,6 @@ public class ShootAmp extends Command {
   @Override
   public void end(boolean interrupted) {
     shooterSubsystem.setLeftMotorToNeutral();
-    shooterSubsystem.setRightMotorToNeutral();
     shooterSubsystem.setPivotMotorToNeutral();
   }
 

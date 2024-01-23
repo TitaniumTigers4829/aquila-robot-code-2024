@@ -11,6 +11,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.JoystickConstants;
 import frc.robot.commands.drive.Drive;
+import frc.robot.commands.shooter.SetShooterSpeed;
+import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.swerve.DriveSubsystem;
 import frc.robot.subsystems.vision.VisionSubsystem;
 
@@ -25,13 +27,16 @@ import frc.robot.subsystems.vision.VisionSubsystem;
 public class RobotContainer {
 
   private final VisionSubsystem visionSubsystem;
+  private final ShooterSubsystem shooterSubsystem;
   private final DriveSubsystem driveSubsystem;
   private final Joystick driverJoystick;
   
   public RobotContainer() {
     visionSubsystem = new VisionSubsystem();
-    driverJoystick = new Joystick(0);
     driveSubsystem = new DriveSubsystem(); 
+    shooterSubsystem = new ShooterSubsystem();
+
+    driverJoystick = new Joystick(0);
   }
   
   private static double deadband(double value, double deadband) {
@@ -78,20 +83,20 @@ public class RobotContainer {
 
   private void configureButtonBindings() {
 
-    DoubleSupplier driverLeftStickX = () -> driverJoystick.getRawAxis(JoystickConstants.DRIVER_LEFT_STICK_X);
-    DoubleSupplier driverLeftStickY = () -> driverJoystick.getRawAxis(JoystickConstants.DRIVER_LEFT_STICK_Y);
-    DoubleSupplier driverRightStickX = () -> driverJoystick.getRawAxis(JoystickConstants.DRIVER_RIGHT_STICK_X);
-    JoystickButton driverRightBumper = new JoystickButton(driverJoystick, JoystickConstants.DRIVER_RIGHT_BUMPER_ID);
+    // DoubleSupplier driverLeftStickX = () -> driverJoystick.getRawAxis(JoystickConstants.DRIVER_LEFT_STICK_X);
+    // DoubleSupplier driverLeftStickY = () -> driverJoystick.getRawAxis(JoystickConstants.DRIVER_LEFT_STICK_Y);
+    // DoubleSupplier driverRightStickX = () -> driverJoystick.getRawAxis(JoystickConstants.DRIVER_RIGHT_STICK_X);
+    // JoystickButton driverRightBumper = new JoystickButton(driverJoystick, JoystickConstants.DRIVER_RIGHT_BUMPER_ID);
 
-    Command driveCommand = new Drive(driveSubsystem, visionSubsystem,
-      () -> modifyAxisCubedPolar(driverLeftStickY, driverLeftStickX)[0] * -1,
-      () -> modifyAxisCubedPolar(driverLeftStickY, driverLeftStickX)[1] * -1,
-      () -> modifyAxisCubed(driverRightStickX) * -1,
-      () -> !driverRightBumper.getAsBoolean()
-    );
+    // Command driveCommand = new Drive(driveSubsystem, visionSubsystem,
+    //   () -> modifyAxisCubedPolar(driverLeftStickY, driverLeftStickX)[0] * -1,
+    //   () -> modifyAxisCubedPolar(driverLeftStickY, driverLeftStickX)[1] * -1,
+    //   () -> modifyAxisCubed(driverRightStickX) * -1,
+    //   () -> !driverRightBumper.getAsBoolean()
+    // );
 
-    driveSubsystem.setDefaultCommand(driveCommand);
-
+    // driveSubsystem.setDefaultCommand(driveCommand);
+    shooterSubsystem.setDefaultCommand(new SetShooterSpeed(shooterSubsystem));
   }
 
   public Command getAutonomousCommand() {
