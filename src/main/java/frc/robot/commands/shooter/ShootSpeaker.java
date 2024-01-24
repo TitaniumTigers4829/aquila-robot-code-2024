@@ -48,7 +48,7 @@ public class ShootSpeaker extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    shooterData = limelight.getSpeakerStuff();
+    shooterData = limelight.getSpeakerShooterData();
     shooterSubsystem.setRPM(shooterData[0]);
 
     shooterSubsystem.setShooterPosition(shooterData[1]);

@@ -24,7 +24,7 @@ public class ShootAmp extends Command {
   private DoubleSupplier leftX, leftY;
 
   private double headingError = 0;
-  private double[] stuff;
+  private double[] shooterData;
 
   ProfiledPIDController turnController = new ProfiledPIDController(
     ShooterConstants.AUTO_SHOOT_P,
@@ -56,10 +56,10 @@ public class ShootAmp extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    stuff = limelight.getAmpStuff();
-    shooterSubsystem.setRPM(stuff[0]);
+    shooterData = limelight.getAmpShooterData();
+    shooterSubsystem.setRPM(shooterData[0]);
 
-    shooterSubsystem.setShooterPosition(stuff[1]);
+    shooterSubsystem.setShooterPosition(shooterData[1]);
 
     if (isReadyToShoot()) {
       towerSubsystem.setTowerSpeed(TowerConstants.TOWER_MOTOR_SPEED);
@@ -67,7 +67,7 @@ public class ShootAmp extends Command {
       towerSubsystem.setTowerSpeed(0);
     }
 
-    headingError = stuff[2];
+    headingError = shooterData[2];
     double output = turnController.calculate(headingError, 0);
     driveSubsystem.drive(leftX.getAsDouble(), leftY.getAsDouble(), output, true);
   }

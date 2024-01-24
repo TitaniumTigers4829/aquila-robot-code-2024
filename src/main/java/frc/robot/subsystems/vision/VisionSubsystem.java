@@ -153,10 +153,10 @@ public class VisionSubsystem extends SubsystemBase {
 
   /**
    * Gets the data needed for shooting into the amp
-   * @return double[leftFlywheelSpeed, rightFlywheelSpeed, shooterAngle, desiredHeading]
+   * @return double[leftFlywheelSpeed shooterAngle, desiredHeading]
    */
-  public double[] getSpeakerStuff() {
-    double[] to_return = new double[4];
+  public double[] getSpeakerShooterData() {
+    double[] shooterData = new double[4];
     Translation2d pose = getPoseFromAprilTags().getTranslation();
     Optional<Alliance> alliance = DriverStation.getAlliance();
     boolean isRed;
@@ -165,21 +165,22 @@ public class VisionSubsystem extends SubsystemBase {
     } else {
       isRed = true;
     }
-    Translation2d other = isRed ? new Translation2d(FieldConstants.RED_SPEAKER_X, FieldConstants.RED_SPEAKER_Y) : new Translation2d(FieldConstants.BLUE_SPEAKER_X, FieldConstants.BLUE_SPEAKER_Y);
+    Translation2d speakerPosition = isRed ? new Translation2d(FieldConstants.RED_SPEAKER_X, FieldConstants.RED_SPEAKER_Y) : new Translation2d(FieldConstants.BLUE_SPEAKER_X, FieldConstants.BLUE_SPEAKER_Y);
 
-    double distance = pose.getDistance(other);
-    to_return[0] = leftSpeakerLookupValues.getLookupValue(distance);
-    to_return[1] = speakerAngleLookupValues.getLookupValue(distance);
-    to_return[2] = Math.atan2(other.getY() - pose.getY(), other.getX() - pose.getX());
-    return to_return;
+    double distance = pose.getDistance(speakerPosition);
+    shooterData[0] = leftSpeakerLookupValues.getLookupValue(distance); //Use a linear interpolator to determine speed for shooter
+    shooterData[1] = speakerAngleLookupValues.getLookupValue(distance); //Use a linear interpolator to determine angle for shooter
+    shooterData[2] = Math.atan2(other.getY() - pose.getY(), other.getX() - pose.getX()) * 360.0 / (2 * Math.PI); //Determine desired rotation of robot for shooter
+    return shooterData;
   }
 
   /**
    * Gets the data needed for shooting into the amp
-   * @return double[leftFlywheelSpeed, rightFlywheelSpeed, shooterAngle, desiredHeading]
+   * Luke: tbh this method may not be necessary since we won't be shooting to the Amp from afar.
+   * @return double[leftFlywheelSpeed, shooterAngle, desiredHeading]
    */
-  public double[] getAmpStuff() {
-    double[] to_return = new double[3];
+  public double[] getAmpShooterData() {
+    double[] shooterData = new double[3];
     Translation2d pose = SmarterDashboardRegistry.getPose().getTranslation();
     Optional<Alliance> alliance = DriverStation.getAlliance();
     boolean isRed;
@@ -190,10 +191,10 @@ public class VisionSubsystem extends SubsystemBase {
     }
     Translation2d other = isRed ? new Translation2d(FieldConstants.RED_AMP_X, FieldConstants.RED_AMP_Y) : new Translation2d(FieldConstants.BLUE_AMP_X, FieldConstants.BLUE_AMP_Y);
     double distance = pose.getDistance(other);
-    to_return[0] = leftAmpLookupValues.getLookupValue(distance);
-    to_return[1] = ampAngleLookupValues.getLookupValue(distance);
-    to_return[2] = Math.atan2(other.getY() - pose.getY(), other.getX() - pose.getX());
-    return to_return;
+    shooterData[0] = leftAmpLookupValues.getLookupValue(distance); //Use a linear interpolator to determine speed for shooter
+    shooterData[1] = ampAngleLookupValues.getLookupValue(distance); //Use a linear interpolator to determine angle for shooter
+    shooterData[2] = Math.atan2(other.getY() - pose.getY(), other.getX() - pose.getX()) * 360.0 / (2 * Math.PI); //Determine desired rotation of robot for shooter
+    return shooterData;
   }
 
 }
