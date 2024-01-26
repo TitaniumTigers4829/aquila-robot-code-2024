@@ -1,22 +1,14 @@
 package frc.robot.subsystems.vision;
 
-import java.util.Optional;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.Constants.FieldConstants;
-import frc.robot.Constants.ShooterConstants;
 import frc.robot.extras.LimelightHelpers;
 // import frc.robot.extras.SmartDashboardLogger;
 import frc.robot.extras.LimelightHelpers.LimelightResults;
 import frc.robot.extras.LimelightHelpers.LimelightTarget_Fiducial;
-import frc.robot.extras.SingleLinearInterpolator;
-import frc.robot.extras.SmarterDashboardRegistry;
 
 public class VisionSubsystem extends SubsystemBase {
 
@@ -26,26 +18,25 @@ public class VisionSubsystem extends SubsystemBase {
   private String currentlyUsedLimelight = VisionConstants.FRONT_LIMELIGHT_NAME;
   private boolean wasFrontLimelightUsedLast = false;
   
-  SingleLinearInterpolator leftSpeakerLookupValues;
-  SingleLinearInterpolator speakerAngleLookupValues;
+  // SingleLinearInterpolator leftSpeakerLookupValues;
+  // SingleLinearInterpolator speakerAngleLookupValues;
 
-  SingleLinearInterpolator leftAmpLookupValues;
-  SingleLinearInterpolator ampAngleLookupValues;
+  // SingleLinearInterpolator leftAmpLookupValues;
+  // SingleLinearInterpolator ampAngleLookupValues;
 
   public VisionSubsystem() {
     currentlyUsedLimelightResults = LimelightHelpers.getLatestResults(VisionConstants.FRONT_LIMELIGHT_NAME);
     
-    leftSpeakerLookupValues = new SingleLinearInterpolator(ShooterConstants.LEFT_MOTOR_SPEAKER_VALUES);
-    speakerAngleLookupValues = new SingleLinearInterpolator(ShooterConstants.SPEAKER_PIVOT_SPEAKER_POSITION);
+    // leftSpeakerLookupValues = new SingleLinearInterpolator(ShooterConstants.LEFT_MOTOR_SPEAKER_VALUES);
+    // speakerAngleLookupValues = new SingleLinearInterpolator(ShooterConstants.SPEAKER_PIVOT_SPEAKER_POSITION);
 
-    leftAmpLookupValues = new SingleLinearInterpolator(ShooterConstants.LEFT_MOTOR_AMP_VALUES);
-    ampAngleLookupValues = new SingleLinearInterpolator(ShooterConstants.SPEAKER_PIVOT_AMP_POSITION);
+    // leftAmpLookupValues = new SingleLinearInterpolator(ShooterConstants.LEFT_MOTOR_AMP_VALUES);
+    // ampAngleLookupValues = new SingleLinearInterpolator(ShooterConstants.SPEAKER_PIVOT_AMP_POSITION);
   }
 
   public boolean canSeeAprilTags() {
     return LimelightHelpers.getFiducialID(currentlyUsedLimelight) != -1;
   }
-
 
   public Pose2d getPoseFromAprilTags() {
     Pose2d botPose = LimelightHelpers.getBotPose2d(currentlyUsedLimelight);
@@ -152,49 +143,25 @@ public class VisionSubsystem extends SubsystemBase {
   }
 
   /**
-   * Gets the data needed for shooting into the amp
+   * Gets the data needed for shooting into the speaker
    * @return double[leftFlywheelSpeed shooterAngle, desiredHeading]
    */
-  public double[] getSpeakerShooterData() {
-    double[] shooterData = new double[4];
-    Translation2d pose = getPoseFromAprilTags().getTranslation();
-    Optional<Alliance> alliance = DriverStation.getAlliance();
-    boolean isRed;
-    if (alliance.isPresent()) {
-      isRed = alliance.get() == Alliance.Red;
-    } else {
-      isRed = true;
-    }
-    Translation2d speakerPosition = isRed ? new Translation2d(FieldConstants.RED_SPEAKER_X, FieldConstants.RED_SPEAKER_Y) : new Translation2d(FieldConstants.BLUE_SPEAKER_X, FieldConstants.BLUE_SPEAKER_Y);
+  // public double[] getSpeakerShooterData() {
+  //   double[] shooterData = new double[3];
+  //   Translation2d pose = getPoseFromAprilTags().getTranslation();
+  //   Optional<Alliance> alliance = DriverStation.getAlliance();
+  //   boolean isRed;
+  //   if (alliance.isPresent()) {
+  //     isRed = alliance.get() == Alliance.Red;
+  //   } else {
+  //     isRed = true;
+  //   }
+  //   Translation2d speakerPosition = isRed ? new Translation2d(FieldConstants.RED_SPEAKER_X, FieldConstants.RED_SPEAKER_Y) : new Translation2d(FieldConstants.BLUE_SPEAKER_X, FieldConstants.BLUE_SPEAKER_Y);
 
-    double distance = pose.getDistance(speakerPosition);
-    shooterData[0] = leftSpeakerLookupValues.getLookupValue(distance); //Use a linear interpolator to determine speed for shooter
-    shooterData[1] = speakerAngleLookupValues.getLookupValue(distance); //Use a linear interpolator to determine angle for shooter
-    shooterData[2] = Math.atan2(other.getY() - pose.getY(), other.getX() - pose.getX()) * 360.0 / (2 * Math.PI); //Determine desired rotation of robot for shooter
-    return shooterData;
-  }
-
-  /**
-   * Gets the data needed for shooting into the amp
-   * Luke: tbh this method may not be necessary since we won't be shooting to the Amp from afar.
-   * @return double[leftFlywheelSpeed, shooterAngle, desiredHeading]
-   */
-  public double[] getAmpShooterData() {
-    double[] shooterData = new double[3];
-    Translation2d pose = SmarterDashboardRegistry.getPose().getTranslation();
-    Optional<Alliance> alliance = DriverStation.getAlliance();
-    boolean isRed;
-    if (alliance.isPresent()) {
-      isRed = alliance.get() == Alliance.Red;
-    } else {
-      isRed = true;
-    }
-    Translation2d other = isRed ? new Translation2d(FieldConstants.RED_AMP_X, FieldConstants.RED_AMP_Y) : new Translation2d(FieldConstants.BLUE_AMP_X, FieldConstants.BLUE_AMP_Y);
-    double distance = pose.getDistance(other);
-    shooterData[0] = leftAmpLookupValues.getLookupValue(distance); //Use a linear interpolator to determine speed for shooter
-    shooterData[1] = ampAngleLookupValues.getLookupValue(distance); //Use a linear interpolator to determine angle for shooter
-    shooterData[2] = Math.atan2(other.getY() - pose.getY(), other.getX() - pose.getX()) * 360.0 / (2 * Math.PI); //Determine desired rotation of robot for shooter
-    return shooterData;
-  }
-
+  //   double distance = pose.getDistance(speakerPosition);
+  //   shooterData[0] = leftSpeakerLookupValues.getLookupValue(distance); //Use a linear interpolator to determine speed for shooter
+  //   shooterData[1] = speakerAngleLookupValues.getLookupValue(distance); //Use a linear interpolator to determine angle for shooter
+  //   shooterData[2] = Math.atan2(speakerPosition.getY() - pose.getY(), speakerPosition.getX() - pose.getX()) * 180.0 * Math.PI; //Determine desired rotation of robot for shooter
+  //   return shooterData;
+  // }
 }

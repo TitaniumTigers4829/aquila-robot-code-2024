@@ -6,35 +6,43 @@ package frc.robot.commands.intake;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.IntakeConstants;
+import frc.robot.Constants.PivotConstants;
+import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.TowerConstants;
 import frc.robot.subsystems.intake.IntakeSubsystem;
-import frc.robot.subsystems.tower.TowerSubsystem;
+import frc.robot.subsystems.pivot.PivotSubsystem;
+import frc.robot.subsystems.shooter.ShooterSubsystem;
 
 public class TowerIntake extends Command {
-  private final TowerSubsystem tower;
-  private final IntakeSubsystem intake;
+  private final IntakeSubsystem intakeSubsystem;
+  private final PivotSubsystem pivotSubsystem;
+  private final ShooterSubsystem shooterSubsystem;
   
   /** Creates a new TowerIntake. */
-  public TowerIntake(TowerSubsystem towerSubsystem, IntakeSubsystem intakeSubsystem) {
-    this.tower = towerSubsystem;
-    this.intake = intakeSubsystem;
-    addRequirements(towerSubsystem, intakeSubsystem);
+  public TowerIntake(IntakeSubsystem intakeSubsystem, PivotSubsystem pivotSubsystem, ShooterSubsystem shooterSubsystem) {
+    this.intakeSubsystem = intakeSubsystem;
+    this.pivotSubsystem = pivotSubsystem;
+    this.shooterSubsystem = shooterSubsystem;
+    addRequirements(intakeSubsystem);
   }
 
   @Override
   public void execute() {
-    if (tower.hasNoteBottom()) {
-      tower.setTowerSpeed(TowerConstants.TOWER_MOTOR_SPEED);
-      intake.setIntakeFrontSpeed(0);
+    pivotSubsystem.setShooterPivot(PivotConstants.PIVOT_ANGLE);
+
+    if (shooterSubsystem.getSensor()) {
+      intakeSubsystem.setIntakeSpeed(0);
+      shooterSubsystem.setRollerSpeed(0);
+    } else {
+      intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_MOTOR_SPEED);
+      shooterSubsystem.setRollerSpeed(ShooterConstants.ROLLER_SPEED);
     }
-    if (tower.hasNoteTop()) {
-      tower.setTowerSpeed(0);
-      intake.setIntakeFrontSpeed(0);
-    }
-    else {
-      tower.setTowerSpeed(TowerConstants.TOWER_MOTOR_SPEED);
-      intake.setIntakeFrontSpeed(IntakeConstants.INTAKE_MOTOR_SPEED);
-    }
+  }
+
+  @Override
+  public void end(boolean interrupted) {
+    intakeSubsystem.setIntakeSpeed(0);
+    shooterSubsystem.setRollerSpeed(0);
   }
 
   // Returns true when the command should end.

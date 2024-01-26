@@ -4,6 +4,7 @@
 
 package frc.robot.commands.autodrive;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -12,6 +13,9 @@ import java.util.function.BooleanSupplier;
 import com.pathplanner.lib.path.GoalEndState;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.path.PathPlannerTrajectory;
+import com.pathplanner.lib.path.PathPoint;
+import com.pathplanner.lib.path.RotationTarget;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -21,6 +25,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.TrajectoryConstants;
 import frc.robot.commands.drive.DriveCommandBase;
+import frc.robot.extras.SmarterDashboardRegistry;
 import frc.robot.subsystems.swerve.DriveSubsystem;
 import frc.robot.subsystems.vision.VisionSubsystem;
 
@@ -40,28 +45,32 @@ public class DriveToAmp extends DriveCommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    List<Translation2d> pathPoints = new ArrayList<Translation2d>();
-    pathPoints.add(driveSubsystem.getPose().getTranslation());
+    List<PathPoint> pathPoints = new ArrayList<PathPoint>();
+    pathPoints.add(new PathPoint(SmarterDashboardRegistry.getPose().getTranslation()));
 
     Optional<Alliance> alliance = DriverStation.getAlliance();
+    boolean isRed;
     if (alliance.isPresent()) {
       if (alliance.get() == Alliance.Red) {
-        pathPoints.add(new Translation2d(FieldConstants.RED_AMP_X, FieldConstants.RED_AMP_Y));
+        isRed = true;
+        pathPoints.add(new PathPoint(new Translation2d(FieldConstants.RED_AMP_X, FieldConstants.RED_AMP_Y), new RotationTarget(0, FieldConstants.RED_AMP_ROTATION)));
       } else {
-        pathPoints.add(new Translation2d(FieldConstants.BLUE_AMP_X, FieldConstants.BLUE_AMP_Y));
+        isRed = false;
+        pathPoints.add(new PathPoint(new Translation2d(FieldConstants.BLUE_AMP_X, FieldConstants.BLUE_AMP_Y), new RotationTarget(0, FieldConstants.BLUE_AMP_ROTATION)));
       }
     } else {
-      pathPoints.add(new Translation2d(FieldConstants.RED_AMP_X, FieldConstants.RED_AMP_Y));
+      isRed = true;
+      pathPoints.add(new PathPoint(new Translation2d(FieldConstants.RED_AMP_X, FieldConstants.RED_AMP_Y), new RotationTarget(0, FieldConstants.RED_AMP_ROTATION)));
     }
 
-    endPose = new Pose2d(pathPoints.get(pathPoints.size() - 1), FieldConstants.AMP_ROTATION);
     Rotation2d startRotation = driveSubsystem.getRotation2d();
-    PathPlannerPath path = new PathPlannerPath(pathPoints, TrajectoryConstants.PATH_CONSTRAINTS, new GoalEndState(0, FieldConstants.AMP_ROTATION));
+    PathPlannerPath path = PathPlannerPath.fromPathPoints(pathPoints, TrajectoryConstants.PATH_CONSTRAINTS, new GoalEndState(0, isRed ? FieldConstants.RED_AMP_ROTATION : FieldConstants.BLUE_AMP_ROTATION));
+    // PathPlannerPath path = new PathPlannerPath(pathPoints, TrajectoryConstants.PATH_CONSTRAINTS, new GoalEndState(0, FieldConstants.AMP_ROTATION));
     PathPlannerTrajectory trajectory = new PathPlannerTrajectory(path, new ChassisSpeeds(), startRotation);
 
     new RealTimeSwerveControllerCommand(
       trajectory, 
-      driveSubsystem::getPose, 
+      SmarterDashboardRegistry::getPose, 
       (ChassisSpeeds speeds) -> driveSubsystem.drive(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, speeds.omegaRadiansPerSecond, false), 
       isFinished, 
       endPose, 

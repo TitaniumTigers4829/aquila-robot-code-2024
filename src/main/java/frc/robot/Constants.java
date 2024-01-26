@@ -97,6 +97,8 @@ public final class Constants {
     public static final double MAX_ANGULAR_SPEED_RADIANS_PER_SECOND = 5;
 
     public static final double MAX_SPEED_METERS_PER_SECOND = 5.7;
+
+    public static final double HEADING_ACCEPTABLE_ERROR = 2;
   }
   
   public static final class ModuleConstants { 
@@ -187,12 +189,14 @@ public final class Constants {
     public static final double FIELD_LENGTH_METERS = 0-9;
     public static final double FIELD_WIDTH_METERS = 0-9;
 
+    // TODO: add point for in front of each:
     public static final double RED_AMP_X = 14.613;
     public static final double RED_AMP_Y = 8.197;
 
     public static final double BLUE_AMP_X = 1.9;
     public static final double BLUE_AMP_Y = 8.161;
-    public static final Rotation2d AMP_ROTATION = Rotation2d.fromDegrees(90);
+    public static final Rotation2d RED_AMP_ROTATION = Rotation2d.fromDegrees(90);
+    public static final Rotation2d BLUE_AMP_ROTATION = Rotation2d.fromDegrees(90);
     
     public static final double RED_SPEAKER_X = 16.511;
     public static final double RED_SPEAKER_Y = 5.529;
@@ -213,61 +217,24 @@ public final class Constants {
     public static final double INTAKE_MOTOR_SPEED = 0.75;
   }
 
-  public static final class ShooterConstants {
-    public static final int LEFT_MOTOR_ID = 0-9;
-    public static final int RIGHT_MOTOR_ID = 0-9;
-    public static final int PIVOT_MOTOR_ID = 0-9;
+  public static final class PivotConstants {
+    public static final int LEADER_PIVOT_MOTOR_ID = 0-9;
+    public static final int FOLLOWER_PIVOT_MOTOR_ID = 0-9;
+    public static final int PIVOT_ENCODER_ID = 0-9;
+    public static final double PIVOT_ANGLE = 0.0;
 
-    public static final int SHOOTER_LIMIT_SWITCH_ID = 0-9;
+    public static final double PIVOT_P = 0.0;
+    public static final double PIVOT_I = 0.0;
+    public static final double PIVOT_D = 0.0;
 
     public static final int TURN_ENCODER_CHANNEL = 0;
     public static final double ANGLE_ZERO = 0.0;
     public static final SensorDirectionValue ENCODER_REVERSED = SensorDirectionValue.CounterClockwise_Positive;
 
-    public static final double LEFT_SHOOT_SPEAKER_RPM = 0-9;
-    public static final double RIGHT_SHOOT_SPEAKER_RPM = 0-9;
+    public static final double SHOOT_AMP_ANGLE = 1-9;
+    public static final double PIVOT_ACCEPTABLE_ERROR = 1;
 
-    public static final double SHOOT_P = 0.0;
-    public static final double SHOOT_I = 0.0;
-    public static final double SHOOT_D = 0.0;
-
-    public static final int SHOOT_AMP_ANGLE = 1-9;
-    public static final int SHOOT_SPEAKER_ANGLE = 1-9;
-    
-    public static final double GEAR_RATIO_MOTOR_TO_FLYWHEEL = 30.0 / 40.0;
-
-    public static final double AUTO_SHOOT_P = 0.0;
-    public static final double AUTO_SHOOT_I = 0.0;
-    public static final double AUTO_SHOOT_D = 0.0;
-    public static final double AUTO_SHOOT_S = 0.0;
-    public static final double AUTO_SHOOT_V = 0.0;
-    public static Constraints AUTO_SHOOT_CONSTRAINTS = new Constraints(DriveConstants.MAX_ANGULAR_SPEED_RADIANS_PER_SECOND, 5);
-
-    public static double[][] LEFT_MOTOR_SPEAKER_VALUES = {
-      //{distance, rpm}
-      {Units.feetToMeters(5.5), 1770},
-      {Units.feetToMeters(7), 1665},
-      {Units.feetToMeters(8.5), 1560}, // 1600  // 1615
-      {Units.feetToMeters(10), 1350},
-      {Units.feetToMeters(11.5), 1300},
-      {Units.feetToMeters(13), 1280},
-      {Units.feetToMeters(14.5), 1260},
-      {Units.feetToMeters(16), 1300}
-  };
-
-    public static double[][] RIGHT_MOTOR_SPEAKER_VALUES = {
-      //{distance, rpm}
-      {Units.feetToMeters(5.5), 1770},
-      {Units.feetToMeters(7), 1665},
-      {Units.feetToMeters(8.5), 1560}, // 1600  // 1615
-      {Units.feetToMeters(10), 1350},
-      {Units.feetToMeters(11.5), 1300},
-      {Units.feetToMeters(13), 1280},
-      {Units.feetToMeters(14.5), 1260},
-      {Units.feetToMeters(16), 1300}
-    };
-
-    public static double[][] SPEAKER_PIVOT_SPEAKER_POSITION = {
+    public static double[][] SPEAKER_PIVOT_POSITION = {
       //{distance, rpm}
       {Units.feetToMeters(5.5), 0},
       {Units.feetToMeters(7), 1},
@@ -278,8 +245,37 @@ public final class Constants {
       {Units.feetToMeters(14.5), 6},
       {Units.feetToMeters(16), 7}
     };
+  }
 
-    public static double[][] LEFT_MOTOR_AMP_VALUES = {
+  public static final class ShooterConstants {
+    public static final int LEADER_FLYWHEEL_ID = 0-9;
+    public static final int FOLLOWER_FLYWHEEL_ID = 0-9;
+    public static final int ROLLER_MOTOR_ID = 0-9;
+
+    public static final int SHOOTER_LIMIT_SWITCH_ID = 0-9;
+    // TODO: limit switch? beam break? name appropriately
+    public static final int SHOOTER_NOTE_SENSOR_ID = 0-9;
+
+    public static final double LEFT_SHOOT_SPEAKER_RPM = 0-9;
+    public static final double RIGHT_SHOOT_SPEAKER_RPM = 0-9;
+
+    public static final double SHOOT_P = 0.0;
+    public static final double SHOOT_I = 0.0;
+    public static final double SHOOT_D = 0.0;
+
+    public static final double ROLLER_SPEED = 0.3;
+    public static final double SHOOT_AMP_SPEED = 0.3;
+    
+    public static final double GEAR_RATIO_MOTOR_TO_FLYWHEEL = 30.0 / 40.0;
+
+    public static final double AUTO_SHOOT_P = 0.0;
+    public static final double AUTO_SHOOT_I = 0.0;
+    public static final double AUTO_SHOOT_D = 0.0;
+    public static final double AUTO_SHOOT_S = 0.0;
+    public static final double AUTO_SHOOT_V = 0.0;
+    public static Constraints AUTO_SHOOT_CONSTRAINTS = new Constraints(DriveConstants.MAX_ANGULAR_SPEED_RADIANS_PER_SECOND, 5);
+
+    public static double[][] SPEAKER_SHOOT_RPMS = {
       //{distance, rpm}
       {Units.feetToMeters(5.5), 1770},
       {Units.feetToMeters(7), 1665},
@@ -291,19 +287,7 @@ public final class Constants {
       {Units.feetToMeters(16), 1300}
   };
 
-    public static double[][] RIGHT_MOTOR_AMP_VALUES = {
-      //{distance, rpm}
-      {Units.feetToMeters(5.5), 1770},
-      {Units.feetToMeters(7), 1665},
-      {Units.feetToMeters(8.5), 1560}, // 1600  // 1615
-      {Units.feetToMeters(10), 1350},
-      {Units.feetToMeters(11.5), 1300},
-      {Units.feetToMeters(13), 1280},
-      {Units.feetToMeters(14.5), 1260},
-      {Units.feetToMeters(16), 1300}
-    };
-
-    public static double[][] SPEAKER_PIVOT_AMP_POSITION = {
+    public static double[][] SPEAKER_PIVOT_POSITION = {
       //{distance, rpm}
       {Units.feetToMeters(5.5), 0},
       {Units.feetToMeters(7), 1},

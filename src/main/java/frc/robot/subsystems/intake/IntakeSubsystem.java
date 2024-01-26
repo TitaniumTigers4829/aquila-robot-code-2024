@@ -10,15 +10,15 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.IntakeConstants;
 
 public class IntakeSubsystem extends SubsystemBase {
-  private final TalonFX intakeFrontMotor;
+  private final TalonFX intakeMotor;
 
   /** Creates a new IntakeSubsystem. */
   public IntakeSubsystem() {
-    intakeFrontMotor = new TalonFX(IntakeConstants.INTAKE_MOTOR_ID);
+    intakeMotor = new TalonFX(IntakeConstants.INTAKE_MOTOR_ID);
   }
 
-  public void setIntakeFrontSpeed(double speed) {
-    intakeFrontMotor.set(speed);
+  public void setIntakeSpeed(double speed) {
+    intakeMotor.set(speed);
   }
 
   @Override

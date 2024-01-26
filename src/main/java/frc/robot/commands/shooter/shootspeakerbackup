@@ -18,16 +18,16 @@ import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.TowerConstants;
 import frc.robot.commands.drive.DriveCommandBase;
 import frc.robot.extras.SmarterDashboardRegistry;
-import frc.robot.subsystems.pivot.PivotSubsystem;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.swerve.DriveSubsystem;
+import frc.robot.subsystems.tower.TowerSubsystem;
 import frc.robot.subsystems.vision.VisionSubsystem;
 
 public class ShootSpeaker extends DriveCommandBase {
   private final DriveSubsystem driveSubsystem;
   private final ShooterSubsystem shooterSubsystem;
+  private final TowerSubsystem towerSubsystem;
   private final VisionSubsystem visionSubsystem;
-  private final PivotSubsystem pivotSubsystem;
 
   private final DoubleSupplier leftX, leftY;
   private final BooleanSupplier isFieldRelative;
@@ -41,26 +41,33 @@ public class ShootSpeaker extends DriveCommandBase {
     ShooterConstants.AUTO_SHOOT_CONSTRAINTS
   );
 
+                                              // in1on  in1off in1on  out1 
+  private boolean noteTriggers[] = new boolean[]{false, false, false, false};
+  private boolean lastSensorState = false;
   private boolean isRed = false;
   private double desiredHeading = 0;
   private Translation2d speakerPos;
   
   /** Creates a new ShootSpeaker. */
-  public ShootSpeaker(DriveSubsystem driveSubsystem, ShooterSubsystem shooterSubsystem, VisionSubsystem visionSubsystem, PivotSubsystem pivotSubsystem, DoubleSupplier leftX, DoubleSupplier leftY, BooleanSupplier isFieldRelative) {
+  public ShootSpeaker(DriveSubsystem driveSubsystem, ShooterSubsystem shooterSubsystem, VisionSubsystem visionSubsystem, TowerSubsystem towerSubsystem, DoubleSupplier leftX, DoubleSupplier leftY, BooleanSupplier isFieldRelative) {
     super(driveSubsystem, visionSubsystem);
     this.driveSubsystem = driveSubsystem;
     this.shooterSubsystem = shooterSubsystem;
+    this.towerSubsystem = towerSubsystem;
     this.visionSubsystem = visionSubsystem;
-    this.pivotSubsystem = pivotSubsystem;
     this.leftX = leftX;
     this.leftY = leftY;
     this.isFieldRelative = isFieldRelative;
-    addRequirements(shooterSubsystem, driveSubsystem);
+    addRequirements(shooterSubsystem, towerSubsystem);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    towerSubsystem.setTowerSpeed(TowerConstants.TOWER_MOTOR_SPEED);
+    shooterSubsystem.setRollerSpeed(ShooterConstants.ROLLER_SPEED);
+    shooterSubsystem.setShooterSpeed(ShooterConstants.ROLLER_SPEED);
+
     Optional<Alliance> alliance = DriverStation.getAlliance();
     if (alliance.isPresent()) {
       isRed = alliance.get() == Alliance.Red;
@@ -75,6 +82,26 @@ public class ShootSpeaker extends DriveCommandBase {
   public void execute() {
     super.execute();
     
+    // note trigger logic (see slack/notepad)
+    boolean sensorState = shooterSubsystem.getSensor();
+    if (sensorState != lastSensorState) {
+      if (sensorState) {
+        if (!noteTriggers[0]) {
+          // top of note in from the tower
+          noteTriggers[0] = true;
+        } else if (!noteTriggers[2]) {
+          // bottom of note in from tower
+          noteTriggers[2] = true;
+        }
+      } else {
+        if (!noteTriggers[1]) {
+          // top of note past sensor
+          noteTriggers[1] = true;
+        }
+      }
+      lastSensorState = sensorState;
+    }
+
     // get positions of various things
     Translation2d robotPos = SmarterDashboardRegistry.getPose().getTranslation();
     // distance (for speaker lookups)
@@ -88,13 +115,33 @@ public class ShootSpeaker extends DriveCommandBase {
     // allow the driver to drive slowly (NOT full speed - will mess up shooter)
     driveSubsystem.drive(
       leftX.getAsDouble(), 
-      leftY.getAsDouble(), 
+      leftX.getAsDouble(), 
       turnOutput, 
       isFieldRelative.getAsBoolean()
     );
 
-    shooterSubsystem.setShooterRPMFromDistance(distance);
-    pivotSubsystem.setShooterPivotFromDistance(distance);
+    // if all 3 note triggers have been hit:
+    if (noteTriggers[0] && noteTriggers[1] && noteTriggers[2]) {
+      // stop all tower/shooter motors
+      towerSubsystem.setTowerSpeed(0);
+      shooterSubsystem.setRollerSpeed(0);
+      shooterSubsystem.setShooterSpeed(0);
+
+      // set pivot to desired
+      shooterSubsystem.setShooterPivotFromDistance(distance);
+
+      // if pivot is close enough
+      if (shooterSubsystem.isPivotWithinAcceptableError()) {
+        if (sensorState) {
+          // roll the note back until the sensor registers that its not there
+          shooterSubsystem.setRollerSpeed(-ShooterConstants.ROLLER_SPEED);
+        } else {
+          // once its not there, spin up the shooter and stop the rollers
+          shooterSubsystem.setShooterRPMFromDistance(distance);
+          shooterSubsystem.setRollerSpeed(0);
+        }
+      }
+    }
 
     // if we are ready to shoot:
     if (isReadyToShoot()) {
@@ -107,7 +154,7 @@ public class ShootSpeaker extends DriveCommandBase {
   @Override
   public void end(boolean interrupted) {
     shooterSubsystem.setLeftMotorToNeutral();
-    pivotSubsystem.setPivotMotorToNeutral();
+    shooterSubsystem.setPivotMotorToNeutral();
   }
 
   // Returns true when the command should end.
@@ -117,6 +164,6 @@ public class ShootSpeaker extends DriveCommandBase {
   }
 
   public boolean isReadyToShoot() {
-    return (Math.abs(headingError) < DriveConstants.HEADING_ACCEPTABLE_ERROR) && (shooterSubsystem.isShooterWithinAcceptableError()) && (pivotSubsystem.isPivotWithinAcceptableError());
+    return (Math.abs(headingError) < DriveConstants.HEADING_ACCEPTABLE_ERROR) && (shooterSubsystem.isShooterWithinAcceptableError()) && (shooterSubsystem.isPivotWithinAcceptableError());
   }
 }

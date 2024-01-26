@@ -4,44 +4,21 @@
 
 package frc.robot.commands.shooter;
 
-import java.util.function.DoubleSupplier;
-
-import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.ShooterConstants;
-import frc.robot.Constants.TowerConstants;
+import frc.robot.subsystems.pivot.PivotSubsystem;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
-import frc.robot.subsystems.swerve.DriveSubsystem;
-import frc.robot.subsystems.tower.TowerSubsystem;
-import frc.robot.subsystems.vision.VisionSubsystem;
 
 public class ShootAmp extends Command {
   private final ShooterSubsystem shooterSubsystem;
-  private final DriveSubsystem driveSubsystem;
-  private final VisionSubsystem limelight;
-  private final TowerSubsystem towerSubsystem;
-
-  private DoubleSupplier leftX, leftY;
-
-  private double headingError = 0;
-  private double[] shooterData;
-
-  ProfiledPIDController turnController = new ProfiledPIDController(
-    ShooterConstants.AUTO_SHOOT_P,
-    ShooterConstants.AUTO_SHOOT_I, 
-    ShooterConstants.AUTO_SHOOT_D, 
-    ShooterConstants.AUTO_SHOOT_CONSTRAINTS
-  );
+  private final PivotSubsystem pivotSubsystem;
   
   /** Creates a new ShootSpeaker. */
-  public ShootAmp(DriveSubsystem driveSubsystem, ShooterSubsystem shooterSubsystem, VisionSubsystem visionSubsystem, TowerSubsystem towerSubsystem, DoubleSupplier leftX, DoubleSupplier leftY) {
-    this.driveSubsystem = driveSubsystem;
+  public ShootAmp(ShooterSubsystem shooterSubsystem, PivotSubsystem pivotSubsystem) {
     this.shooterSubsystem = shooterSubsystem;
-    this.limelight = visionSubsystem;
-    this.towerSubsystem = towerSubsystem;
-    this.leftX = leftX;
-    this.leftY = leftY;
-    addRequirements(shooterSubsystem, visionSubsystem, towerSubsystem, driveSubsystem);
+    this.pivotSubsystem = pivotSubsystem;
+    addRequirements(shooterSubsystem);
   }
 
   // Called when the command is initially scheduled.
@@ -49,34 +26,22 @@ public class ShootAmp extends Command {
   public void initialize() {
   }
 
-  private boolean isReadyToShoot() {
-    return (Math.abs(headingError) < 3) && (shooterSubsystem.isShooterWithinAcceptableError()) && (shooterSubsystem.isPivotWithinAcceptableError());
-  }
-
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    shooterData = limelight.getAmpShooterData();
-    shooterSubsystem.setRPM(shooterData[0]);
+    pivotSubsystem.setShooterPivot(PivotConstants.SHOOT_AMP_ANGLE);
 
-    shooterSubsystem.setShooterPosition(shooterData[1]);
-
-    if (isReadyToShoot()) {
-      towerSubsystem.setTowerSpeed(TowerConstants.TOWER_MOTOR_SPEED);
-    } else {
-      towerSubsystem.setTowerSpeed(0);
+    if (pivotSubsystem.isPivotWithinAcceptableError()) {
+      shooterSubsystem.setShooterSpeed(ShooterConstants.SHOOT_AMP_SPEED);
+      shooterSubsystem.setRollerSpeed(ShooterConstants.ROLLER_SPEED);
     }
-
-    headingError = shooterData[2];
-    double output = turnController.calculate(headingError, 0);
-    driveSubsystem.drive(leftX.getAsDouble(), leftY.getAsDouble(), output, true);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
     shooterSubsystem.setLeftMotorToNeutral();
-    shooterSubsystem.setPivotMotorToNeutral();
+    pivotSubsystem.setPivotMotorToNeutral();
   }
 
   // Returns true when the command should end.
