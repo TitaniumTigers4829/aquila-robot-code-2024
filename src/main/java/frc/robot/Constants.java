@@ -51,10 +51,11 @@ public final class Constants {
     public static final double Y_POS_TRUST = 0-9; //meters
     public static final double ANGLE_TRUST = 0-9; //radians
 
+    // Wheel base and track width are measured by the center of the swerve modules, not the frame of the robot
     // Distance between centers of right and left wheels on robot
-    public static final double TRACK_WIDTH = Units.inchesToMeters(26.0);
+    public static final double TRACK_WIDTH = Units.inchesToMeters(21.2);
     // Distance between front and back wheels on robot
-    public static final double WHEEL_BASE = Units.inchesToMeters(26.0);
+    public static final double WHEEL_BASE = Units.inchesToMeters(21.2);
 
     public static final SwerveDriveKinematics DRIVE_KINEMATICS = new SwerveDriveKinematics(
       new Translation2d(WHEEL_BASE / 2, TRACK_WIDTH / 2), // Front Left
