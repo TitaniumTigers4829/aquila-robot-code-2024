@@ -6,6 +6,9 @@ import java.util.Optional;
 
 import com.kauailabs.navx.frc.AHRS;
 
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.Vector;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -13,12 +16,27 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.VisionConstants;
+import frc.robot.extras.SmarterDashboardRegistry;
+
 
 public class DriveSubsystem extends SubsystemBase {
+
+    private static final Vector<N3> stateStdDevs = VecBuilder.fill(DriveConstants.X_POS_TRUST, DriveConstants.Y_POS_TRUST, Units.degreesToRadians(DriveConstants.ANGLE_TRUST));
+  
+  /**
+   * Standard deviations of the vision measurements. Increase these numbers to trust global measurements from vision
+   * less. This matrix is in the form [x, y, theta]ᵀ, with units in meters and radians.
+   */
+  private static final Vector<N3> visionMeasurementStdDevs = VecBuilder.fill(VisionConstants.VISION_X_POS_TRUST,
+   VisionConstants.VISION_Y_POS_TRUST, Units.degreesToRadians(VisionConstants.VISION_ANGLE_TRUST));
+  
 
   private final SwerveModule frontLeftSwerveModule;
   private final SwerveModule frontRightSwerveModule;
@@ -26,7 +44,8 @@ public class DriveSubsystem extends SubsystemBase {
   private final SwerveModule rearRightSwerveModule;
 
   private final AHRS gyro;
-  private final SwerveDriveOdometry odometry;
+  private final SwerveDrivePoseEstimator odometry;
+  private final SwerveDriveOdometry testOdometry;
 
   private final Optional<DriverStation.Alliance> alliance;
 
@@ -81,11 +100,20 @@ public class DriveSubsystem extends SubsystemBase {
 
     gyro = new AHRS(SPI.Port.kMXP);
   
-    odometry = new SwerveDriveOdometry(
+    odometry = new SwerveDrivePoseEstimator(
       DriveConstants.DRIVE_KINEMATICS,
       getRotation2d(),
       getModulePositions(),
-      new Pose2d() // This is the position for where the robot starts the match
+      new Pose2d(), // This is the position for where the robot starts the match, use setPose() to set it in autonomous init
+      stateStdDevs,
+      visionMeasurementStdDevs
+    );
+
+    testOdometry = new SwerveDriveOdometry(
+           DriveConstants.DRIVE_KINEMATICS,
+      getRotation2d(),
+      getModulePositions(),
+      new Pose2d() 
     );
 
     alliance = DriverStation.getAlliance();
@@ -104,7 +132,7 @@ public class DriveSubsystem extends SubsystemBase {
     frontRightSwerveModule.setDesiredState(swerveModuleStates[1]);
     rearLeftSwerveModule.setDesiredState(swerveModuleStates[2]);
     rearRightSwerveModule.setDesiredState(swerveModuleStates[3]);
-    // configurePath();
+    //configurePath();
   }
   public double getHeading() {
     return (-gyro.getAngle() + this.gyroOffset) % 360;
@@ -141,11 +169,29 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public Pose2d getPose() {
-    return odometry.getPoseMeters();
+    return odometry.getEstimatedPosition();
+  }
+
+  public void addPoseEstimatorSwerveMeasurement() {
+    odometry.update(
+      getRotation2d(),
+      getModulePositions()
+    );
+  }
+
+    public void setPoseEstimatorVisionConfidence(double xStandardDeviation, double yStandardDeviation,
+    double thetaStandardDeviation) {
+    odometry.setVisionMeasurementStdDevs(VecBuilder.fill(xStandardDeviation, yStandardDeviation, thetaStandardDeviation));
+  }
+
+    public void addPoseEstimatorVisionMeasurement(Pose2d visionMeasurement, double currentTimeStampSeconds) {
+    odometry.addVisionMeasurement(visionMeasurement, currentTimeStampSeconds);
+    SmarterDashboardRegistry.setLimelightPose(visionMeasurement);
   }
 
   public void resetOdometry(Pose2d pose) {
     odometry.resetPosition(getRotation2d(), getModulePositions(), pose);
+    
   }
  
   public void setModuleStates(SwerveModuleState[] desiredStates) {
@@ -169,7 +215,16 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public void periodic() {
-    SmartDashboard.putNumber("current speed", frontLeftSwerveModule.getState().speedMetersPerSecond);
+
+    testOdometry.update(
+      getRotation2d(),
+      getModulePositions()
+    );
+    SmartDashboard.putString("odometry", odometry.getEstimatedPosition().toString());
+    
+    SmartDashboard.putString("odometry test", testOdometry.getPoseMeters().toString());
+
+
     frontLeftSwerveModule.periodicFunction();
     frontRightSwerveModule.periodicFunction();
     rearLeftSwerveModule.periodicFunction();

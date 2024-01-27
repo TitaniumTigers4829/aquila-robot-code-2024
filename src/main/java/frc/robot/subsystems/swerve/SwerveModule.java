@@ -29,8 +29,9 @@ public class SwerveModule {
 
   private final ProfiledPIDController turnController;
  
-  StatusSignal<Double> turnEncoderPos;
+  StatusSignal<Double> driveMotorPosition;
   StatusSignal<Double> driveMotorVelocity;
+  StatusSignal<Double> turnEncoderPos;
   StatusSignal<Double> turnMotorPos;
 
   private String name;
@@ -104,9 +105,14 @@ public class SwerveModule {
     turnMotor.getConfigurator().apply(turnConfig, HardwareConstants.TIMEOUT_S);
 
     turnEncoderPos = turnEncoder.getAbsolutePosition();
+    driveMotorPosition = driveMotor.getPosition();
     driveMotorVelocity = driveMotor.getVelocity();
 
-    BaseStatusSignal.setUpdateFrequencyForAll(HardwareConstants.SIGNAL_FREQUENCY, turnEncoderPos, driveMotorVelocity);
+    driveMotor.setPosition(0);
+    turnMotor.setPosition(0);
+    
+
+    BaseStatusSignal.setUpdateFrequencyForAll(HardwareConstants.SIGNAL_FREQUENCY, turnEncoderPos, driveMotorPosition, driveMotorVelocity);
 
     turnEncoder.optimizeBusUtilization(HardwareConstants.TIMEOUT_S);
     driveMotor.optimizeBusUtilization(HardwareConstants.TIMEOUT_S);
@@ -129,17 +135,32 @@ public class SwerveModule {
   public SwerveModuleState getState() {
     driveMotorVelocity.refresh();
 
-    double speedMetersPerSecond = ModuleConstants.DRIVE_TO_METERS_PER_SECOND * driveMotorVelocity.getValue();
+    
+
+    //double speedMetersPerSecond = ModuleConstants.DRIVE_TO_METERS_PER_SECOND * driveMotorVelocity.getValue();
+    double speedMetersPerSecond = ModuleConstants.DRIVE_TO_METERS_PER_SECOND * driveMotor.getVelocity().refresh().getValueAsDouble();
+
+
 
     return new SwerveModuleState(speedMetersPerSecond, Rotation2d.fromRotations(getModuleHeading()));
   }
 
+  // public SwerveModulePosition getPosition() {
+  //   driveMotorPosition.refresh();
+  //   driveMotorVelocity.refresh();
+
+  //   double position = ModuleConstants.DRIVE_TO_METERS * driveMotor.getPosition().getValue();
+  //   Rotation2d rotation = Rotation2d.fromDegrees(getCANCoderABS());
+
+  //   SmartDashboard.putString(name, new SwerveModulePosition(position, rotation).toString());
+
+  //   return new SwerveModulePosition(position, rotation);
+  // }
+
   public SwerveModulePosition getPosition() {
-    driveMotorVelocity.refresh();
-
-    double position = ModuleConstants.DRIVE_TO_METERS * driveMotorVelocity.getValue();;
-    Rotation2d rotation = Rotation2d.fromDegrees(getCANCoderABS());
-
+    double position = ModuleConstants.DRIVE_TO_METERS * driveMotor.getPosition().getValue();
+    Rotation2d rotation = Rotation2d.fromRotations(getCANCoderABS());
+    SmartDashboard.putString(name, new SwerveModulePosition(position, rotation).toString());
     return new SwerveModulePosition(position, rotation);
   }
 
@@ -159,13 +180,9 @@ public class SwerveModule {
       return;
     }
 
-    SmartDashboard.putNumber(name + " desired speed", optimizedDesiredState.speedMetersPerSecond);
     // Converts meters per second to rotations per second
     double desiredDriveRPS = optimizedDesiredState.speedMetersPerSecond 
      * ModuleConstants.DRIVE_GEAR_RATIO / ModuleConstants.WHEEL_CIRCUMFERENCE_METERS;
-
-    SmartDashboard.putNumber(name + "velocity output error", (optimizedDesiredState.speedMetersPerSecond - getState().speedMetersPerSecond));
-
 
     VelocityVoltage driveOutput = new VelocityVoltage(desiredDriveRPS); // test this... might not work.
     driveMotor.setControl(driveOutput);
@@ -189,7 +206,7 @@ public class SwerveModule {
 
   /**
    * Gets the current position of the CANCoder in relation to the magnet
-   * @return current CANCoder position
+   * @return current CANCoder position in rotations
    */
   public double getCANCoderABS(){
     turnEncoderPos.refresh();
@@ -204,7 +221,6 @@ public class SwerveModule {
   }
 
   public void periodicFunction() {
-    SmartDashboard.putNumber(name + " speed", getState().speedMetersPerSecond);
-
+    SmartDashboard.putNumber(name + " Rotation", getCANCoderABS());
   }
 }

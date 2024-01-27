@@ -39,6 +39,8 @@ public final class Constants {
 
     public static final PneumaticsModuleType PNEUMATICS_MODULE_TYPE = PneumaticsModuleType.CTREPCM;
 
+    public static final double TIMEOUT_MS = 10;
+
 
   }
 
@@ -107,9 +109,9 @@ public final class Constants {
     public static final double WHEEL_DIAMETER_METERS = Units.inchesToMeters(4);
     public static final double WHEEL_CIRCUMFERENCE_METERS = WHEEL_DIAMETER_METERS * Math.PI;
     public static final double DRIVE_TO_METERS =  WHEEL_CIRCUMFERENCE_METERS / DRIVE_GEAR_RATIO;
-    public static final double DRIVE_TO_METERS_PER_SECOND = (WHEEL_CIRCUMFERENCE_METERS) / (DRIVE_GEAR_RATIO);
+    public static final double DRIVE_TO_METERS_PER_SECOND = WHEEL_CIRCUMFERENCE_METERS / DRIVE_GEAR_RATIO;
 
-    public static final double TURN_P = 2.5; 
+    public static final double TURN_P = 2.3; 
     public static final double TURN_I = 0;
     public static final double TURN_D = 0;
 
@@ -195,6 +197,7 @@ public final class Constants {
     public static final int DRIVER_LEFT_STICK_X = 0;
     public static final int DRIVER_LEFT_STICK_Y = 1;
     public static final int DRIVER_RIGHT_STICK_X = 4;
+    public static final int X_BUTTON = 3;
     public static final int DRIVER_RIGHT_BUMPER_ID = 6;
   }
   
