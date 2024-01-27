@@ -23,7 +23,8 @@ public class VisionSubsystem extends SubsystemBase {
   }
 
   public boolean canSeeAprilTags() {
-    return LimelightHelpers.getFiducialID(currentlyUsedLimelight) != -1;
+    return LimelightHelpers.getFiducialID(currentlyUsedLimelight) != -1
+      && Math.abs(LimelightHelpers.getTX(currentlyUsedLimelight)) >= VisionConstants.FOV_MARGIN_OF_ERROR;
   }
 
 

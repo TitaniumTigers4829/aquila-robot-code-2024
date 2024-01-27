@@ -147,6 +147,7 @@ public final class Constants {
     public static final double VISION_ANGLE_TRUST = Units.degreesToRadians(50); // radians
   
     public static final int FRAMES_BEFORE_ADDING_VISION_MEASUREMENT = 2;
+    public static final double FOV_MARGIN_OF_ERROR = 27;
   
     public static final String FRONT_LIMELIGHT_NAME = "limelight-front";
     public static final String BACK_LIMELIGHT_NAME = "limelight-back";
@@ -174,11 +175,11 @@ public final class Constants {
     // TODO: Actually tune/do math for these
     public static final double[][] ONE_APRIL_TAG_LOOKUP_TABLE = {
       // {distance in meters, x std deviation, y std deviation, r (in degrees) std deviation}
-      {0, 0.01, 0.01, 10},
-      {1.5, 0.01, 0.01, 10},
-      {3, 0.145, 1.20, 30},
-      {4.5, 0.75, 5.0, 90},
-      {6, 1.0, 8.0, 180}
+      {0, 0.015, 0.015, 10},
+      {1.5, 0.015, 0.015, 10},
+      {3, 0.3, 2.4, 45},
+      {4.5, 1.5, 5.0, 90},
+      {6, 3.0, 8.0, 180}
     };
 
     public static final double[][] TWO_APRIL_TAG_LOOKUP_TABLE = {

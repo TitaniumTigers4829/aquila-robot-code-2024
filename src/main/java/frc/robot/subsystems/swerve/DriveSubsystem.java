@@ -124,8 +124,8 @@ public class DriveSubsystem extends SubsystemBase {
     frontRightSwerveModule.setDesiredState(swerveModuleStates[1]);
     rearLeftSwerveModule.setDesiredState(swerveModuleStates[2]);
     rearRightSwerveModule.setDesiredState(swerveModuleStates[3]);
-    //configurePath();
   }
+  
   public double getHeading() {
     return (-gyro.getAngle() + this.gyroOffset) % 360;
   }
