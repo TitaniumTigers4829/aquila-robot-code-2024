@@ -192,8 +192,8 @@ public final class Constants {
   }
 
   public static final class FieldConstants {
-    public static final double FIELD_LENGTH_METERS = Units.inchesToMeters(325);
-    public static final double FIELD_WIDTH_METERS = Units.inchesToMeters(653);
+    public static final double FIELD_LENGTH_METERS = Units.inchesToMeters(653);
+    public static final double FIELD_WIDTH_METERS = Units.inchesToMeters(325);
   }
 
   public static final class JoystickConstants {

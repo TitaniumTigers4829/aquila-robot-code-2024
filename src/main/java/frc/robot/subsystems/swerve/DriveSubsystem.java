@@ -199,7 +199,10 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public void periodic() {
-    SmartDashboard.putString("odometry", odometry.getEstimatedPosition().toString());
+    Pose2d botPose = odometry.getEstimatedPosition();
+    SmartDashboard.putString("odometry", botPose.toString());
+    SmartDashboard.putNumberArray("botPose", new double[]{botPose.getX(), botPose.getY()});
+    SmartDashboard.putNumber("pitch", getHeading());
 
     frontLeftSwerveModule.periodicFunction();
     frontRightSwerveModule.periodicFunction();

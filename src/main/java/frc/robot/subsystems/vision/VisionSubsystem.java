@@ -2,6 +2,7 @@ package frc.robot.subsystems.vision;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.Constants.FieldConstants;
@@ -103,12 +104,10 @@ public class VisionSubsystem extends SubsystemBase {
     double backLimelightDistance = backLimelightAprilTags.length > 0
       ? getLimelightAprilTagDistance((int) backLimelightAprilTags[0].fiducialID) : Double.MAX_VALUE;
 
-    // currentlyUsedLimelight = frontLimelightDistance <= backLimelightDistance 
-    //   ? VisionConstants.FRONT_LIMELIGHT_NAME : VisionConstants.BACK_LIMELIGHT_NAME;
-    currentlyUsedLimelight = VisionConstants.BACK_LIMELIGHT_NAME;
+    currentlyUsedLimelight = frontLimelightDistance <= backLimelightDistance 
+      ? VisionConstants.FRONT_LIMELIGHT_NAME : VisionConstants.BACK_LIMELIGHT_NAME;
     currentlyUsedLimelightResults = currentlyUsedLimelight == VisionConstants.FRONT_LIMELIGHT_NAME
       ? frontLimelightResults : backLimelightResults;
-    // SmartDashboardLogger.infoString("Limelight Pos", getPoseFromAprilTags().toString());
 
     // Flashes the limelight LEDs if they can't see an april tag
     if (!canSeeAprilTags()) {
@@ -118,6 +117,9 @@ public class VisionSubsystem extends SubsystemBase {
       LimelightHelpers.setLEDMode_ForceOff(VisionConstants.FRONT_LIMELIGHT_NAME);
       LimelightHelpers.setLEDMode_ForceOff(VisionConstants.BACK_LIMELIGHT_NAME);
     }
+
+    SmartDashboard.putNumber("distance from closest april tag", getDistanceFromClosestAprilTag());
+    SmartDashboard.putNumberArray("limelight_pose", new double[]{currentlyUsedLimelightResults.targetingResults.botpose[0], currentlyUsedLimelightResults.targetingResults.botpose[1], currentlyUsedLimelightResults.targetingResults.botpose[2]});
   }
 
 }
