@@ -6,7 +6,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.extras.LimelightHelpers;
-// import frc.robot.extras.SmartDashboardLogger;
 import frc.robot.extras.LimelightHelpers.LimelightResults;
 import frc.robot.extras.LimelightHelpers.LimelightTarget_Fiducial;
 
@@ -60,17 +59,6 @@ public class VisionSubsystem extends SubsystemBase {
     + currentlyUsedLimelightResults.targetingResults.latency_jsonParse) / 1000.0;
   }
 
-
-  public void cropLimelights(double[][] cropValues) {
-    LimelightHelpers.setCropWindow(
-      VisionConstants.FRONT_LIMELIGHT_NAME, 
-      cropValues[0][0],
-      cropValues[0][1],
-      cropValues[0][2],
-      cropValues[0][3]
-    );
-  }
-
   // public void setLimelightsPipeline(LimelightsPipelines limelightPipeline) {
   //   LimelightHelpers.setPipelineIndex(VisionConstants.FRONT_LIMELIGHT_NAME, limelightPipeline.getID());
   // }
@@ -115,8 +103,9 @@ public class VisionSubsystem extends SubsystemBase {
     double backLimelightDistance = backLimelightAprilTags.length > 0
       ? getLimelightAprilTagDistance((int) backLimelightAprilTags[0].fiducialID) : Double.MAX_VALUE;
 
-    currentlyUsedLimelight = frontLimelightDistance <= backLimelightDistance 
-      ? VisionConstants.FRONT_LIMELIGHT_NAME : VisionConstants.BACK_LIMELIGHT_NAME;
+    // currentlyUsedLimelight = frontLimelightDistance <= backLimelightDistance 
+    //   ? VisionConstants.FRONT_LIMELIGHT_NAME : VisionConstants.BACK_LIMELIGHT_NAME;
+    currentlyUsedLimelight = VisionConstants.BACK_LIMELIGHT_NAME;
     currentlyUsedLimelightResults = currentlyUsedLimelight == VisionConstants.FRONT_LIMELIGHT_NAME
       ? frontLimelightResults : backLimelightResults;
     // SmartDashboardLogger.infoString("Limelight Pos", getPoseFromAprilTags().toString());
