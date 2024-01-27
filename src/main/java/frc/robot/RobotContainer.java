@@ -87,7 +87,7 @@ public class RobotContainer {
     driveSubsystem.setDefaultCommand(driveCommand);
 
     xButton.onTrue(new InstantCommand(() -> driveSubsystem.resetOdometry(new Pose2d())));
-    xButton.onTrue(new InstantCommand(() -> driveSubsystem.zeroHeading()));
+    xButton.onTrue(new InstantCommand(driveSubsystem::zeroHeading));
   }
 
   public Command getAutonomousCommand() {
