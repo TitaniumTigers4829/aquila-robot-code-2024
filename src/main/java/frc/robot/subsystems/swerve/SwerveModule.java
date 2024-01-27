@@ -101,7 +101,7 @@ public class SwerveModule {
     // turnConfig.DifferentialSensors.DifferentialSensorSource = DifferentialSensorSourceValue.RemoteCANcoder;
     // turnConfig.DifferentialSensors.DifferentialRemoteSensorID = turnEncoder.getDeviceID();
 
-    // TODO: config current limits & optimize status signals
+    // TODO: config current limits & optimize status signals & motionmagic
     turnMotor.getConfigurator().apply(turnConfig, HardwareConstants.TIMEOUT_S);
 
     turnEncoderPos = turnEncoder.getAbsolutePosition();
@@ -110,7 +110,6 @@ public class SwerveModule {
 
     driveMotor.setPosition(0);
     turnMotor.setPosition(0);
-    
 
     BaseStatusSignal.setUpdateFrequencyForAll(HardwareConstants.SIGNAL_FREQUENCY, turnEncoderPos, driveMotorPosition, driveMotorVelocity);
 
@@ -135,12 +134,8 @@ public class SwerveModule {
   public SwerveModuleState getState() {
     driveMotorVelocity.refresh();
 
-    
-
     //double speedMetersPerSecond = ModuleConstants.DRIVE_TO_METERS_PER_SECOND * driveMotorVelocity.getValue();
-    double speedMetersPerSecond = ModuleConstants.DRIVE_TO_METERS_PER_SECOND * driveMotor.getVelocity().refresh().getValueAsDouble();
-
-
+    double speedMetersPerSecond = ModuleConstants.DRIVE_TO_METERS_PER_SECOND * driveMotorVelocity.getValueAsDouble();
 
     return new SwerveModuleState(speedMetersPerSecond, Rotation2d.fromRotations(getModuleHeading()));
   }
@@ -158,7 +153,8 @@ public class SwerveModule {
   // }
 
   public SwerveModulePosition getPosition() {
-    double position = ModuleConstants.DRIVE_TO_METERS * driveMotor.getPosition().getValue();
+    driveMotorPosition.refresh();
+    double position = ModuleConstants.DRIVE_TO_METERS * driveMotorPosition.getValue();
     Rotation2d rotation = Rotation2d.fromRotations(getCANCoderABS());
     SmartDashboard.putString(name, new SwerveModulePosition(position, rotation).toString());
     return new SwerveModulePosition(position, rotation);

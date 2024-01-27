@@ -45,7 +45,6 @@ public class DriveSubsystem extends SubsystemBase {
 
   private final AHRS gyro;
   private final SwerveDrivePoseEstimator odometry;
-  private final SwerveDriveOdometry testOdometry;
 
   private final Optional<DriverStation.Alliance> alliance;
 
@@ -109,13 +108,6 @@ public class DriveSubsystem extends SubsystemBase {
       visionMeasurementStdDevs
     );
 
-    testOdometry = new SwerveDriveOdometry(
-           DriveConstants.DRIVE_KINEMATICS,
-      getRotation2d(),
-      getModulePositions(),
-      new Pose2d() 
-    );
-
     alliance = DriverStation.getAlliance();
   }
 
@@ -158,8 +150,6 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public void zeroHeading() {
-    // double rotationDegrees = getHeading();
-    // gyroOffset = (rotationDegrees % 360);
     gyro.reset();
   }
 
@@ -186,7 +176,6 @@ public class DriveSubsystem extends SubsystemBase {
 
   public void resetOdometry(Pose2d pose) {
     odometry.resetPosition(getRotation2d(), getModulePositions(), pose);
-    
   }
  
   public void setModuleStates(SwerveModuleState[] desiredStates) {
@@ -210,15 +199,7 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public void periodic() {
-
-    testOdometry.update(
-      getRotation2d(),
-      getModulePositions()
-    );
     SmartDashboard.putString("odometry", odometry.getEstimatedPosition().toString());
-    
-    SmartDashboard.putString("odometry test", testOdometry.getPoseMeters().toString());
-
 
     frontLeftSwerveModule.periodicFunction();
     frontRightSwerveModule.periodicFunction();

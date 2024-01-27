@@ -9,6 +9,8 @@ package frc.robot;
 
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
+import com.pathplanner.lib.path.PathConstraints;
+import com.pathplanner.lib.util.PIDConstants;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -105,7 +107,8 @@ public final class Constants {
   }
   
   public static final class ModuleConstants { 
-    public static final double DRIVE_GEAR_RATIO = 5.6;
+    // TODO: check - we kinda guessed this
+    public static final double DRIVE_GEAR_RATIO = 7.36;
     public static final double WHEEL_DIAMETER_METERS = Units.inchesToMeters(4);
     public static final double WHEEL_CIRCUMFERENCE_METERS = WHEEL_DIAMETER_METERS * Math.PI;
     public static final double DRIVE_TO_METERS =  WHEEL_CIRCUMFERENCE_METERS / DRIVE_GEAR_RATIO;
@@ -214,5 +217,36 @@ public final class Constants {
     public static final double SHOOT_P = 0.0;
     public static final double SHOOT_I = 0.0;
     public static final double SHOOT_D = 0.0;
+  }
+  
+  public static final class TrajectoryConstants {
+    public static final double DRIVE_BASE_RADIUS = Math.sqrt(Math.pow(DriveConstants.TRACK_WIDTH, 2) + Math.pow(DriveConstants.WHEEL_BASE, 2));
+    public static final double MAX_SPEED = 5.7;
+    public static final double MAX_ACCELERATION = 3.5;
+    public static final double DEPLOYED_TRANSLATION_CONTROLLER_P = .35;
+    public static final double DEPLOYED_THETA_CONTROLLER_P = .8;
+    // public static final double REAL_TIME_X_CONTROLLER_P = 2;
+    // public static final double REAL_TIME_Y_CONTROLLER_P = 2;
+    // public static final double REAL_TIME_THETA_CONTROLLER_P = 3;
+    // public static final double THETA_PROFILED_CONTROLLER_P = 1;
+    public static final double MAX_ANGULAR_SPEED_RADIANS_PER_SECOND = 2;
+    public static final double MAX_ANGULAR_SPEED_RADIANS_PER_SECOND_SQUARED = 2;
+    // The length of the field in the x direction (left to right)
+    public static final double FIELD_LENGTH_METERS = 16.54175;
+    // The length of the field in the y direction (top to bottom)
+    public static final double FIELD_WIDTH_METERS = 8.0137;
+
+    public static final PIDConstants TRANSLATION_CONSTANTS = new PIDConstants(DEPLOYED_TRANSLATION_CONTROLLER_P);
+    public static final PIDConstants ROTATION_CONSTANTS = new PIDConstants(DEPLOYED_THETA_CONTROLLER_P);
+  
+    // Constraint for the motion profiled robot angle controller
+    public static final TrapezoidProfile.Constraints THETA_CONTROLLER_CONSTRAINTS =
+      new TrapezoidProfile.Constraints(MAX_ANGULAR_SPEED_RADIANS_PER_SECOND, MAX_ANGULAR_SPEED_RADIANS_PER_SECOND_SQUARED);
+
+    public static final PathConstraints PATH_CONSTRAINTS = new PathConstraints(MAX_SPEED, MAX_ACCELERATION, MAX_ANGULAR_SPEED_RADIANS_PER_SECOND, MAX_ANGULAR_SPEED_RADIANS_PER_SECOND_SQUARED);
+
+    public static final double X_TOLERANCE = 0.02;
+    public static final double Y_TOLERANCE = 0.02;
+    public static final double THETA_TOLERANCE = 1.25;
   }
 }
