@@ -13,7 +13,6 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.numbers.N3;
@@ -28,16 +27,13 @@ import frc.robot.extras.SmarterDashboardRegistry;
 
 public class DriveSubsystem extends SubsystemBase {
 
-    private static final Vector<N3> stateStdDevs = VecBuilder.fill(DriveConstants.X_POS_TRUST, DriveConstants.Y_POS_TRUST, Units.degreesToRadians(DriveConstants.ANGLE_TRUST));
+  // This will stay the same throughout the match. These values are harder to test for and tune, so assume this guess is right.
+  private static final Vector<N3> stateStandardDeviations = VecBuilder.fill(DriveConstants.X_POS_TRUST, DriveConstants.Y_POS_TRUST, Units.degreesToRadians(DriveConstants.ANGLE_TRUST));
   
-  /**
-   * Standard deviations of the vision measurements. Increase these numbers to trust global measurements from vision
-   * less. This matrix is in the form [x, y, theta]ᵀ, with units in meters and radians.
-   */
-  private static final Vector<N3> visionMeasurementStdDevs = VecBuilder.fill(VisionConstants.VISION_X_POS_TRUST,
+  // This will be changed throughout the match depending on how confident we are that the limelight is right.
+  private static final Vector<N3> visionMeasurementStandardDeviations = VecBuilder.fill(VisionConstants.VISION_X_POS_TRUST,
    VisionConstants.VISION_Y_POS_TRUST, Units.degreesToRadians(VisionConstants.VISION_ANGLE_TRUST));
   
-
   private final SwerveModule frontLeftSwerveModule;
   private final SwerveModule frontRightSwerveModule;
   private final SwerveModule rearLeftSwerveModule;
@@ -49,6 +45,7 @@ public class DriveSubsystem extends SubsystemBase {
   private final Optional<DriverStation.Alliance> alliance;
 
   private double gyroOffset = 0.0;
+
   /**
    * Creates a new DriveSubsystem.
    */
@@ -104,13 +101,23 @@ public class DriveSubsystem extends SubsystemBase {
       getRotation2d(),
       getModulePositions(),
       new Pose2d(), // This is the position for where the robot starts the match, use setPose() to set it in autonomous init
-      stateStdDevs,
-      visionMeasurementStdDevs
+      stateStandardDeviations,
+      visionMeasurementStandardDeviations
     );
 
     alliance = DriverStation.getAlliance();
   }
 
+  /**
+   * Drives the robot using the joysticks.
+   * @param xSpeed Speed of the robot in the x direction, positive being 
+   * forwards.
+   * @param ySpeed Speed of the robot in the y direction, positive being
+   * left.
+   * @param rotationSpeed Angular rate of the robot in radians per second.
+   * @param fieldRelative Whether the provided x and y speeds are relative
+   * to the field.
+   */
   @SuppressWarnings("ParameterName")
   public void drive(double xSpeed, double ySpeed, double rotationSpeed, boolean fieldRelative) {
     // SmartDashboard.putBoolean("isFieldRelative", fieldRelative);
@@ -126,37 +133,65 @@ public class DriveSubsystem extends SubsystemBase {
     rearRightSwerveModule.setDesiredState(swerveModuleStates[3]);
   }
   
+  /**
+   * Returns the heading of the robot in degrees from 0 to 360. 
+   * Counter-clockwise is positive. This factors in gyro offset.
+   */
   public double getHeading() {
     return (-gyro.getAngle() + this.gyroOffset) % 360;
   }
 
+  /**
+   * Returns a Rotation2d for the heading of the robot.
+   */  
   public Rotation2d getRotation2d() {
     return Rotation2d.fromDegrees(getHeading());
   }
 
+  /**
+   * Returns a Rotation2d for the heading of the robot relative to the
+   * field from the driver's perspective. This method is needed so that the
+   * drive command and poseEstimator don't fight each other.
+   */
   public Rotation2d getFieldRelativeRotation2d() {
     // Because the field isn't vertically symmetrical, we have the pose coordinates always start from the bottom left
     double rotationDegrees = getHeading();
-    if (alliance.isPresent() && alliance.get()==DriverStation.Alliance.Blue) {
+    if (alliance.isPresent() && alliance.get() == DriverStation.Alliance.Blue) {
       rotationDegrees += 0;
     } else {
       rotationDegrees += 180;
     }
     return Rotation2d.fromDegrees(rotationDegrees % 360);
   }
-                                                                       
+  
+  /**
+   * Sets the offset of the gyro.
+   * @param gyroOffset The number of degrees that will be added to the
+   * gyro's angle in getHeading.
+   */
   public void setGyroOffset(double gyroOffset) {
     this.gyroOffset = gyroOffset;
   }
 
+  /**
+   * Zeroes the heading of the robot.
+   */
   public void zeroHeading() {
     gyro.reset();
   }
 
+  /**
+   * Returns the estimated field-relative pose of the robot. Positive x 
+   * being forward, positive y being left.
+   */
   public Pose2d getPose() {
     return odometry.getEstimatedPosition();
   }
 
+  /**
+   * Updates the pose estimator with the pose calculated from the swerve
+   * modules.
+   */
   public void addPoseEstimatorSwerveMeasurement() {
     odometry.update(
       getRotation2d(),
@@ -164,29 +199,45 @@ public class DriveSubsystem extends SubsystemBase {
     );
   }
 
-    public void setPoseEstimatorVisionConfidence(double xStandardDeviation, double yStandardDeviation,
-    double thetaStandardDeviation) {
-    odometry.setVisionMeasurementStdDevs(VecBuilder.fill(xStandardDeviation, yStandardDeviation, thetaStandardDeviation));
-  }
-
-    public void addPoseEstimatorVisionMeasurement(Pose2d visionMeasurement, double currentTimeStampSeconds) {
+  /**
+   * Updates the pose estimator with the pose calculated from the april
+   * tags. How much it contributes to the pose estimation is set by
+   * setPoseEstimatorVisionConfidence.
+   * @param visionMeasurement The pose calculated from the april tags
+   * @param currentTimeStampSeconds The time stamp in seconds of when the
+   * pose from the april tags was calculated.
+   */
+  public void addPoseEstimatorVisionMeasurement(Pose2d visionMeasurement, double currentTimeStampSeconds) {
     odometry.addVisionMeasurement(visionMeasurement, currentTimeStampSeconds);
     SmarterDashboardRegistry.setLimelightPose(visionMeasurement);
   }
 
+  /**
+   * Sets the standard deviations of model states, or how much the april
+   * tags contribute to the pose estimation of the robot. Lower numbers
+   * equal higher confidence and vice versa.
+   * @param xStandardDeviation the x standard deviation in meters
+   * @param yStandardDeviation the y standard deviation in meters
+   * @param thetaStandardDeviation the theta standard deviation in radians
+   */
+  public void setPoseEstimatorVisionConfidence(double xStandardDeviation, double yStandardDeviation,
+    double thetaStandardDeviation) {
+    odometry.setVisionMeasurementStdDevs(VecBuilder.fill(xStandardDeviation, yStandardDeviation, thetaStandardDeviation));
+  }
+
+  /**
+   * Resets the odometry to the specified pose, but keeps the current 
+   * rotation.
+   */
   public void resetOdometry(Pose2d pose) {
     odometry.resetPosition(getRotation2d(), getModulePositions(), pose);
   }
- 
-  public void setModuleStates(SwerveModuleState[] desiredStates) {
-    SwerveDriveKinematics.desaturateWheelSpeeds(
-      desiredStates, DriveConstants.MAX_SPEED_METERS_PER_SECOND);
-    frontLeftSwerveModule.setDesiredState(desiredStates[0]);
-    frontRightSwerveModule.setDesiredState(desiredStates[1]);
-    rearLeftSwerveModule.setDesiredState(desiredStates[2]);
-    rearRightSwerveModule.setDesiredState(desiredStates[3]);
-  }
 
+  /**
+   * Returns the current drivetrain position, as reported by the modules 
+   * themselves. The order is: frontLeft, frontRight, backLeft, backRight
+   * (should be the same as the kinematics).
+   */
   public SwerveModulePosition[] getModulePositions() {
     SwerveModulePosition[] swerveModulePositions = {
       frontLeftSwerveModule.getPosition(),
@@ -197,13 +248,25 @@ public class DriveSubsystem extends SubsystemBase {
 
     return swerveModulePositions;
   }
+ 
+  /**
+   * Sets the modules to the specified states.
+   * @param desiredStates The desired states for the swerve modules. The
+   * order is: frontLeft, frontRight, backLeft, backRight (should be the 
+   * same as the kinematics).
+   */
+  public void setModuleStates(SwerveModuleState[] desiredStates) {
+    SwerveDriveKinematics.desaturateWheelSpeeds(
+      desiredStates, DriveConstants.MAX_SPEED_METERS_PER_SECOND);
+    frontLeftSwerveModule.setDesiredState(desiredStates[0]);
+    frontRightSwerveModule.setDesiredState(desiredStates[1]);
+    rearLeftSwerveModule.setDesiredState(desiredStates[2]);
+    rearRightSwerveModule.setDesiredState(desiredStates[3]);
+  }
 
   public void periodic() {
     Pose2d botPose = odometry.getEstimatedPosition();
     SmartDashboard.putString("odometry", botPose.toString());
-    SmartDashboard.putNumberArray("botPose", new double[]{botPose.getX(), botPose.getY()});
-    SmartDashboard.putNumber("pitch", getHeading());
-
     frontLeftSwerveModule.periodicFunction();
     frontRightSwerveModule.periodicFunction();
     rearLeftSwerveModule.periodicFunction();
