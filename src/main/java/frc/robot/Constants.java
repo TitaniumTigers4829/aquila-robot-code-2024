@@ -47,9 +47,9 @@ public final class Constants {
   }
 
   public static final class DriveConstants {
-    public static final double X_POS_TRUST = 0-9; //meters
-    public static final double Y_POS_TRUST = 0-9; //meters
-    public static final double ANGLE_TRUST = 0-9; //radians
+    public static final double X_POS_TRUST = 0.03; //meters
+    public static final double Y_POS_TRUST = 0.03; //meters
+    public static final double ANGLE_TRUST = Units.degreesToRadians(1); //radians
 
     // Wheel base and track width are measured by the center of the swerve modules, not the frame of the robot
     // Distance between centers of right and left wheels on robot
@@ -175,9 +175,9 @@ public final class Constants {
     // TODO: Actually tune/do math for these
     public static final double[][] ONE_APRIL_TAG_LOOKUP_TABLE = {
       // {distance in meters, x std deviation, y std deviation, r (in degrees) std deviation}
-      {0, 0.015, 0.015, 10},
-      {1.5, 0.015, 0.015, 10},
-      {3, 0.3, 2.4, 45},
+      {0, 0.01, 0.05, 10},
+      {1.5, 0.01, 0.01, 10},
+      {3, 0.15, 1.2, 30},
       {4.5, 1.5, 5.0, 90},
       {6, 3.0, 8.0, 180}
     };

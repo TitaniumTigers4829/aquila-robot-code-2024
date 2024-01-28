@@ -24,7 +24,7 @@ public class VisionSubsystem extends SubsystemBase {
 
   public boolean canSeeAprilTags() {
     return LimelightHelpers.getFiducialID(currentlyUsedLimelight) != -1
-      && Math.abs(LimelightHelpers.getTX(currentlyUsedLimelight)) >= VisionConstants.FOV_MARGIN_OF_ERROR;
+      && Math.abs(LimelightHelpers.getTX(currentlyUsedLimelight)) <= VisionConstants.FOV_MARGIN_OF_ERROR;
   }
 
 
@@ -119,6 +119,7 @@ public class VisionSubsystem extends SubsystemBase {
       LimelightHelpers.setLEDMode_ForceOff(VisionConstants.BACK_LIMELIGHT_NAME);
     }
 
+        SmartDashboard.putNumber("tx", LimelightHelpers.getTX(currentlyUsedLimelight));
     SmartDashboard.putNumber("distance from closest april tag", getDistanceFromClosestAprilTag());
     SmartDashboard.putNumberArray("limelight_pose", new double[]{currentlyUsedLimelightResults.targetingResults.botpose[0], currentlyUsedLimelightResults.targetingResults.botpose[1], currentlyUsedLimelightResults.targetingResults.botpose[2]});
   }

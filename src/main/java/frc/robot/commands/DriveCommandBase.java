@@ -4,6 +4,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.extras.MultiLinearInterpolator;
@@ -41,6 +42,8 @@ public abstract class DriveCommandBase extends Command {
     // Updates the robot's odometry with april tags
     double currentTimeStampSeconds = lastTimeStampSeconds;
 
+    SmartDashboard.putBoolean("updating pose", false);
+
     if (visionSubsystem.canSeeAprilTags()) {
       ticksAfterSeeing++;
       currentTimeStampSeconds = visionSubsystem.getTimeStampSeconds();
@@ -58,6 +61,8 @@ public abstract class DriveCommandBase extends Command {
       // Only updates the pose estimator if the limelight pose is new and reliable
       if (currentTimeStampSeconds > lastTimeStampSeconds && ticksAfterSeeing > VisionConstants.FRAMES_BEFORE_ADDING_VISION_MEASUREMENT) {
         Pose2d limelightVisionMeasurement = visionSubsystem.getPoseFromAprilTags();
+            SmartDashboard.putBoolean("updating pose", true);
+
         driveSubsystem.addPoseEstimatorVisionMeasurement(limelightVisionMeasurement, Timer.getFPGATimestamp() - visionSubsystem.getLatencySeconds());
       }
     } else {
