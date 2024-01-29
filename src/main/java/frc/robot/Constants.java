@@ -253,7 +253,6 @@ public final class Constants {
     public static final int ROLLER_MOTOR_ID = 0-9;
 
     public static final int SHOOTER_LIMIT_SWITCH_ID = 0-9;
-    // TODO: limit switch? beam break? name appropriately
     public static final int SHOOTER_NOTE_SENSOR_ID = 0-9;
 
     public static final double LEFT_SHOOT_SPEAKER_RPM = 0-9;

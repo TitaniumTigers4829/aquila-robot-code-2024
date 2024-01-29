@@ -55,7 +55,7 @@ public class ShootSpeaker extends DriveCommandBase {
     this.leftX = leftX;
     this.leftY = leftY;
     this.isFieldRelative = isFieldRelative;
-    addRequirements(shooterSubsystem, driveSubsystem);
+    addRequirements(shooterSubsystem, driveSubsystem, pivotSubsystem);
   }
 
   // Called when the command is initially scheduled.
