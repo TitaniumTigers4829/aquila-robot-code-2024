@@ -10,8 +10,11 @@ package frc.robot;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.pathplanner.lib.path.PathConstraints;
+import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
+import com.pathplanner.lib.util.ReplanningConfig;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -193,10 +196,29 @@ public final class Constants {
   }
 
   public static final class FieldConstants {
-    public static final double FIELD_LENGTH_METERS = 0-9;
-    public static final double FIELD_WIDTH_METERS = 0-9;
-  }
+    public static final double FIELD_LENGTH_METERS = 16.54175;
+    public static final double FIELD_WIDTH_METERS = 8.0137;
 
+    // TODO: in meters from the bottom left of the field
+    // TODO: add point for in front of each:
+    public static final double RED_AMP_X = 14.613;
+    public static final double RED_AMP_Y = 8.197;
+    public static final double RED_AMP_SHOOT_X = 14.613;
+    public static final double RED_AMP_SHOOT_Y = 7.767;
+
+    public static final double BLUE_AMP_X = 1.9;
+    public static final double BLUE_AMP_Y = 8.161;
+    public static final double BLUE_AMP_SHOOT_X = 1.9;
+    public static final double BLUE_AMP_SHOOT_Y = 7.767;
+    public static final Rotation2d RED_AMP_ROTATION = Rotation2d.fromDegrees(90);
+    public static final Rotation2d BLUE_AMP_ROTATION = Rotation2d.fromDegrees(90);
+    
+    public static final double RED_SPEAKER_X = 16.511;
+    public static final double RED_SPEAKER_Y = 5.529;
+
+    public static final double BLUE_SPEAKER_X = 0;
+    public static final double BLUE_SPEAKER_Y = 5.511;
+  }
   public static final class JoystickConstants {
     public static final int DRIVER_LEFT_STICK_X = 0;
     public static final int DRIVER_LEFT_STICK_Y = 1;
@@ -249,5 +271,13 @@ public final class Constants {
     public static final double X_TOLERANCE = 0.02;
     public static final double Y_TOLERANCE = 0.02;
     public static final double THETA_TOLERANCE = 1.25;
+
+    public static final HolonomicPathFollowerConfig PATH_FOLLOWER_CONFIG = new HolonomicPathFollowerConfig(
+      new PIDConstants(DEPLOYED_TRANSLATION_CONTROLLER_P, 0, 0), // Translation constants 
+      new PIDConstants(DEPLOYED_THETA_CONTROLLER_P, 0, 0), // Rotation constants 
+      DriveConstants.MAX_SPEED_METERS_PER_SECOND, 
+      0.4, // Drive base radius (distance from center to furthest module) 
+      new ReplanningConfig()
+    );
   }
 }

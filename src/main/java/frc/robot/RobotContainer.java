@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -11,9 +12,13 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.Constants.JoystickConstants;
 import frc.robot.commands.Drive;
+import frc.robot.commands.DriveToPos;
 import frc.robot.commands.FollowChoreoTrajectory;
+import frc.robot.commands.NewDriveToPos;
+import frc.robot.commands.NewSquaredDriveToPos;
 import frc.robot.subsystems.swerve.DriveSubsystem;
 import frc.robot.subsystems.vision.VisionSubsystem;
 
@@ -76,7 +81,7 @@ public class RobotContainer {
     DoubleSupplier driverLeftStickY = () -> driverJoystick.getRawAxis(JoystickConstants.DRIVER_LEFT_STICK_Y);
     DoubleSupplier driverRightStickX = () -> driverJoystick.getRawAxis(JoystickConstants.DRIVER_RIGHT_STICK_X);
     JoystickButton driverRightBumper = new JoystickButton(driverJoystick, JoystickConstants.DRIVER_RIGHT_BUMPER_ID);
-    JoystickButton xButton = new JoystickButton(driverJoystick, JoystickConstants.X_BUTTON);
+    POVButton driverRightDpad = new POVButton(driverJoystick, 90);
 
     Command driveCommand = new Drive(driveSubsystem, visionSubsystem,
       () -> modifyAxisCubedPolar(driverLeftStickY, driverLeftStickX)[0] * -1,
@@ -87,8 +92,15 @@ public class RobotContainer {
 
     driveSubsystem.setDefaultCommand(driveCommand);
 
-    xButton.onTrue(new InstantCommand(() -> driveSubsystem.resetOdometry(new Pose2d())));
-    xButton.onTrue(new InstantCommand(driveSubsystem::zeroHeading));
+    JoystickButton driverAButton = new JoystickButton(driverJoystick, 1);
+    // JoystickButton driverXButton = new JoystickButton(driverJoystick, 3);
+    BooleanSupplier driverAButtonSupplier = driverAButton::getAsBoolean;
+    // BooleanSupplier driverXButtonSupplier = driverXButton::getAsBoolean;
+    driverAButton.onTrue(new NewDriveToPos(driveSubsystem, visionSubsystem, driverAButtonSupplier, 5, 0, 0));
+    // driverXButton.onTrue(new NewSquaredDriveToPos(driveSubsystem, visionSubsystem, driverXButtonSupplier, 5, 1, 80));
+
+    driverRightDpad.onTrue(new InstantCommand(() -> driveSubsystem.resetOdometry(new Pose2d())));
+    driverRightDpad.onTrue(new InstantCommand(driveSubsystem::zeroHeading));
   }
 
   public Command getAutonomousCommand() {
