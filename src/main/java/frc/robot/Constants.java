@@ -93,7 +93,7 @@ public final class Constants {
     public static final InvertedValue REAR_LEFT_DRIVE_ENCODER_REVERSED = InvertedValue.CounterClockwise_Positive;
     public static final InvertedValue REAR_RIGHT_DRIVE_ENCODER_REVERSED = InvertedValue.Clockwise_Positive;
     
-    
+    // TODO: tune
     public static final double MAX_ANGULAR_SPEED_RADIANS_PER_SECOND = 5;
 
     public static final double MAX_SPEED_METERS_PER_SECOND = 5.7;
@@ -189,6 +189,7 @@ public final class Constants {
     public static final double FIELD_LENGTH_METERS = 0-9;
     public static final double FIELD_WIDTH_METERS = 0-9;
 
+    // TODO: in meters from the bottom left of the field
     // TODO: add point for in front of each:
     public static final double RED_AMP_X = 14.613;
     public static final double RED_AMP_Y = 8.197;
@@ -235,7 +236,6 @@ public final class Constants {
     public static final double PIVOT_ACCEPTABLE_ERROR = 1;
 
     public static double[][] SPEAKER_PIVOT_POSITION = {
-      //{distance, rpm}
       {Units.feetToMeters(5.5), 0},
       {Units.feetToMeters(7), 1},
       {Units.feetToMeters(8.5), 2}, // 1600  // 1615
@@ -275,7 +275,6 @@ public final class Constants {
     public static Constraints AUTO_SHOOT_CONSTRAINTS = new Constraints(DriveConstants.MAX_ANGULAR_SPEED_RADIANS_PER_SECOND, 5);
 
     public static double[][] SPEAKER_SHOOT_RPMS = {
-      //{distance, rpm}
       {Units.feetToMeters(5.5), 1770},
       {Units.feetToMeters(7), 1665},
       {Units.feetToMeters(8.5), 1560}, // 1600  // 1615
@@ -287,7 +286,6 @@ public final class Constants {
   };
 
     public static double[][] SPEAKER_PIVOT_POSITION = {
-      //{distance, rpm}
       {Units.feetToMeters(5.5), 0},
       {Units.feetToMeters(7), 1},
       {Units.feetToMeters(8.5), 2}, // 1600  // 1615
