@@ -15,11 +15,16 @@ import frc.robot.subsystems.swerve.DriveSubsystem;
 import frc.robot.subsystems.vision.VisionSubsystem;
 
 public class FollowChoreoTrajectory extends DriveCommandBase {
-  DriveSubsystem driveSubsystem;
-  VisionSubsystem visionSubsystem;
-  Command controllerCommand;
+  private DriveSubsystem driveSubsystem;
+  private VisionSubsystem visionSubsystem;
+  private Command controllerCommand;
 
-  /** Creates a new FollowChoreoTrajectory. */
+  /**
+   * Follows a trajectory made with Choreo
+   * @param driveSubsystem instance of the drive subsystem
+   * @param visionSubsystem instance of the vision subsystem
+   * @param trajectoryName name of the path excluding the .chor and the directory path
+   */
   public FollowChoreoTrajectory(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, String trajectoryName) {
     super(driveSubsystem, visionSubsystem);
     controllerCommand = Choreo.choreoSwerveCommand(
