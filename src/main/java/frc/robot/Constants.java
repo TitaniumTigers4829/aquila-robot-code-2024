@@ -47,9 +47,9 @@ public final class Constants {
   }
 
   public static final class DriveConstants {
-    public static final double X_POS_TRUST = 0-9; //meters
-    public static final double Y_POS_TRUST = 0-9; //meters
-    public static final double ANGLE_TRUST = 0-9; //radians
+    public static final double X_POS_TRUST = 0.03; //meters
+    public static final double Y_POS_TRUST = 0.03; //meters
+    public static final double ANGLE_TRUST = Units.degreesToRadians(1); //radians
 
     // Wheel base and track width are measured by the center of the swerve modules, not the frame of the robot
     // Distance between centers of right and left wheels on robot
@@ -142,59 +142,59 @@ public final class Constants {
 
   public static final class VisionConstants {
 
-    public static final double VISION_X_POS_TRUST = 0-9; //meters
-    public static final double VISION_Y_POS_TRUST = 0-9; //meters
-    public static final double VISION_ANGLE_TRUST = 0-9; //radians
+    public static final double VISION_X_POS_TRUST = 0.5; // meters
+    public static final double VISION_Y_POS_TRUST = 0.5; // meters
+    public static final double VISION_ANGLE_TRUST = Units.degreesToRadians(50); // radians
   
-    public static final int FRAMES_BEFORE_ADDING_VISION_MEASUREMENT = 5;
+    public static final int FRAMES_BEFORE_ADDING_VISION_MEASUREMENT = 2;
+    public static final double FOV_MARGIN_OF_ERROR = 27;
   
     public static final String FRONT_LIMELIGHT_NAME = "limelight-front";
     public static final String BACK_LIMELIGHT_NAME = "limelight-back";
 
     public static final double[][] APRIL_TAG_POSITIONS = {
-      // { x, y, z}
-      {Units.inchesToMeters(0-9), Units.inchesToMeters(0-9), Units.inchesToMeters(0-9)}, // 1
-      {Units.inchesToMeters(0-9), Units.inchesToMeters(0-9), Units.inchesToMeters(0-9)}, // 2
-      {Units.inchesToMeters(0-9), Units.inchesToMeters(0-9), Units.inchesToMeters(0-9)}, // 3
-      {Units.inchesToMeters(0-9), Units.inchesToMeters(0-9), Units.inchesToMeters(0-9)}, // 4
-      {Units.inchesToMeters(0-9), Units.inchesToMeters(0-9), Units.inchesToMeters(0-9)}, // 5
-      {Units.inchesToMeters(0-9), Units.inchesToMeters(0-9), Units.inchesToMeters(0-9)}, // 6
-      {Units.inchesToMeters(0-9), Units.inchesToMeters(0-9), Units.inchesToMeters(0-9)}, // 7
-      {Units.inchesToMeters(0-9), Units.inchesToMeters(0-9), Units.inchesToMeters(0-9)} // 8
+      // {x, y, z, rotation (degrees)}
+      {Units.inchesToMeters(593.68), Units.inchesToMeters(9.68), Units.inchesToMeters(53.38), 120}, // 1
+      {Units.inchesToMeters(637.21), Units.inchesToMeters(34.79), Units.inchesToMeters(53.38), 120}, // 2
+      {Units.inchesToMeters(652.73), Units.inchesToMeters(196.17), Units.inchesToMeters(57.13), 180}, // 3
+      {Units.inchesToMeters(652.73), Units.inchesToMeters(218.42), Units.inchesToMeters(57.13), 180}, // 4
+      {Units.inchesToMeters(578.77), Units.inchesToMeters(323.0), Units.inchesToMeters(53.38), 270}, // 5
+      {Units.inchesToMeters(72.5), Units.inchesToMeters(323.0), Units.inchesToMeters(53.38), 270}, // 6
+      {-Units.inchesToMeters(1.5), Units.inchesToMeters(218.42), Units.inchesToMeters(57.13), 0}, // 7
+      {-Units.inchesToMeters(1.5), Units.inchesToMeters(196.17), Units.inchesToMeters(57.13), 0}, // 8
+      {Units.inchesToMeters(14.02), Units.inchesToMeters(34.79), Units.inchesToMeters(53.38), 60}, // 9
+      {Units.inchesToMeters(57.54), Units.inchesToMeters(9.68), Units.inchesToMeters(53.38), 60}, // 10
+      {Units.inchesToMeters(468.69), Units.inchesToMeters(146.19), Units.inchesToMeters(52.0), 300}, // 11
+      {Units.inchesToMeters(468.69), Units.inchesToMeters(177.1), Units.inchesToMeters(52.0), 60}, // 12
+      {Units.inchesToMeters(441.74), Units.inchesToMeters(161.62), Units.inchesToMeters(52.0), 180}, // 13
+      {Units.inchesToMeters(209.48), Units.inchesToMeters(161.62), Units.inchesToMeters(52.0), 0}, // 14
+      {Units.inchesToMeters(182.73), Units.inchesToMeters(177.1), Units.inchesToMeters(52.0), 120}, // 15
+      {Units.inchesToMeters(182.73), Units.inchesToMeters(146.19), Units.inchesToMeters(52.0), 240}, // 16
     };
 
-    // public static final double[][] CAMERA_CROP_LOOKUP_TABLE = {
-    //   // TODO: All of these are placeholder values
-    //   // {x position in meters, limelight lower y crop}
-    //   {0-9, 0-9},
-    //   {0-9, 0-9},
-    //   {0-9, 0-9},
-    //   {0-9, 0-9},
-    //   {0-9, 0-9}
-    // };
-
+    // TODO: Actually tune/do math for these
     public static final double[][] ONE_APRIL_TAG_LOOKUP_TABLE = {
       // {distance in meters, x std deviation, y std deviation, r (in degrees) std deviation}
-      {0-9, 0-9, 0-9, 0-9},
-      {0-9, 0.0-9, 0-9, 0-9},
-      {0-9, 0.0-9, 0-9, 0-9},
-      {0-9, 0-9, 0-9, 0-9},
-      {0-9, 0-9, 0-9, 0-9}
+      {0, 0.01, 0.05, 10},
+      {1.5, 0.01, 0.01, 10},
+      {3, 0.15, 1.2, 30},
+      {4.5, 1.5, 5.0, 90},
+      {6, 3.0, 8.0, 180}
     };
 
     public static final double[][] TWO_APRIL_TAG_LOOKUP_TABLE = {
       // {distance in meters, x std deviation, y std deviation, r (in degrees) std deviation}
-      {0-9, 0-9, 0-9, 0-9},
-      {0-9, 0.0-9, 0-9, 0-9},
-      {0-9, 0-9, 0-9, 0-9},
-      {0-9, 0-9, 0-9, 0-9},
-      {0-9, 0-9, 0-9, 0-9}
+      {0, 0.01, 0.01, 5},
+      {1.5, 0.02, 0.02, 5},
+      {3, 0.04, 0.04, 15},
+      {4.5, 0.1, 0.1, 30},
+      {6, 0.3, 0.3, 60}
     };
   }
 
   public static final class FieldConstants {
-    public static final double FIELD_LENGTH_METERS = 0-9;
-    public static final double FIELD_WIDTH_METERS = 0-9;
+    public static final double FIELD_LENGTH_METERS = Units.inchesToMeters(653);
+    public static final double FIELD_WIDTH_METERS = Units.inchesToMeters(325);
   }
 
   public static final class JoystickConstants {

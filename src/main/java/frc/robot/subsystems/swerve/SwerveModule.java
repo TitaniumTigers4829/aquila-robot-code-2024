@@ -140,18 +140,10 @@ public class SwerveModule {
     return new SwerveModuleState(speedMetersPerSecond, Rotation2d.fromRotations(getModuleHeading()));
   }
 
-  // public SwerveModulePosition getPosition() {
-  //   driveMotorPosition.refresh();
-  //   driveMotorVelocity.refresh();
-
-  //   double position = ModuleConstants.DRIVE_TO_METERS * driveMotor.getPosition().getValue();
-  //   Rotation2d rotation = Rotation2d.fromDegrees(getCANCoderABS());
-
-  //   SmartDashboard.putString(name, new SwerveModulePosition(position, rotation).toString());
-
-  //   return new SwerveModulePosition(position, rotation);
-  // }
-
+  /**
+   * Gets the module position consisting of the distance it has traveled and the angle it is rotated.
+   * @return a SwerveModulePosition object containing position and rotation
+   */
   public SwerveModulePosition getPosition() {
     driveMotorPosition.refresh();
     double position = ModuleConstants.DRIVE_TO_METERS * driveMotorPosition.getValue();
@@ -188,16 +180,13 @@ public class SwerveModule {
     turnMotor.set(output);
   }
 
+  /**
+   * Gets the current position of the CANCoder in relation to the magnet
+   * @return current CANCoder position in radians
+   */
   public double getTurnRadians() {
-    // return ((2 * Math.PI) / 360) * turnEncoder.getAbsolutePosition();
     turnEncoderPos.refresh();
     return Rotation2d.fromRotations(turnEncoderPos.getValue()).getRadians();
-  }
-
-  public double getAbsolutePosition() {
-    // return turnEncoder.getAbsolutePosition();
-    turnEncoderPos.refresh();
-    return turnEncoderPos.getValue();
   }
 
   /**
@@ -209,14 +198,9 @@ public class SwerveModule {
     return turnEncoderPos.getValue();
   }
 
-  @Deprecated
-  /** Zeros all the SwerveModule encoders. */
-  public void resetEncoders() {
-    turnEncoder.setPosition(0);
-    driveMotor.setPosition(0);
-  }
+  /**
+   * This is called in the periodic of DriveSubsystem
+   */
+  public void periodicFunction() {}
 
-  public void periodicFunction() {
-    SmartDashboard.putNumber(name + " Rotation", getCANCoderABS());
-  }
 }
