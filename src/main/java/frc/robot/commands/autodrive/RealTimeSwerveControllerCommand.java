@@ -3,7 +3,7 @@
 // The key difference is that this command can be canceled mid-trajectory 
 // Do not touch this unless you know what you're doing.
 
-package frc.robot.commands;
+package frc.robot.commands.autodrive;
 
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.path.PathPlannerTrajectory;

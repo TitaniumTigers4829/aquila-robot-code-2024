@@ -14,11 +14,11 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.Constants.JoystickConstants;
-import frc.robot.commands.Drive;
-import frc.robot.commands.DriveToPos;
-import frc.robot.commands.FollowChoreoTrajectory;
-import frc.robot.commands.NewDriveToPos;
-import frc.robot.commands.NewSquaredDriveToPos;
+import frc.robot.commands.autodrive.DriveToPos;
+import frc.robot.commands.autodrive.NewDriveToPos;
+import frc.robot.commands.autodrive.NewSquaredDriveToPos;
+import frc.robot.commands.autonomous.FollowChoreoTrajectory;
+import frc.robot.commands.drive.Drive;
 import frc.robot.subsystems.swerve.DriveSubsystem;
 import frc.robot.subsystems.vision.VisionSubsystem;
 

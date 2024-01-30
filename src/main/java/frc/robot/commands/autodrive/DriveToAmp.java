@@ -2,16 +2,14 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands;
+package frc.robot.commands.autodrive;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.BooleanSupplier;
 
-import com.pathplanner.lib.commands.PathfindHolonomic;
 import com.pathplanner.lib.path.GoalEndState;
-import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.path.PathPlannerTrajectory;
 import com.pathplanner.lib.path.PathPoint;
@@ -21,33 +19,25 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.TrajectoryConstants;
+import frc.robot.commands.drive.DriveCommandBase;
 import frc.robot.extras.SmarterDashboardRegistry;
 import frc.robot.subsystems.swerve.DriveSubsystem;
 import frc.robot.subsystems.vision.VisionSubsystem;
 
-public class DriveToPos extends DriveCommandBase {
+public class DriveToAmp extends DriveCommandBase {
   private DriveSubsystem driveSubsystem;
   private BooleanSupplier isFinished;
-  private Command controllerCommand;
   private Pose2d endPose;
-  private double finalX, finalY, finalRot;
 
-  // TODO: might not work, might just use NewDriveToPos.java instead
   /** Creates a new DriveToAmp. */
-  public DriveToPos(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, BooleanSupplier isFinished, double finalX, double finalY, double finalRot) {
+  public DriveToAmp(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, BooleanSupplier isFinished) {
     super(driveSubsystem, visionSubsystem);
     this.driveSubsystem = driveSubsystem;
     this.isFinished = isFinished;
-    this.finalX = finalX;
-    this.finalY = finalY;
-    this.finalRot = finalRot;
     addRequirements(visionSubsystem);
   }
 
@@ -57,28 +47,40 @@ public class DriveToPos extends DriveCommandBase {
     List<PathPoint> pathPoints = new ArrayList<PathPoint>();
     pathPoints.add(new PathPoint(driveSubsystem.getPose().getTranslation()));
 
-    pathPoints.add(new PathPoint(new Translation2d(finalX, finalY), new RotationTarget(0, Rotation2d.fromDegrees(finalRot))));
+    Optional<Alliance> alliance = DriverStation.getAlliance();
+    boolean isRed;
+    if (alliance.isPresent()) {
+      if (alliance.get() == Alliance.Red) {
+        isRed = true;
+        pathPoints.add(new PathPoint(new Translation2d(FieldConstants.RED_AMP_X, FieldConstants.RED_AMP_Y), new RotationTarget(0, FieldConstants.RED_AMP_ROTATION)));
+      } else {
+        isRed = false;
+        pathPoints.add(new PathPoint(new Translation2d(FieldConstants.BLUE_AMP_X, FieldConstants.BLUE_AMP_Y), new RotationTarget(0, FieldConstants.BLUE_AMP_ROTATION)));
+      }
+    } else {
+      isRed = true;
+      pathPoints.add(new PathPoint(new Translation2d(FieldConstants.RED_AMP_X, FieldConstants.RED_AMP_Y), new RotationTarget(0, FieldConstants.RED_AMP_ROTATION)));
+    }
 
     Rotation2d startRotation = driveSubsystem.getRotation2d();
-    PathPlannerPath path = PathPlannerPath.fromPathPoints(pathPoints, TrajectoryConstants.PATH_CONSTRAINTS, new GoalEndState(0, Rotation2d.fromDegrees(finalRot)));
+    PathPlannerPath path = PathPlannerPath.fromPathPoints(pathPoints, TrajectoryConstants.PATH_CONSTRAINTS, new GoalEndState(0, isRed ? FieldConstants.RED_AMP_ROTATION : FieldConstants.BLUE_AMP_ROTATION));
+    // PathPlannerPath path = new PathPlannerPath(pathPoints, TrajectoryConstants.PATH_CONSTRAINTS, new GoalEndState(0, FieldConstants.AMP_ROTATION));
     PathPlannerTrajectory trajectory = new PathPlannerTrajectory(path, new ChassisSpeeds(), startRotation);
 
-    controllerCommand = new RealTimeSwerveControllerCommand(
+    new RealTimeSwerveControllerCommand(
       trajectory, 
       SmarterDashboardRegistry::getPose, 
       (ChassisSpeeds speeds) -> driveSubsystem.drive(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, speeds.omegaRadiansPerSecond, false), 
       isFinished, 
       endPose, 
       driveSubsystem
-    );
-    controllerCommand.schedule();
- }
+    ).schedule();
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     super.execute();
-    
     // TODO: LEDs
     // if (Math.abs(endPose.getX() - driveSubsystem.getPose().getX()) < TrajectoryConstants.X_TOLERANCE
     //   && Math.abs(endPose.getY() - driveSubsystem.getPose().getY()) < TrajectoryConstants.Y_TOLERANCE
@@ -93,6 +95,6 @@ public class DriveToPos extends DriveCommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return controllerCommand.isFinished();
+    return false;
   }
 }
