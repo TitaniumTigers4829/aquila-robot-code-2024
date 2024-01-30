@@ -7,7 +7,6 @@ package frc.robot.commands;
 import java.util.function.BooleanSupplier;
 
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.commands.PathfindHolonomic;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -17,11 +16,11 @@ import frc.robot.subsystems.swerve.DriveSubsystem;
 import frc.robot.subsystems.vision.VisionSubsystem;
 
 public class NewSquaredDriveToPos extends DriveCommandBase {
-  DriveSubsystem driveSubsystem;
-  VisionSubsystem visionSubsystem;
+  private final DriveSubsystem driveSubsystem;
+  private final VisionSubsystem visionSubsystem;
 
-  BooleanSupplier isFinished;
-  double finalX, finalY, finalRot;
+  private final BooleanSupplier isFinished;
+  private final double finalX, finalY, finalRot;
 
   Command controllerCommand;
 
@@ -33,7 +32,7 @@ public class NewSquaredDriveToPos extends DriveCommandBase {
     this.finalX = finalX;
     this.finalY = finalY;
     this.finalRot = finalRot;
-
+    this.isFinished = isFinished;
     addRequirements(driveSubsystem, visionSubsystem);
   }
 

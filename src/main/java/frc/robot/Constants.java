@@ -246,8 +246,8 @@ public final class Constants {
     public static final double DRIVE_BASE_RADIUS = Math.sqrt(Math.pow(DriveConstants.TRACK_WIDTH, 2) + Math.pow(DriveConstants.WHEEL_BASE, 2));
     public static final double MAX_SPEED = 5.7;
     public static final double MAX_ACCELERATION = 3.5;
-    public static final double DEPLOYED_TRANSLATION_CONTROLLER_P = .35;
-    public static final double DEPLOYED_THETA_CONTROLLER_P = .8;
+    public static final double REALTIME_TRANSLATION_CONTROLLER_P = .35;
+    public static final double REALTIME_THETA_CONTROLLER_P = .8;
     // public static final double REAL_TIME_X_CONTROLLER_P = 2;
     // public static final double REAL_TIME_Y_CONTROLLER_P = 2;
     // public static final double REAL_TIME_THETA_CONTROLLER_P = 3;
@@ -259,8 +259,8 @@ public final class Constants {
     // The length of the field in the y direction (top to bottom)
     public static final double FIELD_WIDTH_METERS = 8.0137;
 
-    public static final PIDConstants TRANSLATION_CONSTANTS = new PIDConstants(DEPLOYED_TRANSLATION_CONTROLLER_P);
-    public static final PIDConstants ROTATION_CONSTANTS = new PIDConstants(DEPLOYED_THETA_CONTROLLER_P);
+    public static final PIDConstants TRANSLATION_CONSTANTS = new PIDConstants(REALTIME_TRANSLATION_CONTROLLER_P);
+    public static final PIDConstants ROTATION_CONSTANTS = new PIDConstants(REALTIME_THETA_CONTROLLER_P);
   
     // Constraint for the motion profiled robot angle controller
     public static final TrapezoidProfile.Constraints THETA_CONTROLLER_CONSTRAINTS =
@@ -273,8 +273,8 @@ public final class Constants {
     public static final double THETA_TOLERANCE = 1.25;
 
     public static final HolonomicPathFollowerConfig PATH_FOLLOWER_CONFIG = new HolonomicPathFollowerConfig(
-      new PIDConstants(DEPLOYED_TRANSLATION_CONTROLLER_P, 0, 0), // Translation constants 
-      new PIDConstants(DEPLOYED_THETA_CONTROLLER_P, 0, 0), // Rotation constants 
+      TRANSLATION_CONSTANTS, 
+      ROTATION_CONSTANTS, // Rotation constants 
       DriveConstants.MAX_SPEED_METERS_PER_SECOND, 
       0.4, // Drive base radius (distance from center to furthest module) 
       new ReplanningConfig()

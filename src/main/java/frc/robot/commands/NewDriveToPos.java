@@ -17,11 +17,11 @@ import frc.robot.subsystems.swerve.DriveSubsystem;
 import frc.robot.subsystems.vision.VisionSubsystem;
 
 public class NewDriveToPos extends DriveCommandBase {
-  DriveSubsystem driveSubsystem;
-  VisionSubsystem visionSubsystem;
+  private final DriveSubsystem driveSubsystem;
+  private final VisionSubsystem visionSubsystem;
 
-  BooleanSupplier isFinished;
-  double finalX, finalY, finalRot;
+  private final BooleanSupplier isFinished;
+  private final double finalX, finalY, finalRot;
 
   Command controllerCommand;
 
@@ -33,7 +33,7 @@ public class NewDriveToPos extends DriveCommandBase {
     this.finalX = finalX;
     this.finalY = finalY;
     this.finalRot = finalRot;
-
+    this.isFinished = isFinished;
     addRequirements(driveSubsystem, visionSubsystem);
   }
 
@@ -43,17 +43,19 @@ public class NewDriveToPos extends DriveCommandBase {
     // TODO: doesnt work without this line:
     driveSubsystem.resetOdometry(driveSubsystem.getPose());
 
+    // make a Pose2d object of the end pose
     Pose2d endPose = new Pose2d(finalX, finalY, Rotation2d.fromDegrees(finalRot));
 
+    // create the following command
     controllerCommand = new PathfindHolonomic(
       endPose,
       TrajectoryConstants.PATH_CONSTRAINTS,
-      0.0,
+      0.0, // end velocity
       driveSubsystem::getPose,
       driveSubsystem::getRobotRelativeSpeeds,
       driveSubsystem::drive,
       TrajectoryConstants.PATH_FOLLOWER_CONFIG,
-      0.0,
+      0.0, // distance to travel before rotating
       driveSubsystem
     );
 
@@ -63,6 +65,7 @@ public class NewDriveToPos extends DriveCommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    // updates the pose and whatnot
     super.execute();
   }
 
