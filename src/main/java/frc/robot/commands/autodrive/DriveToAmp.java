@@ -33,7 +33,7 @@ public class DriveToAmp extends DriveCommandBase {
   private BooleanSupplier isFinished;
   private Pose2d endPose;
 
-  // TODO: will probably just use DriveToPos.java
+  // TODO: will probably just use NewDriveToPos.java
   /** Creates a new DriveToAmp. */
   public DriveToAmp(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, BooleanSupplier isFinished) {
     super(driveSubsystem, visionSubsystem);

@@ -50,9 +50,9 @@ public final class Constants {
   }
 
   public static final class DriveConstants {
-    public static final double X_POS_TRUST = 0-9; //meters
-    public static final double Y_POS_TRUST = 0-9; //meters
-    public static final double ANGLE_TRUST = 0-9; //radians
+    public static final double X_POS_TRUST = 0.03; //meters
+    public static final double Y_POS_TRUST = 0.03; //meters
+    public static final double ANGLE_TRUST = 1; //radians
 
     // Wheel base and track width are measured by the center of the swerve modules, not the frame of the robot
     // Distance between centers of right and left wheels on robot
@@ -246,8 +246,8 @@ public final class Constants {
     public static final double DRIVE_BASE_RADIUS = Math.sqrt(Math.pow(DriveConstants.TRACK_WIDTH, 2) + Math.pow(DriveConstants.WHEEL_BASE, 2));
     public static final double MAX_SPEED = 5.7;
     public static final double MAX_ACCELERATION = 3.5;
-    public static final double REALTIME_TRANSLATION_CONTROLLER_P = .35;
-    public static final double REALTIME_THETA_CONTROLLER_P = .8;
+    public static final double REALTIME_TRANSLATION_CONTROLLER_P = 0;  // .35
+    public static final double REALTIME_THETA_CONTROLLER_P = 0;  // 0.8
     // public static final double REAL_TIME_X_CONTROLLER_P = 2;
     // public static final double REAL_TIME_Y_CONTROLLER_P = 2;
     // public static final double REAL_TIME_THETA_CONTROLLER_P = 3;

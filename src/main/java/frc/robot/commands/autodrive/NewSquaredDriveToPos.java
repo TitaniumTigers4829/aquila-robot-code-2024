@@ -40,10 +40,8 @@ public class NewSquaredDriveToPos extends DriveCommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    driveSubsystem.zeroHeading();
-    driveSubsystem.resetOdometry(new Pose2d());
-
-    Pose2d endPose = new Pose2d(finalX, finalY, Rotation2d.fromDegrees(finalRot));
+    // TODO: rotation?
+    Pose2d endPose = new Pose2d(finalX, finalY, new Rotation2d());
 
     controllerCommand = AutoBuilder.pathfindToPose(
       endPose,

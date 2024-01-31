@@ -4,16 +4,27 @@
 
 package frc.robot;
 
+import java.util.List;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.path.GoalEndState;
+import com.pathplanner.lib.path.PathConstraints;
+import com.pathplanner.lib.path.PathPlannerPath;
+
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.Constants.JoystickConstants;
+import frc.robot.Constants.TrajectoryConstants;
 import frc.robot.commands.autodrive.DriveToPos;
 import frc.robot.commands.autodrive.NewDriveToPos;
 import frc.robot.commands.autodrive.NewSquaredDriveToPos;
@@ -94,12 +105,36 @@ public class RobotContainer {
 
     JoystickButton driverAButton = new JoystickButton(driverJoystick, 1);
     // JoystickButton driverXButton = new JoystickButton(driverJoystick, 3);
-    BooleanSupplier driverAButtonSupplier = driverAButton::getAsBoolean;
+    // BooleanSupplier driverAButtonSupplier = driverAButton::getAsBoolean;
     // BooleanSupplier driverXButtonSupplier = driverXButton::getAsBoolean;
-    driverAButton.onTrue(new NewDriveToPos(driveSubsystem, visionSubsystem, driverAButtonSupplier, 5, 0, 0));
+    // driverAButton.onTrue(new NewDriveToPos(driveSubsystem, visionSubsystem, driverAButtonSupplier, 5, 0, 0));
     // driverXButton.onTrue(new NewSquaredDriveToPos(driveSubsystem, visionSubsystem, driverXButtonSupplier, 5, 1, 80));
 
-    driverRightDpad.onTrue(new InstantCommand(() -> driveSubsystem.resetOdometry(new Pose2d())));
+    driverAButton.onTrue(Commands.runOnce(()->{
+      Pose2d currentPose = driveSubsystem.getPose();
+      
+      // The rotation component in these poses represents the direction of travel
+      // Pose2d startPos = new Pose2d(6.591,3.989, new Rotation2d());
+      Pose2d endPos = new Pose2d(1.917, 7.516, new Rotation2d());
+
+      List<Translation2d> bezierPoints = PathPlannerPath.bezierFromPoses(currentPose, endPos);
+      PathPlannerPath path = new PathPlannerPath(
+        bezierPoints, 
+        new PathConstraints(
+          1, 1, 
+          Units.degreesToRadians(180), Units.degreesToRadians(270)
+        ),  
+        new GoalEndState(0.0, currentPose.getRotation())
+      );
+      // PathPlannerPath path = new PathPlannerPath(bezierPoints, TrajectoryConstants.PATH_CONSTRAINTS, new GoalEndState(0, currentPose.getRotation()));
+
+      // Prevent this path from being flipped on the red alliance, since the given positions are already correct
+      path.preventFlipping = true;
+
+      AutoBuilder.followPath(path).schedule();
+    }));
+
+    driverRightDpad.onTrue(new InstantCommand(() -> driveSubsystem.resetOdometry(new Pose2d(6.591,3.989, new Rotation2d()))));
     driverRightDpad.onTrue(new InstantCommand(driveSubsystem::zeroHeading));
   }
 
