@@ -1,11 +1,13 @@
 package frc.robot.subsystems.swerve;
 
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import java.util.Optional;
 
 import com.kauailabs.navx.frc.AHRS;
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.commands.PathfindHolonomic;
 
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.Vector;
@@ -14,16 +16,18 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.simulation.PDPSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.TrajectoryConstants;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.extras.SmarterDashboardRegistry;
 
@@ -47,6 +51,7 @@ public class DriveSubsystem extends SubsystemBase {
 
   private final AHRS gyro;
   private final SwerveDrivePoseEstimator odometry;
+  private Command currentPathfindingCommand;
 
   private final Optional<DriverStation.Alliance> alliance;
 
@@ -111,7 +116,6 @@ public class DriveSubsystem extends SubsystemBase {
     );
 
     alliance = DriverStation.getAlliance();
-
     
     // Configure AutoBuilder
     AutoBuilder.configureHolonomic(
@@ -235,6 +239,35 @@ public class DriveSubsystem extends SubsystemBase {
     };
 
     return swerveModulePositions;
+  }
+
+  public Command buildPathfindingCommand(double finalX, double finalY, double finalRot) {
+    Pose2d endPose = new Pose2d(finalX, finalY, Rotation2d.fromDegrees(finalRot));
+
+    // create the following command
+    currentPathfindingCommand = new PathfindHolonomic(
+      endPose,
+      TrajectoryConstants.PATH_CONSTRAINTS,
+      0.0, // end velocity
+      this::getPose,
+      this::getRobotRelativeSpeeds,
+      this::drive,
+      TrajectoryConstants.PATH_FOLLOWER_CONFIG,
+      0.0, // distance to travel before rotating
+      this
+    );
+
+    return currentPathfindingCommand;
+  }
+
+  public Command getPathfindingCommand() {
+    return currentPathfindingCommand;
+  }
+
+  public void cancelPathfindingCommand() {
+    if (currentPathfindingCommand != null) {
+      currentPathfindingCommand.cancel();
+    }
   }
 
   public void periodic() {

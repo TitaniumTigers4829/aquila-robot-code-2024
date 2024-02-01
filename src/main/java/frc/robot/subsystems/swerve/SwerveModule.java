@@ -217,6 +217,6 @@ public class SwerveModule {
   }
 
   public void periodicFunction() {
-    // SmartDashboard.putNumber(name + " Rotation", getCANCoderABS());
+    // SmartDashboard.putNumber(name + " rotation", getCANCoderABS());
   }
 }

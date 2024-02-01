@@ -110,29 +110,30 @@ public class RobotContainer {
     // driverAButton.onTrue(new NewDriveToPos(driveSubsystem, visionSubsystem, driverAButtonSupplier, 5, 0, 0));
     // driverXButton.onTrue(new NewSquaredDriveToPos(driveSubsystem, visionSubsystem, driverXButtonSupplier, 5, 1, 80));
 
-    driverAButton.onTrue(Commands.runOnce(()->{
-      Pose2d currentPose = driveSubsystem.getPose();
+    driverAButton.whileTrue(driveSubsystem.buildPathfindingCommand(1.917, 7.516, 0));
+    // driverAButton.onTrue(Commands.runOnce(()->{
+    //   Pose2d currentPose = driveSubsystem.getPose();
       
-      // The rotation component in these poses represents the direction of travel
-      // Pose2d startPos = new Pose2d(6.591,3.989, new Rotation2d());
-      Pose2d endPos = new Pose2d(1.917, 7.516, new Rotation2d());
+    //   // The rotation component in these poses represents the direction of travel
+    //   // Pose2d startPos = new Pose2d(6.591,3.989, new Rotation2d());
+    //   Pose2d endPos = new Pose2d(1.917, 7.516, new Rotation2d());
 
-      List<Translation2d> bezierPoints = PathPlannerPath.bezierFromPoses(currentPose, endPos);
-      PathPlannerPath path = new PathPlannerPath(
-        bezierPoints, 
-        new PathConstraints(
-          1, 1, 
-          Units.degreesToRadians(180), Units.degreesToRadians(270)
-        ),  
-        new GoalEndState(0.0, currentPose.getRotation())
-      );
-      // PathPlannerPath path = new PathPlannerPath(bezierPoints, TrajectoryConstants.PATH_CONSTRAINTS, new GoalEndState(0, currentPose.getRotation()));
+    //   List<Translation2d> bezierPoints = PathPlannerPath.bezierFromPoses(currentPose, endPos);
+    //   PathPlannerPath path = new PathPlannerPath(
+    //     bezierPoints, 
+    //     new PathConstraints(
+    //       1, 1, 
+    //       Units.degreesToRadians(180), Units.degreesToRadians(270)
+    //     ),  
+    //     new GoalEndState(0.0, currentPose.getRotation())
+    //   );
+    //   // PathPlannerPath path = new PathPlannerPath(bezierPoints, TrajectoryConstants.PATH_CONSTRAINTS, new GoalEndState(0, currentPose.getRotation()));
 
-      // Prevent this path from being flipped on the red alliance, since the given positions are already correct
-      path.preventFlipping = true;
+    //   // Prevent this path from being flipped on the red alliance, since the given positions are already correct
+    //   path.preventFlipping = true;
 
-      AutoBuilder.followPath(path).schedule();
-    }));
+    //   AutoBuilder.followPath(path).schedule();
+    // }));
 
     driverRightDpad.onTrue(new InstantCommand(() -> driveSubsystem.resetOdometry(new Pose2d(6.591,3.989, new Rotation2d()))));
     driverRightDpad.onTrue(new InstantCommand(driveSubsystem::zeroHeading));
