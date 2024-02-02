@@ -34,7 +34,7 @@ public final class Constants {
   public static final class HardwareConstants {
     public static final double TIMEOUT_S = 0.05;
 
-    public static final double SIGNAL_FREQUENCY = 250;
+    public static final double SIGNAL_FREQUENCY = 75;
 
     public static final String CANIVORE_CAN_BUS_STRING = "canivore 1";
     public static final String RIO_CAN_BUS_STRING = "rio";
