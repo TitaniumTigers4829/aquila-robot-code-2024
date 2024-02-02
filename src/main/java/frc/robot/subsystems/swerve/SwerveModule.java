@@ -6,6 +6,7 @@ import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
+import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -112,9 +113,8 @@ public class SwerveModule {
     turnMotor.setPosition(0);
 
     BaseStatusSignal.setUpdateFrequencyForAll(HardwareConstants.SIGNAL_FREQUENCY, turnEncoderPos, driveMotorPosition, driveMotorVelocity);
-
-    turnEncoder.optimizeBusUtilization(HardwareConstants.TIMEOUT_S);
-    driveMotor.optimizeBusUtilization(HardwareConstants.TIMEOUT_S);
+    
+    ParentDevice.optimizeBusUtilizationForAll(turnEncoder, driveMotor, turnMotor);
 
   }
 
