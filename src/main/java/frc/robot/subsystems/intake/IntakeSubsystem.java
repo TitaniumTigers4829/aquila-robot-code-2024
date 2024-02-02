@@ -18,8 +18,6 @@ public class IntakeSubsystem extends SubsystemBase {
   public IntakeSubsystem() {
     intakeMotor = new TalonFX(IntakeConstants.INTAKE_MOTOR_ID);
 
-    
-
     BaseStatusSignal.setUpdateFrequencyForAll(HardwareConstants.SIGNAL_FREQUENCY);
 
     intakeMotor.optimizeBusUtilization(HardwareConstants.TIMEOUT_S);
