@@ -48,6 +48,7 @@ public class Drive extends DriveCommandBase {
       isFieldRelative.getAsBoolean()
     );
 
+    // Runs all the code from DriveCommandBase that estimates pose
     super.execute();
   }
 
