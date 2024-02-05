@@ -10,6 +10,7 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -45,13 +46,14 @@ public class ShooterSubsystem extends SubsystemBase {
     shooterConfig.Slot0.kD = ShooterConstants.SHOOT_D;
 
     shooterConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+    shooterConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive; 
     shooterConfig.MotorOutput.DutyCycleNeutralDeadband = HardwareConstants.MIN_FALCON_DEADBAND;
     leaderFlywheel.getConfigurator().apply(shooterConfig, HardwareConstants.TIMEOUT_S);
-    
+    shooterConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+    followerFlywheel.getConfigurator().apply(shooterConfig);
 
     TalonFXConfiguration rollerConfig = new TalonFXConfiguration();
     rollerMotor.getConfigurator().apply(rollerConfig);
-
 
     shooterVelocity = leaderFlywheel.getVelocity();
 

@@ -238,7 +238,7 @@ public final class Constants {
     public static double[][] SPEAKER_PIVOT_POSITION = {
       {Units.feetToMeters(5.5), 0},
       {Units.feetToMeters(7), 1},
-      {Units.feetToMeters(8.5), 2}, // 1600  // 1615
+      {Units.feetToMeters(8.5), 2}, 
       {Units.feetToMeters(10), 3},
       {Units.feetToMeters(11.5), 4},
       {Units.feetToMeters(13), 5},
@@ -278,7 +278,7 @@ public final class Constants {
     public static double[][] SPEAKER_SHOOT_RPMS = {
       {Units.feetToMeters(5.5), 1770},
       {Units.feetToMeters(7), 1665},
-      {Units.feetToMeters(8.5), 1560}, // 1600  // 1615
+      {Units.feetToMeters(8.5), 1560}, 
       {Units.feetToMeters(10), 1350},
       {Units.feetToMeters(11.5), 1300},
       {Units.feetToMeters(13), 1280},
@@ -289,7 +289,7 @@ public final class Constants {
     public static double[][] SPEAKER_PIVOT_POSITION = {
       {Units.feetToMeters(5.5), 0},
       {Units.feetToMeters(7), 1},
-      {Units.feetToMeters(8.5), 2}, // 1600  // 1615
+      {Units.feetToMeters(8.5), 2}, 
       {Units.feetToMeters(10), 3},
       {Units.feetToMeters(11.5), 4},
       {Units.feetToMeters(13), 5},
@@ -304,6 +304,7 @@ public final class Constants {
     public static final double MAX_ACCELERATION = 3.5;
     public static final double DEPLOYED_TRANSLATION_CONTROLLER_P = .35;
     public static final double DEPLOYED_THETA_CONTROLLER_P = .8;
+    public static final double AUTO_SHOOT_HEADING_OFFSET = 2;
     // public static final double REAL_TIME_X_CONTROLLER_P = 2;
     // public static final double REAL_TIME_Y_CONTROLLER_P = 2;
     // public static final double REAL_TIME_THETA_CONTROLLER_P = 3;
