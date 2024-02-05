@@ -85,7 +85,7 @@ public class PivotSubsystem extends SubsystemBase {
   }
 
   /**
-   * gets the target angle of the pivot motors
+   * gets the target angle of the pivot motors in degrees
    * @param distance the distance from speaker
    * @return the target angle
    */
@@ -95,8 +95,8 @@ public class PivotSubsystem extends SubsystemBase {
   }
 
   /**
-   * uses distance from the speaker to set the pivot angle of the shooter
-   * @param distance the distance from the speaker
+   * uses distance in meters from the speaker to set the pivot angle (degrees) of the shooter
+   * @param distance the distance in meters from the speaker
    */
   public void setPivotFromDistance(double distance) {
     double angle = speakerAngleLookupValues.getLookupValue(distance);
@@ -105,7 +105,7 @@ public class PivotSubsystem extends SubsystemBase {
 
   /**
    * sets the pivot using the leader/follower motors
-   * @param angle the angle to set
+   * @param angle the angle (degrees) to set
    */
   public void setPivot(double angle) {
     MotionMagicVoltage output = new MotionMagicVoltage(angle / 360.0);
@@ -114,7 +114,7 @@ public class PivotSubsystem extends SubsystemBase {
   }
 
   /**
-   * sets the angle of the pivot motors to a neutral position
+   * sets the angle (degrees) of the pivot motors to a neutral position
    */
   public void setPivotMotorToNeutral() {
     setPivot(PivotConstants.PIVOT_NEUTRAL_ANGLE);

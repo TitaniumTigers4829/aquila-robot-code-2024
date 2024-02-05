@@ -56,7 +56,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
   /**
    * sets the speed of the flywheel
-   * @param speed the speed of the flywheel
+   * @param speed the speed (m/s) of the flywheel
    */
   public void setShooterSpeed(double speed) {
     leaderFlywheel.set(speed);
@@ -65,7 +65,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
   /**
    * sets the speed of the rollers to transfer note from tower to shooter
-   * @param speed speed of the rollers
+   * @param speed speed (m/s) of the rollers
    */
   public void setRollerSpeed(double speed) {
     rollerMotor.set(speed);
@@ -73,7 +73,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
   /**
    * the error between the target rpm and actual rpm of the shooter
-   * @param distance the distance to target
+   * @param distance the distance (meters) to target
    * @return True if we are within an acceptable range (of rpm) to shoot
    */
   public boolean isShooterWithinAcceptableError(double distance) {
@@ -92,7 +92,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
 
   /**
-   * sets flywheel speed to 0
+   * sets flywheel speed (m/s) to 0
    */
   public void setFlywheelNeutral() {
     leaderFlywheel.set(0);
@@ -110,7 +110,7 @@ public class ShooterSubsystem extends SubsystemBase {
   /**
    * sets the shooter rpm from a lookup table of 
    * values and the distance to the speaker
-   * @param distance the distance from the speaker
+   * @param distance the distance (meters) from the speaker
    */
   public void setShooterRPMFromDistance(double distance) {
     double rpm = speakerSpeedValues.getLookupValue(distance);
@@ -128,7 +128,7 @@ public class ShooterSubsystem extends SubsystemBase {
   
   /**
    * gets the target RPM of the shooter based on distance from the speaker
-   * @param distance the distance from the speaker
+   * @param distance the distance (meters) from the speaker
    * @return the target rpm
    */
   public double getShooterTargetRPM(double distance) {
