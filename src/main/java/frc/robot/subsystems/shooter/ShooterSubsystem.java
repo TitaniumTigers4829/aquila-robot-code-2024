@@ -63,8 +63,8 @@ public class ShooterSubsystem extends SubsystemBase {
     rollerMotor.set(speed);
   }
 
-  public boolean isShooterWithinAcceptableError(double leftMotorTargetRPM) {
-    return Math.abs(leftMotorTargetRPM - getShooterRPM()) < 20;
+  public boolean isShooterWithinAcceptableError(double distance) {
+    return Math.abs(getShooterTargetRPM(distance) - getShooterRPM()) < 20;
   }
 
   public void setRPM(double leaderRPM) {
@@ -94,6 +94,11 @@ public class ShooterSubsystem extends SubsystemBase {
   public double getShooterRPM() {
     shooterVelocity.refresh();
     return shooterVelocity.getValueAsDouble() * 60;
+  }
+
+  public double getShooterTargetRPM(double distance) {
+    double rpm = speakerSpeedValues.getLookupValue(distance);
+    return rpm;
   }
   
   @Override

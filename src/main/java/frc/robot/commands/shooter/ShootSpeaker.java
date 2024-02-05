@@ -26,7 +26,6 @@ import frc.robot.subsystems.vision.VisionSubsystem;
 public class ShootSpeaker extends DriveCommandBase {
   private final DriveSubsystem driveSubsystem;
   private final ShooterSubsystem shooterSubsystem;
-  private final VisionSubsystem visionSubsystem;
   private final PivotSubsystem pivotSubsystem;
 
   private final DoubleSupplier leftX, leftY;
@@ -50,7 +49,6 @@ public class ShootSpeaker extends DriveCommandBase {
     super(driveSubsystem, visionSubsystem);
     this.driveSubsystem = driveSubsystem;
     this.shooterSubsystem = shooterSubsystem;
-    this.visionSubsystem = visionSubsystem;
     this.pivotSubsystem = pivotSubsystem;
     this.leftX = leftX;
     this.leftY = leftY;
@@ -64,7 +62,7 @@ public class ShootSpeaker extends DriveCommandBase {
     Optional<Alliance> alliance = DriverStation.getAlliance();
     //if alliance is detected
     if (alliance.isPresent()) {
-      //and it's red, we're red
+      //and if it's red, we're red
       isRed = alliance.get() == Alliance.Red;
     } else {
       //otherwise default to blue alliance
@@ -89,12 +87,12 @@ public class ShootSpeaker extends DriveCommandBase {
     // get PID output
     double turnOutput = turnController.calculate(headingError, 0);
 
-    double shootDistance = shooterSubsystem.getShooterRPM();
-    double pivotAngle = pivotSubsystem.getRotation();
+    double shootDistance = shooterSubsystem.getShooterTargetRPM(distance);
+    double pivotTarget = pivotSubsystem.getPivotTarget(distance);
     // allow the driver to drive slowly (NOT full speed - will mess up shooter)
     driveSubsystem.drive(
-      leftX.getAsDouble() /2, 
-      leftY.getAsDouble() /2, 
+      leftX.getAsDouble() / 2, 
+      leftY.getAsDouble() / 2, 
       turnOutput, 
       isFieldRelative.getAsBoolean()
     );
@@ -104,7 +102,7 @@ public class ShootSpeaker extends DriveCommandBase {
 
     
     // if we are ready to shoot:
-    if (isReadyToShoot(shootDistance, pivotAngle)) {
+    if (isReadyToShoot(shootDistance, pivotTarget)) {
       // feed the note into the flywheels
       shooterSubsystem.setRollerSpeed(ShooterConstants.ROLLER_SPEED);
     }

@@ -63,22 +63,32 @@ public class PivotSubsystem extends SubsystemBase {
     ParentDevice.optimizeBusUtilizationForAll(leaderPivotMotor, followerPivotMotor, pivotEncoder);
   }
 
-  /* 
-   * gets rotation of pivot in degrees
+  /**
+   * @return rotation of pivot in degrees
   */
   public double getRotation() {
     pivotPos.refresh();
     return pivotPos.getValueAsDouble() * 360;
   }
 
-  /* 
+  /**
    * returns if the pivot is within an acceptable rotation 
    * in relation to the target position
+   *@param pivotTargetDistance from speaker to the robot in meters
+   *@return pivot error between desired and actual state in degrees
   */
-  public boolean isPivotWithinAcceptableError(double pivotPosition) {
-    return Math.abs(pivotPosition - getRotation()) < 2;
+  public boolean isPivotWithinAcceptableError(double pivotTargetDistance) {
+    return Math.abs(getPivotTarget(pivotTargetDistance) - getRotation()) < 2;
   }
 
+  public double getPivotTarget(double distance) {
+    double targetAngle = speakerAngleLookupValues.getLookupValue(distance);
+    return targetAngle;
+  }
+
+  /**
+   * 
+   */
   public void setShooterPivotFromDistance(double distance) {
     double angle = speakerAngleLookupValues.getLookupValue(distance);
     setShooterPivot(angle);
