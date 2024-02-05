@@ -26,6 +26,7 @@ public class PivotSubsystem extends SubsystemBase {
 
   private final TalonFX leaderPivotMotor;
   private final TalonFX followerPivotMotor;
+  private final Follower follower;
 
   private final SingleLinearInterpolator speakerAngleLookupValues;
 
@@ -39,6 +40,8 @@ public class PivotSubsystem extends SubsystemBase {
     pivotEncoder = new CANcoder(PivotConstants.PIVOT_ENCODER_ID);
 
     speakerAngleLookupValues = new SingleLinearInterpolator(PivotConstants.SPEAKER_PIVOT_POSITION);
+
+    follower = new Follower(leaderPivotMotor.getDeviceID(), true);
 
     CANcoderConfiguration turnEncoderConfig = new CANcoderConfiguration();
     turnEncoderConfig.MagnetSensor.MagnetOffset = -PivotConstants.ANGLE_ZERO;
@@ -81,29 +84,40 @@ public class PivotSubsystem extends SubsystemBase {
     return Math.abs(getPivotTarget(pivotTargetDistance) - getRotation()) < 2;
   }
 
+  /**
+   * gets the target angle of the pivot motors
+   * @param distance the distance from speaker
+   * @return the target angle
+   */
   public double getPivotTarget(double distance) {
     double targetAngle = speakerAngleLookupValues.getLookupValue(distance);
     return targetAngle;
   }
 
   /**
-   * 
+   * uses distance from the speaker to set the pivot angle of the shooter
+   * @param distance the distance from the speaker
    */
-  public void setShooterPivotFromDistance(double distance) {
+  public void setPivotFromDistance(double distance) {
     double angle = speakerAngleLookupValues.getLookupValue(distance);
-    setShooterPivot(angle);
+    setPivot(angle);
   }
 
-  public void setShooterPivot(double angle) {
+  /**
+   * sets the pivot using the leader/follower motors
+   * @param angle the angle to set
+   */
+  public void setPivot(double angle) {
     MotionMagicVoltage output = new MotionMagicVoltage(angle / 360.0);
     leaderPivotMotor.setControl(output);
-    Follower follower = new Follower(leaderPivotMotor.getDeviceID(), true);
     followerPivotMotor.setControl(follower);
   }
 
+  /**
+   * sets the angle of the pivot motors to a neutral position
+   */
   public void setPivotMotorToNeutral() {
-    leaderPivotMotor.set(0);
-    followerPivotMotor.set(0);
+    setPivot(PivotConstants.PIVOT_NEUTRAL_ANGLE);
   }
   
   @Override

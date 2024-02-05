@@ -30,10 +30,9 @@ public class SwerveModule {
 
   private final ProfiledPIDController turnController;
  
-  StatusSignal<Double> driveMotorPosition;
-  StatusSignal<Double> driveMotorVelocity;
-  StatusSignal<Double> turnEncoderPos;
-  StatusSignal<Double> turnMotorPos;
+  private StatusSignal<Double> driveMotorPosition;
+  private StatusSignal<Double> driveMotorVelocity;
+  private StatusSignal<Double> turnEncoderPos;
 
   private String name;
 
@@ -44,7 +43,9 @@ public class SwerveModule {
    * @param turnEncoderChannel ID of the CANCoder
    * @param angleZero CANCoder offset
    * @param encoderReversed is the turn encoder reversed
+   * @param turnReversed is the turn motor reversed
    * @param driveReversed is the drive motor reversed
+   * @param name name of the motor
    */
   public SwerveModule(
     int driveMotorChannel,

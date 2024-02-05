@@ -33,7 +33,7 @@ public class ShootSpeaker extends DriveCommandBase {
 
   private double headingError = 0;
 
-  ProfiledPIDController turnController = new ProfiledPIDController(
+  private final ProfiledPIDController turnController = new ProfiledPIDController(
     ShooterConstants.AUTO_SHOOT_P,
     ShooterConstants.AUTO_SHOOT_I, 
     ShooterConstants.AUTO_SHOOT_D, 
@@ -98,7 +98,7 @@ public class ShootSpeaker extends DriveCommandBase {
     );
 
     shooterSubsystem.setShooterRPMFromDistance(distance);
-    pivotSubsystem.setShooterPivotFromDistance(distance);
+    pivotSubsystem.setPivotFromDistance(distance);
 
     
     // if we are ready to shoot:
@@ -111,7 +111,7 @@ public class ShootSpeaker extends DriveCommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    shooterSubsystem.setLeftMotorToNeutral();
+    shooterSubsystem.setFlywheelNeutral();
     pivotSubsystem.setPivotMotorToNeutral();
   }
 

@@ -23,6 +23,10 @@ public class IntakeSubsystem extends SubsystemBase {
     intakeMotor.optimizeBusUtilization(HardwareConstants.TIMEOUT_S);
   }
 
+  /**
+   * sets the intake speed
+   * @param speed the speed to set
+   */
   public void setIntakeSpeed(double speed) {
     intakeMotor.set(speed);
   }

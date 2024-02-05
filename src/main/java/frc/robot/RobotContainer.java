@@ -29,7 +29,6 @@ public class RobotContainer {
     visionSubsystem = new VisionSubsystem();
     driveSubsystem = new DriveSubsystem(); 
     shooterSubsystem = new ShooterSubsystem();
-
   }
   
   private static double deadband(double value, double deadband) {

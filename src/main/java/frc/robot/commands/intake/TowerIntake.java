@@ -8,7 +8,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.ShooterConstants;
-import frc.robot.Constants.TowerConstants;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.pivot.PivotSubsystem;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
@@ -28,12 +27,14 @@ public class TowerIntake extends Command {
 
   @Override
   public void execute() {
-    pivotSubsystem.setShooterPivot(PivotConstants.PIVOT_ANGLE);
+    pivotSubsystem.setPivot(PivotConstants.PIVOT_INTAKE_ANGLE);
 
-    if (shooterSubsystem.getSensor()) {
+    //if the sensor senses a note, don't intake
+    if (!shooterSubsystem.getSensor()) {
       intakeSubsystem.setIntakeSpeed(0);
       shooterSubsystem.setRollerSpeed(0);
     } else {
+      //otherwise intake
       intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_MOTOR_SPEED);
       shooterSubsystem.setRollerSpeed(ShooterConstants.ROLLER_SPEED);
     }

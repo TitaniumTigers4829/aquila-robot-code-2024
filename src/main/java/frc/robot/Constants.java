@@ -43,9 +43,6 @@ public final class Constants {
 
     public static final PneumaticsModuleType PNEUMATICS_MODULE_TYPE = PneumaticsModuleType.CTREPCM;
 
-    public static final double TIMEOUT_MS = 10;
-
-
   }
 
   public static final class DriveConstants {
@@ -233,7 +230,7 @@ public final class Constants {
     public static final int LEADER_PIVOT_MOTOR_ID = 0-9;
     public static final int FOLLOWER_PIVOT_MOTOR_ID = 0-9;
     public static final int PIVOT_ENCODER_ID = 0-9;
-    public static final double PIVOT_ANGLE = 0.0;
+    public static final double PIVOT_INTAKE_ANGLE = 0.0;
 
     public static final double PIVOT_P = 0.0;
     public static final double PIVOT_I = 0.0;
@@ -245,6 +242,8 @@ public final class Constants {
 
     public static final double SHOOT_AMP_ANGLE = 1-9;
     public static final double PIVOT_ACCEPTABLE_ERROR = 1;
+
+    public static final double PIVOT_NEUTRAL_ANGLE = 0-9;
 
     public static double[][] SPEAKER_PIVOT_POSITION = {
       //distance, angle
