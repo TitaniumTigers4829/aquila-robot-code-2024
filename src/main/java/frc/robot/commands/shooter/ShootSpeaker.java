@@ -62,10 +62,13 @@ public class ShootSpeaker extends DriveCommandBase {
   @Override
   public void initialize() {
     Optional<Alliance> alliance = DriverStation.getAlliance();
+    //if alliance is detected
     if (alliance.isPresent()) {
+      //and it's red, we're red
       isRed = alliance.get() == Alliance.Red;
     } else {
-      isRed = true;
+      //otherwise default to blue alliance
+      isRed = false;
     }
     speakerPos = isRed ? new Translation2d(FieldConstants.RED_SPEAKER_X, FieldConstants.RED_SPEAKER_Y) : new Translation2d(FieldConstants.BLUE_SPEAKER_X, FieldConstants.BLUE_SPEAKER_Y);
   }
@@ -85,10 +88,13 @@ public class ShootSpeaker extends DriveCommandBase {
     headingError = driveSubsystem.getHeading() - desiredHeading;
     // get PID output
     double turnOutput = turnController.calculate(headingError, 0);
+
+    double shootDistance = shooterSubsystem.getShooterRPM();
+    double pivotAngle = pivotSubsystem.getRotation();
     // allow the driver to drive slowly (NOT full speed - will mess up shooter)
     driveSubsystem.drive(
-      leftX.getAsDouble(), 
-      leftY.getAsDouble(), 
+      leftX.getAsDouble() /2, 
+      leftY.getAsDouble() /2, 
       turnOutput, 
       isFieldRelative.getAsBoolean()
     );
@@ -96,8 +102,9 @@ public class ShootSpeaker extends DriveCommandBase {
     shooterSubsystem.setShooterRPMFromDistance(distance);
     pivotSubsystem.setShooterPivotFromDistance(distance);
 
+    
     // if we are ready to shoot:
-    if (isReadyToShoot()) {
+    if (isReadyToShoot(shootDistance, pivotAngle)) {
       // feed the note into the flywheels
       shooterSubsystem.setRollerSpeed(ShooterConstants.ROLLER_SPEED);
     }
@@ -115,8 +122,8 @@ public class ShootSpeaker extends DriveCommandBase {
   public boolean isFinished() {
     return false;
   }
-
-  public boolean isReadyToShoot() {
-    return (Math.abs(headingError) < DriveConstants.HEADING_ACCEPTABLE_ERROR) && (shooterSubsystem.isShooterWithinAcceptableError()) && (pivotSubsystem.isPivotWithinAcceptableError());
+  public boolean isReadyToShoot(double shootTargetDistance, double pivotTargetPos) {
+    return Math.abs(headingError) < DriveConstants.HEADING_ACCEPTABLE_ERROR_DEGREES && shooterSubsystem.isShooterWithinAcceptableError(shootTargetDistance) && pivotSubsystem.isPivotWithinAcceptableError(pivotTargetPos);
   }
+
 }

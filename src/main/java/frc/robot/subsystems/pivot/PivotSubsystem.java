@@ -32,9 +32,8 @@ public class PivotSubsystem extends SubsystemBase {
 
   private final SingleLinearInterpolator speakerAngleLookupValues;
 
-  private final StatusSignal<Double> pivotSpeakerPosition;
+  private final StatusSignal<Double> pivotPos;
 
-  private double pivotMotorTargetPosition;
 
   /** Creates a new PivotSubsystem. */
   public PivotSubsystem() {
@@ -61,18 +60,25 @@ public class PivotSubsystem extends SubsystemBase {
     pivotConfig.Feedback.FeedbackRemoteSensorID = pivotEncoder.getDeviceID();
     leaderPivotMotor.getConfigurator().apply(pivotConfig);
 
-    pivotSpeakerPosition = pivotEncoder.getAbsolutePosition();
+    pivotPos = pivotEncoder.getAbsolutePosition();
 
-    BaseStatusSignal.setUpdateFrequencyForAll(100, pivotSpeakerPosition);
+    BaseStatusSignal.setUpdateFrequencyForAll(HardwareConstants.SIGNAL_FREQUENCY, pivotPos);
     ParentDevice.optimizeBusUtilizationForAll(leaderPivotMotor, followerPivotMotor, pivotEncoder);
   }
 
+  /* 
+   * gets rotation of pivot in degrees
+  */
   public double getRotation() {
-    pivotSpeakerPosition.refresh();
-    return pivotSpeakerPosition.getValueAsDouble() * 360;
+    pivotPos.refresh();
+    return pivotPos.getValueAsDouble() * 360;
   }
 
-  public boolean isPivotWithinAcceptableError() {
+  /* 
+   * returns if the pivot is within an acceptable rotation 
+   * in relation to the target position
+  */
+  public boolean isPivotWithinAcceptableError(double pivotMotorTargetPosition) {
     return Math.abs(pivotMotorTargetPosition - getRotation()) < 2;
   }
 
@@ -82,7 +88,6 @@ public class PivotSubsystem extends SubsystemBase {
   }
 
   public void setShooterPivot(double angle) {
-    pivotMotorTargetPosition = angle * 360;
     MotionMagicVoltage output = new MotionMagicVoltage(angle / 360.0);
     leaderPivotMotor.setControl(output);
     Follower follower = new Follower(leaderPivotMotor.getDeviceID(), true);

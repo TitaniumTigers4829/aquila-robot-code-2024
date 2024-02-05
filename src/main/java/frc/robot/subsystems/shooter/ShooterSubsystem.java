@@ -20,9 +20,7 @@ public class ShooterSubsystem extends SubsystemBase {
   private final TalonFX followerFlywheel;
   private final TalonFX rollerMotor;
 
-  private double leftMotorTargetRPM;
-
-  StatusSignal<Double> shooterVelocity;
+  private StatusSignal<Double> shooterVelocity;
 
   private SingleLinearInterpolator speakerSpeedValues;
 
@@ -51,13 +49,8 @@ public class ShooterSubsystem extends SubsystemBase {
 
     shooterVelocity = leaderFlywheel.getVelocity();
 
-    BaseStatusSignal.setUpdateFrequencyForAll(250, shooterVelocity);
+    BaseStatusSignal.setUpdateFrequencyForAll(HardwareConstants.SIGNAL_FREQUENCY, shooterVelocity);
     leaderFlywheel.optimizeBusUtilization(HardwareConstants.TIMEOUT_S);
-  }
-
-  public double getLeftShooterRPM() {
-    shooterVelocity.refresh();
-    return shooterVelocity.getValueAsDouble() * 60;
   }
 
   public void setShooterSpeed(double speed) {
@@ -70,14 +63,13 @@ public class ShooterSubsystem extends SubsystemBase {
     rollerMotor.set(speed);
   }
 
-  public boolean isShooterWithinAcceptableError() {
-    return Math.abs(leftMotorTargetRPM - getLeftShooterRPM()) < 20;
+  public boolean isShooterWithinAcceptableError(double leftMotorTargetRPM) {
+    return Math.abs(leftMotorTargetRPM - getShooterRPM()) < 20;
   }
 
-  public void setRPM(double leftRPMMotor) {
-    leftMotorTargetRPM = leftRPMMotor;
-    VelocityVoltage leftSpeed = new VelocityVoltage(leftRPMMotor / 60.0);
-    leaderFlywheel.setControl(leftSpeed);
+  public void setRPM(double leaderRPM) {
+    VelocityVoltage leaderSpeed = new VelocityVoltage(leaderRPM / 60.0);
+    leaderFlywheel.setControl(leaderSpeed);
     Follower follower = new Follower(leaderFlywheel.getDeviceID(), true);
     followerFlywheel.setControl(follower);
   }
@@ -97,6 +89,11 @@ public class ShooterSubsystem extends SubsystemBase {
   public void setShooterRPMFromDistance(double distance) {
     double rpm = speakerSpeedValues.getLookupValue(distance);
     setRPM(rpm);
+  }
+  
+  public double getShooterRPM() {
+    shooterVelocity.refresh();
+    return shooterVelocity.getValueAsDouble() * 60;
   }
   
   @Override

@@ -107,7 +107,7 @@ public final class Constants {
 
     public static final double MAX_SPEED_METERS_PER_SECOND = 5.7;
 
-    public static final double HEADING_ACCEPTABLE_ERROR = 2;
+    public static final double HEADING_ACCEPTABLE_ERROR_DEGREES = 2;
   }
   
   public static final class ModuleConstants { 
@@ -247,6 +247,7 @@ public final class Constants {
     public static final double PIVOT_ACCEPTABLE_ERROR = 1;
 
     public static double[][] SPEAKER_PIVOT_POSITION = {
+      //distance, angle
       {Units.feetToMeters(5.5), 0},
       {Units.feetToMeters(7), 1},
       {Units.feetToMeters(8.5), 2}, // 1600  // 1615
@@ -286,6 +287,7 @@ public final class Constants {
     public static Constraints AUTO_SHOOT_CONSTRAINTS = new Constraints(DriveConstants.MAX_ANGULAR_SPEED_RADIANS_PER_SECOND, 5);
 
     public static double[][] SPEAKER_SHOOT_RPMS = {
+      //distance, rpm
       {Units.feetToMeters(5.5), 1770},
       {Units.feetToMeters(7), 1665},
       {Units.feetToMeters(8.5), 1560}, // 1600  // 1615
@@ -295,17 +297,6 @@ public final class Constants {
       {Units.feetToMeters(14.5), 1260},
       {Units.feetToMeters(16), 1300}
   };
-
-    public static double[][] SPEAKER_PIVOT_POSITION = {
-      {Units.feetToMeters(5.5), 0},
-      {Units.feetToMeters(7), 1},
-      {Units.feetToMeters(8.5), 2}, // 1600  // 1615
-      {Units.feetToMeters(10), 3},
-      {Units.feetToMeters(11.5), 4},
-      {Units.feetToMeters(13), 5},
-      {Units.feetToMeters(14.5), 6},
-      {Units.feetToMeters(16), 7}
-    };
   }
 
   public static final class TrajectoryConstants {
