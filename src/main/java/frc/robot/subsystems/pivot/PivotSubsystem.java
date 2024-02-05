@@ -14,13 +14,10 @@ import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
-import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.HardwareConstants;
-import frc.robot.Constants.PivotConstants;
-import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.PivotConstants;
 import frc.robot.extras.SingleLinearInterpolator;
 
@@ -78,8 +75,8 @@ public class PivotSubsystem extends SubsystemBase {
    * returns if the pivot is within an acceptable rotation 
    * in relation to the target position
   */
-  public boolean isPivotWithinAcceptableError(double pivotMotorTargetPosition) {
-    return Math.abs(pivotMotorTargetPosition - getRotation()) < 2;
+  public boolean isPivotWithinAcceptableError(double pivotPosition) {
+    return Math.abs(pivotPosition - getRotation()) < 2;
   }
 
   public void setShooterPivotFromDistance(double distance) {

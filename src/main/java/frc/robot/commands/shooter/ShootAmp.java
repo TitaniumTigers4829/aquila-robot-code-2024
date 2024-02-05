@@ -30,8 +30,8 @@ public class ShootAmp extends Command {
   @Override
   public void execute() {
     pivotSubsystem.setShooterPivot(PivotConstants.SHOOT_AMP_ANGLE);
-
-    if (pivotSubsystem.isPivotWithinAcceptableError()) {
+    double pivotAngle = pivotSubsystem.getRotation();
+    if (pivotSubsystem.isPivotWithinAcceptableError(pivotAngle)) {
       shooterSubsystem.setShooterSpeed(ShooterConstants.SHOOT_AMP_SPEED);
       shooterSubsystem.setRollerSpeed(ShooterConstants.ROLLER_SPEED);
     }
