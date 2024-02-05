@@ -38,6 +38,7 @@ public class FollowPathAndShoot extends DriveCommandBase {
   private double desiredHeading;
   private double headingError = 0;
   private double headingOffset = 0;
+  private double distance;
 
   ProfiledPIDController turnController = new ProfiledPIDController(
     ShooterConstants.AUTO_SHOOT_P,
@@ -98,7 +99,7 @@ public class FollowPathAndShoot extends DriveCommandBase {
     rotationControl = turnController.calculate(headingError, 0);
     // allow the driver to drive slowly (NOT full speed - will mess up shooter)
     shooterSubsystem.setShooterRPMFromDistance(distance);
-    pivotSubsystem.setShooterPivotFromDistance(distance);
+    pivotSubsystem.setPivotFromDistance(distance);
 
     // if we are ready to shoot:
     if (isReadyToShoot()) {
@@ -124,6 +125,6 @@ public class FollowPathAndShoot extends DriveCommandBase {
   }
 
   public boolean isReadyToShoot() {
-    return (Math.abs(headingError) < DriveConstants.HEADING_ACCEPTABLE_ERROR) && (shooterSubsystem.isShooterWithinAcceptableError()) && (pivotSubsystem.isPivotWithinAcceptableError());
+    return (Math.abs(headingError) < DriveConstants.HEADING_ACCEPTABLE_ERROR_DEGREES) && (shooterSubsystem.isShooterWithinAcceptableError(distance)) && (pivotSubsystem.isPivotWithinAcceptableError(distance));
   }
 }
