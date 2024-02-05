@@ -6,36 +6,29 @@ package frc.robot;
 
 import java.util.function.DoubleSupplier;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.JoystickConstants;
+import frc.robot.commands.auto.FollowChoreoTrajectory;
 import frc.robot.commands.drive.Drive;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.swerve.DriveSubsystem;
 import frc.robot.subsystems.vision.VisionSubsystem;
-
-/**
- * make base methods
- *  shoot speaker - Raina
- *  shoot amp - 
- *  intake - Quinn
- * make base subsystems (motors & whatnot) - Ryan
- */
 
 public class RobotContainer {
 
   private final VisionSubsystem visionSubsystem;
   private final ShooterSubsystem shooterSubsystem;
   private final DriveSubsystem driveSubsystem;
-  private final Joystick driverJoystick;
+  private final Joystick driverJoystick = new Joystick(0);
   
   public RobotContainer() {
     visionSubsystem = new VisionSubsystem();
     driveSubsystem = new DriveSubsystem(); 
     shooterSubsystem = new ShooterSubsystem();
-
-    driverJoystick = new Joystick(0);
   }
   
   private static double deadband(double value, double deadband) {
@@ -86,6 +79,7 @@ public class RobotContainer {
     DoubleSupplier driverLeftStickY = () -> driverJoystick.getRawAxis(JoystickConstants.DRIVER_LEFT_STICK_Y);
     DoubleSupplier driverRightStickX = () -> driverJoystick.getRawAxis(JoystickConstants.DRIVER_RIGHT_STICK_X);
     JoystickButton driverRightBumper = new JoystickButton(driverJoystick, JoystickConstants.DRIVER_RIGHT_BUMPER_ID);
+    JoystickButton xButton = new JoystickButton(driverJoystick, JoystickConstants.X_BUTTON);
 
     Command driveCommand = new Drive(driveSubsystem, visionSubsystem,
       () -> modifyAxisCubedPolar(driverLeftStickY, driverLeftStickX)[0] * -1,
@@ -95,9 +89,12 @@ public class RobotContainer {
     );
 
     driveSubsystem.setDefaultCommand(driveCommand);
+
+    xButton.onTrue(new InstantCommand(() -> driveSubsystem.resetOdometry(new Pose2d())));
+    xButton.onTrue(new InstantCommand(driveSubsystem::zeroHeading));
   }
 
   public Command getAutonomousCommand() {
-    return null;
+    return new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "rotate");
   }
 }

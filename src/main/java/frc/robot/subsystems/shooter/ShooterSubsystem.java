@@ -1,7 +1,3 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot.subsystems.shooter;
 
 import com.ctre.phoenix6.BaseStatusSignal;
@@ -9,6 +5,7 @@ import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.VelocityVoltage;
+import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -25,10 +22,8 @@ public class ShooterSubsystem extends SubsystemBase {
   private final TalonFX followerFlywheel;
   private final TalonFX rollerMotor;
 
-  private double leftMotorTargetRPM;
-
-  StatusSignal<Double> shooterVelocity;
-
+  private StatusSignal<Double> shooterVelocity;
+  private Follower follower;
   private SingleLinearInterpolator speakerSpeedValues;
 
   /** Creates a new ShooterSubsystem. */
@@ -37,6 +32,8 @@ public class ShooterSubsystem extends SubsystemBase {
     followerFlywheel = new TalonFX(ShooterConstants.FOLLOWER_FLYWHEEL_ID);
     rollerMotor = new TalonFX(ShooterConstants.ROLLER_MOTOR_ID);
     noteSensor = new DigitalInput(ShooterConstants.SHOOTER_NOTE_SENSOR_ID);
+
+    follower = new Follower(leaderFlywheel.getDeviceID(), true);
 
     speakerSpeedValues = new SingleLinearInterpolator(ShooterConstants.SPEAKER_SHOOT_RPMS);
 
@@ -57,52 +54,90 @@ public class ShooterSubsystem extends SubsystemBase {
 
     shooterVelocity = leaderFlywheel.getVelocity();
 
-    BaseStatusSignal.setUpdateFrequencyForAll(250, shooterVelocity);
-    leaderFlywheel.optimizeBusUtilization(HardwareConstants.TIMEOUT_S);
+    BaseStatusSignal.setUpdateFrequencyForAll(HardwareConstants.SIGNAL_FREQUENCY, shooterVelocity);
+    ParentDevice.optimizeBusUtilizationForAll(leaderFlywheel, rollerMotor, followerFlywheel);
   }
 
-  public double getLeftShooterRPM() {
-    shooterVelocity.refresh();
-    return shooterVelocity.getValueAsDouble() * 60;
-  }
-
+  /**
+   * sets the speed of the flywheel
+   * @param speed the speed (m/s) of the flywheel
+   */
   public void setShooterSpeed(double speed) {
     leaderFlywheel.set(speed);
-    Follower follower = new Follower(leaderFlywheel.getDeviceID(), true);
     followerFlywheel.setControl(follower);
   }
 
+  /**
+   * sets the speed of the rollers to transfer note from tower to shooter
+   * @param speed speed (m/s) of the rollers
+   */
   public void setRollerSpeed(double speed) {
     rollerMotor.set(speed);
   }
 
-  public boolean isShooterWithinAcceptableError() {
-    return Math.abs(leftMotorTargetRPM - getLeftShooterRPM()) < 20;
+  /**
+   * the error between the target rpm and actual rpm of the shooter
+   * @param distance the distance (meters) to target
+   * @return True if we are within an acceptable range (of rpm) to shoot
+   */
+  public boolean isShooterWithinAcceptableError(double distance) {
+    return Math.abs(getShooterTargetRPM(distance) - getShooterRPM()) < 20;
   }
 
-  public void setRPM(double leftRPMMotor) {
-    leftMotorTargetRPM = leftRPMMotor;
-    VelocityVoltage leftSpeed = new VelocityVoltage(leftRPMMotor / 60.0);
-    leaderFlywheel.setControl(leftSpeed);
-    Follower follower = new Follower(leaderFlywheel.getDeviceID(), true);
+  /**
+   * sets RPM of both leader and follower flywheel motors
+   * @param leaderRPM sets the rpm of the leader motor
+   */
+  public void setRPM(double leaderRPM) {
+    VelocityVoltage leaderSpeed = new VelocityVoltage(leaderRPM / 60.0);
+    leaderFlywheel.setControl(leaderSpeed);
     followerFlywheel.setControl(follower);
   }
 
-  public void setLeftMotorToNeutral() {
+
+  /**
+   * sets flywheel speed (m/s) to 0
+   */
+  public void setFlywheelNeutral() {
     leaderFlywheel.set(0);
+    followerFlywheel.setControl(follower);
   }
 
   /**
    * Gets the sensor in the shooter pivot
-   * @return True if nothing is detected
+   * @return True if there is not a note in the tower
    */
   public boolean getSensor() {
     return noteSensor.get();
   }
 
+  /**
+   * sets the shooter rpm from a lookup table of 
+   * values and the distance to the speaker
+   * @param distance the distance (meters) from the speaker
+   */
   public void setShooterRPMFromDistance(double distance) {
     double rpm = speakerSpeedValues.getLookupValue(distance);
     setRPM(rpm);
+  }
+  
+  /**
+   * gets the current shooter RPM
+   * @return returns the current shooter rpm as a double
+   */
+  public double getShooterRPM() {
+    shooterVelocity.refresh();
+    return shooterVelocity.getValueAsDouble() * 60;
+  }
+  
+  /**
+   * gets the target RPM of the shooter based on distance from the speaker
+   * @param distance the distance (meters) from the speaker
+   * @return the target rpm
+   */
+  public double getShooterTargetRPM(double distance) {
+    double targetRPM = speakerSpeedValues.getLookupValue(distance);
+    return targetRPM;
   }
   
   @Override

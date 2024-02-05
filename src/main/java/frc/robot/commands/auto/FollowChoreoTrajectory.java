@@ -16,7 +16,6 @@ import frc.robot.subsystems.vision.VisionSubsystem;
 
 public class FollowChoreoTrajectory extends DriveCommandBase {
   private DriveSubsystem driveSubsystem;
-  private VisionSubsystem visionSubsystem;
   private Command controllerCommand;
 
   /**
@@ -36,6 +35,7 @@ public class FollowChoreoTrajectory extends DriveCommandBase {
       (ChassisSpeeds speeds) -> driveSubsystem.drive(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, speeds.omegaRadiansPerSecond, false),
         ()->false,
         driveSubsystem);
+    addRequirements(visionSubsystem);
   }
 
   // Called when the command is initially scheduled.

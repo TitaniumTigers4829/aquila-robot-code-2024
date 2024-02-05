@@ -1,4 +1,4 @@
-// TigerLib 2023
+// TigerLib 2024
 
 package frc.robot.commands.drive;
 
@@ -7,7 +7,6 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.extras.MultiLinearInterpolator;
-import frc.robot.subsystems.PoseEstimationSubsystem;
 import frc.robot.subsystems.swerve.DriveSubsystem;
 import frc.robot.subsystems.vision.VisionSubsystem;
 
@@ -18,7 +17,6 @@ public abstract class DriveCommandBase extends Command {
   private final MultiLinearInterpolator twoAprilTagLookupTable = 
     new MultiLinearInterpolator(VisionConstants.TWO_APRIL_TAG_LOOKUP_TABLE);
 
-  private final PoseEstimationSubsystem poseEstimator;
   private final VisionSubsystem visionSubsystem;
   private final DriveSubsystem driveSubsystem;
 
@@ -33,13 +31,13 @@ public abstract class DriveCommandBase extends Command {
   public DriveCommandBase(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem) {
     this.visionSubsystem = visionSubsystem;
     this.driveSubsystem = driveSubsystem;
-    this.poseEstimator = new PoseEstimationSubsystem(driveSubsystem);
+    // It is important that you do addRequirements(driveSubsystem, visionSubsystem) in whatever command extends this
   }
 
   @Override
   public void execute() {
     // Updates the pose estimator using the swerve modules
-    poseEstimator.addPoseEstimatorSwerveMeasurement();
+    driveSubsystem.addPoseEstimatorSwerveMeasurement();
 
     // Updates the robot's odometry with april tags
     double currentTimeStampSeconds = lastTimeStampSeconds;
@@ -52,16 +50,16 @@ public abstract class DriveCommandBase extends Command {
       // Sets the pose estimator confidence in vision based off of number of april tags and distance
       if (visionSubsystem.getNumberOfAprilTags() == 1) {
         double[] standardDeviations = oneAprilTagLookupTable.getLookupValue(distanceFromClosestAprilTag);
-        poseEstimator.setPoseEstimatorVisionConfidence(standardDeviations[0], standardDeviations[1], standardDeviations[2]);
+        driveSubsystem.setPoseEstimatorVisionConfidence(standardDeviations[0], standardDeviations[1], standardDeviations[2]);
       } else if (visionSubsystem.getNumberOfAprilTags() > 1) {
         double[] standardDeviations = twoAprilTagLookupTable.getLookupValue(distanceFromClosestAprilTag);
-        poseEstimator.setPoseEstimatorVisionConfidence(standardDeviations[0], standardDeviations[1], standardDeviations[2]);
+        driveSubsystem.setPoseEstimatorVisionConfidence(standardDeviations[0], standardDeviations[1], standardDeviations[2]);
       }
 
       // Only updates the pose estimator if the limelight pose is new and reliable
       if (currentTimeStampSeconds > lastTimeStampSeconds && ticksAfterSeeing > VisionConstants.FRAMES_BEFORE_ADDING_VISION_MEASUREMENT) {
         Pose2d limelightVisionMeasurement = visionSubsystem.getPoseFromAprilTags();
-        poseEstimator.addPoseEstimatorVisionMeasurement(limelightVisionMeasurement, Timer.getFPGATimestamp() - visionSubsystem.getLatencySeconds());
+        driveSubsystem.addPoseEstimatorVisionMeasurement(limelightVisionMeasurement, Timer.getFPGATimestamp() - visionSubsystem.getLatencySeconds());
       }
     } else {
       ticksAfterSeeing = 0;
