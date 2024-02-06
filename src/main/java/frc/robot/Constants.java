@@ -295,7 +295,7 @@ public final class Constants {
       {Units.feetToMeters(13), 1280},
       {Units.feetToMeters(14.5), 1260},
       {Units.feetToMeters(16), 1300}
-  ` };
+   };
   }
 
   public static final class TrajectoryConstants {
