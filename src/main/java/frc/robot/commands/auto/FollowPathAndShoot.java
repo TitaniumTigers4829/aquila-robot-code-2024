@@ -63,8 +63,8 @@ public class FollowPathAndShoot extends DriveCommandBase {
       (ChassisSpeeds speeds) -> mergeDrive(speeds),
         ()->false,
       // TODO: scuffed
-      visionSubsystem);
-    addRequirements(driveSubsystem, pivotSubsystem, shooterSubsystem);
+      driveSubsystem);
+    addRequirements(visionSubsystem, pivotSubsystem, shooterSubsystem);
   }
 
   // Called when the command is initially scheduled.
