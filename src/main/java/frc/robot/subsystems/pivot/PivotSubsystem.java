@@ -52,6 +52,7 @@ public class PivotSubsystem extends SubsystemBase {
     pivotConfig.Slot0.kP = PivotConstants.PIVOT_P;
     pivotConfig.Slot0.kI = PivotConstants.PIVOT_I;
     pivotConfig.Slot0.kD = PivotConstants.PIVOT_D;
+    pivotConfig.Slot0.kG = PivotConstants.PIVOT_G;
 
     pivotConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     pivotConfig.MotorOutput.DutyCycleNeutralDeadband = HardwareConstants.MIN_FALCON_DEADBAND;

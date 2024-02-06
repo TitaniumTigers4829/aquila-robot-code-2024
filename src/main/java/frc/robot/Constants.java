@@ -235,6 +235,7 @@ public final class Constants {
     public static final double PIVOT_P = 0.0;
     public static final double PIVOT_I = 0.0;
     public static final double PIVOT_D = 0.0;
+    public static final double PIVOT_G = 0.0;
 
     public static final int TURN_ENCODER_CHANNEL = 0;
     public static final double ANGLE_ZERO = 0.0;
