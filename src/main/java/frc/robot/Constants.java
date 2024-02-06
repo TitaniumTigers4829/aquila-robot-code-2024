@@ -295,18 +295,7 @@ public final class Constants {
       {Units.feetToMeters(13), 1280},
       {Units.feetToMeters(14.5), 1260},
       {Units.feetToMeters(16), 1300}
-  };
-
-    public static double[][] SPEAKER_PIVOT_POSITION = {
-      {Units.feetToMeters(5.5), 0},
-      {Units.feetToMeters(7), 1},
-      {Units.feetToMeters(8.5), 2}, 
-      {Units.feetToMeters(10), 3},
-      {Units.feetToMeters(11.5), 4},
-      {Units.feetToMeters(13), 5},
-      {Units.feetToMeters(14.5), 6},
-      {Units.feetToMeters(16), 7}
-    };
+  ` };
   }
 
   public static final class TrajectoryConstants {
