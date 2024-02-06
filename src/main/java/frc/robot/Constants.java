@@ -245,6 +245,8 @@ public final class Constants {
 
     public static final double PIVOT_NEUTRAL_ANGLE = 0-9;
 
+    public static final double PIVOT_CLIMB_ANGLE = 0-9;
+
     public static double[][] SPEAKER_PIVOT_POSITION = {
       //distance, angle
       {Units.feetToMeters(5.5), 0},
