@@ -91,8 +91,8 @@ public class ShootSpeaker extends DriveCommandBase {
     double pivotTarget = pivotSubsystem.getPivotTarget(distance);
     // allow the driver to drive slowly (NOT full speed - will mess up shooter)
     driveSubsystem.drive(
-      leftX.getAsDouble() / 2, 
-      leftY.getAsDouble() / 2, 
+      leftX.getAsDouble(), 
+      leftY.getAsDouble(), 
       turnOutput, 
       isFieldRelative.getAsBoolean()
     );
