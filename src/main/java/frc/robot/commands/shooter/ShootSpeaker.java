@@ -66,7 +66,7 @@ public class ShootSpeaker extends DriveCommandBase {
       isRed = alliance.get() == Alliance.Red;
     } else {
       //otherwise default to blue alliance
-      isRed = false;
+      isRed = true;
     }
     speakerPos = isRed ? new Translation2d(FieldConstants.RED_SPEAKER_X, FieldConstants.RED_SPEAKER_Y) : new Translation2d(FieldConstants.BLUE_SPEAKER_X, FieldConstants.BLUE_SPEAKER_Y);
   }
