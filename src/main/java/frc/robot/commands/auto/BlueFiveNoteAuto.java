@@ -18,12 +18,17 @@ import frc.robot.subsystems.vision.VisionSubsystem;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class BlueFourNoteAuto extends SequentialCommandGroup {
-  /** Creates a new BlueFourNoteAuto. */
-  public BlueFourNoteAuto(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, IntakeSubsystem intakeSubsystem, PivotSubsystem pivotSubsystem, ShooterSubsystem shooterSubsystem) {
+public class BlueFiveNoteAuto extends SequentialCommandGroup {
+  /** Creates a new BlueSixNoteAuto. */
+  public BlueFiveNoteAuto(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, IntakeSubsystem intakeSubsystem, PivotSubsystem pivotSubsystem, ShooterSubsystem shooterSubsystem) {
 
     addCommands(
-      new FollowPathAndShoot(driveSubsystem, visionSubsystem, pivotSubsystem, shooterSubsystem, "blue 4 note start").withTimeout(5)
-    );
-  }
+      new FollowPathAndShoot(driveSubsystem, visionSubsystem, pivotSubsystem, shooterSubsystem, "blue 4 note start").withTimeout(5),
+      new ParallelRaceGroup(
+        new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "blue note 3 to note 4").withTimeout(3),
+        new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem)
+      ),
+      new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, visionSubsystem, pivotSubsystem).withTimeout(2)
+      );
+    }
 }

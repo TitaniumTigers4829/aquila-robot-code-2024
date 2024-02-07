@@ -31,7 +31,7 @@ public class PivotSubsystem extends SubsystemBase {
   private final SingleLinearInterpolator speakerAngleLookupValues;
 
   private final StatusSignal<Double> pivotPos;
-
+  private double pivotTargetAngle;
 
   /** Creates a new PivotSubsystem. */
   public PivotSubsystem() {
@@ -78,21 +78,18 @@ public class PivotSubsystem extends SubsystemBase {
   /**
    * returns if the pivot is within an acceptable rotation 
    * in relation to the target position
-   *@param pivotTargetDistance from speaker to the robot in meters
    *@return pivot error between desired and actual state in degrees
   */
-  public boolean isPivotWithinAcceptableError(double pivotTargetDistance) {
-    return Math.abs(getPivotTarget(pivotTargetDistance) - getRotation()) < 2;
+  public boolean isPivotWithinAcceptableError() {
+    return Math.abs(pivotTargetAngle - getRotation()) < 2;
   }
 
   /**
    * gets the target angle of the pivot motors in degrees
-   * @param distance the distance from speaker
    * @return the target angle
    */
-  public double getPivotTarget(double distance) {
-    double targetAngle = speakerAngleLookupValues.getLookupValue(distance);
-    return targetAngle;
+  public double getPivotTarget() {
+    return pivotTargetAngle;
   }
 
   /**
@@ -101,6 +98,7 @@ public class PivotSubsystem extends SubsystemBase {
    */
   public void setPivotFromDistance(double distance) {
     double angle = speakerAngleLookupValues.getLookupValue(distance);
+    pivotTargetAngle = angle;
     setPivot(angle);
   }
 
@@ -110,6 +108,7 @@ public class PivotSubsystem extends SubsystemBase {
    */
   public void setPivot(double angle) {
     MotionMagicVoltage output = new MotionMagicVoltage(angle / 360.0);
+    pivotTargetAngle = angle;
     leaderPivotMotor.setControl(output);
     followerPivotMotor.setControl(follower);
   }

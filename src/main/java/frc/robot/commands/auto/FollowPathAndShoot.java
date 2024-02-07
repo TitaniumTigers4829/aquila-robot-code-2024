@@ -38,7 +38,6 @@ public class FollowPathAndShoot extends DriveCommandBase {
   private double desiredHeading;
   private double headingError = 0;
   private double headingOffset = 0;
-  private double distance;
 
   private final ProfiledPIDController thetaController = new ProfiledPIDController(
     ShooterConstants.AUTO_SHOOT_P,
@@ -125,6 +124,6 @@ public class FollowPathAndShoot extends DriveCommandBase {
   }
 
   public boolean isReadyToShoot() {
-    return (Math.abs(headingError) < DriveConstants.HEADING_ACCEPTABLE_ERROR_DEGREES) && shooterSubsystem.isShooterWithinAcceptableError(distance) && pivotSubsystem.isPivotWithinAcceptableError(distance);
+    return (Math.abs(headingError) < DriveConstants.HEADING_ACCEPTABLE_ERROR_DEGREES) && shooterSubsystem.isShooterWithinAcceptableError() && pivotSubsystem.isPivotWithinAcceptableError();
   }
 }

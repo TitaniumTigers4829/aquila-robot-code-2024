@@ -26,6 +26,8 @@ public class ShooterSubsystem extends SubsystemBase {
   private Follower follower;
   private SingleLinearInterpolator speakerSpeedValues;
 
+  private double shooterTargetRPM;
+
   /** Creates a new ShooterSubsystem. */
   public ShooterSubsystem() { 
     leaderFlywheel = new TalonFX(ShooterConstants.LEADER_FLYWHEEL_ID);
@@ -75,11 +77,10 @@ public class ShooterSubsystem extends SubsystemBase {
 
   /**
    * the error between the target rpm and actual rpm of the shooter
-   * @param distance the distance (meters) to target
    * @return True if we are within an acceptable range (of rpm) to shoot
    */
-  public boolean isShooterWithinAcceptableError(double distance) {
-    return Math.abs(getShooterTargetRPM(distance) - getShooterRPM()) < 20;
+  public boolean isShooterWithinAcceptableError() {
+    return Math.abs(shooterTargetRPM - getShooterRPM()) < 20;
   }
 
   /**
@@ -87,6 +88,7 @@ public class ShooterSubsystem extends SubsystemBase {
    * @param leaderRPM sets the rpm of the leader motor
    */
   public void setRPM(double leaderRPM) {
+    shooterTargetRPM = leaderRPM;
     VelocityVoltage leaderSpeed = new VelocityVoltage(leaderRPM / 60.0);
     leaderFlywheel.setControl(leaderSpeed);
     followerFlywheel.setControl(follower);
@@ -115,8 +117,9 @@ public class ShooterSubsystem extends SubsystemBase {
    * @param distance the distance (meters) from the speaker
    */
   public void setShooterRPMFromDistance(double distance) {
-    double rpm = speakerSpeedValues.getLookupValue(distance);
-    setRPM(rpm);
+    // set local target rpm
+    shooterTargetRPM = speakerSpeedValues.getLookupValue(distance);
+    setRPM(shooterTargetRPM);
   }
   
   /**
@@ -126,16 +129,6 @@ public class ShooterSubsystem extends SubsystemBase {
   public double getShooterRPM() {
     shooterVelocity.refresh();
     return shooterVelocity.getValueAsDouble() * 60;
-  }
-  
-  /**
-   * gets the target RPM of the shooter based on distance from the speaker
-   * @param distance the distance (meters) from the speaker
-   * @return the target rpm
-   */
-  public double getShooterTargetRPM(double distance) {
-    double targetRPM = speakerSpeedValues.getLookupValue(distance);
-    return targetRPM;
   }
   
   @Override

@@ -332,13 +332,5 @@ public final class Constants {
     public static final double Y_TOLERANCE = 0.02;
     public static final double THETA_TOLERANCE = 1.25;
   }
-  
-  public static final class TowerConstants {
-    public static final int TOWER_MOTOR_ID = 0-9;
-    public static final double TOWER_MOTOR_SPEED = 0.0;
-    public static final int TOWER_BOTTOM_BEAMBREAK_PORT = 0-9;
-    public static final int TOWER_TOP_BEAMBREAK_PORT = 0-9;
-  }
-  
 }
 

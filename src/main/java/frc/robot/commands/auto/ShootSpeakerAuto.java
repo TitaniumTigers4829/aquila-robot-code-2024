@@ -2,11 +2,9 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.shooter;
+package frc.robot.commands.auto;
 
 import java.util.Optional;
-import java.util.function.BooleanSupplier;
-import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -22,13 +20,10 @@ import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.swerve.DriveSubsystem;
 import frc.robot.subsystems.vision.VisionSubsystem;
 
-public class ShootSpeaker extends DriveCommandBase {
+public class ShootSpeakerAuto extends DriveCommandBase {
   private final DriveSubsystem driveSubsystem;
   private final ShooterSubsystem shooterSubsystem;
   private final PivotSubsystem pivotSubsystem;
-
-  private final DoubleSupplier leftX, leftY;
-  private final BooleanSupplier isFieldRelative;
 
   private double headingError = 0;
 
@@ -43,15 +38,14 @@ public class ShootSpeaker extends DriveCommandBase {
   private double desiredHeading = 0;
   private Translation2d speakerPos;
   
+  private double distance;
+  
   /** Creates a new ShootSpeaker. */
-  public ShootSpeaker(DriveSubsystem driveSubsystem, ShooterSubsystem shooterSubsystem, VisionSubsystem visionSubsystem, PivotSubsystem pivotSubsystem, DoubleSupplier leftX, DoubleSupplier leftY, BooleanSupplier isFieldRelative) {
+  public ShootSpeakerAuto(DriveSubsystem driveSubsystem, ShooterSubsystem shooterSubsystem, VisionSubsystem visionSubsystem, PivotSubsystem pivotSubsystem) {
     super(driveSubsystem, visionSubsystem);
     this.driveSubsystem = driveSubsystem;
     this.shooterSubsystem = shooterSubsystem;
     this.pivotSubsystem = pivotSubsystem;
-    this.leftX = leftX;
-    this.leftY = leftY;
-    this.isFieldRelative = isFieldRelative;
     addRequirements(shooterSubsystem, driveSubsystem, pivotSubsystem);
   }
 
@@ -78,7 +72,7 @@ public class ShootSpeaker extends DriveCommandBase {
     // get positions of various things
     Translation2d robotPos = SmarterDashboardRegistry.getPose().getTranslation();
     // distance (for speaker lookups)
-    double distance = robotPos.getDistance(speakerPos);
+    distance = robotPos.getDistance(speakerPos);
     // arctangent for desired heading
     desiredHeading = Math.atan2((speakerPos.getY() - robotPos.getY()), (speakerPos.getX() - robotPos.getX())) * 180.0 / Math.PI;
     // heading error (also used in isReadyToShoot())
@@ -88,16 +82,17 @@ public class ShootSpeaker extends DriveCommandBase {
 
     // allow the driver to drive slowly (NOT full speed - will mess up shooter)
     driveSubsystem.drive(
-      leftX.getAsDouble(), 
-      leftY.getAsDouble(), 
+      0,
+      0,
       turnOutput, 
-      isFieldRelative.getAsBoolean()
+      false
     );
-
+    
     // if we are ready to shoot:
     if (isReadyToShoot()) {
-    shooterSubsystem.setShooterRPMFromDistance(distance);
-    pivotSubsystem.setPivotFromDistance(distance);
+      // do the stuff
+      shooterSubsystem.setShooterRPMFromDistance(distance);
+      pivotSubsystem.setPivotFromDistance(distance);
     }
   }
 
@@ -116,5 +111,4 @@ public class ShootSpeaker extends DriveCommandBase {
   public boolean isReadyToShoot() {
     return Math.abs(headingError) < DriveConstants.HEADING_ACCEPTABLE_ERROR_DEGREES && shooterSubsystem.isShooterWithinAcceptableError() && pivotSubsystem.isPivotWithinAcceptableError();
   }
-
 }
