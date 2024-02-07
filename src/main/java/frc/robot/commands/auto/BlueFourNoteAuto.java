@@ -22,11 +22,7 @@ public class BlueFourNoteAuto extends SequentialCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new ParallelCommandGroup(
-        new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, ""),
-        // TODO: shootspeakerauto
-        new ShootSpeaker(driveSubsystem, shooterSubsystem, visionSubsystem, pivotSubsystem, null, null, null)
-      )
+      new FollowPathAndShoot(driveSubsystem, visionSubsystem, pivotSubsystem, shooterSubsystem, "blue 4 note start")
     );
   }
 }

@@ -46,8 +46,6 @@ public class ShooterSubsystem extends SubsystemBase {
     shooterConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive; 
     shooterConfig.MotorOutput.DutyCycleNeutralDeadband = HardwareConstants.MIN_FALCON_DEADBAND;
     leaderFlywheel.getConfigurator().apply(shooterConfig, HardwareConstants.TIMEOUT_S);
-    shooterConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
-    followerFlywheel.getConfigurator().apply(shooterConfig);
 
     TalonFXConfiguration rollerConfig = new TalonFXConfiguration();
     rollerMotor.getConfigurator().apply(rollerConfig);

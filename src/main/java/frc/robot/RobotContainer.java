@@ -19,6 +19,18 @@ import frc.robot.subsystems.swerve.DriveSubsystem;
 import frc.robot.subsystems.vision.VisionSubsystem;
 
 public class RobotContainer {
+  /*
+   * TODOs
+   * Finish fancy auto
+   *   verify followpathandshoot.java
+   *   make new paths
+   *   figure out max shoot distance
+   *   make shootspeakerauto.java
+   *   make intakeauto.java
+   *   add the follow path commands
+   * 
+   * make simpler autos (raina and juno)
+   */
 
   private final VisionSubsystem visionSubsystem;
   private final ShooterSubsystem shooterSubsystem;
