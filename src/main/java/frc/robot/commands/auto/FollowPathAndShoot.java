@@ -97,13 +97,11 @@ public class FollowPathAndShoot extends DriveCommandBase {
     // get PID output
     rotationControl = thetaController.calculate(headingError, 0);
 
-    shooterSubsystem.setShooterRPMFromDistance(distance);
-    pivotSubsystem.setPivotFromDistance(distance);
 
     // if we are ready to shoot:
     if (shooterSubsystem.isReadyToShoot(headingError) && pivotSubsystem.isPivotWithinAcceptableError()) {
-      // feed the note into the flywheels
-      shooterSubsystem.setRollerSpeed(ShooterConstants.ROLLER_SPEED);
+    shooterSubsystem.setShooterRPMFromDistance(distance);
+    pivotSubsystem.setPivotFromDistance(distance);
     }
   }
 

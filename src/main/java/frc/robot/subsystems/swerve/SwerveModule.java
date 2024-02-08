@@ -30,9 +30,9 @@ public class SwerveModule {
 
   private final ProfiledPIDController turnController;
  
-  private StatusSignal<Double> driveMotorPosition;
-  private StatusSignal<Double> driveMotorVelocity;
-  private StatusSignal<Double> turnEncoderPos;
+  private final StatusSignal<Double> driveMotorPosition;
+  private final StatusSignal<Double> driveMotorVelocity;
+  private final StatusSignal<Double> turnEncoderPos;
 
   private String name;
 

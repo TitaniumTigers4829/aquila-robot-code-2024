@@ -23,7 +23,7 @@ public class ShooterSubsystem extends SubsystemBase {
   private final TalonFX followerFlywheel;
   private final TalonFX rollerMotor;
 
-  private StatusSignal<Double> shooterVelocity;
+  private final StatusSignal<Double> shooterVelocity;
   private Follower follower;
   private SingleLinearInterpolator speakerSpeedValues;
 
