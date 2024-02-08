@@ -59,7 +59,7 @@ public class FollowPathAndShoot extends DriveCommandBase {
       new PIDController(TrajectoryConstants.DEPLOYED_TRANSLATION_CONTROLLER_P, 0, 0), 
       new PIDController(TrajectoryConstants.DEPLOYED_TRANSLATION_CONTROLLER_P, 0, 0), 
       new PIDController(TrajectoryConstants.DEPLOYED_THETA_CONTROLLER_P, 0, 0), 
-      (ChassisSpeeds speeds) -> mergeDrive(speeds),
+      (ChassisSpeeds speeds) -> driveSubsystem.mergeDrive(speeds, rotationControl),
         ()->false,
       // TODO: scuffed
       driveSubsystem);
@@ -101,7 +101,7 @@ public class FollowPathAndShoot extends DriveCommandBase {
     pivotSubsystem.setPivotFromDistance(distance);
 
     // if we are ready to shoot:
-    if (isReadyToShoot()) {
+    if (shooterSubsystem.isReadyToShoot(headingError) && pivotSubsystem.isPivotWithinAcceptableError()) {
       // feed the note into the flywheels
       shooterSubsystem.setRollerSpeed(ShooterConstants.ROLLER_SPEED);
     }
@@ -119,11 +119,4 @@ public class FollowPathAndShoot extends DriveCommandBase {
     return controllerCommand.isFinished();
   }
 
-  public void mergeDrive(ChassisSpeeds speeds) {
-    driveSubsystem.drive(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, rotationControl, false);
-  }
-
-  public boolean isReadyToShoot() {
-    return (Math.abs(headingError) < DriveConstants.HEADING_ACCEPTABLE_ERROR_DEGREES) && shooterSubsystem.isShooterWithinAcceptableError() && pivotSubsystem.isPivotWithinAcceptableError();
-  }
 }

@@ -264,6 +264,10 @@ public class DriveSubsystem extends SubsystemBase {
     rearRightSwerveModule.setDesiredState(desiredStates[3]);
   }
 
+  public void mergeDrive(ChassisSpeeds speeds, double rotationControl) {
+    drive(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, rotationControl, false);
+  }
+
   public void periodic() {
     Pose2d botPose = odometry.getEstimatedPosition();
     SmartDashboard.putString("odometry", botPose.toString());

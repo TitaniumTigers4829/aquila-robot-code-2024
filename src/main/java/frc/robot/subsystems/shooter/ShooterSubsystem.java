@@ -12,6 +12,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.HardwareConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.extras.SingleLinearInterpolator;
@@ -81,6 +82,10 @@ public class ShooterSubsystem extends SubsystemBase {
    */
   public boolean isShooterWithinAcceptableError() {
     return Math.abs(shooterTargetRPM - getShooterRPM()) < 20;
+  }
+
+  public boolean isReadyToShoot(double headingError) {
+    return (Math.abs(headingError) < DriveConstants.HEADING_ACCEPTABLE_ERROR_DEGREES) && isShooterWithinAcceptableError();
   }
 
   /**
