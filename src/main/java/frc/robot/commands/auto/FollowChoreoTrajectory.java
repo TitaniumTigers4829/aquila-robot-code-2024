@@ -15,8 +15,9 @@ import frc.robot.subsystems.swerve.DriveSubsystem;
 import frc.robot.subsystems.vision.VisionSubsystem;
 
 public class FollowChoreoTrajectory extends DriveCommandBase {
-  private DriveSubsystem driveSubsystem;
-  private Command controllerCommand;
+  
+  private final DriveSubsystem driveSubsystem;
+  private final Command controllerCommand;
 
   /**
    * Follows a trajectory made with Choreo
@@ -33,8 +34,9 @@ public class FollowChoreoTrajectory extends DriveCommandBase {
       new PIDController(TrajectoryConstants.DEPLOYED_TRANSLATION_CONTROLLER_P, 0, 0), 
       new PIDController(TrajectoryConstants.DEPLOYED_THETA_CONTROLLER_P, 0, 0), 
       (ChassisSpeeds speeds) -> driveSubsystem.drive(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, speeds.omegaRadiansPerSecond, false),
-        ()->false,
-        driveSubsystem);
+      ()->false,
+      driveSubsystem
+    );
     addRequirements(visionSubsystem);
   }
 
