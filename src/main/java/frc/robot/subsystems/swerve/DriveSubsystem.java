@@ -1,10 +1,13 @@
 package frc.robot.subsystems.swerve;
 
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import java.util.Optional;
 
 import com.kauailabs.navx.frc.AHRS;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.commands.PathfindHolonomic;
 
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.Vector;
@@ -18,9 +21,13 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.simulation.PDPSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.TrajectoryConstants;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.extras.SmarterDashboardRegistry;
 
@@ -41,6 +48,7 @@ public class DriveSubsystem extends SubsystemBase {
 
   private final AHRS gyro;
   private final SwerveDrivePoseEstimator odometry;
+  private Command currentPathfindingCommand;
 
   private final Optional<DriverStation.Alliance> alliance;
 
@@ -106,6 +114,37 @@ public class DriveSubsystem extends SubsystemBase {
     );
 
     alliance = DriverStation.getAlliance();
+    
+    // Configure AutoBuilder
+    AutoBuilder.configureHolonomic(
+      this::getPose, 
+      this::resetOdometry, 
+      this::getRobotRelativeSpeeds, 
+      this::drive, 
+      Constants.TrajectoryConstants.PATH_FOLLOWER_CONFIG,
+      // () -> {
+      //     // Boolean supplier that controls when the path will be mirrored for the red alliance
+      //     // This will flip the path being followed to the red side of the field.
+      //     // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+
+      //     var alliance = DriverStation.getAlliance();
+      //     if (alliance.isPresent()) {
+      //         return alliance.get() == DriverStation.Alliance.Red;
+      //     }
+      //     return false;
+      // },
+      ()->false,
+      this
+    );
+  }
+
+  public ChassisSpeeds getRobotRelativeSpeeds() {
+    return DriveConstants.DRIVE_KINEMATICS.toChassisSpeeds(
+      frontLeftSwerveModule.getState(),
+      frontRightSwerveModule.getState(),
+      rearLeftSwerveModule.getState(),
+      rearRightSwerveModule.getState()
+      );
   }
 
   /**
@@ -131,6 +170,10 @@ public class DriveSubsystem extends SubsystemBase {
     frontRightSwerveModule.setDesiredState(swerveModuleStates[1]);
     rearLeftSwerveModule.setDesiredState(swerveModuleStates[2]);
     rearRightSwerveModule.setDesiredState(swerveModuleStates[3]);
+  }
+
+  public void drive(ChassisSpeeds speeds) {
+    drive(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, speeds.omegaRadiansPerSecond, true);
   }
   
   /**
@@ -263,6 +306,38 @@ public class DriveSubsystem extends SubsystemBase {
     rearLeftSwerveModule.setDesiredState(desiredStates[2]);
     rearRightSwerveModule.setDesiredState(desiredStates[3]);
   }
+
+  public Command buildPathfindingCommand(double finalX, double finalY, double finalRot) {
+    Pose2d endPose = new Pose2d(finalX, finalY, Rotation2d.fromDegrees(finalRot));
+
+    // create the following command
+    currentPathfindingCommand = new PathfindHolonomic(
+      endPose,
+      TrajectoryConstants.PATH_CONSTRAINTS,
+      0.0, // end velocity
+      this::getPose,
+      this::getRobotRelativeSpeeds,
+      this::drive,
+      TrajectoryConstants.PATH_FOLLOWER_CONFIG,
+      0.0, // distance to travel before rotating
+      this
+    );
+
+    return currentPathfindingCommand;
+  }
+
+  public Command getPathfindingCommand() {
+    return currentPathfindingCommand;
+  }
+
+  public void cancelPathfindingCommand() {
+    if (currentPathfindingCommand != null) {
+      currentPathfindingCommand.cancel();
+    }
+  }
+
+  public void periodic() {
+    SmartDashboard.putString("odometry", odometry.getEstimatedPosition().toString());
 
   public void mergeDrive(ChassisSpeeds speeds, double rotationControl) {
     drive(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, rotationControl, false);
