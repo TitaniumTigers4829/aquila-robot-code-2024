@@ -46,7 +46,7 @@ public class SmarterDashboardRegistry {
   }
 
   public static Pose2d getPose() {
-    return new Pose2d(pose[0], pose[1], Rotation2d.fromDegrees(pose[1]));
+    return new Pose2d(pose[0], pose[1], Rotation2d.fromDegrees(pose[2]));
   }
 
   public static Pose2d getLimelightPose() {

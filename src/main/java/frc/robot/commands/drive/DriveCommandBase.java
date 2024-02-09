@@ -1,4 +1,4 @@
-// TigerLib 2023
+// TigerLib 2024
 
 package frc.robot.commands.drive;
 
@@ -31,6 +31,7 @@ public abstract class DriveCommandBase extends Command {
   public DriveCommandBase(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem) {
     this.visionSubsystem = visionSubsystem;
     this.driveSubsystem = driveSubsystem;
+    // It is important that you do addRequirements(driveSubsystem, visionSubsystem) in whatever command extends this
   }
 
   @Override
