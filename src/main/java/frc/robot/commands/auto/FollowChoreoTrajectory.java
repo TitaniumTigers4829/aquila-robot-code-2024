@@ -27,6 +27,7 @@ public class FollowChoreoTrajectory extends DriveCommandBase {
    */
   public FollowChoreoTrajectory(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, String trajectoryName) {
     super(driveSubsystem, visionSubsystem);
+    this.driveSubsystem = driveSubsystem;
     controllerCommand = Choreo.choreoSwerveCommand(
       Choreo.getTrajectory(trajectoryName),
       driveSubsystem::getPose, 
