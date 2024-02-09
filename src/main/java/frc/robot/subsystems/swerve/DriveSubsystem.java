@@ -176,6 +176,10 @@ public class DriveSubsystem extends SubsystemBase {
     drive(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, speeds.omegaRadiansPerSecond, true);
   }
   
+  public void mergeDrive(ChassisSpeeds speeds, double rotationControl) {
+    drive(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, rotationControl, false);
+  }
+  
   /**
    * Returns the heading of the robot in degrees from 0 to 360. 
    * Counter-clockwise is positive. This factors in gyro offset.
@@ -338,18 +342,6 @@ public class DriveSubsystem extends SubsystemBase {
 
   public void periodic() {
     SmartDashboard.putString("odometry", odometry.getEstimatedPosition().toString());
-
-  public void mergeDrive(ChassisSpeeds speeds, double rotationControl) {
-    drive(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, rotationControl, false);
   }
-
-  public void periodic() {
-    Pose2d botPose = odometry.getEstimatedPosition();
-    SmartDashboard.putString("odometry", botPose.toString());
-    frontLeftSwerveModule.periodicFunction();
-    frontRightSwerveModule.periodicFunction();
-    rearLeftSwerveModule.periodicFunction();
-    rearRightSwerveModule.periodicFunction();
-  }
-
+  
 }

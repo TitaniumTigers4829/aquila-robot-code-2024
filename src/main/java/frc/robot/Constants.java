@@ -221,10 +221,6 @@ public final class Constants {
     public static final double BLUE_SPEAKER_Y = 5.511;
   }
 
-    public static final double BLUE_SPEAKER_X = 0;
-    public static final double BLUE_SPEAKER_Y = 5.511;
-  }
-
   public static final class JoystickConstants {
     public static final int DRIVER_LEFT_STICK_X = 0;
     public static final int DRIVER_LEFT_STICK_Y = 1;
@@ -319,14 +315,10 @@ public final class Constants {
     public static final double DRIVE_BASE_RADIUS = Math.sqrt(Math.pow(DriveConstants.TRACK_WIDTH, 2) + Math.pow(DriveConstants.WHEEL_BASE, 2));
     public static final double MAX_SPEED = 5.7;
     public static final double MAX_ACCELERATION = 3.5;
-    public static final double DEPLOYED_TRANSLATION_CONTROLLER_P = .35;
-    public static final double DEPLOYED_THETA_CONTROLLER_P = .8;
+    public static final double REALTIME_TRANSLATION_CONTROLLER_P = .35;
+    public static final double REALTIME_THETA_CONTROLLER_P = .8;
     public static final double AUTO_SHOOT_HEADING_OFFSET = 2;
 
-    // public static final double REAL_TIME_X_CONTROLLER_P = 2;
-    // public static final double REAL_TIME_Y_CONTROLLER_P = 2;
-    // public static final double REAL_TIME_THETA_CONTROLLER_P = 3;
-    // public static final double THETA_PROFILED_CONTROLLER_P = 1;
     public static final double MAX_ANGULAR_SPEED_RADIANS_PER_SECOND = 2;
     public static final double MAX_ANGULAR_SPEED_RADIANS_PER_SECOND_SQUARED = 2;
     // The length of the field in the x direction (left to right)

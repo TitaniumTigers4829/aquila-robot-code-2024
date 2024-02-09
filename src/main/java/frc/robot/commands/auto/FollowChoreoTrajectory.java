@@ -31,9 +31,9 @@ public class FollowChoreoTrajectory extends DriveCommandBase {
     controllerCommand = Choreo.choreoSwerveCommand(
       Choreo.getTrajectory(trajectoryName),
       driveSubsystem::getPose, 
-      new PIDController(TrajectoryConstants.DEPLOYED_TRANSLATION_CONTROLLER_P, 0, 0), 
-      new PIDController(TrajectoryConstants.DEPLOYED_TRANSLATION_CONTROLLER_P, 0, 0), 
-      new PIDController(TrajectoryConstants.DEPLOYED_THETA_CONTROLLER_P, 0, 0), 
+      new PIDController(TrajectoryConstants.REALTIME_TRANSLATION_CONTROLLER_P, 0, 0), 
+      new PIDController(TrajectoryConstants.REALTIME_TRANSLATION_CONTROLLER_P, 0, 0), 
+      new PIDController(TrajectoryConstants.REALTIME_THETA_CONTROLLER_P, 0, 0), 
       (ChassisSpeeds speeds) -> driveSubsystem.drive(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, speeds.omegaRadiansPerSecond, false),
       ()->false,
       driveSubsystem
