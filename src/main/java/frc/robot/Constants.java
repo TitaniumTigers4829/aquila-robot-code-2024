@@ -12,9 +12,11 @@ import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.util.PIDConstants;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 
@@ -32,7 +34,7 @@ public final class Constants {
   public static final class HardwareConstants {
     public static final double TIMEOUT_S = 0.05;
 
-    public static final double SIGNAL_FREQUENCY = 250;
+    public static final double SIGNAL_FREQUENCY = 75;
 
     public static final String CANIVORE_CAN_BUS_STRING = "canivore 1";
     public static final String RIO_CAN_BUS_STRING = "rio";
@@ -40,9 +42,6 @@ public final class Constants {
     public static final double MIN_FALCON_DEADBAND = 0.0001;
 
     public static final PneumaticsModuleType PNEUMATICS_MODULE_TYPE = PneumaticsModuleType.CTREPCM;
-
-    public static final double TIMEOUT_MS = 10;
-
 
   }
 
@@ -100,11 +99,12 @@ public final class Constants {
     public static final InvertedValue REAR_LEFT_DRIVE_ENCODER_REVERSED = InvertedValue.CounterClockwise_Positive;
     public static final InvertedValue REAR_RIGHT_DRIVE_ENCODER_REVERSED = InvertedValue.Clockwise_Positive;
     
-    
-    public static final double MAX_ANGULAR_SPEED_RADIANS_PER_SECOND = Math.PI * 4;
+    // TODO: tune
+    public static final double MAX_ANGULAR_SPEED_RADIANS_PER_SECOND = 5;
 
     public static final double MAX_SPEED_METERS_PER_SECOND = 5.7;
 
+    public static final double HEADING_ACCEPTABLE_ERROR_DEGREES = 2;
   }
   
   public static final class ModuleConstants { 
@@ -195,6 +195,22 @@ public final class Constants {
   public static final class FieldConstants {
     public static final double FIELD_LENGTH_METERS = Units.inchesToMeters(653);
     public static final double FIELD_WIDTH_METERS = Units.inchesToMeters(325);
+
+    // TODO: in meters from the bottom left of the field
+    // TODO: add point for in front of each:
+    public static final double RED_AMP_X = 14.613;
+    public static final double RED_AMP_Y = 8.197;
+
+    public static final double BLUE_AMP_X = 1.9;
+    public static final double BLUE_AMP_Y = 8.161;
+    public static final Rotation2d RED_AMP_ROTATION = Rotation2d.fromDegrees(90);
+    public static final Rotation2d BLUE_AMP_ROTATION = Rotation2d.fromDegrees(90);
+    
+    public static final double RED_SPEAKER_X = 16.511;
+    public static final double RED_SPEAKER_Y = 5.529;
+
+    public static final double BLUE_SPEAKER_X = 0;
+    public static final double BLUE_SPEAKER_Y = 5.511;
   }
 
   public static final class JoystickConstants {
@@ -206,26 +222,92 @@ public final class Constants {
   }
   
   public static final class IntakeConstants {
-    public static final int INTAKE_MOTOR_ID = 0-9;
+    public static final int INTAKE_MOTOR_ID = 0;
+    public static final double INTAKE_MOTOR_SPEED = 0.75;
+  }
+
+  public static final class PivotConstants {
+    public static final int LEADER_PIVOT_MOTOR_ID = 0-9;
+    public static final int FOLLOWER_PIVOT_MOTOR_ID = 0-9;
+    public static final int PIVOT_ENCODER_ID = 0-9;
+    public static final double PIVOT_INTAKE_ANGLE = 0.0;
+
+    public static final double PIVOT_P = 0.0;
+    public static final double PIVOT_I = 0.0;
+    public static final double PIVOT_D = 0.0;
+    public static final double PIVOT_G = 0.0;
+
+    public static final int TURN_ENCODER_CHANNEL = 0;
+    public static final double ANGLE_ZERO = 0.0;
+    public static final SensorDirectionValue ENCODER_REVERSED = SensorDirectionValue.CounterClockwise_Positive;
+
+    public static final double SHOOT_AMP_ANGLE = 1-9;
+    public static final double PIVOT_ACCEPTABLE_ERROR = 1;
+
+    public static final double PIVOT_NEUTRAL_ANGLE = 0-9;
+
+    public static final double PIVOT_CLIMB_ANGLE = 0-9;
+
+    public static double[][] SPEAKER_PIVOT_POSITION = {
+      //distance, angle
+      {Units.feetToMeters(5.5), 0},
+      {Units.feetToMeters(7), 1},
+      {Units.feetToMeters(8.5), 2}, 
+      {Units.feetToMeters(10), 3},
+      {Units.feetToMeters(11.5), 4},
+      {Units.feetToMeters(13), 5},
+      {Units.feetToMeters(14.5), 6},
+      {Units.feetToMeters(16), 7}
+    };
   }
 
   public static final class ShooterConstants {
-    public static final int SHOOTER_MOTOR_ID = 0-9;
+    public static final int LEADER_FLYWHEEL_ID = 0-9;
+    public static final int FOLLOWER_FLYWHEEL_ID = 0-9;
+    public static final int ROLLER_MOTOR_ID = 0-9;
 
-    public static final double SPEAKER_SHOOT_RPM = 0-9;
-    public static final double AMP_SHOOT_RPM = 0-9;
+    public static final int SHOOTER_LIMIT_SWITCH_ID = 0-9;
+    public static final int SHOOTER_NOTE_SENSOR_ID = 0-9;
+
+    public static final double LEFT_SHOOT_SPEAKER_RPM = 0-9;
+    public static final double RIGHT_SHOOT_SPEAKER_RPM = 0-9;
 
     public static final double SHOOT_P = 0.0;
     public static final double SHOOT_I = 0.0;
     public static final double SHOOT_D = 0.0;
+
+    public static final double ROLLER_SPEED = 0.3;
+    public static final double SHOOT_AMP_SPEED = 0.3;
+    
+    public static final double GEAR_RATIO_MOTOR_TO_FLYWHEEL = 30.0 / 40.0;
+
+    public static final double AUTO_SHOOT_P = 0.0;
+    public static final double AUTO_SHOOT_I = 0.0;
+    public static final double AUTO_SHOOT_D = 0.0;
+    public static final double AUTO_SHOOT_S = 0.0;
+    public static final double AUTO_SHOOT_V = 0.0;
+    public static Constraints AUTO_SHOOT_CONSTRAINTS = new Constraints(DriveConstants.MAX_ANGULAR_SPEED_RADIANS_PER_SECOND, 5);
+
+    public static double[][] SPEAKER_SHOOT_RPMS = {
+      //distance, rpm
+      {Units.feetToMeters(5.5), 1770},
+      {Units.feetToMeters(7), 1665},
+      {Units.feetToMeters(8.5), 1560}, 
+      {Units.feetToMeters(10), 1350},
+      {Units.feetToMeters(11.5), 1300},
+      {Units.feetToMeters(13), 1280},
+      {Units.feetToMeters(14.5), 1260},
+      {Units.feetToMeters(16), 1300}
+   };
   }
-  
+
   public static final class TrajectoryConstants {
     public static final double DRIVE_BASE_RADIUS = Math.sqrt(Math.pow(DriveConstants.TRACK_WIDTH, 2) + Math.pow(DriveConstants.WHEEL_BASE, 2));
     public static final double MAX_SPEED = 5.7;
     public static final double MAX_ACCELERATION = 3.5;
     public static final double DEPLOYED_TRANSLATION_CONTROLLER_P = .35;
     public static final double DEPLOYED_THETA_CONTROLLER_P = .8;
+    public static final double AUTO_SHOOT_HEADING_OFFSET = 2;
     // public static final double REAL_TIME_X_CONTROLLER_P = 2;
     // public static final double REAL_TIME_Y_CONTROLLER_P = 2;
     // public static final double REAL_TIME_THETA_CONTROLLER_P = 3;
@@ -251,3 +333,4 @@ public final class Constants {
     public static final double THETA_TOLERANCE = 1.25;
   }
 }
+

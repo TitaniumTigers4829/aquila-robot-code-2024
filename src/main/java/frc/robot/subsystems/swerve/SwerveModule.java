@@ -6,6 +6,7 @@ import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
+import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -29,10 +30,9 @@ public class SwerveModule {
 
   private final ProfiledPIDController turnController;
  
-  StatusSignal<Double> driveMotorPosition;
-  StatusSignal<Double> driveMotorVelocity;
-  StatusSignal<Double> turnEncoderPos;
-  StatusSignal<Double> turnMotorPos;
+  private final StatusSignal<Double> driveMotorPosition;
+  private final StatusSignal<Double> driveMotorVelocity;
+  private final StatusSignal<Double> turnEncoderPos;
 
   private String name;
 
@@ -43,7 +43,9 @@ public class SwerveModule {
    * @param turnEncoderChannel ID of the CANCoder
    * @param angleZero CANCoder offset
    * @param encoderReversed is the turn encoder reversed
+   * @param turnReversed is the turn motor reversed
    * @param driveReversed is the drive motor reversed
+   * @param name name of the motor
    */
   public SwerveModule(
     int driveMotorChannel,
@@ -78,30 +80,19 @@ public class SwerveModule {
     driveConfig.MotorOutput.Inverted = driveReversed;
     driveConfig.MotorOutput.DutyCycleNeutralDeadband = HardwareConstants.MIN_FALCON_DEADBAND;
     
-    // TODO: current limits & optimize status signals
+    // TODO: current limits
     driveMotor.getConfigurator().apply(driveConfig, HardwareConstants.TIMEOUT_S);
 
     turnController = new ProfiledPIDController(ModuleConstants.TURN_P, ModuleConstants.TURN_I, ModuleConstants.TURN_S, new Constraints(ModuleConstants.MAX_ANGULAR_SPEED_ROTATIONS_PER_SECOND, ModuleConstants.MAX_ANGULAR_ACCELERATION_ROTATIONS_PER_SECOND_SQUARED));
     turnController.enableContinuousInput(-0.5, 0.5);
 
     TalonFXConfiguration turnConfig = new TalonFXConfiguration();
-    // turnConfig.Slot0.kP = ModuleConstants.TURN_P;
-    // turnConfig.Slot0.kI = ModuleConstants.TURN_I;
-    // turnConfig.Slot0.kD = ModuleConstants.TURN_D;
-    // turnConfig.Slot0.kS = ModuleConstants.TURN_S;
-    // turnConfig.Slot0.kV = ModuleConstants.TURN_V;
-    // turnConfig.Slot0.kA = ModuleConstants.TURN_A;
+   
     turnConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     turnConfig.MotorOutput.Inverted = turnReversed;
     turnConfig.MotorOutput.DutyCycleNeutralDeadband = HardwareConstants.MIN_FALCON_DEADBAND;
-    // turnConfig.ClosedLoopGeneral.ContinuousWrap = true; // enables continuous input
-    // turnConfig.MotionMagic.MotionMagicCruiseVelocity = ModuleConstants.MAX_ANGULAR_SPEED_RADIANS_PER_SECOND;
-    // turnConfig.MotionMagic.MotionMagicAcceleration = ModuleConstants.MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND_SQUARED;
-    // turnConfig.MotionMagic.MotionMagicJerk = 0;
-    // turnConfig.DifferentialSensors.DifferentialSensorSource = DifferentialSensorSourceValue.RemoteCANcoder;
-    // turnConfig.DifferentialSensors.DifferentialRemoteSensorID = turnEncoder.getDeviceID();
-
-    // TODO: config current limits & optimize status signals & motionmagic
+  
+    // TODO: config current limits & add back motion magic
     turnMotor.getConfigurator().apply(turnConfig, HardwareConstants.TIMEOUT_S);
 
     turnEncoderPos = turnEncoder.getAbsolutePosition();
@@ -113,8 +104,7 @@ public class SwerveModule {
 
     BaseStatusSignal.setUpdateFrequencyForAll(HardwareConstants.SIGNAL_FREQUENCY, turnEncoderPos, driveMotorPosition, driveMotorVelocity);
 
-    turnEncoder.optimizeBusUtilization(HardwareConstants.TIMEOUT_S);
-    driveMotor.optimizeBusUtilization(HardwareConstants.TIMEOUT_S);
+    ParentDevice.optimizeBusUtilizationForAll(turnEncoder, driveMotor, turnMotor);
 
   }
 
@@ -134,7 +124,6 @@ public class SwerveModule {
   public SwerveModuleState getState() {
     driveMotorVelocity.refresh();
 
-    //double speedMetersPerSecond = ModuleConstants.DRIVE_TO_METERS_PER_SECOND * driveMotorVelocity.getValue();
     double speedMetersPerSecond = ModuleConstants.DRIVE_TO_METERS_PER_SECOND * driveMotorVelocity.getValueAsDouble();
 
     return new SwerveModuleState(speedMetersPerSecond, Rotation2d.fromRotations(getModuleHeading()));
@@ -174,7 +163,6 @@ public class SwerveModule {
 
     VelocityVoltage driveOutput = new VelocityVoltage(desiredDriveRPS); // test this... might not work.
     driveMotor.setControl(driveOutput);
-
     
     double output = turnController.calculate(getModuleHeading(), optimizedDesiredState.angle.getRotations());
     turnMotor.set(output);

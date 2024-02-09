@@ -1,50 +1,143 @@
-// // Copyright (c) FIRST and other WPILib contributors.
-// // Open Source Software; you can modify and/or share it under the terms of
-// // the WPILib BSD license file in the root directory of this project.
+package frc.robot.subsystems.shooter;
 
-// package frc.robot.subsystems.shooter;
+import com.ctre.phoenix6.BaseStatusSignal;
+import com.ctre.phoenix6.StatusSignal;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.VelocityVoltage;
+import com.ctre.phoenix6.hardware.ParentDevice;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 
-// import com.ctre.phoenix6.BaseStatusSignal;
-// import com.ctre.phoenix6.configs.TalonFXConfiguration;
-// import com.ctre.phoenix6.hardware.TalonFX;
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.HardwareConstants;
+import frc.robot.Constants.ShooterConstants;
+import frc.robot.extras.SingleLinearInterpolator;
 
-// import edu.wpi.first.wpilibj2.command.SubsystemBase;
-// import frc.robot.Constants.HardwareConstants;
-// import frc.robot.Constants.ShooterConstants;
+public class ShooterSubsystem extends SubsystemBase {
+  private final DigitalInput noteSensor;
+  private final TalonFX leaderFlywheel;
+  private final TalonFX followerFlywheel;
+  private final TalonFX rollerMotor;
 
-// public class ShooterSubsystem extends SubsystemBase {
-//   private final TalonFX shooterMotor;
+  private final StatusSignal<Double> shooterVelocity;
+  private Follower follower;
+  private SingleLinearInterpolator speakerSpeedValues;
 
-//   /** Creates a new ShooterSubsystem. */
-//   public ShooterSubsystem() { 
-//     shooterMotor = new TalonFX(ShooterConstants.SHOOTER_MOTOR_ID);
+  private double shooterTargetRPM;
 
-//     TalonFXConfiguration shooterConfig = new TalonFXConfiguration();
-//     shooterConfig.Slot0.kP = ShooterConstants.SHOOT_P;
-//     shooterConfig.Slot0.kI = ShooterConstants.SHOOT_I;
-//     shooterConfig.Slot0.kD = ShooterConstants.SHOOT_D;
+  /** Creates a new ShooterSubsystem. */
+  public ShooterSubsystem() { 
+    leaderFlywheel = new TalonFX(ShooterConstants.LEADER_FLYWHEEL_ID);
+    followerFlywheel = new TalonFX(ShooterConstants.FOLLOWER_FLYWHEEL_ID);
+    rollerMotor = new TalonFX(ShooterConstants.ROLLER_MOTOR_ID);
+    noteSensor = new DigitalInput(ShooterConstants.SHOOTER_NOTE_SENSOR_ID);
 
-//     shooterMotor.getConfigurator().apply(shooterConfig);
+    follower = new Follower(leaderFlywheel.getDeviceID(), true);
 
-//     BaseStatusSignal.setUpdateFrequencyForAll(HardwareConstants.SIGNAL_FREQUENCY, 
-//     shooterMotor.getPosition(), 
-//     shooterMotor.getVelocity(), 
-//     shooterMotor.getAcceleration(), 
-//     shooterMotor.getMotorVoltage());
-    
-//     shooterMotor.optimizeBusUtilization(HardwareConstants.TIMEOUT_S);
-//   }
+    speakerSpeedValues = new SingleLinearInterpolator(ShooterConstants.SPEAKER_SHOOT_RPMS);
+
+    TalonFXConfiguration shooterConfig = new TalonFXConfiguration();
+    shooterConfig.Slot0.kP = ShooterConstants.SHOOT_P;
+    shooterConfig.Slot0.kI = ShooterConstants.SHOOT_I;
+    shooterConfig.Slot0.kD = ShooterConstants.SHOOT_D;
+
+    shooterConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+    shooterConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive; 
+    shooterConfig.MotorOutput.DutyCycleNeutralDeadband = HardwareConstants.MIN_FALCON_DEADBAND;
+    leaderFlywheel.getConfigurator().apply(shooterConfig, HardwareConstants.TIMEOUT_S);
+
+    TalonFXConfiguration rollerConfig = new TalonFXConfiguration();
+    rollerMotor.getConfigurator().apply(rollerConfig);
+
+    shooterVelocity = leaderFlywheel.getVelocity();
+
+    BaseStatusSignal.setUpdateFrequencyForAll(HardwareConstants.SIGNAL_FREQUENCY, shooterVelocity);
+    ParentDevice.optimizeBusUtilizationForAll(leaderFlywheel, rollerMotor, followerFlywheel);
+  }
+
+  /**
+   * sets the speed of the flywheel
+   * @param speed the speed (m/s) of the flywheel
+   */
+  public void setShooterSpeed(double speed) {
+    leaderFlywheel.set(speed);
+    followerFlywheel.setControl(follower);
+  }
+
+  /**
+   * sets the speed of the rollers to transfer note from tower to shooter
+   * @param speed speed (m/s) of the rollers
+   */
+  public void setRollerSpeed(double speed) {
+    rollerMotor.set(speed);
+  }
+
+  /**
+   * the error between the target rpm and actual rpm of the shooter
+   * @return True if we are within an acceptable range (of rpm) to shoot
+   */
+  public boolean isShooterWithinAcceptableError() {
+    return Math.abs(shooterTargetRPM - getShooterRPM()) < 20;
+  }
+
+  public boolean isReadyToShoot(double headingError) {
+    return (Math.abs(headingError) < DriveConstants.HEADING_ACCEPTABLE_ERROR_DEGREES) && isShooterWithinAcceptableError();
+  }
+
+  /**
+   * sets RPM of both leader and follower flywheel motors
+   * @param leaderRPM sets the rpm of the leader motor
+   */
+  public void setRPM(double leaderRPM) {
+    shooterTargetRPM = leaderRPM;
+    VelocityVoltage leaderSpeed = new VelocityVoltage(leaderRPM / 60.0);
+    leaderFlywheel.setControl(leaderSpeed);
+    followerFlywheel.setControl(follower);
+  }
 
 
-//   public void shootSpeaker() {
-//   }
+  /**
+   * sets flywheel speed (m/s) to 0
+   */
+  public void setFlywheelNeutral() {
+    leaderFlywheel.set(0);
+    followerFlywheel.setControl(follower);
+  }
 
-//   public void shootAmp() {
-//   }
+  /**
+   * Gets the sensor in the shooter pivot
+   * @return True if there is not a note in the tower
+   */
+  public boolean getSensor() {
+    return noteSensor.get();
+  }
 
-//   @Override
-//   public void periodic() {
-//     // This method will be called once per scheduler run
-    
-//   }
-// }
+  /**
+   * sets the shooter rpm from a lookup table of 
+   * values and the distance to the speaker
+   * @param distance the distance (meters) from the speaker
+   */
+  public void setShooterRPMFromDistance(double distance) {
+    // set local target rpm
+    shooterTargetRPM = speakerSpeedValues.getLookupValue(distance);
+    setRPM(shooterTargetRPM);
+  }
+  
+  /**
+   * gets the current shooter RPM
+   * @return returns the current shooter rpm as a double
+   */
+  public double getShooterRPM() {
+    shooterVelocity.refresh();
+    return shooterVelocity.getValueAsDouble() * 60;
+  }
+  
+  @Override
+  public void periodic() {
+  }
+
+}

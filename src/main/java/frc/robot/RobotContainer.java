@@ -12,20 +12,35 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.JoystickConstants;
-import frc.robot.commands.Drive;
-import frc.robot.commands.FollowChoreoTrajectory;
+import frc.robot.commands.auto.FollowChoreoTrajectory;
+import frc.robot.commands.drive.Drive;
+import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.swerve.DriveSubsystem;
 import frc.robot.subsystems.vision.VisionSubsystem;
 
 public class RobotContainer {
+  /*
+   * TODOs
+   * Finish fancy auto
+   *   verify followpathandshoot.java
+   *   make new paths
+   *   figure out max shoot distance
+   *   make shootspeakerauto.java
+   *   make intakeauto.java
+   *   add the follow path commands
+   * 
+   * make simpler autos (raina and juno)
+   */
 
   private final VisionSubsystem visionSubsystem;
+  private final ShooterSubsystem shooterSubsystem;
   private final DriveSubsystem driveSubsystem;
   private final Joystick driverJoystick = new Joystick(0);
   
   public RobotContainer() {
     visionSubsystem = new VisionSubsystem();
     driveSubsystem = new DriveSubsystem(); 
+    shooterSubsystem = new ShooterSubsystem();
   }
   
   private static double deadband(double value, double deadband) {
