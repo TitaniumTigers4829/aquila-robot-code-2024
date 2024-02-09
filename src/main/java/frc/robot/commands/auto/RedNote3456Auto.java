@@ -21,30 +21,30 @@ public class RedNote3456Auto extends SequentialCommandGroup {
   public RedNote3456Auto(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, IntakeSubsystem intakeSubsystem, PivotSubsystem pivotSubsystem, ShooterSubsystem shooterSubsystem) {
 
     addCommands(
-      new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, visionSubsystem, pivotSubsystem).withTimeout(2),
+      new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, visionSubsystem, pivotSubsystem),
       new ParallelRaceGroup(
         new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "Red note 3").withTimeout(3),
         new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem)
       ),
-      new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, visionSubsystem, pivotSubsystem).withTimeout(2),
+      new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, visionSubsystem, pivotSubsystem),
 
       new ParallelRaceGroup(
-        new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "red note #3 to #4").withTimeout(3),
+        new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "red note #3 to #4"),
         new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem)
       ),
-      new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, visionSubsystem, pivotSubsystem).withTimeout(2),
+      new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, visionSubsystem, pivotSubsystem),
 
       new ParallelRaceGroup(
-        new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "red note #4 to #5").withTimeout(3),
+        new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "red note #4 to #5"),
         new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem)
       ),
-      new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, visionSubsystem, pivotSubsystem).withTimeout(2),
+      new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, visionSubsystem, pivotSubsystem),
 
       new ParallelRaceGroup(
-        new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "red note #5 to #6").withTimeout(3),
+        new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "red note #5 to #6"),
         new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem)
       ),
-      new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, visionSubsystem, pivotSubsystem).withTimeout(2)
+      new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, visionSubsystem, pivotSubsystem)
 
       );
     }
