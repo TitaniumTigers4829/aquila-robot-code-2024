@@ -14,6 +14,11 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.JoystickConstants;
 import frc.robot.commands.auto.FollowChoreoTrajectory;
 import frc.robot.commands.drive.Drive;
+import frc.robot.commands.drive.TestThings;
+import frc.robot.commands.intake.TowerIntake;
+import frc.robot.commands.shooter.RollerSpeedSetter;
+import frc.robot.subsystems.intake.IntakeSubsystem;
+import frc.robot.subsystems.pivot.PivotSubsystem;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.swerve.DriveSubsystem;
 import frc.robot.subsystems.vision.VisionSubsystem;
@@ -36,11 +41,15 @@ public class RobotContainer {
   private final ShooterSubsystem shooterSubsystem;
   private final DriveSubsystem driveSubsystem;
   private final Joystick driverJoystick = new Joystick(0);
+  private final IntakeSubsystem intakeSubsystem;
+  private final PivotSubsystem pivotSubsystem;
   
   public RobotContainer() {
     visionSubsystem = new VisionSubsystem();
     driveSubsystem = new DriveSubsystem(); 
     shooterSubsystem = new ShooterSubsystem();
+    intakeSubsystem = new IntakeSubsystem();
+    pivotSubsystem = new PivotSubsystem();
   }
   
   private static double deadband(double value, double deadband) {
@@ -94,16 +103,27 @@ public class RobotContainer {
     JoystickButton xButton = new JoystickButton(driverJoystick, JoystickConstants.X_BUTTON);
 
     Command driveCommand = new Drive(driveSubsystem, visionSubsystem,
-      () -> modifyAxisCubedPolar(driverLeftStickY, driverLeftStickX)[0] * -1,
-      () -> modifyAxisCubedPolar(driverLeftStickY, driverLeftStickX)[1] * -1,
-      () -> modifyAxisCubed(driverRightStickX) * -1,
+      () -> modifyAxisCubedPolar(driverLeftStickY, driverLeftStickX)[0],
+      () -> modifyAxisCubedPolar(driverLeftStickY, driverLeftStickX)[1],
+      () -> modifyAxisCubed(driverRightStickX),
       () -> !driverRightBumper.getAsBoolean()
     );
 
+    JoystickButton bJoystickButton = new JoystickButton(driverJoystick, 2);
+
+    bJoystickButton.whileTrue(new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem));
+
     driveSubsystem.setDefaultCommand(driveCommand);
+
+    JoystickButton yButton = new JoystickButton(driverJoystick, 4);
+
+    yButton.whileTrue(new TestThings(driveSubsystem));
 
     xButton.onTrue(new InstantCommand(() -> driveSubsystem.resetOdometry(new Pose2d())));
     xButton.onTrue(new InstantCommand(driveSubsystem::zeroHeading));
+
+    JoystickButton aButton = new JoystickButton(driverJoystick, 1);
+    aButton.whileTrue(new RollerSpeedSetter(shooterSubsystem));
   }
 
   public Command getAutonomousCommand() {

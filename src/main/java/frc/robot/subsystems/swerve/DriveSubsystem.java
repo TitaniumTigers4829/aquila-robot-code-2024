@@ -248,7 +248,13 @@ public class DriveSubsystem extends SubsystemBase {
 
     return swerveModulePositions;
   }
- 
+
+  public void testsStuff(double volts) {
+    frontLeftSwerveModule.setVoltage(volts);
+    frontRightSwerveModule.setVoltage(volts);
+    rearLeftSwerveModule.setVoltage(volts);
+    rearRightSwerveModule.setVoltage(volts);
+  }
   /**
    * Sets the modules to the specified states.
    * @param desiredStates The desired states for the swerve modules. The

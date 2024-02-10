@@ -4,11 +4,14 @@ import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
+import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
+import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
@@ -59,9 +62,9 @@ public class SwerveModule {
     ) {
     this.name = name;
     
-    turnEncoder = new CANcoder(turnEncoderChannel);
-    driveMotor = new TalonFX(driveMotorChannel);
-    turnMotor = new TalonFX(turnMotorChannel);
+    turnEncoder = new CANcoder(turnEncoderChannel, HardwareConstants.CANIVORE_CAN_BUS_STRING);
+    driveMotor = new TalonFX(driveMotorChannel, HardwareConstants.CANIVORE_CAN_BUS_STRING);
+    turnMotor = new TalonFX(turnMotorChannel, HardwareConstants.CANIVORE_CAN_BUS_STRING);
     
     CANcoderConfiguration turnEncoderConfig = new CANcoderConfiguration();
     turnEncoderConfig.MagnetSensor.MagnetOffset = -angleZero;
@@ -79,6 +82,12 @@ public class SwerveModule {
     driveConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     driveConfig.MotorOutput.Inverted = driveReversed;
     driveConfig.MotorOutput.DutyCycleNeutralDeadband = HardwareConstants.MIN_FALCON_DEADBAND;
+    driveConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+    driveConfig.CurrentLimits.SupplyCurrentLimit = 50;
+    driveConfig.CurrentLimits.SupplyCurrentThreshold = 55;
+    driveConfig.CurrentLimits.SupplyTimeThreshold = 0.1;
+    driveConfig.CurrentLimits.StatorCurrentLimit = 50;
+    driveConfig.CurrentLimits.StatorCurrentLimitEnable = true;
     
     // TODO: current limits
     driveMotor.getConfigurator().apply(driveConfig, HardwareConstants.TIMEOUT_S);
@@ -87,11 +96,19 @@ public class SwerveModule {
     turnController.enableContinuousInput(-0.5, 0.5);
 
     TalonFXConfiguration turnConfig = new TalonFXConfiguration();
-   
+    turnConfig.Slot0.kP = ModuleConstants.TURN_P;
+    turnConfig.Slot0.kI = ModuleConstants.TURN_I;
+    turnConfig.Slot0.kD = ModuleConstants.TURN_D;
+    turnConfig.Slot0.kS = ModuleConstants.TURN_S;
+    turnConfig.Slot0.kV = ModuleConstants.TURN_V;
+    turnConfig.Slot0.kA = ModuleConstants.TURN_A;
+    turnConfig.Feedback.FeedbackRemoteSensorID = turnEncoder.getDeviceID();
+    turnConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
     turnConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     turnConfig.MotorOutput.Inverted = turnReversed;
     turnConfig.MotorOutput.DutyCycleNeutralDeadband = HardwareConstants.MIN_FALCON_DEADBAND;
-  
+    turnConfig.MotionMagic.MotionMagicCruiseVelocity = ModuleConstants.MAX_ANGULAR_SPEED_ROTATIONS_PER_SECOND;
+    turnConfig.MotionMagic.MotionMagicAcceleration = ModuleConstants.MAX_ANGULAR_ACCELERATION_ROTATIONS_PER_SECOND_SQUARED;
     // TODO: config current limits & add back motion magic
     turnMotor.getConfigurator().apply(turnConfig, HardwareConstants.TIMEOUT_S);
 
@@ -129,6 +146,10 @@ public class SwerveModule {
     return new SwerveModuleState(speedMetersPerSecond, Rotation2d.fromRotations(getModuleHeading()));
   }
 
+  public void setVoltage(double volts){
+    VoltageOut kSOut = new VoltageOut(volts);
+    driveMotor.setControl(kSOut);
+  }
   /**
    * Gets the module position consisting of the distance it has traveled and the angle it is rotated.
    * @return a SwerveModulePosition object containing position and rotation
@@ -136,7 +157,7 @@ public class SwerveModule {
   public SwerveModulePosition getPosition() {
     driveMotorPosition.refresh();
     double position = ModuleConstants.DRIVE_TO_METERS * driveMotorPosition.getValue();
-    Rotation2d rotation = Rotation2d.fromRotations(getCANCoderABS());
+    Rotation2d rotation = Rotation2d.fromRotations(getModuleHeading());
     SmartDashboard.putString(name, new SwerveModulePosition(position, rotation).toString());
     return new SwerveModulePosition(position, rotation);
   }
@@ -157,6 +178,10 @@ public class SwerveModule {
       return;
     }
 
+    // SmartDashboard.putNumber(name + " desired speed", optimizedDesiredState.speedMetersPerSecond);
+
+    // SmartDashboard.putNumber(name + "error", optimizedDesiredState.speedMetersPerSecond - getState().speedMetersPerSecond);
+
     // Converts meters per second to rotations per second
     double desiredDriveRPS = optimizedDesiredState.speedMetersPerSecond 
      * ModuleConstants.DRIVE_GEAR_RATIO / ModuleConstants.WHEEL_CIRCUMFERENCE_METERS;
@@ -164,6 +189,9 @@ public class SwerveModule {
     VelocityVoltage driveOutput = new VelocityVoltage(desiredDriveRPS); // test this... might not work.
     driveMotor.setControl(driveOutput);
     
+    // TODO
+    // MotionMagicVoltage turnOutput = new MotionMagicVoltage(optimizedDesiredState.angle.getRotations());
+    // turnMotor.setControl(turnOutput);
     double output = turnController.calculate(getModuleHeading(), optimizedDesiredState.angle.getRotations());
     turnMotor.set(output);
   }
@@ -178,17 +206,10 @@ public class SwerveModule {
   }
 
   /**
-   * Gets the current position of the CANCoder in relation to the magnet
-   * @return current CANCoder position in rotations
-   */
-  public double getCANCoderABS(){
-    turnEncoderPos.refresh();
-    return turnEncoderPos.getValue();
-  }
-
-  /**
    * This is called in the periodic of DriveSubsystem
    */
-  public void periodicFunction() {}
+  public void periodicFunction() {
+    SmartDashboard.putNumber(name + " angle", getModuleHeading());
+  }
 
 }

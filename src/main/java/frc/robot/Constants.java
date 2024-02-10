@@ -52,9 +52,9 @@ public final class Constants {
 
     // Wheel base and track width are measured by the center of the swerve modules, not the frame of the robot
     // Distance between centers of right and left wheels on robot
-    public static final double TRACK_WIDTH = Units.inchesToMeters(21.2);
+    public static final double TRACK_WIDTH = Units.inchesToMeters(26);
     // Distance between front and back wheels on robot
-    public static final double WHEEL_BASE = Units.inchesToMeters(21.2);
+    public static final double WHEEL_BASE = Units.inchesToMeters(26);
 
     public static final SwerveDriveKinematics DRIVE_KINEMATICS = new SwerveDriveKinematics(
       new Translation2d(WHEEL_BASE / 2, TRACK_WIDTH / 2), // Front Left
@@ -63,25 +63,25 @@ public final class Constants {
     new Translation2d(-WHEEL_BASE / 2, -TRACK_WIDTH / 2) // Rear Right
     );
 
-    public static final int FRONT_LEFT_DRIVE_MOTOR_ID = 1;
-    public static final int FRONT_RIGHT_DRIVE_MOTOR_ID = 2;
-    public static final int REAR_LEFT_DRIVE_MOTOR_ID = 3;
-    public static final int REAR_RIGHT_DRIVE_MOTOR_ID = 4;
+    public static final int FRONT_LEFT_DRIVE_MOTOR_ID = 22;
+    public static final int FRONT_RIGHT_DRIVE_MOTOR_ID = 24;
+    public static final int REAR_LEFT_DRIVE_MOTOR_ID = 23;
+    public static final int REAR_RIGHT_DRIVE_MOTOR_ID = 21;
 
     public static final int FRONT_LEFT_TURN_MOTOR_ID = 5;
     public static final int FRONT_RIGHT_TURN_MOTOR_ID = 6;
-    public static final int REAR_LEFT_TURN_MOTOR_ID = 7;
-    public static final int REAR_RIGHT_TURN_MOTOR_ID = 8;
+    public static final int REAR_LEFT_TURN_MOTOR_ID = 8;
+    public static final int REAR_RIGHT_TURN_MOTOR_ID = 7;
 
     public static final int FRONT_LEFT_CANCODER_ID = 11;
     public static final int FRONT_RIGHT_CANCODER_ID = 12;
-    public static final int REAR_LEFT_CANCODER_ID = 13;
-    public static final int REAR_RIGHT_CANCODER_ID = 14;
+    public static final int REAR_LEFT_CANCODER_ID = 14;
+    public static final int REAR_RIGHT_CANCODER_ID = 13;
 
-    public static final double FRONT_LEFT_ZERO_ANGLE = -0.024658203125;
-    public static final double FRONT_RIGHT_ZERO_ANGLE = -0.214599609375;
-    public static final double REAR_LEFT_ZERO_ANGLE = 0.12548828125;
-    public static final double REAR_RIGHT_ZERO_ANGLE = -0.2294921875;
+    public static final double FRONT_LEFT_ZERO_ANGLE = 0.137939453125;
+    public static final double FRONT_RIGHT_ZERO_ANGLE = -0.4228515625;
+    public static final double REAR_LEFT_ZERO_ANGLE = -0.475341796875;
+    public static final double REAR_RIGHT_ZERO_ANGLE = -0.0595703125;
 
     //inverts may vary
     public static final SensorDirectionValue FRONT_LEFT_CANCODER_REVERSED = SensorDirectionValue.CounterClockwise_Positive;
@@ -95,31 +95,30 @@ public final class Constants {
     public static final InvertedValue REAR_RIGHT_TURN_MOTOR_REVERSED = InvertedValue.Clockwise_Positive;
 
     public static final InvertedValue FRONT_LEFT_DRIVE_ENCODER_REVERSED = InvertedValue.CounterClockwise_Positive;
-    public static final InvertedValue FRONT_RIGHT_DRIVE_ENCODER_REVERSED = InvertedValue.Clockwise_Positive; 
-    public static final InvertedValue REAR_LEFT_DRIVE_ENCODER_REVERSED = InvertedValue.CounterClockwise_Positive;
-    public static final InvertedValue REAR_RIGHT_DRIVE_ENCODER_REVERSED = InvertedValue.Clockwise_Positive;
+    public static final InvertedValue FRONT_RIGHT_DRIVE_ENCODER_REVERSED = InvertedValue.CounterClockwise_Positive; 
+    public static final InvertedValue REAR_LEFT_DRIVE_ENCODER_REVERSED = InvertedValue.Clockwise_Positive;
+    public static final InvertedValue REAR_RIGHT_DRIVE_ENCODER_REVERSED = InvertedValue.CounterClockwise_Positive;
     
     // TODO: tune
     public static final double MAX_ANGULAR_SPEED_RADIANS_PER_SECOND = 5;
 
-    public static final double MAX_SPEED_METERS_PER_SECOND = 5.7;
+    public static final double MAX_SPEED_METERS_PER_SECOND = 6.94;
 
     public static final double HEADING_ACCEPTABLE_ERROR_DEGREES = 2;
   }
   
   public static final class ModuleConstants { 
-    // TODO: check - we kinda guessed this
-    public static final double DRIVE_GEAR_RATIO = 7.36;
+    public static final double DRIVE_GEAR_RATIO = 4.59;
     public static final double WHEEL_DIAMETER_METERS = Units.inchesToMeters(4);
     public static final double WHEEL_CIRCUMFERENCE_METERS = WHEEL_DIAMETER_METERS * Math.PI;
     public static final double DRIVE_TO_METERS =  WHEEL_CIRCUMFERENCE_METERS / DRIVE_GEAR_RATIO;
     public static final double DRIVE_TO_METERS_PER_SECOND = WHEEL_CIRCUMFERENCE_METERS / DRIVE_GEAR_RATIO;
 
-    public static final double TURN_P = 2.3; 
+    public static final double TURN_P = 2; 
     public static final double TURN_I = 0;
     public static final double TURN_D = 0;
 
-    public static final double TURN_S = 0;
+    public static final double TURN_S = 0.0;
     public static final double TURN_V = 0;
     public static final double TURN_A = 0;
 
@@ -131,13 +130,13 @@ public final class Constants {
         MAX_ANGULAR_ACCELERATION_ROTATIONS_PER_SECOND_SQUARED
       );
 
-    public static final double DRIVE_P = 0.391;
+    public static final double DRIVE_P = 0.0;
     public static final double DRIVE_I = 0;
     public static final double DRIVE_D = 0;
 
-    public static final double DRIVE_S = 0.10;
-    public static final double DRIVE_V = 0.09;
-    public static final double DRIVE_A = 0;
+    public static final double DRIVE_S = 0.2; 
+    public static final double DRIVE_V = 0.552191457528;
+    public static final double DRIVE_A = 0.09256;
   }
 
   public static final class VisionConstants {
@@ -222,14 +221,14 @@ public final class Constants {
   }
   
   public static final class IntakeConstants {
-    public static final int INTAKE_MOTOR_ID = 0;
-    public static final double INTAKE_MOTOR_SPEED = 0.75;
+    public static final int INTAKE_MOTOR_ID = 5;
+    public static final double INTAKE_MOTOR_SPEED = -1;
   }
 
   public static final class PivotConstants {
-    public static final int LEADER_PIVOT_MOTOR_ID = 0-9;
-    public static final int FOLLOWER_PIVOT_MOTOR_ID = 0-9;
-    public static final int PIVOT_ENCODER_ID = 0-9;
+    public static final int LEADER_PIVOT_MOTOR_ID = 9;
+    public static final int FOLLOWER_PIVOT_MOTOR_ID = 10;
+    public static final int PIVOT_ENCODER_ID = 33;
     public static final double PIVOT_INTAKE_ANGLE = 0.0;
 
     public static final double PIVOT_P = 0.0;
@@ -237,7 +236,6 @@ public final class Constants {
     public static final double PIVOT_D = 0.0;
     public static final double PIVOT_G = 0.0;
 
-    public static final int TURN_ENCODER_CHANNEL = 0;
     public static final double ANGLE_ZERO = 0.0;
     public static final SensorDirectionValue ENCODER_REVERSED = SensorDirectionValue.CounterClockwise_Positive;
 
@@ -262,12 +260,12 @@ public final class Constants {
   }
 
   public static final class ShooterConstants {
-    public static final int LEADER_FLYWHEEL_ID = 0-9;
-    public static final int FOLLOWER_FLYWHEEL_ID = 0-9;
-    public static final int ROLLER_MOTOR_ID = 0-9;
+    public static final int LEADER_FLYWHEEL_ID = 4;
+    public static final int FOLLOWER_FLYWHEEL_ID = 6;
+    public static final int ROLLER_MOTOR_ID = 2;
 
-    public static final int SHOOTER_LIMIT_SWITCH_ID = 0-9;
-    public static final int SHOOTER_NOTE_SENSOR_ID = 0-9;
+    // public static final int SHOOTER_LIMIT_SWITCH_ID = 0-9;
+    // public static final int SHOOTER_NOTE_SENSOR_ID = 0-9;
 
     public static final double LEFT_SHOOT_SPEAKER_RPM = 0-9;
     public static final double RIGHT_SHOOT_SPEAKER_RPM = 0-9;

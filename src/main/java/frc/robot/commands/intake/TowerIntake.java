@@ -29,16 +29,10 @@ public class TowerIntake extends Command {
   public void execute() {
     pivotSubsystem.setPivot(PivotConstants.PIVOT_INTAKE_ANGLE);
 
-    //if the sensor senses a note, don't intake
-    if (!shooterSubsystem.getSensor()) {
-      intakeSubsystem.setIntakeSpeed(0);
-      shooterSubsystem.setRollerSpeed(0);
-    } else {
-      //otherwise intake
-      intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_MOTOR_SPEED);
-      shooterSubsystem.setRollerSpeed(ShooterConstants.ROLLER_SPEED);
-    }
+    intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_MOTOR_SPEED);
+    shooterSubsystem.setRollerSpeed(ShooterConstants.ROLLER_SPEED);
   }
+  
 
   @Override
   public void end(boolean interrupted) {

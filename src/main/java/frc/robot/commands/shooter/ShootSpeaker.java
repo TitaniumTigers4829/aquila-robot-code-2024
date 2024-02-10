@@ -76,7 +76,7 @@ public class ShootSpeaker extends DriveCommandBase {
     super.execute();
     
     // get positions of various things
-    Translation2d robotPos = SmarterDashboardRegistry.getPose().getTranslation();
+    Translation2d robotPos = driveSubsystem.getPose().getTranslation();
     // distance (for speaker lookups)
     double distance = robotPos.getDistance(speakerPos);
     // arctangent for desired heading
