@@ -31,7 +31,7 @@ public class SwerveModule {
   private final TalonFX driveMotor;
   private final TalonFX turnMotor;
 
-  private final ProfiledPIDController turnController;
+  // private final ProfiledPIDController turnController;
  
   private final StatusSignal<Double> driveMotorPosition;
   private final StatusSignal<Double> driveMotorVelocity;
@@ -92,8 +92,8 @@ public class SwerveModule {
     // TODO: current limits
     driveMotor.getConfigurator().apply(driveConfig, HardwareConstants.TIMEOUT_S);
 
-    turnController = new ProfiledPIDController(ModuleConstants.TURN_P, ModuleConstants.TURN_I, ModuleConstants.TURN_S, new Constraints(ModuleConstants.MAX_ANGULAR_SPEED_ROTATIONS_PER_SECOND, ModuleConstants.MAX_ANGULAR_ACCELERATION_ROTATIONS_PER_SECOND_SQUARED));
-    turnController.enableContinuousInput(-0.5, 0.5);
+    // turnController = new ProfiledPIDController(ModuleConstants.TURN_P, ModuleConstants.TURN_I, ModuleConstants.TURN_S, new Constraints(ModuleConstants.MAX_ANGULAR_SPEED_ROTATIONS_PER_SECOND, ModuleConstants.MAX_ANGULAR_ACCELERATION_ROTATIONS_PER_SECOND_SQUARED));
+    // turnController.enableContinuousInput(-0.5, 0.5);
 
     TalonFXConfiguration turnConfig = new TalonFXConfiguration();
     turnConfig.Slot0.kP = ModuleConstants.TURN_P;
@@ -109,6 +109,7 @@ public class SwerveModule {
     turnConfig.MotorOutput.DutyCycleNeutralDeadband = HardwareConstants.MIN_FALCON_DEADBAND;
     turnConfig.MotionMagic.MotionMagicCruiseVelocity = ModuleConstants.MAX_ANGULAR_SPEED_ROTATIONS_PER_SECOND;
     turnConfig.MotionMagic.MotionMagicAcceleration = ModuleConstants.MAX_ANGULAR_ACCELERATION_ROTATIONS_PER_SECOND_SQUARED;
+    turnConfig.ClosedLoopGeneral.ContinuousWrap = true;
     // TODO: config current limits & add back motion magic
     turnMotor.getConfigurator().apply(turnConfig, HardwareConstants.TIMEOUT_S);
 
@@ -172,15 +173,14 @@ public class SwerveModule {
     // Optimize the reference state to avoid spinning further than 90 degrees
     SwerveModuleState optimizedDesiredState = SwerveModuleState.optimize(desiredState, new Rotation2d(turnRadians));
 
+    // SmartDashboard.putNumber(name + "desired state", optimizedDesiredState.angle.getDegrees());
     if (Math.abs(optimizedDesiredState.speedMetersPerSecond) < 0.01) {
       driveMotor.set(0);
       turnMotor.set(0);
       return;
     }
 
-    // SmartDashboard.putNumber(name + " desired speed", optimizedDesiredState.speedMetersPerSecond);
-
-    // SmartDashboard.putNumber(name + "error", optimizedDesiredState.speedMetersPerSecond - getState().speedMetersPerSecond);
+    SmartDashboard.putNumber(name + " error", optimizedDesiredState.speedMetersPerSecond - getState().speedMetersPerSecond);
 
     // Converts meters per second to rotations per second
     double desiredDriveRPS = optimizedDesiredState.speedMetersPerSecond 
@@ -189,11 +189,16 @@ public class SwerveModule {
     VelocityVoltage driveOutput = new VelocityVoltage(desiredDriveRPS); // test this... might not work.
     driveMotor.setControl(driveOutput);
     
-    // TODO
-    // MotionMagicVoltage turnOutput = new MotionMagicVoltage(optimizedDesiredState.angle.getRotations());
-    // turnMotor.setControl(turnOutput);
-    double output = turnController.calculate(getModuleHeading(), optimizedDesiredState.angle.getRotations());
-    turnMotor.set(output);
+    MotionMagicVoltage turnOutput =
+     new MotionMagicVoltage(optimizedDesiredState.angle.getRotations());
+    turnMotor.setControl(turnOutput);
+
+
+
+    // SmartDashboard.putNumber(name + " turnOutput", turnMotor.get());
+    // SmartDashboard.putNumber(name + "velocity", turnMotor.getVelocity().refresh().getValueAsDouble());
+    // double output = turnController.calculate(getModuleHeading(), optimizedDesiredState.angle.getRotations());
+    // turnMotor.set(output);
   }
 
   /**

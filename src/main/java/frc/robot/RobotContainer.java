@@ -134,6 +134,7 @@ public class RobotContainer {
     JoystickButton yButton = new JoystickButton(driverJoystick, 4);
     JoystickButton aButton = new JoystickButton(driverJoystick, 1);
     aButton.whileTrue(new RollerSpeedSetter(shooterSubsystem));
+    yButton.whileTrue(new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem));
   }
 
   public Command getAutonomousCommand() {
