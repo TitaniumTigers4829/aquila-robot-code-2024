@@ -132,7 +132,7 @@ public final class Constants {
         MAX_ANGULAR_ACCELERATION_ROTATIONS_PER_SECOND_SQUARED
       );
 
-    public static final double DRIVE_P = 0.0;
+    public static final double DRIVE_P = 0.33;
     public static final double DRIVE_I = 0;
     public static final double DRIVE_D = 0;
 
