@@ -153,7 +153,6 @@ public class VisionSubsystem extends SubsystemBase {
       LimelightHelpers.setLEDMode_ForceOff(VisionConstants.FRONT_LIMELIGHT_NAME);
       LimelightHelpers.setLEDMode_ForceOff(VisionConstants.BACK_LIMELIGHT_NAME);
     }
-
   }
 
   /**

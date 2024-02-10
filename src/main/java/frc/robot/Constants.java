@@ -10,7 +10,9 @@ package frc.robot;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.pathplanner.lib.path.PathConstraints;
+import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
+import com.pathplanner.lib.util.ReplanningConfig;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -46,9 +48,9 @@ public final class Constants {
   }
 
   public static final class DriveConstants {
-    public static final double X_POS_TRUST = 0.03; //meters
-    public static final double Y_POS_TRUST = 0.03; //meters
-    public static final double ANGLE_TRUST = Units.degreesToRadians(1); //radians
+    public static final double X_POS_TRUST = 0.03; // Meters
+    public static final double Y_POS_TRUST = 0.03; // Meters
+    public static final double ANGLE_TRUST = Units.degreesToRadians(1); // Radians
 
     // Wheel base and track width are measured by the center of the swerve modules, not the frame of the robot
     // Distance between centers of right and left wheels on robot
@@ -200,8 +202,14 @@ public final class Constants {
     public static final double RED_AMP_X = 14.613;
     public static final double RED_AMP_Y = 8.197;
 
+    public static final double RED_AMP_SHOOT_X = 14.613;
+    public static final double RED_AMP_SHOOT_Y = 7.767;
+
     public static final double BLUE_AMP_X = 1.9;
     public static final double BLUE_AMP_Y = 8.161;
+    public static final double BLUE_AMP_SHOOT_X = 1.9;
+    public static final double BLUE_AMP_SHOOT_Y = 7.767;
+
     public static final Rotation2d RED_AMP_ROTATION = Rotation2d.fromDegrees(90);
     public static final Rotation2d BLUE_AMP_ROTATION = Rotation2d.fromDegrees(90);
     
@@ -247,15 +255,15 @@ public final class Constants {
     public static final double PIVOT_CLIMB_ANGLE = 0-9;
 
     public static double[][] SPEAKER_PIVOT_POSITION = {
-      //distance, angle
-      {Units.feetToMeters(5.5), 0},
-      {Units.feetToMeters(7), 1},
-      {Units.feetToMeters(8.5), 2}, 
-      {Units.feetToMeters(10), 3},
-      {Units.feetToMeters(11.5), 4},
-      {Units.feetToMeters(13), 5},
-      {Units.feetToMeters(14.5), 6},
-      {Units.feetToMeters(16), 7}
+      // Distance, Angle
+      {Units.feetToMeters(5.5), 0-9},
+      {Units.feetToMeters(7), 0-9},
+      {Units.feetToMeters(8.5), 0-9}, 
+      {Units.feetToMeters(10), 0-9},
+      {Units.feetToMeters(11.5), 0-9},
+      {Units.feetToMeters(13), 0-9},
+      {Units.feetToMeters(14.5), 0-9},
+      {Units.feetToMeters(16), 0-9}
     };
   }
 
@@ -300,16 +308,14 @@ public final class Constants {
   }
 
   public static final class TrajectoryConstants {
+    
     public static final double DRIVE_BASE_RADIUS = Math.sqrt(Math.pow(DriveConstants.TRACK_WIDTH, 2) + Math.pow(DriveConstants.WHEEL_BASE, 2));
     public static final double MAX_SPEED = 5.7;
     public static final double MAX_ACCELERATION = 3.5;
-    public static final double DEPLOYED_TRANSLATION_CONTROLLER_P = .35;
-    public static final double DEPLOYED_THETA_CONTROLLER_P = .8;
+    public static final double REALTIME_TRANSLATION_CONTROLLER_P = .35;
+    public static final double REALTIME_THETA_CONTROLLER_P = .8;
     public static final double AUTO_SHOOT_HEADING_OFFSET = 2;
-    // public static final double REAL_TIME_X_CONTROLLER_P = 2;
-    // public static final double REAL_TIME_Y_CONTROLLER_P = 2;
-    // public static final double REAL_TIME_THETA_CONTROLLER_P = 3;
-    // public static final double THETA_PROFILED_CONTROLLER_P = 1;
+
     public static final double MAX_ANGULAR_SPEED_RADIANS_PER_SECOND = 2;
     public static final double MAX_ANGULAR_SPEED_RADIANS_PER_SECOND_SQUARED = 2;
     // The length of the field in the x direction (left to right)
@@ -317,8 +323,8 @@ public final class Constants {
     // The length of the field in the y direction (top to bottom)
     public static final double FIELD_WIDTH_METERS = 8.0137;
 
-    public static final PIDConstants TRANSLATION_CONSTANTS = new PIDConstants(DEPLOYED_TRANSLATION_CONTROLLER_P);
-    public static final PIDConstants ROTATION_CONSTANTS = new PIDConstants(DEPLOYED_THETA_CONTROLLER_P);
+    public static final PIDConstants TRANSLATION_CONSTANTS = new PIDConstants(REALTIME_TRANSLATION_CONTROLLER_P);
+    public static final PIDConstants ROTATION_CONSTANTS = new PIDConstants(REALTIME_THETA_CONTROLLER_P);
   
     // Constraint for the motion profiled robot angle controller
     public static final TrapezoidProfile.Constraints THETA_CONTROLLER_CONSTRAINTS =
@@ -329,6 +335,14 @@ public final class Constants {
     public static final double X_TOLERANCE = 0.02;
     public static final double Y_TOLERANCE = 0.02;
     public static final double THETA_TOLERANCE = 1.25;
+
+    public static final HolonomicPathFollowerConfig PATH_FOLLOWER_CONFIG = new HolonomicPathFollowerConfig(
+      TRANSLATION_CONSTANTS, 
+      ROTATION_CONSTANTS, // Rotation constants 
+      DriveConstants.MAX_SPEED_METERS_PER_SECOND, 
+      0.4, // Drive base radius (distance from center to furthest module) 
+      new ReplanningConfig()
+    );
   }
 }
 

@@ -23,12 +23,12 @@ public class BlueFiveNoteAuto extends SequentialCommandGroup {
   public BlueFiveNoteAuto(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, IntakeSubsystem intakeSubsystem, PivotSubsystem pivotSubsystem, ShooterSubsystem shooterSubsystem) {
 
     addCommands(
-      new FollowPathAndShoot(driveSubsystem, visionSubsystem, pivotSubsystem, shooterSubsystem, "blue 4 note start").withTimeout(5),
+      new FollowPathAndShoot(driveSubsystem, visionSubsystem, pivotSubsystem, shooterSubsystem, "blue 4 note start"),
       new ParallelRaceGroup(
-        new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "blue note 3 to note 4").withTimeout(3),
+        new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "blue note 3 to note 4"),
         new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem)
       ),
-      new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, visionSubsystem, pivotSubsystem).withTimeout(2)
+      new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, visionSubsystem, pivotSubsystem)
       );
     }
 }

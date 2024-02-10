@@ -4,15 +4,31 @@
 
 package frc.robot;
 
+import java.util.List;
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.path.GoalEndState;
+import com.pathplanner.lib.path.PathConstraints;
+import com.pathplanner.lib.path.PathPlannerPath;
+
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.Constants.JoystickConstants;
-import frc.robot.commands.auto.FollowChoreoTrajectory;
+import frc.robot.Constants.TrajectoryConstants;
+import frc.robot.commands.autodrive.DriveToPos;
+import frc.robot.commands.autodrive.NewDriveToPos;
+import frc.robot.commands.autodrive.NewSquaredDriveToPos;
+import frc.robot.commands.autonomous.FollowChoreoTrajectory;
 import frc.robot.commands.drive.Drive;
 import frc.robot.commands.drive.TestThings;
 import frc.robot.commands.intake.TowerIntake;
@@ -100,7 +116,7 @@ public class RobotContainer {
     DoubleSupplier driverLeftStickY = () -> driverJoystick.getRawAxis(JoystickConstants.DRIVER_LEFT_STICK_Y);
     DoubleSupplier driverRightStickX = () -> driverJoystick.getRawAxis(JoystickConstants.DRIVER_RIGHT_STICK_X);
     JoystickButton driverRightBumper = new JoystickButton(driverJoystick, JoystickConstants.DRIVER_RIGHT_BUMPER_ID);
-    JoystickButton xButton = new JoystickButton(driverJoystick, JoystickConstants.X_BUTTON);
+    POVButton driverRightDpad = new POVButton(driverJoystick, 90);
 
     Command driveCommand = new Drive(driveSubsystem, visionSubsystem,
       () -> modifyAxisCubedPolar(driverLeftStickY, driverLeftStickX)[0],
@@ -116,12 +132,6 @@ public class RobotContainer {
     driveSubsystem.setDefaultCommand(driveCommand);
 
     JoystickButton yButton = new JoystickButton(driverJoystick, 4);
-
-    yButton.whileTrue(new TestThings(driveSubsystem));
-
-    xButton.onTrue(new InstantCommand(() -> driveSubsystem.resetOdometry(new Pose2d())));
-    xButton.onTrue(new InstantCommand(driveSubsystem::zeroHeading));
-
     JoystickButton aButton = new JoystickButton(driverJoystick, 1);
     aButton.whileTrue(new RollerSpeedSetter(shooterSubsystem));
   }

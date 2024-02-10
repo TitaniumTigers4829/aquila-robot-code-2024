@@ -2,9 +2,10 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.auto;
+package frc.robot.commands.autonomous;
 
 import com.choreo.lib.Choreo;
+import com.choreo.lib.ChoreoTrajectory;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -15,30 +16,28 @@ import frc.robot.subsystems.swerve.DriveSubsystem;
 import frc.robot.subsystems.vision.VisionSubsystem;
 
 public class FollowChoreoTrajectory extends DriveCommandBase {
-  
-  private final DriveSubsystem driveSubsystem;
-  private final Command controllerCommand;
+  DriveSubsystem driveSubsystem;
+  VisionSubsystem visionSubsystem;
+  Command controllerCommand;
+  ChoreoTrajectory trajectory;
 
-  /**
-   * Follows a trajectory made with Choreo
-   * @param driveSubsystem instance of the drive subsystem
-   * @param visionSubsystem instance of the vision subsystem
-   * @param trajectoryName name of the path excluding the .chor and the directory path
-   */
+  /** Creates a new FollowChoreoTrajectory. */
   public FollowChoreoTrajectory(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, String trajectoryName) {
     super(driveSubsystem, visionSubsystem);
     this.driveSubsystem = driveSubsystem;
+    trajectory = Choreo.getTrajectory(trajectoryName);
+
+    driveSubsystem.resetOdometry(trajectory.getInitialPose());
+
     controllerCommand = Choreo.choreoSwerveCommand(
-      Choreo.getTrajectory(trajectoryName),
+      trajectory,
       driveSubsystem::getPose, 
       new PIDController(TrajectoryConstants.REALTIME_TRANSLATION_CONTROLLER_P, 0, 0), 
       new PIDController(TrajectoryConstants.REALTIME_TRANSLATION_CONTROLLER_P, 0, 0), 
       new PIDController(TrajectoryConstants.REALTIME_THETA_CONTROLLER_P, 0, 0), 
       (ChassisSpeeds speeds) -> driveSubsystem.drive(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, speeds.omegaRadiansPerSecond, false),
-      ()->false,
-      driveSubsystem
-    );
-    addRequirements(visionSubsystem);
+        ()->false,
+        driveSubsystem);
   }
 
   // Called when the command is initially scheduled.
@@ -56,6 +55,7 @@ public class FollowChoreoTrajectory extends DriveCommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    controllerCommand.cancel();
     driveSubsystem.drive(0, 0, 0, false);
   }
 
