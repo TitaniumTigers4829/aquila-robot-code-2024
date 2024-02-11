@@ -80,6 +80,7 @@ public class SwerveModule {
     driveConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     driveConfig.MotorOutput.Inverted = driveReversed;
     driveConfig.MotorOutput.DutyCycleNeutralDeadband = HardwareConstants.MIN_FALCON_DEADBAND;
+    // TODO: Are we sure this is okay???
     driveConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
     driveConfig.CurrentLimits.SupplyCurrentLimit = 50;
     driveConfig.CurrentLimits.SupplyCurrentThreshold = 55;
@@ -87,7 +88,6 @@ public class SwerveModule {
     driveConfig.CurrentLimits.StatorCurrentLimit = 50;
     driveConfig.CurrentLimits.StatorCurrentLimitEnable = true;
     
-    // TODO: current limits
     driveMotor.getConfigurator().apply(driveConfig, HardwareConstants.TIMEOUT_S);
 
     TalonFXConfiguration turnConfig = new TalonFXConfiguration();
