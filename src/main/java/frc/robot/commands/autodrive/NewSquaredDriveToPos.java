@@ -20,20 +20,20 @@ public class NewSquaredDriveToPos extends DriveCommandBase {
   private final DriveSubsystem driveSubsystem;
   private final VisionSubsystem visionSubsystem;
 
-  private final BooleanSupplier isFinished;
+  // private final BooleanSupplier isFinished;
   private final double finalX, finalY, finalRot;
 
   Command controllerCommand;
 
   /** Creates a new NewDriveToPos. */
-  public NewSquaredDriveToPos(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, BooleanSupplier isFinished, double finalX, double finalY, double finalRot) {
+  public NewSquaredDriveToPos(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, double finalX, double finalY, double finalRot) {
     super(driveSubsystem, visionSubsystem);
     this.driveSubsystem = driveSubsystem;
     this.visionSubsystem = visionSubsystem;
     this.finalX = finalX;
     this.finalY = finalY;
     this.finalRot = finalRot;
-    this.isFinished = isFinished;
+    // this.isFinished = isFinished;
     addRequirements(driveSubsystem, visionSubsystem);
   }
 
@@ -68,6 +68,7 @@ public class NewSquaredDriveToPos extends DriveCommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return controllerCommand.isFinished() || isFinished.getAsBoolean();
+    return controllerCommand.isFinished(); 
+    // || isFinished.getAsBoolean();
   }
 }

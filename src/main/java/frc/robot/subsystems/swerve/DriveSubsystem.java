@@ -175,11 +175,22 @@ public class DriveSubsystem extends SubsystemBase {
   public void drive(ChassisSpeeds speeds) {
     drive(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, speeds.omegaRadiansPerSecond, true);
   }
-  
+  public void setTurn(double pose) {
+    frontLeftSwerveModule.setTurnPos(pose);
+    frontRightSwerveModule.setTurnPos(pose);
+    rearLeftSwerveModule.setTurnPos(pose);
+    rearRightSwerveModule.setTurnPos(pose);
+  }
   public void mergeDrive(ChassisSpeeds speeds, double rotationControl) {
     drive(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, rotationControl, false);
   }
   
+  
+  /** Returns the average drive velocity in radians/sec. */
+  public double getCharacterizationVelocity() {
+    return frontLeftSwerveModule.getCharacterizationVelocity();
+  }
+
   /**
    * Returns the heading of the robot in degrees from 0 to 360. 
    * Counter-clockwise is positive. This factors in gyro offset.

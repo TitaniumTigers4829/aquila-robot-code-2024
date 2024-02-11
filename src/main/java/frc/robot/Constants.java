@@ -116,9 +116,9 @@ public final class Constants {
     public static final double DRIVE_TO_METERS =  WHEEL_CIRCUMFERENCE_METERS / DRIVE_GEAR_RATIO;
     public static final double DRIVE_TO_METERS_PER_SECOND = WHEEL_CIRCUMFERENCE_METERS / DRIVE_GEAR_RATIO;
 
-    public static final double TURN_P = 116; 
+    public static final double TURN_P = 116.0; 
     public static final double TURN_I = 0.0;
-    public static final double TURN_D = 0.64;
+    public static final double TURN_D = 0.64; 
 
     public static final double TURN_S = 0.0;
     public static final double TURN_V = 0.0;
@@ -126,19 +126,14 @@ public final class Constants {
 
     public static final double MAX_ANGULAR_SPEED_ROTATIONS_PER_SECOND = 30; 
     public static final double MAX_ANGULAR_ACCELERATION_ROTATIONS_PER_SECOND_SQUARED = 24;
-    public static final TrapezoidProfile.Constraints TURN_CONSTRAINTS =
-      new TrapezoidProfile.Constraints(
-        MAX_ANGULAR_SPEED_ROTATIONS_PER_SECOND,
-        MAX_ANGULAR_ACCELERATION_ROTATIONS_PER_SECOND_SQUARED
-      );
 
-    public static final double DRIVE_P = 0.33;
-    public static final double DRIVE_I = 0;
-    public static final double DRIVE_D = 0;
+    public static final double DRIVE_P = 0.4;
+    public static final double DRIVE_I = 0.0;
+    public static final double DRIVE_D = 0.0;
 
-    public static final double DRIVE_S = 0.155; 
-    public static final double DRIVE_V = 0.552191457528 / 4.8;
-    public static final double DRIVE_A = 0.09256 / 4.8;
+    public static final double DRIVE_S = 0.16;
+    public static final double DRIVE_V = 0.120303149734; 
+    public static final double DRIVE_A = 0.020165577342;
   }
 
   public static final class VisionConstants {

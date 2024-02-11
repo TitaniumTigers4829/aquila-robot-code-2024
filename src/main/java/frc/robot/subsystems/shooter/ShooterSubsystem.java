@@ -69,6 +69,11 @@ public class ShooterSubsystem extends SubsystemBase {
    * @param speed the speed (m/s) of the flywheel
    */
   public void setShooterSpeed(double speed) {
+
+    if (speed < 0.01 ) {
+      leaderFlywheel.set(0);
+      followerFlywheel.set(0);
+    }
     leaderFlywheel.set(speed);
     followerFlywheel.set(-speed);
     SmartDashboard.putNumber("follower speed", followerFlywheel.getVelocity().getValueAsDouble());

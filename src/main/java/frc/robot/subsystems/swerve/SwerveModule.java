@@ -36,7 +36,6 @@ public class SwerveModule {
   private final StatusSignal<Double> driveMotorPosition;
   private final StatusSignal<Double> driveMotorVelocity;
   private final StatusSignal<Double> turnEncoderPos;
-
   private String name;
 
   /**
@@ -125,7 +124,15 @@ public class SwerveModule {
     ParentDevice.optimizeBusUtilizationForAll(turnEncoder, driveMotor, turnMotor);
 
   }
+   /** Returns the drive velocity in radians/sec. */
+   public double getCharacterizationVelocity() {
+    return driveMotor.getVelocity().refresh().getValueAsDouble();
+  }
 
+
+  public void setTurnPos(double pos) {
+    turnMotor.setControl(new MotionMagicVoltage(pos));
+  }
   /**
    * Gets the heading of the module
    * @return the absolute position of the CANCoder
@@ -147,10 +154,13 @@ public class SwerveModule {
     return new SwerveModuleState(speedMetersPerSecond, Rotation2d.fromRotations(getModuleHeading()));
   }
 
+  
   public void setVoltage(double volts){
+    turnMotor.setControl(new VoltageOut(0));
     VoltageOut kSOut = new VoltageOut(volts);
     driveMotor.setControl(kSOut);
   }
+
   /**
    * Gets the module position consisting of the distance it has traveled and the angle it is rotated.
    * @return a SwerveModulePosition object containing position and rotation
@@ -181,6 +191,8 @@ public class SwerveModule {
     }
 
     SmartDashboard.putNumber(name + " error", optimizedDesiredState.speedMetersPerSecond - getState().speedMetersPerSecond);
+    SmartDashboard.putNumber(name + "current speed", driveMotorVelocity.refresh().getValueAsDouble());
+        SmartDashboard.putNumber(name + " desired", optimizedDesiredState.speedMetersPerSecond); 
 
     // Converts meters per second to rotations per second
     double desiredDriveRPS = optimizedDesiredState.speedMetersPerSecond 
@@ -193,12 +205,6 @@ public class SwerveModule {
      new MotionMagicVoltage(optimizedDesiredState.angle.getRotations());
     turnMotor.setControl(turnOutput);
 
-
-
-    // SmartDashboard.putNumber(name + " turnOutput", turnMotor.get());
-    // SmartDashboard.putNumber(name + "velocity", turnMotor.getVelocity().refresh().getValueAsDouble());
-    // double output = turnController.calculate(getModuleHeading(), optimizedDesiredState.angle.getRotations());
-    // turnMotor.set(output);
   }
 
   /**

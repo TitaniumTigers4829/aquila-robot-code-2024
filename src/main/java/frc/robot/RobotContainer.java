@@ -25,11 +25,14 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.Constants.JoystickConstants;
 import frc.robot.Constants.TrajectoryConstants;
+import frc.robot.commands.FeedForwardCharacterization;
 import frc.robot.commands.autodrive.DriveToPos;
 import frc.robot.commands.autodrive.NewDriveToPos;
 import frc.robot.commands.autodrive.NewSquaredDriveToPos;
 import frc.robot.commands.autonomous.FollowChoreoTrajectory;
 import frc.robot.commands.drive.Drive;
+import frc.robot.commands.drive.DriveStraight;
+import frc.robot.commands.drive.SetTurnPos;
 import frc.robot.commands.drive.TestThings;
 import frc.robot.commands.intake.TowerIntake;
 import frc.robot.commands.shooter.RollerSpeedSetter;
@@ -121,6 +124,7 @@ public class RobotContainer {
     POVButton driverRightDpad = new POVButton(driverJoystick, 90);
 
     DoubleSupplier operatorStickX = () -> operatorJoystick.getRawAxis(0);
+    DoubleSupplier operatorRightStickX = () -> operatorJoystick.getRawAxis(4);
 
     Command driveCommand = new Drive(driveSubsystem, visionSubsystem,
       () -> modifyAxisCubedPolar(driverLeftStickY, driverLeftStickX)[0],
@@ -128,6 +132,13 @@ public class RobotContainer {
       () -> modifyAxisCubed(driverRightStickX),
       () -> !driverRightBumper.getAsBoolean()
     );
+
+    Command shoot = new RunShooterPower(shooterSubsystem,
+      () -> modifyAxisCubedPolar(operatorStickX, operatorRightStickX)[0]
+    );
+
+    driverRightDpad.onTrue(new InstantCommand(() ->driveSubsystem.zeroHeading()));
+    driverRightDpad.onTrue(new InstantCommand(()->driveSubsystem.resetOdometry(new Pose2d())));
 
     JoystickButton bJoystickButton = new JoystickButton(driverJoystick, 2);
 
@@ -141,20 +152,31 @@ public class RobotContainer {
     yButton.whileTrue(new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem));
 
     // JoystickButton yOperatorButton = new JoystickButton(operatorJoystick, 4);
-    shooterSubsystem.setDefaultCommand(new RunShooterPower(shooterSubsystem, operatorStickX));
+    shooterSubsystem.setDefaultCommand(shoot);
 
     JoystickButton yDriverButton = new JoystickButton(driverJoystick, 4);
     JoystickButton aDriverButton = new JoystickButton(driverJoystick, 1);
 
-    yDriverButton.onTrue(new InstantCommand(() -> pivotSubsystem.set(0.1)));
-    aDriverButton.onTrue(new InstantCommand(() -> pivotSubsystem.set(-0.1))); 
+    yDriverButton.onTrue(new InstantCommand(() -> pivotSubsystem.set(0.05)));
+    aDriverButton.onTrue(new InstantCommand(() -> pivotSubsystem.set(-0.05))); 
     aDriverButton.onFalse(new InstantCommand(() -> pivotSubsystem.set(0)));
     yDriverButton.onFalse(new InstantCommand(() -> pivotSubsystem.set(0)));
 
+    JoystickButton xDriverButton = new JoystickButton(driverJoystick, 3);
+    xDriverButton.whileTrue(new NewSquaredDriveToPos(driveSubsystem, visionSubsystem, driveSubsystem.getPose().getX()+10, driveSubsystem.getPose().getY(), driveSubsystem.getPose().getRotation().getDegrees()));
 
+    JoystickButton xOperatorButton = new JoystickButton(operatorJoystick, 3);
+    // xOperatorButton.whileTrue(new FeedForwardCharacterization(driveSubsystem, driveSubsystem::testsStuff, driveSubsystem::getCharacterizationVelocity));
+
+    xOperatorButton.onTrue(new FeedForwardCharacterization(driveSubsystem, driveSubsystem::testsStuff, driveSubsystem::getCharacterizationVelocity));
+    
+    JoystickButton bOperatorButton = new JoystickButton(operatorJoystick, 2);
+    bOperatorButton.whileTrue(new TestThings(driveSubsystem));
   }
+
+
 
   public Command getAutonomousCommand() {
-    return new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "rotate");
-  }
+    return null;
+}
 }

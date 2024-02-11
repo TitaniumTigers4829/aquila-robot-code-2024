@@ -16,6 +16,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.HardwareConstants;
 import frc.robot.Constants.PivotConstants;
@@ -127,5 +128,6 @@ public class PivotSubsystem extends SubsystemBase {
   
   @Override
   public void periodic() {
+    SmartDashboard.putNumber("pivot pos", pivotPos.refresh().getValueAsDouble());
   }
 }
