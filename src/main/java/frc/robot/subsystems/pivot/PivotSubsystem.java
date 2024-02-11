@@ -84,6 +84,11 @@ public class PivotSubsystem extends SubsystemBase {
     return Math.abs(pivotTargetAngle - getRotation()) < 2;
   }
 
+  public void set(double output) {
+    leaderPivotMotor.set(output);
+    followerPivotMotor.set(-output);
+  }
+
   /**
    * gets the target angle of the pivot motors in degrees
    * @return the target angle

@@ -30,14 +30,14 @@ public class TowerIntake extends Command {
     pivotSubsystem.setPivot(PivotConstants.PIVOT_INTAKE_ANGLE);
 
     intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_MOTOR_SPEED);
-    shooterSubsystem.setRollerSpeed(ShooterConstants.ROLLER_SPEED);
+    // shooterSubsystem.setRollerSpeed(ShooterConstants.ROLLER_SPEED);
   }
   
 
   @Override
   public void end(boolean interrupted) {
     intakeSubsystem.setIntakeSpeed(0);
-    shooterSubsystem.setRollerSpeed(0);
+    // shooterSubsystem.setRollerSpeed(0);
   }
 
   // Returns true when the command should end.

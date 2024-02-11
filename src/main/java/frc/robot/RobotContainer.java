@@ -33,6 +33,7 @@ import frc.robot.commands.drive.Drive;
 import frc.robot.commands.drive.TestThings;
 import frc.robot.commands.intake.TowerIntake;
 import frc.robot.commands.shooter.RollerSpeedSetter;
+import frc.robot.commands.shooter.RunShooterPower;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.pivot.PivotSubsystem;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
@@ -57,6 +58,7 @@ public class RobotContainer {
   private final ShooterSubsystem shooterSubsystem;
   private final DriveSubsystem driveSubsystem;
   private final Joystick driverJoystick = new Joystick(0);
+  private final Joystick operatorJoystick = new Joystick(1);
   private final IntakeSubsystem intakeSubsystem;
   private final PivotSubsystem pivotSubsystem;
   
@@ -118,6 +120,8 @@ public class RobotContainer {
     JoystickButton driverRightBumper = new JoystickButton(driverJoystick, JoystickConstants.DRIVER_RIGHT_BUMPER_ID);
     POVButton driverRightDpad = new POVButton(driverJoystick, 90);
 
+    DoubleSupplier operatorStickX = () -> operatorJoystick.getRawAxis(0);
+
     Command driveCommand = new Drive(driveSubsystem, visionSubsystem,
       () -> modifyAxisCubedPolar(driverLeftStickY, driverLeftStickX)[0],
       () -> modifyAxisCubedPolar(driverLeftStickY, driverLeftStickX)[1],
@@ -131,10 +135,23 @@ public class RobotContainer {
 
     driveSubsystem.setDefaultCommand(driveCommand);
 
-    JoystickButton yButton = new JoystickButton(driverJoystick, 4);
-    JoystickButton aButton = new JoystickButton(driverJoystick, 1);
+    JoystickButton yButton = new JoystickButton(operatorJoystick, 4);
+    JoystickButton aButton = new JoystickButton(operatorJoystick, 1);
     aButton.whileTrue(new RollerSpeedSetter(shooterSubsystem));
     yButton.whileTrue(new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem));
+
+    // JoystickButton yOperatorButton = new JoystickButton(operatorJoystick, 4);
+    shooterSubsystem.setDefaultCommand(new RunShooterPower(shooterSubsystem, operatorStickX));
+
+    JoystickButton yDriverButton = new JoystickButton(driverJoystick, 4);
+    JoystickButton aDriverButton = new JoystickButton(driverJoystick, 1);
+
+    yDriverButton.onTrue(new InstantCommand(() -> pivotSubsystem.set(0.1)));
+    aDriverButton.onTrue(new InstantCommand(() -> pivotSubsystem.set(-0.1))); 
+    aDriverButton.onFalse(new InstantCommand(() -> pivotSubsystem.set(0)));
+    yDriverButton.onFalse(new InstantCommand(() -> pivotSubsystem.set(0)));
+
+
   }
 
   public Command getAutonomousCommand() {
