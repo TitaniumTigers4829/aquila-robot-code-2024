@@ -30,8 +30,6 @@ public class SwerveModule {
   private final CANcoder turnEncoder;
   private final TalonFX driveMotor;
   private final TalonFX turnMotor;
-
-  // private final ProfiledPIDController turnController;
  
   private final StatusSignal<Double> driveMotorPosition;
   private final StatusSignal<Double> driveMotorVelocity;
@@ -92,9 +90,6 @@ public class SwerveModule {
     // TODO: current limits
     driveMotor.getConfigurator().apply(driveConfig, HardwareConstants.TIMEOUT_S);
 
-    // turnController = new ProfiledPIDController(ModuleConstants.TURN_P, ModuleConstants.TURN_I, ModuleConstants.TURN_S, new Constraints(ModuleConstants.MAX_ANGULAR_SPEED_ROTATIONS_PER_SECOND, ModuleConstants.MAX_ANGULAR_ACCELERATION_ROTATIONS_PER_SECOND_SQUARED));
-    // turnController.enableContinuousInput(-0.5, 0.5);
-
     TalonFXConfiguration turnConfig = new TalonFXConfiguration();
     turnConfig.Slot0.kP = ModuleConstants.TURN_P;
     turnConfig.Slot0.kI = ModuleConstants.TURN_I;
@@ -110,7 +105,6 @@ public class SwerveModule {
     turnConfig.MotionMagic.MotionMagicCruiseVelocity = ModuleConstants.MAX_ANGULAR_SPEED_ROTATIONS_PER_SECOND;
     turnConfig.MotionMagic.MotionMagicAcceleration = ModuleConstants.MAX_ANGULAR_ACCELERATION_ROTATIONS_PER_SECOND_SQUARED;
     turnConfig.ClosedLoopGeneral.ContinuousWrap = true;
-    // TODO: config current limits & add back motion magic
     turnMotor.getConfigurator().apply(turnConfig, HardwareConstants.TIMEOUT_S);
 
     turnEncoderPos = turnEncoder.getAbsolutePosition();
@@ -123,7 +117,6 @@ public class SwerveModule {
     BaseStatusSignal.setUpdateFrequencyForAll(HardwareConstants.SIGNAL_FREQUENCY, turnEncoderPos, driveMotorPosition, driveMotorVelocity);
 
     ParentDevice.optimizeBusUtilizationForAll(turnEncoder, driveMotor, turnMotor);
-
   }
 
   /**
@@ -151,6 +144,7 @@ public class SwerveModule {
     VoltageOut kSOut = new VoltageOut(volts);
     driveMotor.setControl(kSOut);
   }
+  
   /**
    * Gets the module position consisting of the distance it has traveled and the angle it is rotated.
    * @return a SwerveModulePosition object containing position and rotation
@@ -173,7 +167,6 @@ public class SwerveModule {
     // Optimize the reference state to avoid spinning further than 90 degrees
     SwerveModuleState optimizedDesiredState = SwerveModuleState.optimize(desiredState, new Rotation2d(turnRadians));
 
-    // SmartDashboard.putNumber(name + "desired state", optimizedDesiredState.angle.getDegrees());
     if (Math.abs(optimizedDesiredState.speedMetersPerSecond) < 0.01) {
       driveMotor.set(0);
       turnMotor.set(0);
@@ -186,19 +179,11 @@ public class SwerveModule {
     double desiredDriveRPS = optimizedDesiredState.speedMetersPerSecond 
      * ModuleConstants.DRIVE_GEAR_RATIO / ModuleConstants.WHEEL_CIRCUMFERENCE_METERS;
 
-    VelocityVoltage driveOutput = new VelocityVoltage(desiredDriveRPS); // test this... might not work.
+    VelocityVoltage driveOutput = new VelocityVoltage(desiredDriveRPS);
     driveMotor.setControl(driveOutput);
     
-    MotionMagicVoltage turnOutput =
-     new MotionMagicVoltage(optimizedDesiredState.angle.getRotations());
+    MotionMagicVoltage turnOutput = new MotionMagicVoltage(optimizedDesiredState.angle.getRotations());
     turnMotor.setControl(turnOutput);
-
-
-
-    // SmartDashboard.putNumber(name + " turnOutput", turnMotor.get());
-    // SmartDashboard.putNumber(name + "velocity", turnMotor.getVelocity().refresh().getValueAsDouble());
-    // double output = turnController.calculate(getModuleHeading(), optimizedDesiredState.angle.getRotations());
-    // turnMotor.set(output);
   }
 
   /**
