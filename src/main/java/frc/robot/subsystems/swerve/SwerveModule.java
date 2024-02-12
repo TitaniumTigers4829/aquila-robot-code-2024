@@ -90,9 +90,6 @@ public class SwerveModule {
     // TODO: current limits
     driveMotor.getConfigurator().apply(driveConfig, HardwareConstants.TIMEOUT_S);
 
-    // turnController = new ProfiledPIDController(ModuleConstants.TURN_P, ModuleConstants.TURN_I, ModuleConstants.TURN_S, new Constraints(ModuleConstants.MAX_ANGULAR_SPEED_ROTATIONS_PER_SECOND, ModuleConstants.MAX_ANGULAR_ACCELERATION_ROTATIONS_PER_SECOND_SQUARED));
-    // turnController.enableContinuousInput(-0.5, 0.5);
-
     TalonFXConfiguration turnConfig = new TalonFXConfiguration();
     turnConfig.Slot0.kP = ModuleConstants.TURN_P;
     turnConfig.Slot0.kI = ModuleConstants.TURN_I;
@@ -121,7 +118,6 @@ public class SwerveModule {
     BaseStatusSignal.setUpdateFrequencyForAll(HardwareConstants.SIGNAL_FREQUENCY, turnEncoderPos, driveMotorPosition, driveMotorVelocity);
 
     ParentDevice.optimizeBusUtilizationForAll(turnEncoder, driveMotor, turnMotor);
-
   }
    /** Returns the drive velocity in radians/sec. */
    public double getCharacterizationVelocity() {
@@ -218,8 +214,6 @@ public class SwerveModule {
   /**
    * This is called in the periodic of DriveSubsystem
    */
-  public void periodicFunction() {
-    SmartDashboard.putNumber(name + " angle", getModuleHeading());
-  }
+  public void periodicFunction() {}
 
 }
