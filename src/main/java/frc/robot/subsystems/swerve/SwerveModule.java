@@ -30,12 +30,11 @@ public class SwerveModule {
   private final CANcoder turnEncoder;
   private final TalonFX driveMotor;
   private final TalonFX turnMotor;
-
-  // private final ProfiledPIDController turnController;
- 
+  
   private final StatusSignal<Double> driveMotorPosition;
   private final StatusSignal<Double> driveMotorVelocity;
   private final StatusSignal<Double> turnEncoderPos;
+  
   private String name;
 
   /**
