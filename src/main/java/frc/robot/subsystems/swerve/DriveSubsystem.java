@@ -251,6 +251,7 @@ public class DriveSubsystem extends SubsystemBase {
    * modules.
    */
   public void addPoseEstimatorSwerveMeasurement() {
+    // TODO: experiment with using updateWithTime()
     odometry.update(
       getRotation2d(),
       getModulePositions()
