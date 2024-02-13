@@ -21,9 +21,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.SPI;
-import edu.wpi.first.wpilibj.simulation.PDPSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
@@ -122,22 +120,12 @@ public class DriveSubsystem extends SubsystemBase {
       this::getRobotRelativeSpeeds, 
       this::drive, 
       Constants.TrajectoryConstants.PATH_FOLLOWER_CONFIG,
-      // () -> {
-      //     // Boolean supplier that controls when the path will be mirrored for the red alliance
-      //     // This will flip the path being followed to the red side of the field.
-      //     // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
-
-      //     var alliance = DriverStation.getAlliance();
-      //     if (alliance.isPresent()) {
-      //         return alliance.get() == DriverStation.Alliance.Red;
-      //     }
-      //     return false;
-      // },
       ()->false,
       this
     );
   }
 
+  /**gets the chassis speeds */
   public ChassisSpeeds getRobotRelativeSpeeds() {
     return DriveConstants.DRIVE_KINEMATICS.toChassisSpeeds(
       frontLeftSwerveModule.getState(),
@@ -175,11 +163,18 @@ public class DriveSubsystem extends SubsystemBase {
   public void drive(ChassisSpeeds speeds) {
     drive(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, speeds.omegaRadiansPerSecond, true);
   }
-  
+
+  /**pid on the chassis rotation, used during auto */
   public void mergeDrive(ChassisSpeeds speeds, double rotationControl) {
     drive(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, rotationControl, false);
   }
   
+  
+  /** Returns the average drive velocity in radians/sec. */
+  public double getCharacterizationVelocity() {
+    return frontLeftSwerveModule.getCharacterizationVelocity();
+  }
+
   /**
    * Returns the heading of the robot in degrees from 0 to 360. 
    * Counter-clockwise is positive. This factors in gyro offset.
@@ -240,6 +235,7 @@ public class DriveSubsystem extends SubsystemBase {
    * modules.
    */
   public void addPoseEstimatorSwerveMeasurement() {
+    // TODO: experiment with using updateWithTime()
     odometry.update(
       getRotation2d(),
       getModulePositions()
@@ -296,7 +292,7 @@ public class DriveSubsystem extends SubsystemBase {
     return swerveModulePositions;
   }
 
-  public void testsStuff(double volts) {
+  public void setCharacterizationVoltage(double volts) {
     frontLeftSwerveModule.setVoltage(volts);
     frontRightSwerveModule.setVoltage(volts);
     rearLeftSwerveModule.setVoltage(volts);
@@ -317,6 +313,13 @@ public class DriveSubsystem extends SubsystemBase {
     rearRightSwerveModule.setDesiredState(desiredStates[3]);
   }
 
+  /**
+   * builds a pathfinding command
+   * @param finalX  final x pos of the path in meters
+   * @param finalY final y pos of the path in meters
+   * @param finalRot final rotation of the path in degrees
+   * @return
+   */
   public Command buildPathfindingCommand(double finalX, double finalY, double finalRot) {
     Pose2d endPose = new Pose2d(finalX, finalY, Rotation2d.fromDegrees(finalRot));
 
@@ -336,10 +339,16 @@ public class DriveSubsystem extends SubsystemBase {
     return currentPathfindingCommand;
   }
 
+  /**
+   * gets the pathfinding command
+   */
   public Command getPathfindingCommand() {
     return currentPathfindingCommand;
   }
 
+  /**
+   * cancels the pathfinding command
+   */
   public void cancelPathfindingCommand() {
     if (currentPathfindingCommand != null) {
       currentPathfindingCommand.cancel();

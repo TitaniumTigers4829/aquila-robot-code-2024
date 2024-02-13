@@ -11,6 +11,7 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.HardwareConstants;
@@ -21,6 +22,7 @@ public class ShooterSubsystem extends SubsystemBase {
   private final TalonFX leaderFlywheel;
   private final TalonFX followerFlywheel;
   private final TalonFX rollerMotor;
+  // private final DigitalInput noteSensor;
 
   private final StatusSignal<Double> shooterVelocity;
   private Follower follower;
@@ -33,6 +35,7 @@ public class ShooterSubsystem extends SubsystemBase {
     leaderFlywheel = new TalonFX(ShooterConstants.LEADER_FLYWHEEL_ID);
     followerFlywheel = new TalonFX(ShooterConstants.FOLLOWER_FLYWHEEL_ID);
     rollerMotor = new TalonFX(ShooterConstants.ROLLER_MOTOR_ID);
+    // noteSensor = new DigitalInput(ShooterConstants.SHOOTER_NOTE_SENSOR_ID);
 
     follower = new Follower(leaderFlywheel.getDeviceID(), true);
 
@@ -42,7 +45,9 @@ public class ShooterSubsystem extends SubsystemBase {
     shooterConfig.Slot0.kP = ShooterConstants.SHOOT_P;
     shooterConfig.Slot0.kI = ShooterConstants.SHOOT_I;
     shooterConfig.Slot0.kD = ShooterConstants.SHOOT_D;
-
+    shooterConfig.Slot0.kS = ShooterConstants.SHOOT_S;
+    shooterConfig.Slot0.kV = ShooterConstants.SHOOT_V;
+    shooterConfig.Slot0.kA = ShooterConstants.SHOOT_A;
     shooterConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
     shooterConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive; 
     shooterConfig.MotorOutput.DutyCycleNeutralDeadband = HardwareConstants.MIN_FALCON_DEADBAND;
@@ -62,8 +67,14 @@ public class ShooterSubsystem extends SubsystemBase {
    * @param speed the speed (m/s) of the flywheel
    */
   public void setShooterSpeed(double speed) {
+
+    if (speed < 0.01 ) {
+      leaderFlywheel.set(0);
+      followerFlywheel.set(0);
+    }
+
     leaderFlywheel.set(speed);
-    followerFlywheel.setControl(follower);
+    followerFlywheel.set(-speed);
   }
 
   /**
@@ -73,6 +84,14 @@ public class ShooterSubsystem extends SubsystemBase {
   public void setRollerSpeed(double speed) {
     rollerMotor.set(speed);
   }
+
+  // /**
+  //  * gets if a note is sensed by the beam break
+  //  * @return true if the Digital Input is tripped 
+  //  */
+  // public boolean getSensor() {
+  //   return noteSensor.get();
+  // }
 
   /**
    * the error between the target rpm and actual rpm of the shooter
@@ -104,7 +123,7 @@ public class ShooterSubsystem extends SubsystemBase {
    */
   public void setFlywheelNeutral() {
     leaderFlywheel.set(0);
-    followerFlywheel.setControl(follower);
+    followerFlywheel.set(0);
   }
 
 

@@ -4,35 +4,18 @@
 
 package frc.robot;
 
-import java.util.List;
-import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
-import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.path.GoalEndState;
-import com.pathplanner.lib.path.PathConstraints;
-import com.pathplanner.lib.path.PathPlannerPath;
-
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.Constants.JoystickConstants;
-import frc.robot.Constants.TrajectoryConstants;
-import frc.robot.commands.autodrive.DriveToPos;
-import frc.robot.commands.autodrive.NewDriveToPos;
-import frc.robot.commands.autodrive.NewSquaredDriveToPos;
-import frc.robot.commands.autonomous.FollowChoreoTrajectory;
+import frc.robot.commands.FeedForwardCharacterization;
 import frc.robot.commands.drive.Drive;
-import frc.robot.commands.drive.TestThings;
 import frc.robot.commands.intake.TowerIntake;
-import frc.robot.commands.shooter.RollerSpeedSetter;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.pivot.PivotSubsystem;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
@@ -40,23 +23,12 @@ import frc.robot.subsystems.swerve.DriveSubsystem;
 import frc.robot.subsystems.vision.VisionSubsystem;
 
 public class RobotContainer {
-  /*
-   * TODOs
-   * Finish fancy auto
-   *   verify followpathandshoot.java
-   *   make new paths
-   *   figure out max shoot distance
-   *   make shootspeakerauto.java
-   *   make intakeauto.java
-   *   add the follow path commands
-   * 
-   * make simpler autos (raina and juno)
-   */
 
   private final VisionSubsystem visionSubsystem;
   private final ShooterSubsystem shooterSubsystem;
   private final DriveSubsystem driveSubsystem;
-  private final Joystick driverJoystick = new Joystick(0);
+  private final Joystick driverJoystick = new Joystick(JoystickConstants.DRIVER_JOYSTICK_ID);
+  private final Joystick operatorJoystick = new Joystick(JoystickConstants.OPERATOR_JOYSTICK_ID);
   private final IntakeSubsystem intakeSubsystem;
   private final PivotSubsystem pivotSubsystem;
   
@@ -112,11 +84,18 @@ public class RobotContainer {
 
   private void configureButtonBindings() {
 
-    DoubleSupplier driverLeftStickX = () -> driverJoystick.getRawAxis(JoystickConstants.DRIVER_LEFT_STICK_X);
-    DoubleSupplier driverLeftStickY = () -> driverJoystick.getRawAxis(JoystickConstants.DRIVER_LEFT_STICK_Y);
-    DoubleSupplier driverRightStickX = () -> driverJoystick.getRawAxis(JoystickConstants.DRIVER_RIGHT_STICK_X);
-    JoystickButton driverRightBumper = new JoystickButton(driverJoystick, JoystickConstants.DRIVER_RIGHT_BUMPER_ID);
-    POVButton driverRightDpad = new POVButton(driverJoystick, 90);
+    DoubleSupplier driverLeftStickX = () -> driverJoystick.getRawAxis(JoystickConstants.LEFT_STICK_X_ID);
+    DoubleSupplier driverLeftStickY = () -> driverJoystick.getRawAxis(JoystickConstants.LEFT_STICK_Y_ID);
+    DoubleSupplier driverRightStickX = () -> driverJoystick.getRawAxis(JoystickConstants.RIGHT_STICK_X_ID);
+    JoystickButton driverRightBumper = new JoystickButton(driverJoystick, JoystickConstants.RIGHT_BUMPER_ID);
+    POVButton driverRightDpad = new POVButton(driverJoystick, JoystickConstants.RIGHT_D_PAD_ID);
+   
+    JoystickButton yDriverButton = new JoystickButton(driverJoystick, JoystickConstants.Y_BUTTON_ID);
+    JoystickButton aDriverButton = new JoystickButton(driverJoystick, JoystickConstants.A_BUTTON_ID);
+    JoystickButton bDriverButton = new JoystickButton(driverJoystick, JoystickConstants.B_BUTTON_ID);
+
+    JoystickButton yOperatorButton = new JoystickButton(operatorJoystick, JoystickConstants.Y_BUTTON_ID);
+    JoystickButton xOperatorButton = new JoystickButton(operatorJoystick, JoystickConstants.X_BUTTON_ID);
 
     Command driveCommand = new Drive(driveSubsystem, visionSubsystem,
       () -> modifyAxisCubedPolar(driverLeftStickY, driverLeftStickX)[0],
@@ -125,18 +104,25 @@ public class RobotContainer {
       () -> !driverRightBumper.getAsBoolean()
     );
 
-    JoystickButton bJoystickButton = new JoystickButton(driverJoystick, 2);
+    driverRightDpad.onTrue(new InstantCommand(() ->driveSubsystem.zeroHeading()));
+    driverRightDpad.onTrue(new InstantCommand(()->driveSubsystem.resetOdometry(new Pose2d())));
 
-    bJoystickButton.whileTrue(new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem));
+    bDriverButton.whileTrue(new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem));
 
     driveSubsystem.setDefaultCommand(driveCommand);
 
-    JoystickButton yButton = new JoystickButton(driverJoystick, 4);
-    JoystickButton aButton = new JoystickButton(driverJoystick, 1);
-    aButton.whileTrue(new RollerSpeedSetter(shooterSubsystem));
+    yDriverButton.onTrue(new InstantCommand(() -> pivotSubsystem.set(0.05)));
+    aDriverButton.onTrue(new InstantCommand(() -> pivotSubsystem.set(-0.05))); 
+    aDriverButton.onFalse(new InstantCommand(() -> pivotSubsystem.set(0)));
+    yDriverButton.onFalse(new InstantCommand(() -> pivotSubsystem.set(0)));
+
+    xOperatorButton.onTrue(new FeedForwardCharacterization(driveSubsystem, driveSubsystem::setCharacterizationVoltage, driveSubsystem::getCharacterizationVelocity));
+    
   }
 
+
+
   public Command getAutonomousCommand() {
-    return new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "rotate");
-  }
+    return null;
+}
 }

@@ -16,6 +16,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.HardwareConstants;
 import frc.robot.Constants.PivotConstants;
@@ -84,6 +85,11 @@ public class PivotSubsystem extends SubsystemBase {
     return Math.abs(pivotTargetAngle - getRotation()) < 2;
   }
 
+  public void set(double output) {
+    leaderPivotMotor.set(output);
+    followerPivotMotor.set(-output);
+  }
+
   /**
    * gets the target angle of the pivot motors in degrees
    * @return the target angle
@@ -122,5 +128,6 @@ public class PivotSubsystem extends SubsystemBase {
   
   @Override
   public void periodic() {
+    SmartDashboard.putNumber("pivot pos", pivotPos.refresh().getValueAsDouble());
   }
 }
