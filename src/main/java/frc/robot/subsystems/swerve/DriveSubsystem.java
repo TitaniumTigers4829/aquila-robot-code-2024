@@ -313,6 +313,13 @@ public class DriveSubsystem extends SubsystemBase {
     rearRightSwerveModule.setDesiredState(desiredStates[3]);
   }
 
+  /**
+   * builds a pathfinding command
+   * @param finalX  final x pos of the path in meters
+   * @param finalY final y pos of the path in meters
+   * @param finalRot final rotation of the path in degrees
+   * @return
+   */
   public Command buildPathfindingCommand(double finalX, double finalY, double finalRot) {
     Pose2d endPose = new Pose2d(finalX, finalY, Rotation2d.fromDegrees(finalRot));
 
@@ -332,10 +339,16 @@ public class DriveSubsystem extends SubsystemBase {
     return currentPathfindingCommand;
   }
 
+  /**
+   * gets the pathfinding command
+   */
   public Command getPathfindingCommand() {
     return currentPathfindingCommand;
   }
 
+  /**
+   * cancels the pathfinding command
+   */
   public void cancelPathfindingCommand() {
     if (currentPathfindingCommand != null) {
       currentPathfindingCommand.cancel();
