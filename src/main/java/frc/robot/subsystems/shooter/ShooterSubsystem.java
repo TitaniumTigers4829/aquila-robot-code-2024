@@ -1,8 +1,5 @@
 package frc.robot.subsystems.shooter;
 
-import java.io.ObjectInputFilter.Status;
-import java.util.function.DoubleSupplier;
-
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -26,8 +23,7 @@ public class ShooterSubsystem extends SubsystemBase {
   private final TalonFX followerFlywheel;
   private final TalonFX rollerMotor;
 
-  private final StatusSignal<Double> leaderShooterVelocity;
-  private final StatusSignal<Double> followerShooterVelocity;
+  private final StatusSignal<Double> shooterVelocity;
   private Follower follower;
   private SingleLinearInterpolator speakerSpeedValues;
 
@@ -39,7 +35,7 @@ public class ShooterSubsystem extends SubsystemBase {
     followerFlywheel = new TalonFX(ShooterConstants.FOLLOWER_FLYWHEEL_ID);
     rollerMotor = new TalonFX(ShooterConstants.ROLLER_MOTOR_ID);
 
-    follower = new Follower(leaderFlywheel.getDeviceID(), false);
+    follower = new Follower(leaderFlywheel.getDeviceID(), true);
 
     speakerSpeedValues = new SingleLinearInterpolator(ShooterConstants.SPEAKER_SHOOT_RPMS);
 
@@ -47,20 +43,20 @@ public class ShooterSubsystem extends SubsystemBase {
     shooterConfig.Slot0.kP = ShooterConstants.SHOOT_P;
     shooterConfig.Slot0.kI = ShooterConstants.SHOOT_I;
     shooterConfig.Slot0.kD = ShooterConstants.SHOOT_D;
-
+    shooterConfig.Slot0.kS = ShooterConstants.SHOOT_S;
+    shooterConfig.Slot0.kV = ShooterConstants.SHOOT_V;
+    shooterConfig.Slot0.kA = ShooterConstants.SHOOT_A;
     shooterConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
     shooterConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive; 
     shooterConfig.MotorOutput.DutyCycleNeutralDeadband = HardwareConstants.MIN_FALCON_DEADBAND;
     leaderFlywheel.getConfigurator().apply(shooterConfig, HardwareConstants.TIMEOUT_S);
-    followerFlywheel.getConfigurator().apply(shooterConfig, HardwareConstants.TIMEOUT_S);
 
     TalonFXConfiguration rollerConfig = new TalonFXConfiguration();
     rollerMotor.getConfigurator().apply(rollerConfig);
 
-    leaderShooterVelocity = leaderFlywheel.getVelocity();
-    followerShooterVelocity = followerFlywheel.getVelocity();
+    shooterVelocity = leaderFlywheel.getVelocity();
 
-    BaseStatusSignal.setUpdateFrequencyForAll(HardwareConstants.SIGNAL_FREQUENCY, leaderShooterVelocity, followerShooterVelocity);
+    BaseStatusSignal.setUpdateFrequencyForAll(HardwareConstants.SIGNAL_FREQUENCY, shooterVelocity);
     ParentDevice.optimizeBusUtilizationForAll(leaderFlywheel, rollerMotor, followerFlywheel);
   }
 
@@ -74,10 +70,9 @@ public class ShooterSubsystem extends SubsystemBase {
       leaderFlywheel.set(0);
       followerFlywheel.set(0);
     }
+
     leaderFlywheel.set(speed);
     followerFlywheel.set(-speed);
-    SmartDashboard.putNumber("follower speed", followerFlywheel.getVelocity().getValueAsDouble());
-    SmartDashboard.putNumber("leader", leaderFlywheel.getVelocity().getValueAsDouble());
   }
 
   /**
@@ -118,7 +113,7 @@ public class ShooterSubsystem extends SubsystemBase {
    */
   public void setFlywheelNeutral() {
     leaderFlywheel.set(0);
-    followerFlywheel.setControl(follower);
+    followerFlywheel.set(0);
   }
 
 
@@ -139,8 +134,8 @@ public class ShooterSubsystem extends SubsystemBase {
    * @return returns the current shooter rpm as a double
    */
   public double getShooterRPM() {
-    leaderShooterVelocity.refresh();
-    return leaderShooterVelocity.getValueAsDouble() * 60;
+    shooterVelocity.refresh();
+    return shooterVelocity.getValueAsDouble() * 60;
   }
   
   @Override

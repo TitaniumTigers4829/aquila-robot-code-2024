@@ -278,6 +278,9 @@ public final class Constants {
     public static final double SHOOT_P = 0.0;
     public static final double SHOOT_I = 0.0;
     public static final double SHOOT_D = 0.0;
+    public static final double SHOOT_S = 0.0;
+    public static final double SHOOT_V = 0.0;
+    public static final double SHOOT_A = 0.0;
 
     public static final double ROLLER_SPEED = 0.3;
     public static final double SHOOT_AMP_SPEED = 0.3;
