@@ -216,14 +216,6 @@ public final class Constants {
     public static final double BLUE_SPEAKER_X = 0;
     public static final double BLUE_SPEAKER_Y = 5.511;
   }
-
-  public static final class JoystickConstants {
-    public static final int DRIVER_LEFT_STICK_X = 0;
-    public static final int DRIVER_LEFT_STICK_Y = 1;
-    public static final int DRIVER_RIGHT_STICK_X = 4;
-    public static final int X_BUTTON = 3;
-    public static final int DRIVER_RIGHT_BUMPER_ID = 6;
-  }
   
   public static final class IntakeConstants {
     public static final int INTAKE_MOTOR_ID = 5;
@@ -343,5 +335,24 @@ public final class Constants {
       new ReplanningConfig()
     );
   }
+
+  public static final class JoystickConstants {
+    public static final int DRIVER_JOYSTICK_ID = 0;
+    public static final int OPERATOR_JOYSTICK_ID = 1;
+
+    public static final int LEFT_STICK_X_ID = 0;
+    public static final int LEFT_STICK_Y_ID = 1;
+    public static final int RIGHT_STICK_X_ID = 4;
+
+    public static final int A_BUTTON_ID = 1;
+    public static final int B_BUTTON_ID = 2;
+    public static final int X_BUTTON_ID = 3;
+    public static final int Y_BUTTON_ID = 4;
+
+    public static final int RIGHT_BUMPER_ID = 6;
+    public static final int RIGHT_D_PAD_ID = 90;
+
+  }
+
 }
 

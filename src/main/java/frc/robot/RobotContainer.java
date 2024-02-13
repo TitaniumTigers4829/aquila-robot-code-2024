@@ -16,8 +16,6 @@ import frc.robot.Constants.JoystickConstants;
 import frc.robot.commands.FeedForwardCharacterization;
 import frc.robot.commands.drive.Drive;
 import frc.robot.commands.intake.TowerIntake;
-import frc.robot.commands.shooter.RollerSpeedSetter;
-import frc.robot.commands.shooter.RunShooterPower;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.pivot.PivotSubsystem;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
@@ -29,8 +27,8 @@ public class RobotContainer {
   private final VisionSubsystem visionSubsystem;
   private final ShooterSubsystem shooterSubsystem;
   private final DriveSubsystem driveSubsystem;
-  private final Joystick driverJoystick = new Joystick(0);
-  private final Joystick operatorJoystick = new Joystick(1);
+  private final Joystick driverJoystick = new Joystick(JoystickConstants.DRIVER_JOYSTICK_ID);
+  private final Joystick operatorJoystick = new Joystick(JoystickConstants.OPERATOR_JOYSTICK_ID);
   private final IntakeSubsystem intakeSubsystem;
   private final PivotSubsystem pivotSubsystem;
   
@@ -86,23 +84,18 @@ public class RobotContainer {
 
   private void configureButtonBindings() {
 
-    DoubleSupplier driverLeftStickX = () -> driverJoystick.getRawAxis(JoystickConstants.DRIVER_LEFT_STICK_X);
-    DoubleSupplier driverLeftStickY = () -> driverJoystick.getRawAxis(JoystickConstants.DRIVER_LEFT_STICK_Y);
-    DoubleSupplier driverRightStickX = () -> driverJoystick.getRawAxis(JoystickConstants.DRIVER_RIGHT_STICK_X);
-    JoystickButton driverRightBumper = new JoystickButton(driverJoystick, JoystickConstants.DRIVER_RIGHT_BUMPER_ID);
-    POVButton driverRightDpad = new POVButton(driverJoystick, 90);
+    DoubleSupplier driverLeftStickX = () -> driverJoystick.getRawAxis(JoystickConstants.LEFT_STICK_X_ID);
+    DoubleSupplier driverLeftStickY = () -> driverJoystick.getRawAxis(JoystickConstants.LEFT_STICK_Y_ID);
+    DoubleSupplier driverRightStickX = () -> driverJoystick.getRawAxis(JoystickConstants.RIGHT_STICK_X_ID);
+    JoystickButton driverRightBumper = new JoystickButton(driverJoystick, JoystickConstants.RIGHT_BUMPER_ID);
+    POVButton driverRightDpad = new POVButton(driverJoystick, JoystickConstants.RIGHT_D_PAD_ID);
+   
+    JoystickButton yDriverButton = new JoystickButton(driverJoystick, JoystickConstants.Y_BUTTON_ID);
+    JoystickButton aDriverButton = new JoystickButton(driverJoystick, JoystickConstants.A_BUTTON_ID);
+    JoystickButton bDriverButton = new JoystickButton(driverJoystick, JoystickConstants.B_BUTTON_ID);
 
-    DoubleSupplier operatorLeftStickX = () -> operatorJoystick.getRawAxis(0);
-    DoubleSupplier operatorRightStickX = () -> operatorJoystick.getRawAxis(4);
-    JoystickButton xOperatorButton = new JoystickButton(operatorJoystick, 3);
-        
-    JoystickButton yDriverButton = new JoystickButton(driverJoystick, 4);
-    JoystickButton aDriverButton = new JoystickButton(driverJoystick, 1);
-    
-    JoystickButton bDriverButton = new JoystickButton(driverJoystick, 2);
-    
-    JoystickButton yOperatorButton = new JoystickButton(operatorJoystick, 4);
-    JoystickButton aOperatorButton = new JoystickButton(operatorJoystick, 1);
+    JoystickButton yOperatorButton = new JoystickButton(operatorJoystick, JoystickConstants.Y_BUTTON_ID);
+    JoystickButton xOperatorButton = new JoystickButton(operatorJoystick, JoystickConstants.X_BUTTON_ID);
 
     Command driveCommand = new Drive(driveSubsystem, visionSubsystem,
       () -> modifyAxisCubedPolar(driverLeftStickY, driverLeftStickX)[0],
@@ -111,22 +104,12 @@ public class RobotContainer {
       () -> !driverRightBumper.getAsBoolean()
     );
 
-    Command shoot = new RunShooterPower(shooterSubsystem,
-      () -> modifyAxisCubedPolar(operatorLeftStickX, operatorRightStickX)[0]
-    );
-
     driverRightDpad.onTrue(new InstantCommand(() ->driveSubsystem.zeroHeading()));
     driverRightDpad.onTrue(new InstantCommand(()->driveSubsystem.resetOdometry(new Pose2d())));
-
 
     bDriverButton.whileTrue(new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem));
 
     driveSubsystem.setDefaultCommand(driveCommand);
-
-    aOperatorButton.whileTrue(new RollerSpeedSetter(shooterSubsystem));
-    yOperatorButton.whileTrue(new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem));
-
-    shooterSubsystem.setDefaultCommand(shoot);
 
     yDriverButton.onTrue(new InstantCommand(() -> pivotSubsystem.set(0.05)));
     aDriverButton.onTrue(new InstantCommand(() -> pivotSubsystem.set(-0.05))); 
