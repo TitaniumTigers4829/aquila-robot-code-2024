@@ -22,6 +22,7 @@ public class ShooterSubsystem extends SubsystemBase {
   private final TalonFX leaderFlywheel;
   private final TalonFX followerFlywheel;
   private final TalonFX rollerMotor;
+  // private final DigitalInput noteSensor;
 
   private final StatusSignal<Double> shooterVelocity;
   private Follower follower;
@@ -34,6 +35,7 @@ public class ShooterSubsystem extends SubsystemBase {
     leaderFlywheel = new TalonFX(ShooterConstants.LEADER_FLYWHEEL_ID);
     followerFlywheel = new TalonFX(ShooterConstants.FOLLOWER_FLYWHEEL_ID);
     rollerMotor = new TalonFX(ShooterConstants.ROLLER_MOTOR_ID);
+    // noteSensor = new DigitalInput(ShooterConstants.SHOOTER_NOTE_SENSOR_ID);
 
     follower = new Follower(leaderFlywheel.getDeviceID(), true);
 
@@ -82,6 +84,14 @@ public class ShooterSubsystem extends SubsystemBase {
   public void setRollerSpeed(double speed) {
     rollerMotor.set(speed);
   }
+
+  // /**
+  //  * gets if a note is sensed by the beam break
+  //  * @return true if the Digital Input is tripped 
+  //  */
+  // public boolean getSensor() {
+  //   return noteSensor.get();
+  // }
 
   /**
    * the error between the target rpm and actual rpm of the shooter

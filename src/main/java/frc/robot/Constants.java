@@ -227,7 +227,7 @@ public final class Constants {
   
   public static final class IntakeConstants {
     public static final int INTAKE_MOTOR_ID = 5;
-    public static final double INTAKE_MOTOR_SPEED = -1;
+    public static final double INTAKE_SPEED = -1;
   }
 
   public static final class PivotConstants {
@@ -269,7 +269,6 @@ public final class Constants {
     public static final int FOLLOWER_FLYWHEEL_ID = 6;
     public static final int ROLLER_MOTOR_ID = 2;
 
-    // public static final int SHOOTER_LIMIT_SWITCH_ID = 0-9;
     // public static final int SHOOTER_NOTE_SENSOR_ID = 0-9;
 
     public static final double LEFT_SHOOT_SPEAKER_RPM = 0-9;
@@ -282,7 +281,7 @@ public final class Constants {
     public static final double SHOOT_V = 0.0;
     public static final double SHOOT_A = 0.0;
 
-    public static final double ROLLER_SPEED = 0.3;
+    public static final double ROLLER_SPEED = 1;
     public static final double SHOOT_AMP_SPEED = 0.3;
     
     public static final double GEAR_RATIO_MOTOR_TO_FLYWHEEL = 30.0 / 40.0;
