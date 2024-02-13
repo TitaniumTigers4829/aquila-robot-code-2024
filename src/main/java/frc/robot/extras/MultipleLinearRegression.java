@@ -22,7 +22,7 @@ import Jama.QRDecomposition;
  *  @author Robert Sedgewick
  *  @author Kevin Wayne
  */
-public class MultiLinearRegression {
+public class MultipleLinearRegression {
     private final Matrix beta;  // regression coefficients
     private double sse;         // sum of squared
     private double sst;         // sum of squared
@@ -33,7 +33,7 @@ public class MultiLinearRegression {
      * @param  y the corresponding values of the response variable
      * @throws IllegalArgumentException if the lengths of the two arrays are not equal
      */
-    public MultiLinearRegression(double[][] x, double[] y) {
+    public MultipleLinearRegression(double[][] x, double[] y) {
         if (x.length != y.length) {
             throw new IllegalArgumentException("matrix dimensions don't agree");
         }

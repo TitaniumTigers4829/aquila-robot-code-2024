@@ -4,36 +4,17 @@
 
 package frc.robot;
 
-import java.util.List;
-import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
-import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.path.GoalEndState;
-import com.pathplanner.lib.path.PathConstraints;
-import com.pathplanner.lib.path.PathPlannerPath;
-
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.Constants.JoystickConstants;
-import frc.robot.Constants.TrajectoryConstants;
 import frc.robot.commands.FeedForwardCharacterization;
-import frc.robot.commands.autodrive.DriveToPos;
-import frc.robot.commands.autodrive.NewDriveToPos;
-import frc.robot.commands.autodrive.NewSquaredDriveToPos;
-import frc.robot.commands.autonomous.FollowChoreoTrajectory;
 import frc.robot.commands.drive.Drive;
-import frc.robot.commands.drive.DriveStraight;
-import frc.robot.commands.drive.SetTurnPos;
-import frc.robot.commands.drive.TestThings;
 import frc.robot.commands.intake.TowerIntake;
 import frc.robot.commands.shooter.RollerSpeedSetter;
 import frc.robot.commands.shooter.RunShooterPower;
@@ -44,18 +25,6 @@ import frc.robot.subsystems.swerve.DriveSubsystem;
 import frc.robot.subsystems.vision.VisionSubsystem;
 
 public class RobotContainer {
-  /*
-   * TODOs
-   * Finish fancy auto
-   *   verify followpathandshoot.java
-   *   make new paths
-   *   figure out max shoot distance
-   *   make shootspeakerauto.java
-   *   make intakeauto.java
-   *   add the follow path commands
-   * 
-   * make simpler autos (raina and juno)
-   */
 
   private final VisionSubsystem visionSubsystem;
   private final ShooterSubsystem shooterSubsystem;
@@ -123,8 +92,17 @@ public class RobotContainer {
     JoystickButton driverRightBumper = new JoystickButton(driverJoystick, JoystickConstants.DRIVER_RIGHT_BUMPER_ID);
     POVButton driverRightDpad = new POVButton(driverJoystick, 90);
 
-    DoubleSupplier operatorStickX = () -> operatorJoystick.getRawAxis(0);
+    DoubleSupplier operatorLeftStickX = () -> operatorJoystick.getRawAxis(0);
     DoubleSupplier operatorRightStickX = () -> operatorJoystick.getRawAxis(4);
+    JoystickButton xOperatorButton = new JoystickButton(operatorJoystick, 3);
+        
+    JoystickButton yDriverButton = new JoystickButton(driverJoystick, 4);
+    JoystickButton aDriverButton = new JoystickButton(driverJoystick, 1);
+    
+    JoystickButton bDriverButton = new JoystickButton(driverJoystick, 2);
+    
+    JoystickButton yOperatorButton = new JoystickButton(operatorJoystick, 4);
+    JoystickButton aOperatorButton = new JoystickButton(operatorJoystick, 1);
 
     Command driveCommand = new Drive(driveSubsystem, visionSubsystem,
       () -> modifyAxisCubedPolar(driverLeftStickY, driverLeftStickX)[0],
@@ -134,44 +112,29 @@ public class RobotContainer {
     );
 
     Command shoot = new RunShooterPower(shooterSubsystem,
-      () -> modifyAxisCubedPolar(operatorStickX, operatorRightStickX)[0]
+      () -> modifyAxisCubedPolar(operatorLeftStickX, operatorRightStickX)[0]
     );
 
     driverRightDpad.onTrue(new InstantCommand(() ->driveSubsystem.zeroHeading()));
     driverRightDpad.onTrue(new InstantCommand(()->driveSubsystem.resetOdometry(new Pose2d())));
 
-    JoystickButton bJoystickButton = new JoystickButton(driverJoystick, 2);
 
-    bJoystickButton.whileTrue(new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem));
+    bDriverButton.whileTrue(new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem));
 
     driveSubsystem.setDefaultCommand(driveCommand);
 
-    JoystickButton yButton = new JoystickButton(operatorJoystick, 4);
-    JoystickButton aButton = new JoystickButton(operatorJoystick, 1);
-    aButton.whileTrue(new RollerSpeedSetter(shooterSubsystem));
-    yButton.whileTrue(new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem));
+    aOperatorButton.whileTrue(new RollerSpeedSetter(shooterSubsystem));
+    yOperatorButton.whileTrue(new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem));
 
-    // JoystickButton yOperatorButton = new JoystickButton(operatorJoystick, 4);
     shooterSubsystem.setDefaultCommand(shoot);
-
-    JoystickButton yDriverButton = new JoystickButton(driverJoystick, 4);
-    JoystickButton aDriverButton = new JoystickButton(driverJoystick, 1);
 
     yDriverButton.onTrue(new InstantCommand(() -> pivotSubsystem.set(0.05)));
     aDriverButton.onTrue(new InstantCommand(() -> pivotSubsystem.set(-0.05))); 
     aDriverButton.onFalse(new InstantCommand(() -> pivotSubsystem.set(0)));
     yDriverButton.onFalse(new InstantCommand(() -> pivotSubsystem.set(0)));
 
-    JoystickButton xDriverButton = new JoystickButton(driverJoystick, 3);
-    xDriverButton.whileTrue(new NewSquaredDriveToPos(driveSubsystem, visionSubsystem, driveSubsystem.getPose().getX()+10, driveSubsystem.getPose().getY(), driveSubsystem.getPose().getRotation().getDegrees()));
-
-    JoystickButton xOperatorButton = new JoystickButton(operatorJoystick, 3);
-    // xOperatorButton.whileTrue(new FeedForwardCharacterization(driveSubsystem, driveSubsystem::testsStuff, driveSubsystem::getCharacterizationVelocity));
-
-    xOperatorButton.onTrue(new FeedForwardCharacterization(driveSubsystem, driveSubsystem::testsStuff, driveSubsystem::getCharacterizationVelocity));
+    xOperatorButton.onTrue(new FeedForwardCharacterization(driveSubsystem, driveSubsystem::setCharacterizationVoltage, driveSubsystem::getCharacterizationVelocity));
     
-    JoystickButton bOperatorButton = new JoystickButton(operatorJoystick, 2);
-    bOperatorButton.whileTrue(new TestThings(driveSubsystem));
   }
 
 

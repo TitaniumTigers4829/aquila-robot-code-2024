@@ -16,11 +16,9 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 
-import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.HardwareConstants;
 import frc.robot.Constants.ModuleConstants;
@@ -30,9 +28,9 @@ public class SwerveModule {
   private final CANcoder turnEncoder;
   private final TalonFX driveMotor;
   private final TalonFX turnMotor;
-  
-  private final StatusSignal<Double> driveMotorPosition;
+
   private final StatusSignal<Double> driveMotorVelocity;
+  private final StatusSignal<Double> driveMotorPosition;
   private final StatusSignal<Double> turnEncoderPos;
   
   private String name;
@@ -81,10 +79,8 @@ public class SwerveModule {
     driveConfig.MotorOutput.Inverted = driveReversed;
     driveConfig.MotorOutput.DutyCycleNeutralDeadband = HardwareConstants.MIN_FALCON_DEADBAND;
     driveConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
-    driveConfig.CurrentLimits.SupplyCurrentLimit = 50;
-    driveConfig.CurrentLimits.SupplyCurrentThreshold = 55;
-    driveConfig.CurrentLimits.SupplyTimeThreshold = 0.1;
-    driveConfig.CurrentLimits.StatorCurrentLimit = 50;
+    driveConfig.CurrentLimits.SupplyCurrentLimit = ModuleConstants.DRIVE_SUPPLY_LIMIT;
+    driveConfig.CurrentLimits.StatorCurrentLimit = ModuleConstants.DRIVE_STATOR_LIMIT;
     driveConfig.CurrentLimits.StatorCurrentLimitEnable = true;
     
     // TODO: current limits
@@ -94,9 +90,6 @@ public class SwerveModule {
     turnConfig.Slot0.kP = ModuleConstants.TURN_P;
     turnConfig.Slot0.kI = ModuleConstants.TURN_I;
     turnConfig.Slot0.kD = ModuleConstants.TURN_D;
-    turnConfig.Slot0.kS = ModuleConstants.TURN_S;
-    turnConfig.Slot0.kV = ModuleConstants.TURN_V;
-    turnConfig.Slot0.kA = ModuleConstants.TURN_A;
     turnConfig.Feedback.FeedbackRemoteSensorID = turnEncoder.getDeviceID();
     turnConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
     turnConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
@@ -105,7 +98,7 @@ public class SwerveModule {
     turnConfig.MotionMagic.MotionMagicCruiseVelocity = ModuleConstants.MAX_ANGULAR_SPEED_ROTATIONS_PER_SECOND;
     turnConfig.MotionMagic.MotionMagicAcceleration = ModuleConstants.MAX_ANGULAR_ACCELERATION_ROTATIONS_PER_SECOND_SQUARED;
     turnConfig.ClosedLoopGeneral.ContinuousWrap = true;
-    // TODO: config current limits & add back motion magic
+    // TODO: config current limits
     turnMotor.getConfigurator().apply(turnConfig, HardwareConstants.TIMEOUT_S);
 
     turnEncoderPos = turnEncoder.getAbsolutePosition();
@@ -119,15 +112,11 @@ public class SwerveModule {
 
     ParentDevice.optimizeBusUtilizationForAll(turnEncoder, driveMotor, turnMotor);
   }
-   /** Returns the drive velocity in radians/sec. */
+   /** Returns the drive velocity in ctre units so no conversions are needed for feedforward. */
    public double getCharacterizationVelocity() {
-    return driveMotor.getVelocity().refresh().getValueAsDouble();
+    return driveMotorVelocity.refresh().getValueAsDouble();
   }
 
-
-  public void setTurnPos(double pos) {
-    turnMotor.setControl(new MotionMagicVoltage(pos));
-  }
   /**
    * Gets the heading of the module
    * @return the absolute position of the CANCoder
@@ -149,7 +138,7 @@ public class SwerveModule {
     return new SwerveModuleState(speedMetersPerSecond, Rotation2d.fromRotations(getModuleHeading()));
   }
 
-  
+  /**sets voltage of drive motor, used to characterize */
   public void setVoltage(double volts){
     turnMotor.setControl(new VoltageOut(0));
     VoltageOut kSOut = new VoltageOut(volts);

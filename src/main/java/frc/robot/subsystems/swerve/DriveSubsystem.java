@@ -21,9 +21,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.SPI;
-import edu.wpi.first.wpilibj.simulation.PDPSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
@@ -122,22 +120,12 @@ public class DriveSubsystem extends SubsystemBase {
       this::getRobotRelativeSpeeds, 
       this::drive, 
       Constants.TrajectoryConstants.PATH_FOLLOWER_CONFIG,
-      // () -> {
-      //     // Boolean supplier that controls when the path will be mirrored for the red alliance
-      //     // This will flip the path being followed to the red side of the field.
-      //     // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
-
-      //     var alliance = DriverStation.getAlliance();
-      //     if (alliance.isPresent()) {
-      //         return alliance.get() == DriverStation.Alliance.Red;
-      //     }
-      //     return false;
-      // },
       ()->false,
       this
     );
   }
 
+  /**gets the chassis speeds */
   public ChassisSpeeds getRobotRelativeSpeeds() {
     return DriveConstants.DRIVE_KINEMATICS.toChassisSpeeds(
       frontLeftSwerveModule.getState(),
@@ -175,12 +163,8 @@ public class DriveSubsystem extends SubsystemBase {
   public void drive(ChassisSpeeds speeds) {
     drive(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, speeds.omegaRadiansPerSecond, true);
   }
-  public void setTurn(double pose) {
-    frontLeftSwerveModule.setTurnPos(pose);
-    frontRightSwerveModule.setTurnPos(pose);
-    rearLeftSwerveModule.setTurnPos(pose);
-    rearRightSwerveModule.setTurnPos(pose);
-  }
+
+  /**pid on the chassis rotation, used during auto */
   public void mergeDrive(ChassisSpeeds speeds, double rotationControl) {
     drive(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, rotationControl, false);
   }
@@ -308,7 +292,7 @@ public class DriveSubsystem extends SubsystemBase {
     return swerveModulePositions;
   }
 
-  public void testsStuff(double volts) {
+  public void setCharacterizationVoltage(double volts) {
     frontLeftSwerveModule.setVoltage(volts);
     frontRightSwerveModule.setVoltage(volts);
     rearLeftSwerveModule.setVoltage(volts);
