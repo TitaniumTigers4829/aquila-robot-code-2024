@@ -12,11 +12,11 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.commands.drive.DriveCommandBase;
-import frc.robot.extras.SmarterDashboardRegistry;
 import frc.robot.subsystems.pivot.PivotSubsystem;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.swerve.DriveSubsystem;
@@ -26,11 +26,14 @@ public class ShootSpeaker extends DriveCommandBase {
   private final DriveSubsystem driveSubsystem;
   private final ShooterSubsystem shooterSubsystem;
   private final PivotSubsystem pivotSubsystem;
+  private final VisionSubsystem visionSubsystem;
 
   private final DoubleSupplier leftX, leftY;
   private final BooleanSupplier isFieldRelative;
 
   private double headingError = 0;
+  private boolean movingNote = false;
+  private int rollerCounter = 0;
 
   private final ProfiledPIDController turnController = new ProfiledPIDController(
     ShooterConstants.AUTO_SHOOT_P,
@@ -44,11 +47,12 @@ public class ShootSpeaker extends DriveCommandBase {
   private Translation2d speakerPos;
   
   /** Creates a new ShootSpeaker. */
-  public ShootSpeaker(DriveSubsystem driveSubsystem, ShooterSubsystem shooterSubsystem, VisionSubsystem visionSubsystem, PivotSubsystem pivotSubsystem, DoubleSupplier leftX, DoubleSupplier leftY, BooleanSupplier isFieldRelative) {
+  public ShootSpeaker(DriveSubsystem driveSubsystem, ShooterSubsystem shooterSubsystem, PivotSubsystem pivotSubsystem, VisionSubsystem visionSubsystem, DoubleSupplier leftX, DoubleSupplier leftY, BooleanSupplier isFieldRelative) {
     super(driveSubsystem, visionSubsystem);
     this.driveSubsystem = driveSubsystem;
     this.shooterSubsystem = shooterSubsystem;
     this.pivotSubsystem = pivotSubsystem;
+    this.visionSubsystem = visionSubsystem;
     this.leftX = leftX;
     this.leftY = leftY;
     this.isFieldRelative = isFieldRelative;
@@ -78,13 +82,16 @@ public class ShootSpeaker extends DriveCommandBase {
     // get positions of various things
     Translation2d robotPos = driveSubsystem.getPose().getTranslation();
     // distance (for speaker lookups)
-    double distance = robotPos.getDistance(speakerPos);
+    double distance = visionSubsystem.getDistanceFromClosestAprilTag();
     // arctangent for desired heading
     desiredHeading = Math.atan2((speakerPos.getY() - robotPos.getY()), (speakerPos.getX() - robotPos.getX())) * 180.0 / Math.PI;
     // heading error (also used in isReadyToShoot())
-    headingError = driveSubsystem.getHeading() - desiredHeading;
+    headingError = desiredHeading - driveSubsystem.getHeading();
     // get PID output
-    double turnOutput = turnController.calculate(headingError, 0);
+    SmartDashboard.putNumber("desired Heading", desiredHeading);
+    SmartDashboard.putNumber("drivetrain error", headingError);
+    SmartDashboard.putNumber("current heading", driveSubsystem.getHeading());
+    double turnOutput = turnController.calculate(headingError, 0); // headingError, 0
 
     // allow the driver to drive slowly (NOT full speed - will mess up shooter)
     driveSubsystem.drive(
@@ -94,18 +101,19 @@ public class ShootSpeaker extends DriveCommandBase {
       isFieldRelative.getAsBoolean()
     );
 
+    shooterSubsystem.setRPM(4000);
+    pivotSubsystem.setPivotFromDistance(distance * 39.37);
     // if we are ready to shoot:
     if (isReadyToShoot()) {
-    shooterSubsystem.setShooterRPMFromDistance(distance);
-    pivotSubsystem.setPivotFromDistance(distance);
+      shooterSubsystem.setRollerSpeed(ShooterConstants.ROLLER_SPEED);
+      }
     }
-  }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
     shooterSubsystem.setFlywheelNeutral();
-    pivotSubsystem.setPivotMotorToNeutral();
+    shooterSubsystem.setRollerSpeed(0);
   }
 
   // Returns true when the command should end.
@@ -114,7 +122,7 @@ public class ShootSpeaker extends DriveCommandBase {
     return false;
   }
   public boolean isReadyToShoot() {
-    return Math.abs(headingError) < DriveConstants.HEADING_ACCEPTABLE_ERROR_DEGREES && shooterSubsystem.isShooterWithinAcceptableError() && pivotSubsystem.isPivotWithinAcceptableError();
+    return shooterSubsystem.isShooterWithinAcceptableError() && pivotSubsystem.isPivotWithinAcceptableError();// Math.abs(headingError) < DriveConstants.HEADING_ACCEPTABLE_ERROR_DEGREES && 
   }
 
 }

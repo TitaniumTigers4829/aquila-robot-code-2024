@@ -356,7 +356,8 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public void periodic() {
-    SmartDashboard.putString("odometry", odometry.getEstimatedPosition().toString());
+  SmartDashboard.putNumber("offset", frontRightSwerveModule.getModuleHeading());
+  SmartDashboard.putString("odometry", odometry.getEstimatedPosition().toString());
   }
   
 }

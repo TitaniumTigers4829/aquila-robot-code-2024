@@ -80,8 +80,8 @@ public class SwerveModule {
     driveConfig.MotorOutput.DutyCycleNeutralDeadband = HardwareConstants.MIN_FALCON_DEADBAND;
     driveConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
     driveConfig.CurrentLimits.SupplyCurrentLimit = ModuleConstants.DRIVE_SUPPLY_LIMIT;
-    driveConfig.CurrentLimits.StatorCurrentLimit = ModuleConstants.DRIVE_STATOR_LIMIT;
-    driveConfig.CurrentLimits.StatorCurrentLimitEnable = true;
+    // driveConfig.CurrentLimits.StatorCurrentLimit = ModuleConstants.DRIVE_STATOR_LIMIT;
+    // driveConfig.CurrentLimits.StatorCurrentLimitEnable = true;
     
     // TODO: current limits
     driveMotor.getConfigurator().apply(driveConfig, HardwareConstants.TIMEOUT_S);
@@ -174,9 +174,9 @@ public class SwerveModule {
       return;
     }
 
-    SmartDashboard.putNumber(name + " error", optimizedDesiredState.speedMetersPerSecond - getState().speedMetersPerSecond);
-    SmartDashboard.putNumber(name + "current speed", driveMotorVelocity.refresh().getValueAsDouble());
-        SmartDashboard.putNumber(name + " desired", optimizedDesiredState.speedMetersPerSecond); 
+    // SmartDashboard.putNumber(name + " error", optimizedDesiredState.speedMetersPerSecond - getState().speedMetersPerSecond);
+    // SmartDashboard.putNumber(name + "current speed", driveMotorVelocity.refresh().getValueAsDouble());
+    //     SmartDashboard.putNumber(name + " desired", optimizedDesiredState.speedMetersPerSecond); 
 
     // Converts meters per second to rotations per second
     double desiredDriveRPS = optimizedDesiredState.speedMetersPerSecond 
@@ -203,6 +203,8 @@ public class SwerveModule {
   /**
    * This is called in the periodic of DriveSubsystem
    */
-  public void periodicFunction() {}
+  public void periodicFunction() {
+    SmartDashboard.putNumber(name + "offset", turnEncoderPos.refresh().getValueAsDouble());
+  }
 
 }

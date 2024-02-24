@@ -10,12 +10,12 @@ import frc.robot.Constants.ShooterConstants;
 import frc.robot.subsystems.pivot.PivotSubsystem;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 
-public class ShootAmp extends Command {
+public class ShootFromSubwoofer extends Command {
   private final ShooterSubsystem shooterSubsystem;
   private final PivotSubsystem pivotSubsystem;
   
   /** Creates a new ShootSpeaker. */
-  public ShootAmp(ShooterSubsystem shooterSubsystem, PivotSubsystem pivotSubsystem) {
+  public ShootFromSubwoofer(ShooterSubsystem shooterSubsystem, PivotSubsystem pivotSubsystem) {
     this.shooterSubsystem = shooterSubsystem;
     this.pivotSubsystem = pivotSubsystem;
     addRequirements(shooterSubsystem);
@@ -29,8 +29,8 @@ public class ShootAmp extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    pivotSubsystem.setPivot(PivotConstants.SHOOT_AMP_ANGLE*360.0);
-    shooterSubsystem.setRPM(ShooterConstants.SHOOT_AMP_SPEED);
+    pivotSubsystem.setPivot(-0.15185546875 * 360.0);
+    shooterSubsystem.setRPM(4000);
 
     if (pivotSubsystem.isPivotWithinAcceptableError() && shooterSubsystem.isShooterWithinAcceptableError()) {
       shooterSubsystem.setRollerSpeed(ShooterConstants.ROLLER_SPEED);
@@ -41,7 +41,7 @@ public class ShootAmp extends Command {
   @Override
   public void end(boolean interrupted) {
     shooterSubsystem.setFlywheelNeutral();
-    pivotSubsystem.setPivot(PivotConstants.PIVOT_INTAKE_ANGLE*360.0);
+    pivotSubsystem.setPivot(PivotConstants.PIVOT_INTAKE_ANGLE * 360.0);
     shooterSubsystem.setRollerSpeed(0);
   }
 

@@ -5,7 +5,9 @@
 package frc.robot.subsystems.intake;
 
 import com.ctre.phoenix6.BaseStatusSignal;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.HardwareConstants;
@@ -18,6 +20,10 @@ public class IntakeSubsystem extends SubsystemBase {
   public IntakeSubsystem() {
     intakeMotor = new TalonFX(IntakeConstants.INTAKE_MOTOR_ID);
 
+    TalonFXConfiguration intakeConfiguration = new TalonFXConfiguration();
+    intakeConfiguration.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+    intakeMotor.getConfigurator().apply(intakeConfiguration);
+
     BaseStatusSignal.setUpdateFrequencyForAll(HardwareConstants.SIGNAL_FREQUENCY);
 
     intakeMotor.optimizeBusUtilization(HardwareConstants.TIMEOUT_S);
@@ -28,6 +34,9 @@ public class IntakeSubsystem extends SubsystemBase {
    * @param speed the speed to set
    */
   public void setIntakeSpeed(double speed) {
+    if (speed < 0.01) { 
+      intakeMotor.set(0);
+    }
     intakeMotor.set(speed);
   }
 

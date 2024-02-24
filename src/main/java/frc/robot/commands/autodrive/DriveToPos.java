@@ -38,17 +38,14 @@ public class DriveToPos extends DriveCommandBase {
   private BooleanSupplier isFinished;
   private Command controllerCommand;
   private Pose2d endPose;
-  private double finalX, finalY, finalRot;
 
   // TODO: might not work, might just use NewDriveToPos.java instead
   /** Creates a new DriveToAmp. */
-  public DriveToPos(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, BooleanSupplier isFinished, double finalX, double finalY, double finalRot) {
+  public DriveToPos(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, BooleanSupplier isFinished, Pose2d finalPose) {
     super(driveSubsystem, visionSubsystem);
     this.driveSubsystem = driveSubsystem;
     this.isFinished = isFinished;
-    this.finalX = finalX;
-    this.finalY = finalY;
-    this.finalRot = finalRot;
+    this.endPose = finalPose;
     addRequirements(visionSubsystem);
   }
 
@@ -58,10 +55,10 @@ public class DriveToPos extends DriveCommandBase {
     List<PathPoint> pathPoints = new ArrayList<PathPoint>();
     pathPoints.add(new PathPoint(driveSubsystem.getPose().getTranslation()));
 
-    pathPoints.add(new PathPoint(new Translation2d(finalX, finalY), new RotationTarget(0, Rotation2d.fromDegrees(finalRot))));
+    pathPoints.add(new PathPoint(endPose.getTranslation(), new RotationTarget(0, endPose.getRotation())));
 
     Rotation2d startRotation = driveSubsystem.getRotation2d();
-    PathPlannerPath path = PathPlannerPath.fromPathPoints(pathPoints, TrajectoryConstants.PATH_CONSTRAINTS, new GoalEndState(0, Rotation2d.fromDegrees(finalRot)));
+    PathPlannerPath path = PathPlannerPath.fromPathPoints(pathPoints, TrajectoryConstants.PATH_CONSTRAINTS, new GoalEndState(0, endPose.getRotation()));
     PathPlannerTrajectory trajectory = new PathPlannerTrajectory(path, new ChassisSpeeds(), startRotation);
 
     controllerCommand = new RealTimeSwerveControllerCommand(

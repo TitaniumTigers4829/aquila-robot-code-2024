@@ -36,7 +36,7 @@ public final class Constants {
   public static final class HardwareConstants {
     public static final double TIMEOUT_S = 0.05;
 
-    public static final double SIGNAL_FREQUENCY = 75;
+    public static final double SIGNAL_FREQUENCY = 250;
 
     public static final String CANIVORE_CAN_BUS_STRING = "canivore 1";
     public static final String RIO_CAN_BUS_STRING = "rio";
@@ -76,16 +76,15 @@ public final class Constants {
     public static final int REAR_RIGHT_TURN_MOTOR_ID = 7;
 
     public static final int FRONT_LEFT_CANCODER_ID = 11;
-    public static final int FRONT_RIGHT_CANCODER_ID = 12;
+    public static final int FRONT_RIGHT_CANCODER_ID = 0;
     public static final int REAR_LEFT_CANCODER_ID = 14;
     public static final int REAR_RIGHT_CANCODER_ID = 13;
 
     public static final double FRONT_LEFT_ZERO_ANGLE = 0.137939453125;
-    public static final double FRONT_RIGHT_ZERO_ANGLE = -0.4228515625;
+    public static final double FRONT_RIGHT_ZERO_ANGLE = -0.420654296875;
     public static final double REAR_LEFT_ZERO_ANGLE = -0.475341796875;
     public static final double REAR_RIGHT_ZERO_ANGLE = -0.0595703125;
 
-    //inverts may vary
     public static final SensorDirectionValue FRONT_LEFT_CANCODER_REVERSED = SensorDirectionValue.CounterClockwise_Positive;
     public static final SensorDirectionValue FRONT_RIGHT_CANCODER_REVERSED = SensorDirectionValue.CounterClockwise_Positive;
     public static final SensorDirectionValue REAR_LEFT_CANCODER_REVERSED = SensorDirectionValue.CounterClockwise_Positive;
@@ -117,8 +116,8 @@ public final class Constants {
     public static final double DRIVE_TO_METERS_PER_SECOND = WHEEL_CIRCUMFERENCE_METERS / DRIVE_GEAR_RATIO;
 
     //TODO: Test these:
-    public static final double DRIVE_SUPPLY_LIMIT = 60.0;
-    public static final double DRIVE_STATOR_LIMIT = 60.0;
+    public static final double DRIVE_SUPPLY_LIMIT = 120.0;
+    // public static final double DRIVE_STATOR_LIMIT = 60.0;
 
     public static final double TURN_P = 116.0; 
     public static final double TURN_I = 0.0;
@@ -148,7 +147,7 @@ public final class Constants {
     public static final double FOV_MARGIN_OF_ERROR = 27;
   
     public static final String FRONT_LIMELIGHT_NAME = "limelight-front";
-    public static final String BACK_LIMELIGHT_NAME = "limelight-back";
+    public static final String BACK_LIMELIGHT_NAME = "limelight";
 
     public static final double[][] APRIL_TAG_POSITIONS = {
       // {x, y, z, rotation (degrees)}
@@ -215,44 +214,51 @@ public final class Constants {
 
     public static final double BLUE_SPEAKER_X = 0;
     public static final double BLUE_SPEAKER_Y = 5.511;
+
+    public static final double RED_LOADING_STATION_X = 1.1;
+    public static final double RED_LOADING_STATION_Y = 1.169; // nice
+
+    public static final double BLUE_LOADING_STATION_X = 15.41;
+    public static final double BLUE_LOADING_STATION_Y = 1.13;
   }
   
   public static final class IntakeConstants {
-    public static final int INTAKE_MOTOR_ID = 5;
-    public static final double INTAKE_SPEED = -1;
+    public static final int INTAKE_MOTOR_ID = 16;
+    public static final double INTAKE_SPEED = 1;
   }
 
   public static final class PivotConstants {
     public static final int LEADER_PIVOT_MOTOR_ID = 9;
     public static final int FOLLOWER_PIVOT_MOTOR_ID = 10;
     public static final int PIVOT_ENCODER_ID = 33;
-    public static final double PIVOT_INTAKE_ANGLE = 0.0;
+    public static final double PIVOT_INTAKE_ANGLE = -0.18017578125;
 
-    public static final double PIVOT_P = 0.0;
-    public static final double PIVOT_I = 0.0;
-    public static final double PIVOT_D = 0.0;
-    public static final double PIVOT_G = 0.0;
+    public static final double MIN_ANGLE = -0.18017578125;
+    public static final double MAX_ANGLE = 0.25732421875;
 
-    public static final double ANGLE_ZERO = 0.0;
-    public static final SensorDirectionValue ENCODER_REVERSED = SensorDirectionValue.CounterClockwise_Positive;
+    public static final double PIVOT_P = 215.0;
+    public static final double PIVOT_I = 0.0000000;
+    public static final double PIVOT_D = 0.000000;
+    public static final double PIVOT_G = 1.7320;
 
-    public static final double SHOOT_AMP_ANGLE = 1-9;
-    public static final double PIVOT_ACCEPTABLE_ERROR = 1;
+    public static final double ANGLE_ZERO = 0.125244140625;
+    public static final SensorDirectionValue ENCODER_REVERSED = SensorDirectionValue.Clockwise_Positive;
 
-    public static final double PIVOT_NEUTRAL_ANGLE = 0-9;
+    public static final double SHOOT_AMP_ANGLE = 0.0251464844;
+    public static final double PIVOT_ACCEPTABLE_ERROR = 4;
 
-    public static final double PIVOT_CLIMB_ANGLE = 0-9;
+    public static final double PIVOT_NEUTRAL_ANGLE = 0;
+
+    public static final double PIVOT_START_CLIMB_ANGLE = 0.25341796875;
+    public static final double PIVOT_END_CLIMB_ANGLE = -0.18017578125;
 
     public static double[][] SPEAKER_PIVOT_POSITION = {
-      // Distance, Angle
-      {Units.feetToMeters(5.5), 0-9},
-      {Units.feetToMeters(7), 0-9},
-      {Units.feetToMeters(8.5), 0-9}, 
-      {Units.feetToMeters(10), 0-9},
-      {Units.feetToMeters(11.5), 0-9},
-      {Units.feetToMeters(13), 0-9},
-      {Units.feetToMeters(14.5), 0-9},
-      {Units.feetToMeters(16), 0-9}
+      // Distance, Angle (degrees)
+      {Units.inchesToMeters(0+35), -0.157958984375 * 360.0}, 
+      {Units.inchesToMeters(38+35), -0.120849609375 * 360.0},
+      {Units.inchesToMeters(63.5+35), -0.102294921875 * 360.0}, 
+      // {Units.inchesToMeters(92), -0.064697265625 * 360.0},
+      // {Units.inchesToMeters(118), -0.070556640625 * 360.0},
     };
   }
 
@@ -261,41 +267,26 @@ public final class Constants {
     public static final int FOLLOWER_FLYWHEEL_ID = 6;
     public static final int ROLLER_MOTOR_ID = 2;
 
-    // public static final int SHOOTER_NOTE_SENSOR_ID = 0-9;
+    public static final int SHOOTER_NOTE_SENSOR_ID = 0;
 
-    public static final double LEFT_SHOOT_SPEAKER_RPM = 0-9;
-    public static final double RIGHT_SHOOT_SPEAKER_RPM = 0-9;
+    public static final double LEFT_SHOOT_SPEAKER_RPM = 6000;
+    public static final double RIGHT_SHOOT_SPEAKER_RPM = 6000;
 
-    public static final double SHOOT_P = 0.0;
+    public static final double SHOOT_P = 50.0;
     public static final double SHOOT_I = 0.0;
     public static final double SHOOT_D = 0.0;
-    public static final double SHOOT_S = 0.0;
-    public static final double SHOOT_V = 0.0;
-    public static final double SHOOT_A = 0.0;
+    public static final double SHOOT_S = 0.36;
+    public static final double SHOOT_V = 0.12287;
+    public static final double SHOOT_A = 0.00520;
 
-    public static final double ROLLER_SPEED = 1;
-    public static final double SHOOT_AMP_SPEED = 0.3;
+    public static final double ROLLER_SPEED = 0.3;
+    public static final double SHOOT_AMP_SPEED = 4000;
     
-    public static final double GEAR_RATIO_MOTOR_TO_FLYWHEEL = 30.0 / 40.0;
-
-    public static final double AUTO_SHOOT_P = 0.0;
+    public static final double AUTO_SHOOT_P = 0.000;
     public static final double AUTO_SHOOT_I = 0.0;
     public static final double AUTO_SHOOT_D = 0.0;
-    public static final double AUTO_SHOOT_S = 0.0;
-    public static final double AUTO_SHOOT_V = 0.0;
     public static Constraints AUTO_SHOOT_CONSTRAINTS = new Constraints(DriveConstants.MAX_ANGULAR_SPEED_RADIANS_PER_SECOND, 5);
 
-    public static double[][] SPEAKER_SHOOT_RPMS = {
-      //distance, rpm
-      {Units.feetToMeters(5.5), 1770},
-      {Units.feetToMeters(7), 1665},
-      {Units.feetToMeters(8.5), 1560}, 
-      {Units.feetToMeters(10), 1350},
-      {Units.feetToMeters(11.5), 1300},
-      {Units.feetToMeters(13), 1280},
-      {Units.feetToMeters(14.5), 1260},
-      {Units.feetToMeters(16), 1300}
-   };
   }
 
   public static final class TrajectoryConstants {
@@ -351,8 +342,98 @@ public final class Constants {
 
     public static final int RIGHT_BUMPER_ID = 6;
     public static final int RIGHT_D_PAD_ID = 90;
+    public static final int LEFT_TRIGGER_ID = 2;
+    public static final int RIGHT_TRIGGER_ID = 3;
+    public static final int RIGHT_STICK_Y_ID = 5;
 
   }
 
+  
+  public static final class LEDConstants {
+
+    public static final int LEDPort = 0;
+    public static final double ANIMATION_SPEED = 24; // "frames" per second
+
+    public static final double ALLIANCE_ANIMATION_STRENGTH = 0.2; // 0-1
+
+    public static final class SparkConstants {
+      // This subclass contains the constant values for the LED patterns.
+      public static final double RAINBOW = -0.99;
+      public static final double SHOT_RED = -0.85;
+      public static final double SHOT_BLUE = -0.83;
+      public static final double SHOT_WHITE = -0.81;
+      public static final double RED_ALLIANCE_BLINKIN = -0.39;
+      public static final double RAINBOW_WAVE = -0.45;
+      public static final double OCEAN = -0.41;
+      public static final double BOUNCE_RED = -0.35;
+      public static final double BOUNCE_GRAY = -0.33;
+      public static final double HEARTBEAT_RED = -0.25;
+      public static final double HEARTBEAT_GRAY = -0.19;
+      public static final double STROBE_RED = -0.11;
+      public static final double STROBE_BLUE = -0.09;
+      public static final double STROBE_GOLD = -0.07;
+      public static final double STROBE_WHITE = -0.05;
+
+      public static final double HEARTBEAT_1 = 0.43;
+      public static final double HEARTBEAT_2 = 0.27;
+
+      public static final double MAGENTA = 0.57;
+      public static final double DARK_RED = 0.59;
+      public static final double RED = 0.61;
+      public static final double VERMILION = 0.63;
+      public static final double ORANGE = 0.65;
+      public static final double GOLD = 0.67;
+      public static final double YELLOW = 0.69;
+      public static final double LAWN_GREEN = 0.71;
+      public static final double LIME = 0.73;
+      public static final double DARK_GREEN = 0.75;
+      public static final double GREEN = 0.77;
+      public static final double CYAN = 0.79;
+      public static final double AQUA = 0.81;
+      public static final double SKY_BLUE = 0.83;
+      public static final double DARK_BLUE = 0.85;
+      public static final double BLUE = 0.87;
+      public static final double INDIGO = 0.89;
+      public static final double PURPLE = 0.91;
+      public static final double WHITE = 0.93;
+      public static final double GRAY = 0.95;
+      public static final double DARK_GRAY = 0.97;
+      public static final double BLACK = 0.99;    
+    }
+    
+    public enum LEDProcess {
+      /** alliance color */
+      ALLIANCE_COLOR (0, 0, 0, 0),
+      /** default */
+      DEFAULT (0, 0, 0, 0),
+      RAINBOW (SparkConstants.RAINBOW, 0, 0, 0),
+      RED_ALLIANCE (SparkConstants.RED_ALLIANCE_BLINKIN, 255, 0, 0),
+      BLUE_ALLIANCE (SparkConstants.OCEAN, 0, 0, 255),
+      SCORING_CUBE (SparkConstants.HEARTBEAT_1, 255, 255, 0),
+      SCORING_CONE (SparkConstants.HEARTBEAT_2, 128, 0, 255),
+      OFF (SparkConstants.BLACK, 0, 0, 0),
+      CUBE (SparkConstants.PURPLE, 255, 0, 200),
+      CONE (SparkConstants.YELLOW, 255, 255, 0),
+      AUTONOMOUS (SparkConstants.RAINBOW_WAVE, 0, 0, 0),
+      LINE_UP (SparkConstants.GREEN, 0, 255, 0),
+      FINISH_LINE_UP (SparkConstants.SHOT_WHITE, 255, 255, 255),
+      GREEN (SparkConstants.GREEN, 0, 255, 0),
+      RED (SparkConstants.RED, 255, 0, 0),
+      INTAKE (SparkConstants.MAGENTA, 255, 0, 255);
+
+      private final double sparkValue;
+      private final int red, green, blue;
+      LEDProcess(double sparkValue, int red, int green, int blue) {
+        this.sparkValue = sparkValue;
+        this.red = red;
+        this.green = green;
+        this.blue = blue;
+      }
+      public double getSparkValue() { return sparkValue; }
+      public int getRed() { return red; }
+      public int getGreen() { return green; }
+      public int getBlue() { return blue; }
+    }
+  }
 }
 

@@ -100,7 +100,7 @@ public class FollowPathAndShoot extends DriveCommandBase {
 
     // if we are ready to shoot:
     if (shooterSubsystem.isReadyToShoot(headingError) && pivotSubsystem.isPivotWithinAcceptableError()) {
-    shooterSubsystem.setShooterRPMFromDistance(distance);
+    shooterSubsystem.setRPM(6000);
     pivotSubsystem.setPivotFromDistance(distance);
     }
   }

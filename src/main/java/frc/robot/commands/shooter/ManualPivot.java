@@ -2,20 +2,24 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.climb;
+package frc.robot.commands.shooter;
 
+import java.util.function.BooleanSupplier;
+import java.util.function.DoubleSupplier;
+
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants.PivotConstants;
 import frc.robot.subsystems.pivot.PivotSubsystem;
 
-public class ClimbCommand extends Command {
-  private PivotSubsystem pivot;
-  /** Creates a new ClimbCommand. */
-  public ClimbCommand(PivotSubsystem pivot) {
-    this.pivot = pivot;
+public class ManualPivot extends Command {
+  private final PivotSubsystem pivotSubsytem;
+  private final DoubleSupplier speed;
 
-    addRequirements(pivot);
-    // Use addRequirements() here to declare subsystem dependencies.
+  /** Creates a new SetShooterAngle. */
+  public ManualPivot(PivotSubsystem pivotSubsytem, DoubleSupplier speed) {
+    this.pivotSubsytem = pivotSubsytem;
+    this.speed = speed;
+    addRequirements(pivotSubsytem);
   }
 
   // Called when the command is initially scheduled.
@@ -25,12 +29,14 @@ public class ClimbCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    pivot.setPivot(PivotConstants.PIVOT_START_CLIMB_ANGLE);
+    pivotSubsytem.set(speed.getAsDouble());
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    pivotSubsytem.set(0);
+  }
 
   // Returns true when the command should end.
   @Override

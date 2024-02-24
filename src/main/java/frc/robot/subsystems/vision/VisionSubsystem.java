@@ -155,6 +155,7 @@ public class VisionSubsystem extends SubsystemBase {
     }
   }
 
+
   /**
    * Gets the data needed for shooting into the speaker
    * @return double[leftFlywheelSpeed shooterAngle, desiredHeading]

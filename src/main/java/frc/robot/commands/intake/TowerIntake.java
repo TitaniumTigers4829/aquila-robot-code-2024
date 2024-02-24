@@ -16,35 +16,44 @@ public class TowerIntake extends Command {
   private final IntakeSubsystem intakeSubsystem;
   private final PivotSubsystem pivotSubsystem;
   private final ShooterSubsystem shooterSubsystem;
+  private final boolean intakeReverse;
   
   /** Creates a new TowerIntake. */
-  public TowerIntake(IntakeSubsystem intakeSubsystem, PivotSubsystem pivotSubsystem, ShooterSubsystem shooterSubsystem) {
+  public TowerIntake(IntakeSubsystem intakeSubsystem, PivotSubsystem pivotSubsystem, ShooterSubsystem shooterSubsystem, boolean intakeReverse) {
     this.intakeSubsystem = intakeSubsystem;
     this.pivotSubsystem = pivotSubsystem;
     this.shooterSubsystem = shooterSubsystem;
+    this.intakeReverse = intakeReverse;
     addRequirements(intakeSubsystem);
   }
 
   @Override
   public void execute() {
-    pivotSubsystem.setPivot(PivotConstants.PIVOT_INTAKE_ANGLE);
+    pivotSubsystem.setPivot(PivotConstants.PIVOT_INTAKE_ANGLE * 360.0);
 
-    shooterSubsystem.setRollerSpeed(ShooterConstants.ROLLER_SPEED);
-    intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_SPEED);
-    // if(!shooterSubsystem.getSensor()) {
-    //   intakeSubsystem.setIntakeSpeed(0);
-    //   shooterSubsystem.setRollerSpeed(0);
-    // } else {
-    //   shooterSubsystem.setRollerSpeed(ShooterConstants.ROLLER_SPEED);
-    //   intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_MOTOR_SPEED);
-    // }
+    if (pivotSubsystem.isPivotWithinAcceptableError()) {
+      if(!shooterSubsystem.getSensor()) {
+        intakeSubsystem.setIntakeSpeed(0);
+        shooterSubsystem.setRollerSpeed(0);
+      }
+        else {
+          if(!intakeReverse) {
+        shooterSubsystem.setRollerSpeed(ShooterConstants.ROLLER_SPEED);
+        intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_SPEED);
+          }
+          else {
+            shooterSubsystem.setRollerSpeed(-ShooterConstants.ROLLER_SPEED);
+            intakeSubsystem.setIntakeSpeed(-IntakeConstants.INTAKE_SPEED);
+          }
+      }
+    }
   }
   
 
   @Override
   public void end(boolean interrupted) {
     intakeSubsystem.setIntakeSpeed(0);
-    // shooterSubsystem.setRollerSpeed(0);
+    shooterSubsystem.setRollerSpeed(0);
   }
 
   // Returns true when the command should end.
