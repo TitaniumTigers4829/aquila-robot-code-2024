@@ -116,8 +116,8 @@ public final class Constants {
     public static final double DRIVE_TO_METERS_PER_SECOND = WHEEL_CIRCUMFERENCE_METERS / DRIVE_GEAR_RATIO;
 
     //TODO: Test these:
-    public static final double DRIVE_SUPPLY_LIMIT = 120.0;
-    // public static final double DRIVE_STATOR_LIMIT = 60.0;
+    public static final double DRIVE_SUPPLY_LIMIT = 40.0;
+    public static final double DRIVE_STATOR_LIMIT = 40.0;
 
     public static final double TURN_P = 116.0; 
     public static final double TURN_I = 0.0;
@@ -224,19 +224,19 @@ public final class Constants {
   
   public static final class IntakeConstants {
     public static final int INTAKE_MOTOR_ID = 16;
-    public static final double INTAKE_SPEED = 1;
+    public static final double INTAKE_SPEED = 0.7;
   }
 
   public static final class PivotConstants {
     public static final int LEADER_PIVOT_MOTOR_ID = 9;
     public static final int FOLLOWER_PIVOT_MOTOR_ID = 10;
     public static final int PIVOT_ENCODER_ID = 33;
-    public static final double PIVOT_INTAKE_ANGLE = -0.18017578125;
+    public static final double PIVOT_INTAKE_ANGLE = -0.18048828125;
 
     public static final double MIN_ANGLE = -0.18017578125;
     public static final double MAX_ANGLE = 0.25732421875;
 
-    public static final double PIVOT_P = 215.0;
+    public static final double PIVOT_P = 180; // 215
     public static final double PIVOT_I = 0.0000000;
     public static final double PIVOT_D = 0.000000;
     public static final double PIVOT_G = 1.7320;
@@ -244,7 +244,7 @@ public final class Constants {
     public static final double ANGLE_ZERO = 0.125244140625;
     public static final SensorDirectionValue ENCODER_REVERSED = SensorDirectionValue.Clockwise_Positive;
 
-    public static final double SHOOT_AMP_ANGLE = 0.0251464844;
+    public static final double SHOOT_AMP_ANGLE = 0.0351464844;
     public static final double PIVOT_ACCEPTABLE_ERROR = 4;
 
     public static final double PIVOT_NEUTRAL_ANGLE = 0;
@@ -254,7 +254,7 @@ public final class Constants {
 
     public static double[][] SPEAKER_PIVOT_POSITION = {
       // Distance, Angle (degrees)
-      {Units.inchesToMeters(0+35), -0.157958984375 * 360.0}, 
+      {Units.inchesToMeters(0+35), -0.15869140625 * 360.0}, 
       {Units.inchesToMeters(38+35), -0.120849609375 * 360.0},
       {Units.inchesToMeters(63.5+35), -0.102294921875 * 360.0}, 
       // {Units.inchesToMeters(92), -0.064697265625 * 360.0},
@@ -279,8 +279,8 @@ public final class Constants {
     public static final double SHOOT_V = 0.12287;
     public static final double SHOOT_A = 0.00520;
 
-    public static final double ROLLER_SPEED = 0.3;
-    public static final double SHOOT_AMP_SPEED = 4000;
+    public static final double ROLLER_SPEED = 0.2;
+    public static final double SHOOT_AMP_SPEED = 2000;
     
     public static final double AUTO_SHOOT_P = 0.000;
     public static final double AUTO_SHOOT_I = 0.0;

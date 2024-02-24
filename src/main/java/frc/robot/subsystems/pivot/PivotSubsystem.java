@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems.pivot;
 
+import javax.swing.text.Position;
+
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
@@ -34,7 +36,7 @@ public class PivotSubsystem extends SubsystemBase {
 
   private final TalonFX leaderPivotMotor;
   private final TalonFX followerPivotMotor;
-  private final MotionMagicVoltage mmRequest;
+  private final PositionVoltage mmRequest;
 
   private final SingleLinearInterpolator speakerAngleLookupValues;
 
@@ -48,7 +50,7 @@ public class PivotSubsystem extends SubsystemBase {
     leaderPivotMotor = new TalonFX(PivotConstants.LEADER_PIVOT_MOTOR_ID);
     followerPivotMotor = new TalonFX(PivotConstants.FOLLOWER_PIVOT_MOTOR_ID);
     pivotEncoder = new CANcoder(PivotConstants.PIVOT_ENCODER_ID);
-    mmRequest = new MotionMagicVoltage(0);
+    mmRequest = new PositionVoltage(0);
 
     speakerAngleLookupValues = new SingleLinearInterpolator(PivotConstants.SPEAKER_PIVOT_POSITION);
 
@@ -62,13 +64,9 @@ public class PivotSubsystem extends SubsystemBase {
     pivotConfig.Slot0.kI = PivotConstants.PIVOT_I;
     pivotConfig.Slot0.kD = PivotConstants.PIVOT_D;
     pivotConfig.Slot0.kG = PivotConstants.PIVOT_G;
-<<<<<<< HEAD
-=======
-    pivotConfig.Slot0.GravityType = GravityTypeValue.Arm_Cosine;
 
-    pivotConfig.MotionMagic.MotionMagicAcceleration = 40;
-    pivotConfig.MotionMagic.MotionMagicCruiseVelocity = 35;
->>>>>>> 655e0fa2a6723a23c90ab415530c4e4f525dbf2e
+    pivotConfig.MotionMagic.MotionMagicAcceleration = 10;
+    pivotConfig.MotionMagic.MotionMagicCruiseVelocity = 10;
 
     pivotConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     pivotConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive; 
@@ -107,7 +105,8 @@ public class PivotSubsystem extends SubsystemBase {
    *@return pivot error between desired and actual state in degrees
   */
   public boolean isPivotWithinAcceptableError() {
-    return Math.abs(pivotTargetAngle - getRotation()) < PivotConstants.PIVOT_ACCEPTABLE_ERROR;
+    //return Math.abs(pivotTargetAngle - getRotation()) < PivotConstants.PIVOT_ACCEPTABLE_ERROR;
+    return true;
   }
 
   public void set(double output) {
@@ -128,9 +127,10 @@ public class PivotSubsystem extends SubsystemBase {
    * @param distance the distance in meters from the speaker
    */
   public void setPivotFromDistance(double distance) {
+    SmartDashboard.putNumber("distance", distance);
     double angle = speakerAngleLookupValues.getLookupValue(distance);
     pivotTargetAngle = angle;
-    setPivot(angle);
+    setPivot(angle - 0.02);
   }
 
   /**
@@ -139,9 +139,9 @@ public class PivotSubsystem extends SubsystemBase {
    */
   public void setPivot(double angle) {
     pivotTargetAngle = angle;
-    SmartDashboard.putNumber("desired pivot angle", pivotTargetAngle);
-    leaderPivotMotor.setControl(mmRequest.withPosition(angle / 360.0));
-    followerPivotMotor.setControl(mmRequest.withPosition(angle / 360.0));
+    SmartDashboard.putNumber("desired pivot angle", pivotTargetAngle / 360.0);
+    leaderPivotMotor.setControl(new PositionVoltage(angle / 360.0));
+    followerPivotMotor.setControl(new PositionVoltage(angle / 360.0));
   }
 
   @Override

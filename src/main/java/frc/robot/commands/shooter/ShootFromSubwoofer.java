@@ -29,7 +29,7 @@ public class ShootFromSubwoofer extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    pivotSubsystem.setPivot(-0.15185546875 * 360.0);
+    pivotSubsystem.setPivot(-0.16269140625 * 360.0);
     shooterSubsystem.setRPM(4000);
 
     if (pivotSubsystem.isPivotWithinAcceptableError() && shooterSubsystem.isShooterWithinAcceptableError()) {

@@ -12,8 +12,8 @@ import frc.robot.extras.LimelightHelpers.LimelightTarget_Fiducial;
 public class VisionSubsystem extends SubsystemBase {
 
   private LimelightResults currentlyUsedLimelightResults;
-  private LimelightResults frontLimelightResults = LimelightHelpers.getLatestResults(VisionConstants.FRONT_LIMELIGHT_NAME);;
-  private LimelightResults backLimelightResults = LimelightHelpers.getLatestResults(VisionConstants.BACK_LIMELIGHT_NAME);;
+  private LimelightResults frontLimelightResults = LimelightHelpers.getLatestResults(VisionConstants.FRONT_LIMELIGHT_NAME);
+  private LimelightResults backLimelightResults = LimelightHelpers.getLatestResults(VisionConstants.BACK_LIMELIGHT_NAME);
   private String currentlyUsedLimelight = VisionConstants.FRONT_LIMELIGHT_NAME;
   private boolean wasFrontLimelightUsedLast = false;
   

@@ -57,6 +57,12 @@ public class ShooterSubsystem extends SubsystemBase {
     shooterConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
     shooterConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive; 
     shooterConfig.MotorOutput.DutyCycleNeutralDeadband = HardwareConstants.MIN_FALCON_DEADBAND;
+
+    shooterConfig.CurrentLimits.StatorCurrentLimit = 450;
+    shooterConfig.CurrentLimits.StatorCurrentLimitEnable = true;
+    shooterConfig.CurrentLimits.SupplyCurrentLimit = 450;
+    shooterConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+
     leaderFlywheel.getConfigurator().apply(shooterConfig, HardwareConstants.TIMEOUT_S);
     shooterConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     followerFlywheel.getConfigurator().apply(shooterConfig, HardwareConstants.TIMEOUT_S);
@@ -113,7 +119,7 @@ public class ShooterSubsystem extends SubsystemBase {
    * @return True if we are within an acceptable range (of rpm) to shoot
    */
   public boolean isShooterWithinAcceptableError() {
-    return Math.abs(shooterTargetRPM - getShooterRPM()) < 200;
+    return Math.abs(shooterTargetRPM - getShooterRPM()) < 2000;
   }
 
   public boolean isReadyToShoot(double headingError) {

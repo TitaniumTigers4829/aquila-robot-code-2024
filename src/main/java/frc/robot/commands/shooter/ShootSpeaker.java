@@ -102,12 +102,12 @@ public class ShootSpeaker extends DriveCommandBase {
     );
 
     shooterSubsystem.setRPM(4000);
-    pivotSubsystem.setPivotFromDistance(distance * 39.37);
+    pivotSubsystem.setPivotFromDistance(distance);
     // if we are ready to shoot:
     if (isReadyToShoot()) {
       shooterSubsystem.setRollerSpeed(ShooterConstants.ROLLER_SPEED);
-      }
     }
+  }
 
   // Called once the command ends or is interrupted.
   @Override
