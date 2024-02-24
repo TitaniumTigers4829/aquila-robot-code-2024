@@ -13,10 +13,12 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.Constants.JoystickConstants;
+import frc.robot.Constants.LEDConstants.LEDProcess;
 import frc.robot.commands.FeedForwardCharacterization;
 import frc.robot.commands.drive.Drive;
 import frc.robot.commands.intake.TowerIntake;
 import frc.robot.subsystems.intake.IntakeSubsystem;
+import frc.robot.subsystems.led.LEDSubsystem;
 import frc.robot.subsystems.pivot.PivotSubsystem;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.swerve.DriveSubsystem;
@@ -31,6 +33,7 @@ public class RobotContainer {
   private final Joystick operatorJoystick = new Joystick(JoystickConstants.OPERATOR_JOYSTICK_ID);
   private final IntakeSubsystem intakeSubsystem;
   private final PivotSubsystem pivotSubsystem;
+  private final LEDSubsystem ledSubsystem;
   
   public RobotContainer() {
     visionSubsystem = new VisionSubsystem();
@@ -38,6 +41,9 @@ public class RobotContainer {
     shooterSubsystem = new ShooterSubsystem();
     intakeSubsystem = new IntakeSubsystem();
     pivotSubsystem = new PivotSubsystem();
+    ledSubsystem = new LEDSubsystem();
+
+    ledSubsystem.setProcess(LEDProcess.DEFAULT);
   }
   
   private static double deadband(double value, double deadband) {
@@ -107,7 +113,7 @@ public class RobotContainer {
     driverRightDpad.onTrue(new InstantCommand(() ->driveSubsystem.zeroHeading()));
     driverRightDpad.onTrue(new InstantCommand(()->driveSubsystem.resetOdometry(new Pose2d())));
 
-    bDriverButton.whileTrue(new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem));
+    bDriverButton.whileTrue(new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem, ledSubsystem));
 
     driveSubsystem.setDefaultCommand(driveCommand);
 

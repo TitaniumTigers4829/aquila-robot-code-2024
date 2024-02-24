@@ -15,8 +15,10 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.ShooterConstants;
+import frc.robot.Constants.LEDConstants.LEDProcess;
 import frc.robot.commands.drive.DriveCommandBase;
 import frc.robot.extras.SmarterDashboardRegistry;
+import frc.robot.subsystems.led.LEDSubsystem;
 import frc.robot.subsystems.pivot.PivotSubsystem;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.swerve.DriveSubsystem;
@@ -26,6 +28,7 @@ public class ShootSpeaker extends DriveCommandBase {
   private final DriveSubsystem driveSubsystem;
   private final ShooterSubsystem shooterSubsystem;
   private final PivotSubsystem pivotSubsystem;
+  private final LEDSubsystem ledSubsystem;
 
   private final DoubleSupplier leftX, leftY;
   private final BooleanSupplier isFieldRelative;
@@ -44,11 +47,12 @@ public class ShootSpeaker extends DriveCommandBase {
   private Translation2d speakerPos;
   
   /** Creates a new ShootSpeaker. */
-  public ShootSpeaker(DriveSubsystem driveSubsystem, ShooterSubsystem shooterSubsystem, VisionSubsystem visionSubsystem, PivotSubsystem pivotSubsystem, DoubleSupplier leftX, DoubleSupplier leftY, BooleanSupplier isFieldRelative) {
+  public ShootSpeaker(DriveSubsystem driveSubsystem, ShooterSubsystem shooterSubsystem, VisionSubsystem visionSubsystem, PivotSubsystem pivotSubsystem, LEDSubsystem ledSubsystem, DoubleSupplier leftX, DoubleSupplier leftY, BooleanSupplier isFieldRelative) {
     super(driveSubsystem, visionSubsystem);
     this.driveSubsystem = driveSubsystem;
     this.shooterSubsystem = shooterSubsystem;
     this.pivotSubsystem = pivotSubsystem;
+    this.ledSubsystem = ledSubsystem;
     this.leftX = leftX;
     this.leftY = leftY;
     this.isFieldRelative = isFieldRelative;
@@ -96,14 +100,16 @@ public class ShootSpeaker extends DriveCommandBase {
 
     // if we are ready to shoot:
     if (isReadyToShoot()) {
-    shooterSubsystem.setShooterRPMFromDistance(distance);
-    pivotSubsystem.setPivotFromDistance(distance);
+      ledSubsystem.setProcess(LEDProcess.SHOOT);
+      shooterSubsystem.setShooterRPMFromDistance(distance);
+      pivotSubsystem.setPivotFromDistance(distance);
     }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    ledSubsystem.setProcess(LEDProcess.DEFAULT);
     shooterSubsystem.setFlywheelNeutral();
     pivotSubsystem.setPivotMotorToNeutral();
   }
