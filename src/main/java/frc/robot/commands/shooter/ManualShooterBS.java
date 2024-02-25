@@ -39,9 +39,9 @@ public class ManualShooterBS extends Command {
   @Override
   public void execute() {
     // we love ternary operators
-    shooterSubsystem.setRPM(shooterSpeed.getAsBoolean() ? ShooterConstants.LEFT_SHOOT_SPEAKER_RPM : 0);
+    shooterSubsystem.setRPM(shooterSpeed.getAsBoolean() ? 4000 : 0);
     shooterSubsystem.setRollerSpeed(rollerIn.getAsBoolean() ? ShooterConstants.ROLLER_SPEED : rollerOut.getAsBoolean() ? -1 * ShooterConstants.ROLLER_SPEED : 0);
-    pivotSubsystem.set(pivotSpeed.getAsDouble() > 0.1 ? 0.4 : pivotSpeed.getAsDouble() < -0.1 ? -0.4 : 0);
+    pivotSubsystem.set(pivotSpeed.getAsDouble() > 0.1 ? 0.1 : pivotSpeed.getAsDouble() < -0.1 ? -0.1 : 0);
     double angle = Math.atan2(Units.inchesToMeters(56), SmartDashboard.getNumber("speakerDist", 3.0));
     SmartDashboard.putNumber("desiredAngle", angle * 180.0 / Math.PI);
   }

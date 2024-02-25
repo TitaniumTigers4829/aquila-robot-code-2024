@@ -147,7 +147,7 @@ public final class Constants {
     public static final double FOV_MARGIN_OF_ERROR = 27;
   
     public static final String FRONT_LIMELIGHT_NAME = "limelight-front";
-    public static final String BACK_LIMELIGHT_NAME = "limelight";
+    public static final String BACK_LIMELIGHT_NAME = "limelight-back";
 
     public static final double[][] APRIL_TAG_POSITIONS = {
       // {x, y, z, rotation (degrees)}
@@ -254,11 +254,10 @@ public final class Constants {
 
     public static double[][] SPEAKER_PIVOT_POSITION = {
       // Distance, Angle (degrees)
-      {Units.inchesToMeters(0+35), -0.15869140625 * 360.0}, 
-      {Units.inchesToMeters(38+35), -0.120849609375 * 360.0},
-      {Units.inchesToMeters(63.5+35), -0.102294921875 * 360.0}, 
-      // {Units.inchesToMeters(92), -0.064697265625 * 360.0},
-      // {Units.inchesToMeters(118), -0.070556640625 * 360.0},
+      {1.428135605694207, -0.162841796875 * 360.0}, 
+      {2.17654981003848, -0.12986328125 * 360.0},
+      {3.283281041464165, -0.10365234375 * 360.0},
+      {3.691442931925188, -0.09505625 * 360.0} 
     };
   }
 
@@ -272,7 +271,7 @@ public final class Constants {
     public static final double LEFT_SHOOT_SPEAKER_RPM = 6000;
     public static final double RIGHT_SHOOT_SPEAKER_RPM = 6000;
 
-    public static final double SHOOT_P = 50.0;
+    public static final double SHOOT_P = 70.0;
     public static final double SHOOT_I = 0.0;
     public static final double SHOOT_D = 0.0;
     public static final double SHOOT_S = 0.36;
@@ -340,6 +339,7 @@ public final class Constants {
     public static final int X_BUTTON_ID = 3;
     public static final int Y_BUTTON_ID = 4;
 
+    public static final int LEFT_BUMPER_ID = 5;
     public static final int RIGHT_BUMPER_ID = 6;
     public static final int RIGHT_D_PAD_ID = 90;
     public static final int LEFT_TRIGGER_ID = 2;

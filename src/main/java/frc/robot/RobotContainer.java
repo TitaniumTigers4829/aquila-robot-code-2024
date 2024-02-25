@@ -4,10 +4,8 @@
 
 package frc.robot;
 
-import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -15,28 +13,16 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.JoystickConstants;
-import frc.robot.Constants.PivotConstants;
-import frc.robot.Constants.ShooterConstants;
-import frc.robot.commands.auto.BlueFourNoteAuto;
 import frc.robot.commands.auto.FollowChoreoTrajectory;
-import frc.robot.commands.auto.ShootSpeakerAuto;
-import frc.robot.commands.autodrive.DriveToAmp;
-import frc.robot.commands.autodrive.DriveToPos;
 import frc.robot.commands.drive.Drive;
 import frc.robot.commands.intake.TowerIntake;
-import frc.robot.commands.shooter.ManualPivot;
-import frc.robot.commands.shooter.ManualShooterBS;
-import frc.robot.commands.shooter.SemiAutoShooterBS;
-import frc.robot.commands.shooter.SetShooterAngle;
 import frc.robot.commands.shooter.ShootAmp;
 import frc.robot.commands.shooter.ShootFromSubwoofer;
-import frc.robot.commands.shooter.ShootMode;
 import frc.robot.commands.shooter.ShootSpeaker;
-import frc.robot.commands.shooter.thigy;
-import frc.robot.commands.testing.FeedForwardCharacterization;
-import frc.robot.commands.shooter.ShootWithJoystick;
-import frc.robot.commands.shooter.ManualShoot;
 import frc.robot.extras.SmarterDashboardRegistry;
+import frc.robot.commands.shooter.ManualPivot;
+import frc.robot.commands.shooter.ManualShoot;
+import frc.robot.commands.shooter.ManualShooterBS;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.pivot.PivotSubsystem;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
@@ -54,6 +40,7 @@ public class RobotContainer {
   private final PivotSubsystem pivotSubsystem;
   
   public RobotContainer() {
+    SmarterDashboardRegistry.initialize();
     visionSubsystem = new VisionSubsystem();
     driveSubsystem = new DriveSubsystem(); 
     shooterSubsystem = new ShooterSubsystem();
@@ -104,7 +91,7 @@ public class RobotContainer {
   }
 
   private void configureButtonBindings() {
-        // drive
+    // drive
     DoubleSupplier driverLeftStickX = () -> driverJoystick.getRawAxis(JoystickConstants.LEFT_STICK_X_ID);
     DoubleSupplier driverLeftStickY = () -> driverJoystick.getRawAxis(JoystickConstants.LEFT_STICK_Y_ID);
     DoubleSupplier driverRightStickX = () -> driverJoystick.getRawAxis(JoystickConstants.RIGHT_STICK_X_ID);
@@ -128,12 +115,15 @@ public class RobotContainer {
     Trigger operatorRightTrigger = new Trigger(() -> (operatorJoystick.getRawAxis(JoystickConstants.RIGHT_TRIGGER_ID) > 0.2));
     Trigger operatorLeftTrigger = new Trigger(() -> (operatorJoystick.getRawAxis(JoystickConstants.LEFT_TRIGGER_ID) > 0.2));
     JoystickButton operatorBButton = new JoystickButton(operatorJoystick, JoystickConstants.B_BUTTON_ID);
-    JoystickButton operatorLeftBumper = new JoystickButton(operatorJoystick, 5);
+    JoystickButton operatorLeftBumper = new JoystickButton(operatorJoystick, JoystickConstants.LEFT_BUMPER_ID);
     JoystickButton operatorRightBumper = new JoystickButton(operatorJoystick, JoystickConstants.RIGHT_BUMPER_ID);
     // autoclimb
     JoystickButton operatorXButton = new JoystickButton(operatorJoystick, JoystickConstants.X_BUTTON_ID);
     // manualclimb
     DoubleSupplier operatorRightStickY = () -> operatorJoystick.getRawAxis(JoystickConstants.RIGHT_STICK_Y_ID);
+
+    POVButton operatorDpadUp = new POVButton(operatorJoystick, 0);
+    POVButton operatorDpadDown = new POVButton(operatorJoystick, 180);
 
     // manual driving
     Command driveCommand = new Drive(driveSubsystem, visionSubsystem,
@@ -146,7 +136,7 @@ public class RobotContainer {
     driveSubsystem.setDefaultCommand(driveCommand);
     
     driverRightDirectionPad.onTrue(new InstantCommand(driveSubsystem::zeroHeading));
-    driverRightDirectionPad.onTrue(new InstantCommand(() -> driveSubsystem.resetOdometry(driveSubsystem.getPose())));
+    // driverRightDirectionPad.onTrue(new InstantCommand(() -> driveSubsystem.resetOdometry(driveSubsystem.getPose())));
   
     // // realtime trajectories
     // // amp
@@ -158,26 +148,28 @@ public class RobotContainer {
 
     // shoot
     operatorBButton.whileTrue(new ShootFromSubwoofer(shooterSubsystem, pivotSubsystem));
-    driverRightTrigger.whileTrue(new ShootFromSubwoofer(shooterSubsystem, pivotSubsystem));
-    // driverRightTrigger.whileTrue(new ShootSpeaker(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, driverLeftStickX, driverLeftStickY, driverRightBumper));
+    // driverRightTrigger.whileTrue(new ShootFromSubwoofer(shooterSubsystem, pivotSubsystem));
+    driverRightTrigger.whileTrue(new ShootSpeaker(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, driverLeftStickX, driverLeftStickY, driverRightBumper));
 
-    // // intake
+    // intake
     driverLeftBumper.whileTrue(new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem, false));
-    operatorLeftBumper.whileTrue(new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem, false));
-    operatorRightBumper.whileTrue(new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem, true));
+    // operatorLeftBumper.whileTrue(new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem, false));
+    driverLeftTrigger.whileTrue(new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem, true));
 
     // Shoot amp
     operatorYButton.whileTrue(new ShootAmp(shooterSubsystem, pivotSubsystem));
 
-    //climb 
-    operatorXButton.onTrue(new InstantCommand(() -> pivotSubsystem.setPivot(360.0 * PivotConstants.PIVOT_START_CLIMB_ANGLE)));
-    operatorXButton.onFalse(new InstantCommand(() -> pivotSubsystem.setPivot(360.0 * PivotConstants.PIVOT_END_CLIMB_ANGLE)));
+    // shooterSubsystem.setDefaultCommand(new ManualShooterBS(shooterSubsystem, pivotSubsystem, operatorRightStickY, operatorLeftBumper, operatorDpadUp, operatorDpadDown));
+
+    // climb
+    // operatorXButton.onTrue(new InstantCommand(() -> pivotSubsystem.setPivot(360.0 * PivotConstants.PIVOT_START_CLIMB_ANGLE)));
+    // operatorXButton.onFalse(new InstantCommand(() -> pivotSubsystem.setPivot(360.0 * PivotConstants.PIVOT_END_CLIMB_ANGLE)));
 
     operatorAButton.whileTrue(new ManualPivot(pivotSubsystem, ()->modifyAxisCubed(operatorRightStickY)));
-    //operatorAButton.whileTrue(new ManualShoot(shooterSubsystem,()-> modifyAxisCubed(operatorLeftStickY)));
+    // operatorAButton.whileTrue(new ManualShoot(shooterSubsystem,()-> modifyAxisCubed(operatorLeftStickY)));
   }
 
   public Command getAutonomousCommand() {
-    return new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "Red note 1");
+    return new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "1mtrfwd", true);
 }
 }

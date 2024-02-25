@@ -95,8 +95,8 @@ public class ShootSpeaker extends DriveCommandBase {
 
     // allow the driver to drive slowly (NOT full speed - will mess up shooter)
     driveSubsystem.drive(
-      leftX.getAsDouble(), 
-      leftY.getAsDouble(), 
+      leftX.getAsDouble() / 2.0, 
+      leftY.getAsDouble() / 2.0, 
       turnOutput, 
       isFieldRelative.getAsBoolean()
     );
@@ -122,7 +122,7 @@ public class ShootSpeaker extends DriveCommandBase {
     return false;
   }
   public boolean isReadyToShoot() {
-    return shooterSubsystem.isShooterWithinAcceptableError() && pivotSubsystem.isPivotWithinAcceptableError();// Math.abs(headingError) < DriveConstants.HEADING_ACCEPTABLE_ERROR_DEGREES && 
+    return shooterSubsystem.isShooterWithinAcceptableError() && pivotSubsystem.isPivotWithinAcceptableError();
   }
 
 }

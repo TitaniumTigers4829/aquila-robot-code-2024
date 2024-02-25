@@ -5,6 +5,7 @@
 package frc.robot.commands.auto;
 
 import com.choreo.lib.Choreo;
+import com.choreo.lib.ChoreoTrajectory;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -17,7 +18,9 @@ import frc.robot.subsystems.vision.VisionSubsystem;
 public class FollowChoreoTrajectory extends DriveCommandBase {
   
   private final DriveSubsystem driveSubsystem;
+  private final ChoreoTrajectory traj;
   private final Command controllerCommand;
+  private final boolean resetOdometry;
 
   /**
    * Follows a trajectory made with Choreo
@@ -25,11 +28,12 @@ public class FollowChoreoTrajectory extends DriveCommandBase {
    * @param visionSubsystem instance of the vision subsystem
    * @param trajectoryName name of the path excluding the .chor and the directory path
    */
-  public FollowChoreoTrajectory(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, String trajectoryName) {
+  public FollowChoreoTrajectory(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, String trajectoryName, boolean resetOdometry) {
     super(driveSubsystem, visionSubsystem);
     this.driveSubsystem = driveSubsystem;
+    traj = Choreo.getTrajectory(trajectoryName);
     controllerCommand = Choreo.choreoSwerveCommand(
-      Choreo.getTrajectory(trajectoryName),
+      traj,
       driveSubsystem::getPose, 
       new PIDController(TrajectoryConstants.REALTIME_TRANSLATION_CONTROLLER_P, 0, 0), 
       new PIDController(TrajectoryConstants.REALTIME_TRANSLATION_CONTROLLER_P, 0, 0), 
@@ -38,12 +42,16 @@ public class FollowChoreoTrajectory extends DriveCommandBase {
       ()->false,
       driveSubsystem
     );
+    this.resetOdometry = resetOdometry;
     addRequirements(visionSubsystem);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    if (resetOdometry) {  
+      driveSubsystem.resetOdometry(traj.getInitialPose());
+    }
     controllerCommand.schedule();
   }
 

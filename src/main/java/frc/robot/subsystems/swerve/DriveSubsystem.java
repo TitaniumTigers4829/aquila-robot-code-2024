@@ -199,9 +199,9 @@ public class DriveSubsystem extends SubsystemBase {
     // Because the field isn't vertically symmetrical, we have the pose coordinates always start from the bottom left
     double rotationDegrees = getHeading();
     if (alliance.isPresent() && alliance.get() == DriverStation.Alliance.Blue) {
-      rotationDegrees += 0;
-    } else {
       rotationDegrees += 180;
+    } else {
+      rotationDegrees += 0;
     }
     return Rotation2d.fromDegrees(rotationDegrees % 360);
   }
@@ -237,7 +237,7 @@ public class DriveSubsystem extends SubsystemBase {
   public void addPoseEstimatorSwerveMeasurement() {
     // TODO: experiment with using updateWithTime()
     odometry.update(
-      getRotation2d(),
+      getFieldRelativeRotation2d(),
       getModulePositions()
     );
   }
@@ -356,8 +356,8 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public void periodic() {
-  SmartDashboard.putNumber("offset", frontRightSwerveModule.getModuleHeading());
-  SmartDashboard.putString("odometry", odometry.getEstimatedPosition().toString());
+    SmarterDashboardRegistry.setPose(getPose());
+    SmartDashboard.putString("odometry", odometry.getEstimatedPosition().toString());
+    SmartDashboard.putNumber("speakerDistance", getPose().getTranslation().getDistance(SmarterDashboardRegistry.getSpeakerPos()));
   }
-  
 }
