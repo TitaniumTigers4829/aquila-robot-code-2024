@@ -95,13 +95,13 @@ public class ShootSpeaker extends DriveCommandBase {
 
     // allow the driver to drive slowly (NOT full speed - will mess up shooter)
     driveSubsystem.drive(
-      leftX.getAsDouble() / 2.0, 
-      leftY.getAsDouble() / 2.0, 
+      deadband(leftY.getAsDouble()) * 0.5, 
+      deadband(leftX.getAsDouble()) * 0.5, 
       turnOutput, 
       isFieldRelative.getAsBoolean()
     );
 
-    shooterSubsystem.setRPM(4000);
+    shooterSubsystem.setRPM(3000);
     pivotSubsystem.setPivotFromDistance(distance);
     // if we are ready to shoot:
     if (isReadyToShoot()) {
@@ -125,4 +125,11 @@ public class ShootSpeaker extends DriveCommandBase {
     return shooterSubsystem.isShooterWithinAcceptableError() && pivotSubsystem.isPivotWithinAcceptableError();
   }
 
+  private double deadband(double val) {
+    if (Math.abs(val) < 0.1) {
+      return 0.0;
+    } else {
+      return val;
+    }
+  } 
 }

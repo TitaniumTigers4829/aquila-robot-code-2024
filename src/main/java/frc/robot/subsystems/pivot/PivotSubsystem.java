@@ -27,7 +27,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.HardwareConstants;
 import frc.robot.Constants.PivotConstants;
-import frc.robot.Constants.ShooterConstants;
 import frc.robot.extras.SingleLinearInterpolator;
 
 public class PivotSubsystem extends SubsystemBase {
@@ -41,8 +40,8 @@ public class PivotSubsystem extends SubsystemBase {
   private final SingleLinearInterpolator speakerAngleLookupValues;
 
   private final StatusSignal<Double> pivotPos;
-  private final StatusSignal<Double> leaderVelocity;
-  private final StatusSignal<Double> followerVelocity;
+  private final StatusSignal<Double> leaderPosition;
+  // private final StatusSignal<Double> leaderError;
   private double pivotTargetAngle;
 
   /** Creates a new PivotSubsystem. */
@@ -84,10 +83,10 @@ public class PivotSubsystem extends SubsystemBase {
     followerPivotMotor.getConfigurator().apply(pivotConfig);
 
     pivotPos = pivotEncoder.getAbsolutePosition();
-    leaderVelocity = leaderPivotMotor.getVelocity();
-    followerVelocity = followerPivotMotor.getVelocity();
+    leaderPosition = leaderPivotMotor.getPosition();
+    // leaderError = leaderPivotMotor.getClosedLoopError();
 
-    BaseStatusSignal.setUpdateFrequencyForAll(HardwareConstants.SIGNAL_FREQUENCY, pivotPos, leaderVelocity, followerVelocity);
+    BaseStatusSignal.setUpdateFrequencyForAll(HardwareConstants.SIGNAL_FREQUENCY, pivotPos, leaderPosition);
     ParentDevice.optimizeBusUtilizationForAll(leaderPivotMotor, followerPivotMotor, pivotEncoder);
   }
 
@@ -147,5 +146,7 @@ public class PivotSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     SmartDashboard.putNumber("pivot pos", pivotPos.refresh().getValueAsDouble());
+    SmartDashboard.putNumber("motor pos", leaderPosition.refresh().getValueAsDouble());
+    // SmartDashboard.putNumber("error", leaderError.refresh().getValueAsDouble());
   }
 }

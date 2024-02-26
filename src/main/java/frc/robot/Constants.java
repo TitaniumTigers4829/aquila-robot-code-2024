@@ -231,10 +231,11 @@ public final class Constants {
     public static final int LEADER_PIVOT_MOTOR_ID = 9;
     public static final int FOLLOWER_PIVOT_MOTOR_ID = 10;
     public static final int PIVOT_ENCODER_ID = 33;
-    public static final double PIVOT_INTAKE_ANGLE = -0.18048828125;
 
-    public static final double MIN_ANGLE = -0.18017578125;
+    public static final double MIN_ANGLE = -0.150380859375;
     public static final double MAX_ANGLE = 0.25732421875;
+
+    public static final double PIVOT_INTAKE_ANGLE = MIN_ANGLE;
 
     public static final double PIVOT_P = 180; // 215
     public static final double PIVOT_I = 0.0000000;
@@ -254,10 +255,10 @@ public final class Constants {
 
     public static double[][] SPEAKER_PIVOT_POSITION = {
       // Distance, Angle (degrees)
-      {1.428135605694207, -0.162841796875 * 360.0}, 
-      {2.17654981003848, -0.12986328125 * 360.0},
-      {3.283281041464165, -0.10365234375 * 360.0},
-      {3.691442931925188, -0.09505625 * 360.0} 
+      {1.428135605694207, -0.152841796875 * 360.0}, 
+      {2.17654981003848, -0.1094283975207 * 360.0},
+      {3.283281041464165, -0.0765234375 * 360.0},
+      {3.691442931925188, -0.07505625 * 360.0}
     };
   }
 
@@ -271,7 +272,7 @@ public final class Constants {
     public static final double LEFT_SHOOT_SPEAKER_RPM = 6000;
     public static final double RIGHT_SHOOT_SPEAKER_RPM = 6000;
 
-    public static final double SHOOT_P = 70.0;
+    public static final double SHOOT_P = 80.0;
     public static final double SHOOT_I = 0.0;
     public static final double SHOOT_D = 0.0;
     public static final double SHOOT_S = 0.36;
@@ -281,7 +282,7 @@ public final class Constants {
     public static final double ROLLER_SPEED = 0.2;
     public static final double SHOOT_AMP_SPEED = 2000;
     
-    public static final double AUTO_SHOOT_P = 0.000;
+    public static final double AUTO_SHOOT_P = 0.0;
     public static final double AUTO_SHOOT_I = 0.0;
     public static final double AUTO_SHOOT_D = 0.0;
     public static Constraints AUTO_SHOOT_CONSTRAINTS = new Constraints(DriveConstants.MAX_ANGULAR_SPEED_RADIANS_PER_SECOND, 5);
@@ -289,12 +290,12 @@ public final class Constants {
   }
 
   public static final class TrajectoryConstants {
-    
+
     public static final double DRIVE_BASE_RADIUS = Math.sqrt(Math.pow(DriveConstants.TRACK_WIDTH, 2) + Math.pow(DriveConstants.WHEEL_BASE, 2));
     public static final double MAX_SPEED = 5.7;
-    public static final double MAX_ACCELERATION = 3.5;
-    public static final double REALTIME_TRANSLATION_CONTROLLER_P = .35;
-    public static final double REALTIME_THETA_CONTROLLER_P = .8;
+    public static final double MAX_ACCELERATION = 3;
+    public static final double REALTIME_TRANSLATION_CONTROLLER_P = 0.5; // 0.35
+    public static final double REALTIME_THETA_CONTROLLER_P = 0; // 0
     public static final double AUTO_SHOOT_HEADING_OFFSET = 2;
 
     public static final double MAX_ANGULAR_SPEED_RADIANS_PER_SECOND = 2;
@@ -306,7 +307,8 @@ public final class Constants {
 
     public static final PIDConstants TRANSLATION_CONSTANTS = new PIDConstants(REALTIME_TRANSLATION_CONTROLLER_P);
     public static final PIDConstants ROTATION_CONSTANTS = new PIDConstants(REALTIME_THETA_CONTROLLER_P);
-  
+    public static final HolonomicPathFollowerConfig CONFIG = new HolonomicPathFollowerConfig(TRANSLATION_CONSTANTS, ROTATION_CONSTANTS, MAX_SPEED, 0.876, new ReplanningConfig());
+
     // Constraint for the motion profiled robot angle controller
     public static final TrapezoidProfile.Constraints THETA_CONTROLLER_CONSTRAINTS =
       new TrapezoidProfile.Constraints(MAX_ANGULAR_SPEED_RADIANS_PER_SECOND, MAX_ANGULAR_SPEED_RADIANS_PER_SECOND_SQUARED);

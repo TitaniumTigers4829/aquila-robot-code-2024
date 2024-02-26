@@ -6,13 +6,22 @@ package frc.robot;
 
 import java.util.function.DoubleSupplier;
 
+import org.opencv.core.RotatedRect;
+
+import com.pathplanner.lib.commands.FollowPathHolonomic;
+import com.pathplanner.lib.path.PathPlannerPath;
+
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.JoystickConstants;
+import frc.robot.Constants.TrajectoryConstants;
 import frc.robot.commands.auto.FollowChoreoTrajectory;
 import frc.robot.commands.drive.Drive;
 import frc.robot.commands.intake.TowerIntake;
@@ -149,12 +158,13 @@ public class RobotContainer {
     // shoot
     operatorBButton.whileTrue(new ShootFromSubwoofer(shooterSubsystem, pivotSubsystem));
     // driverRightTrigger.whileTrue(new ShootFromSubwoofer(shooterSubsystem, pivotSubsystem));
-    driverRightTrigger.whileTrue(new ShootSpeaker(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, driverLeftStickX, driverLeftStickY, driverRightBumper));
+    operatorRightTrigger.whileTrue(new ShootSpeaker(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, driverLeftStickX, driverLeftStickY, driverRightBumper));
 
     // intake
     driverLeftBumper.whileTrue(new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem, false));
-    // operatorLeftBumper.whileTrue(new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem, false));
+    operatorLeftBumper.whileTrue(new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem, false));
     driverLeftTrigger.whileTrue(new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem, true));
+    operatorLeftTrigger.whileTrue(new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem, false));
 
     // Shoot amp
     operatorYButton.whileTrue(new ShootAmp(shooterSubsystem, pivotSubsystem));
@@ -165,11 +175,17 @@ public class RobotContainer {
     // operatorXButton.onTrue(new InstantCommand(() -> pivotSubsystem.setPivot(360.0 * PivotConstants.PIVOT_START_CLIMB_ANGLE)));
     // operatorXButton.onFalse(new InstantCommand(() -> pivotSubsystem.setPivot(360.0 * PivotConstants.PIVOT_END_CLIMB_ANGLE)));
 
-    operatorAButton.whileTrue(new ManualPivot(pivotSubsystem, ()->modifyAxisCubed(operatorRightStickY)));
+    // operatorAButton.whileTrue(new ManualPivot(pivotSubsystem, ()->modifyAxisCubed(operatorRightStickY)));
     // operatorAButton.whileTrue(new ManualShoot(shooterSubsystem,()-> modifyAxisCubed(operatorLeftStickY)));
   }
 
   public Command getAutonomousCommand() {
-    return new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "1mtrfwd", true);
-}
+    // return new ParallelCommandGroup(
+    return new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "blue to note 3", true);
+    //   new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem, false)
+    // );
+    // return null;
+    // driveSubsystem.resetOdometry(new Pose2d(3, 3, Rotation2d.fromDegrees(180)));
+    // return new FollowPathHolonomic(PathPlannerPath.fromPathFile("1mtrfwd2"), driveSubsystem::getPose, driveSubsystem::getRobotRelativeSpeeds, driveSubsystem::drive, TrajectoryConstants.CONFIG, ()->false, driveSubsystem);
+  }
 }
