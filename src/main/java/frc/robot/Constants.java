@@ -279,18 +279,15 @@ public final class Constants {
       RAINBOW (SparkConstants.RAINBOW, 0, 0, 0),
       RED_ALLIANCE (SparkConstants.RED_ALLIANCE_BLINKIN, 255, 0, 0),
       BLUE_ALLIANCE (SparkConstants.OCEAN, 0, 0, 255),
-      //SCORING_CUBE (SparkConstants.HEARTBEAT_1, 255, 255, 0),
-      //SCORING_CONE (SparkConstants.HEARTBEAT_2, 128, 0, 255),
       SHOOT(SparkConstants.BLUE, 0, 0, 255),
       OFF (SparkConstants.BLACK, 0, 0, 0),
-      //CUBE (SparkConstants.PURPLE, 255, 0, 200),
-      //CONE (SparkConstants.YELLOW, 255, 255, 0),
       AUTONOMOUS (SparkConstants.RAINBOW_WAVE, 0, 0, 0),
       LINE_UP (SparkConstants.GREEN, 0, 255, 0),
       FINISH_LINE_UP (SparkConstants.SHOT_WHITE, 255, 255, 255),
       GREEN (SparkConstants.GREEN, 0, 255, 0),
       RED (SparkConstants.RED, 255, 0, 0),
-      INTAKE (SparkConstants.MAGENTA, 255, 0, 255);
+      INTAKE (SparkConstants.RED, 255, 0, 0),
+      NOTE_IN (SparkConstants.GREEN, 0, 255, 0);
 
       private final double sparkValue;
       private final int red, green, blue;
@@ -342,7 +339,7 @@ public final class Constants {
     public static final int FOLLOWER_FLYWHEEL_ID = 6;
     public static final int ROLLER_MOTOR_ID = 2;
 
-    // public static final int SHOOTER_NOTE_SENSOR_ID = 0-9;
+    public static final int SHOOTER_NOTE_SENSOR_ID = 0-9;
 
     public static final double LEFT_SHOOT_SPEAKER_RPM = 0-9;
     public static final double RIGHT_SHOOT_SPEAKER_RPM = 0-9;

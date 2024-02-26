@@ -38,13 +38,15 @@ public class TowerIntake extends Command {
     intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_SPEED);
 
     ledSubsystem.setProcess(LEDProcess.INTAKE);
-    // if(!shooterSubsystem.getSensor()) {
-    //   intakeSubsystem.setIntakeSpeed(0);
-    //   shooterSubsystem.setRollerSpeed(0);
-    // } else {
-    //   shooterSubsystem.setRollerSpeed(ShooterConstants.ROLLER_SPEED);
-    //   intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_MOTOR_SPEED);
-    // }
+
+    if(!shooterSubsystem.getSensor()) {
+      ledSubsystem.setProcess(LEDProcess.NOTE_IN);
+      intakeSubsystem.setIntakeSpeed(0);
+      shooterSubsystem.setRollerSpeed(0);
+    } else {
+      shooterSubsystem.setRollerSpeed(ShooterConstants.ROLLER_SPEED);
+      intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_SPEED);
+    }
   }
   
 
@@ -52,7 +54,7 @@ public class TowerIntake extends Command {
   public void end(boolean interrupted) {
     ledSubsystem.setProcess(LEDProcess.DEFAULT);
     intakeSubsystem.setIntakeSpeed(0);
-    // shooterSubsystem.setRollerSpeed(0);
+    shooterSubsystem.setRollerSpeed(0);
   }
 
   // Returns true when the command should end.
