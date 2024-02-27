@@ -8,6 +8,7 @@ import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants.ShooterConstants;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 
 public class ManualShoot extends Command {
@@ -34,7 +35,7 @@ public class ManualShoot extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    shooterSubsystem.setShooterSpeed(0);
+    shooterSubsystem.setShooterSpeed(ShooterConstants.SHOOTER_NEUTRAL_SPEED);
   }
 
   // Returns true when the command should end.

@@ -88,10 +88,10 @@ public class ShootSpeaker extends DriveCommandBase {
     // heading error (also used in isReadyToShoot())
     headingError = desiredHeading - driveSubsystem.getHeading();
     // get PID output
-    SmartDashboard.putNumber("desired Heading", desiredHeading);
+    SmartDashboard.putNumber("desired Heading", desiredHeading * 180.0 / Math.PI);
     SmartDashboard.putNumber("drivetrain error", headingError);
     SmartDashboard.putNumber("current heading", driveSubsystem.getHeading());
-    double turnOutput = turnController.calculate(headingError, 0); // headingError, 0
+    double turnOutput = turnController.calculate(headingError, 0); 
 
     // allow the driver to drive slowly (NOT full speed - will mess up shooter)
     driveSubsystem.drive(
@@ -101,7 +101,7 @@ public class ShootSpeaker extends DriveCommandBase {
       isFieldRelative.getAsBoolean()
     );
 
-    shooterSubsystem.setRPM(3000);
+    shooterSubsystem.setRPM(ShooterConstants.SHOOT_SPEAKER_RPM);
     pivotSubsystem.setPivotFromDistance(distance);
     // if we are ready to shoot:
     if (isReadyToShoot()) {

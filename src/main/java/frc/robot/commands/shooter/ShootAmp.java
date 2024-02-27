@@ -41,8 +41,8 @@ public class ShootAmp extends Command {
   @Override
   public void end(boolean interrupted) {
     shooterSubsystem.setFlywheelNeutral();
-    // pivotSubsystem.setPivot(PivotConstants.PIVOT_INTAKE_ANGLE*360.0);
-    shooterSubsystem.setRollerSpeed(0);
+    pivotSubsystem.setPivot(PivotConstants.PIVOT_INTAKE_ANGLE);
+    shooterSubsystem.setRollerSpeed(ShooterConstants.ROLLER_NEUTRAL_SPEED);
   }
 
   // Returns true when the command should end.

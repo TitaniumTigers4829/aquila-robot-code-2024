@@ -242,6 +242,8 @@ public final class Constants {
     public static final double PIVOT_D = 0.000000;
     public static final double PIVOT_G = 1.7320;
 
+    public static final double PIVOT_NEUTRAL_SPEED = 0;
+
     public static final double ANGLE_ZERO = -0.0146484375;
     public static final SensorDirectionValue ENCODER_REVERSED = SensorDirectionValue.Clockwise_Positive;
 
@@ -267,10 +269,17 @@ public final class Constants {
     public static final int FOLLOWER_FLYWHEEL_ID = 11;
     public static final int ROLLER_MOTOR_ID = 2;
 
+    public static final double SHOOTER_SUPPLY_LIMIT = 60;
+    public static final double SHOOTER_STATOR_LIMIT = 60;
+    public static final boolean SHOOTER_STATOR_ENABLE = false;
+    public static final boolean SHOOTER_SUPPLY_ENABLE = true;
+
+    public static final double ROLLER_NEUTRAL_SPEED = 0;
+    public static final double SHOOTER_NEUTRAL_SPEED = 0;
+
     public static final int SHOOTER_NOTE_SENSOR_ID = 0;
 
-    public static final double LEFT_SHOOT_SPEAKER_RPM = 6000;
-    public static final double RIGHT_SHOOT_SPEAKER_RPM = 6000;
+    public static final double SHOOT_SPEAKER_RPM = 3000;
 
     public static final double SHOOT_P = 80.0;
     public static final double SHOOT_I = 0.0;

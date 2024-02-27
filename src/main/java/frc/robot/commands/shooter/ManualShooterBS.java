@@ -49,8 +49,8 @@ public class ManualShooterBS extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    shooterSubsystem.setRollerSpeed(0);
-    shooterSubsystem.setShooterSpeed(0);
+    shooterSubsystem.setRollerSpeed(ShooterConstants.ROLLER_NEUTRAL_SPEED);
+    shooterSubsystem.setShooterSpeed(ShooterConstants.SHOOTER_NEUTRAL_SPEED);
     pivotSubsystem.set(0);
   }
 

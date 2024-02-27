@@ -26,7 +26,6 @@ import frc.robot.commands.auto.FollowChoreoTrajectory;
 import frc.robot.commands.drive.Drive;
 import frc.robot.commands.intake.TowerIntake;
 import frc.robot.commands.shooter.ShootAmp;
-import frc.robot.commands.shooter.ShootFromSubwoofer;
 import frc.robot.commands.shooter.ShootSpeaker;
 import frc.robot.extras.SmarterDashboardRegistry;
 import frc.robot.commands.shooter.ManualPivot;

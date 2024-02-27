@@ -86,7 +86,7 @@ public class ShootMode extends DriveCommandBase {
     // arctangent for desired heading
     desiredHeading = Math.atan2((speakerPos.getY() - robotPos.getY()), (speakerPos.getX() - robotPos.getX())) * 180.0 / Math.PI;
     // heading error (also used in isReadyToShoot())
-    headingError = driveSubsystem.getHeading() - desiredHeading;
+    headingError = desiredHeading - driveSubsystem.getHeading();
     // get PID output
     double turnOutput = turnController.calculate(headingError, 0);
 
@@ -98,7 +98,7 @@ public class ShootMode extends DriveCommandBase {
       isFieldRelative.getAsBoolean()
     );
 
-    shooterSubsystem.setRPM(6000);
+    shooterSubsystem.setRPM(ShooterConstants.SHOOT_SPEAKER_RPM);
     pivotSubsystem.setPivotFromDistance(distance);
     // if we are ready to shoot:
     if (isReadyToShoot()) {

@@ -55,10 +55,10 @@ public class ShooterSubsystem extends SubsystemBase {
     shooterConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive; 
     shooterConfig.MotorOutput.DutyCycleNeutralDeadband = HardwareConstants.MIN_FALCON_DEADBAND;
 
-    // shooterConfig.CurrentLimits.StatorCurrentLimit = 60;
-    // shooterConfig.CurrentLimits.StatorCurrentLimitEnable = false;
-    shooterConfig.CurrentLimits.SupplyCurrentLimit = 60;
-    shooterConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+    shooterConfig.CurrentLimits.StatorCurrentLimit = ShooterConstants.SHOOTER_STATOR_LIMIT;
+    shooterConfig.CurrentLimits.StatorCurrentLimitEnable = ShooterConstants.SHOOTER_STATOR_ENABLE;
+    shooterConfig.CurrentLimits.SupplyCurrentLimit = ShooterConstants.SHOOTER_SUPPLY_LIMIT;
+    shooterConfig.CurrentLimits.SupplyCurrentLimitEnable = ShooterConstants.SHOOTER_SUPPLY_ENABLE;
 
     leaderFlywheel.getConfigurator().apply(shooterConfig, HardwareConstants.TIMEOUT_S);
     shooterConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;

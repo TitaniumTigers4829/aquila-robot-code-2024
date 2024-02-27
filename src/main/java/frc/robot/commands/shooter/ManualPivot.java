@@ -9,6 +9,7 @@ import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants.PivotConstants;
 import frc.robot.subsystems.pivot.PivotSubsystem;
 
 public class ManualPivot extends Command {
@@ -35,7 +36,7 @@ public class ManualPivot extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    pivotSubsytem.set(0);
+    pivotSubsytem.set(PivotConstants.PIVOT_NEUTRAL_SPEED);
   }
 
   // Returns true when the command should end.

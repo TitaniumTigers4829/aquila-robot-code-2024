@@ -20,9 +20,9 @@ public class IntakeSubsystem extends SubsystemBase {
   public IntakeSubsystem() {
     intakeMotor = new TalonFX(IntakeConstants.INTAKE_MOTOR_ID);
 
-    TalonFXConfiguration intakeConfiguration = new TalonFXConfiguration();
-    intakeConfiguration.MotorOutput.NeutralMode = NeutralModeValue.Coast;
-    intakeMotor.getConfigurator().apply(intakeConfiguration);
+    TalonFXConfiguration intakeConfigs = new TalonFXConfiguration();
+    intakeConfigs.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    intakeMotor.getConfigurator().apply(intakeConfigs);
 
     BaseStatusSignal.setUpdateFrequencyForAll(HardwareConstants.SIGNAL_FREQUENCY);
 
