@@ -35,7 +35,7 @@ public class PivotSubsystem extends SubsystemBase {
 
   private final TalonFX leaderPivotMotor;
   private final TalonFX followerPivotMotor;
-  private final PositionVoltage mmRequest;
+  private final MotionMagicVoltage mmRequest;
 
   private final SingleLinearInterpolator speakerAngleLookupValues;
 
@@ -49,7 +49,7 @@ public class PivotSubsystem extends SubsystemBase {
     leaderPivotMotor = new TalonFX(PivotConstants.LEADER_PIVOT_MOTOR_ID);
     followerPivotMotor = new TalonFX(PivotConstants.FOLLOWER_PIVOT_MOTOR_ID);
     pivotEncoder = new CANcoder(PivotConstants.PIVOT_ENCODER_ID);
-    mmRequest = new PositionVoltage(0);
+    mmRequest = new MotionMagicVoltage(0);
 
     speakerAngleLookupValues = new SingleLinearInterpolator(PivotConstants.SPEAKER_PIVOT_POSITION);
 
@@ -64,7 +64,7 @@ public class PivotSubsystem extends SubsystemBase {
     pivotConfig.Slot0.kD = PivotConstants.PIVOT_D;
     pivotConfig.Slot0.kG = PivotConstants.PIVOT_G;
 
-    pivotConfig.MotionMagic.MotionMagicAcceleration = 10;
+    pivotConfig.MotionMagic.MotionMagicAcceleration = 4;
     pivotConfig.MotionMagic.MotionMagicCruiseVelocity = 10;
 
     pivotConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
@@ -80,7 +80,7 @@ public class PivotSubsystem extends SubsystemBase {
     pivotConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
     leaderPivotMotor.getConfigurator().apply(pivotConfig, HardwareConstants.TIMEOUT_S);
     pivotConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
-    followerPivotMotor.getConfigurator().apply(pivotConfig);
+    followerPivotMotor.getConfigurator().apply(pivotConfig, HardwareConstants.TIMEOUT_S);
 
     pivotPos = pivotEncoder.getAbsolutePosition();
     leaderPosition = leaderPivotMotor.getPosition();
@@ -129,7 +129,7 @@ public class PivotSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("distance", distance);
     double angle = speakerAngleLookupValues.getLookupValue(distance);
     pivotTargetAngle = angle;
-    setPivot(angle - 0.02);
+    setPivot(angle);
   }
 
   /**
@@ -138,9 +138,9 @@ public class PivotSubsystem extends SubsystemBase {
    */
   public void setPivot(double angle) {
     pivotTargetAngle = angle;
-    SmartDashboard.putNumber("desired pivot angle", pivotTargetAngle / 360.0);
-    leaderPivotMotor.setControl(new PositionVoltage(angle / 360.0));
-    followerPivotMotor.setControl(new PositionVoltage(angle / 360.0));
+    SmartDashboard.putNumber("desired pivot angle", pivotTargetAngle);
+    leaderPivotMotor.setControl(mmRequest.withPosition(angle));
+    followerPivotMotor.setControl(mmRequest.withPosition(angle));
   }
 
   @Override

@@ -29,7 +29,7 @@ public class ShootAmp extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    pivotSubsystem.setPivot(PivotConstants.SHOOT_AMP_ANGLE*360.0);
+    pivotSubsystem.setPivot(PivotConstants.SHOOT_AMP_ANGLE);
     shooterSubsystem.setRPM(ShooterConstants.SHOOT_AMP_SPEED);
 
     if (pivotSubsystem.isPivotWithinAcceptableError() && shooterSubsystem.isShooterWithinAcceptableError()) {

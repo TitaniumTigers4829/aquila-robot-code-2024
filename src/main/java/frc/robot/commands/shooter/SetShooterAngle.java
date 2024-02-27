@@ -30,7 +30,7 @@ public class SetShooterAngle extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    pivotSubsytem.setPivot(-0.03662109375*360.0);
+    pivotSubsytem.setPivot(-0.03662109375);
   }
 
   // Called once the command ends or is interrupted.

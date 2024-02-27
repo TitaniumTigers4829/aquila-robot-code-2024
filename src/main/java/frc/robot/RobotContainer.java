@@ -17,10 +17,12 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.JoystickConstants;
+import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.TrajectoryConstants;
 import frc.robot.commands.auto.FollowChoreoTrajectory;
 import frc.robot.commands.drive.Drive;
@@ -135,16 +137,16 @@ public class RobotContainer {
     POVButton operatorDpadDown = new POVButton(operatorJoystick, 180);
 
     // manual driving
-    Command driveCommand = new Drive(driveSubsystem, visionSubsystem,
-      () -> modifyAxisCubedPolar(driverLeftStickY, driverLeftStickX)[0],
-      () -> modifyAxisCubedPolar(driverLeftStickY, driverLeftStickX)[1],
-      () -> modifyAxisCubed(driverRightStickX),
-      () -> !driverRightBumper.getAsBoolean()
-    );
+    // Command driveCommand = new Drive(driveSubsystem, visionSubsystem,
+    //   () -> modifyAxisCubedPolar(driverLeftStickY, driverLeftStickX)[0],
+    //   () -> modifyAxisCubedPolar(driverLeftStickY, driverLeftStickX)[1],
+    //   () -> modifyAxisCubed(driverRightStickX),
+    //   () -> !driverRightBumper.getAsBoolean()
+    // );
 
-    driveSubsystem.setDefaultCommand(driveCommand);
+    // driveSubsystem.setDefaultCommand(driveCommand);
     
-    driverRightDirectionPad.onTrue(new InstantCommand(driveSubsystem::zeroHeading));
+    // driverRightDirectionPad.onTrue(new InstantCommand(driveSubsystem::zeroHeading));
     // driverRightDirectionPad.onTrue(new InstantCommand(() -> driveSubsystem.resetOdometry(driveSubsystem.getPose())));
   
     // // realtime trajectories
@@ -156,18 +158,23 @@ public class RobotContainer {
     // driverBButton.whileTrue(new DriveToPos(driveSubsystem, visionSubsystem, driverBButton, new Pose2d(SmarterDashboardRegistry.getLoadingStationPos(), driveSubsystem.getRotation2d())));
 
     // shoot
-    operatorBButton.whileTrue(new ShootFromSubwoofer(shooterSubsystem, pivotSubsystem));
+    // operatorBButton.whileTrue(new ShootFromSubwoofer(shooterSubsystem, pivotSubsystem));
     // driverRightTrigger.whileTrue(new ShootFromSubwoofer(shooterSubsystem, pivotSubsystem));
-    operatorRightTrigger.whileTrue(new ShootSpeaker(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, driverLeftStickX, driverLeftStickY, driverRightBumper));
+    // operatorRightTrigger.whileTrue(new ShootSpeaker(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, driverLeftStickX, driverLeftStickY, driverRightBumper));
 
     // intake
-    driverLeftBumper.whileTrue(new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem, false));
-    operatorLeftBumper.whileTrue(new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem, false));
-    driverLeftTrigger.whileTrue(new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem, true));
-    operatorLeftTrigger.whileTrue(new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem, false));
+    driverLeftBumper.whileTrue(new RunCommand(()->pivotSubsystem.setPivot(PivotConstants.PIVOT_INTAKE_ANGLE)).andThen(new InstantCommand(()->pivotSubsystem.set(0))));
+    // driverLeftBumper.onTrue(new InstantCommand(()->intakeSubsystem.setIntakeSpeed(0.7)));
+    // driverLeftBumper.onFalse(new InstantCommand(()->intakeSubsystem.setIntakeSpeed(0)));
+    // driverLeftTrigger.onTrue(new InstantCommand(()->intakeSubsystem.setIntakeSpeed(-0.7)));
+    // driverLeftTrigger.onFalse(new InstantCommand(()->intakeSubsystem.setIntakeSpeed(0)));
+    // driverLeftBumper.whileTrue(new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem, false));
+    // operatorLeftBumper.whileTrue(new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem, false));
+    // driverLeftTrigger.whileTrue(new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem, true));
+    // operatorLeftTrigger.whileTrue(new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem, false));
 
     // Shoot amp
-    operatorYButton.whileTrue(new ShootAmp(shooterSubsystem, pivotSubsystem));
+    // operatorYButton.whileTrue(new ShootAmp(shooterSubsystem, pivotSubsystem));
 
     // shooterSubsystem.setDefaultCommand(new ManualShooterBS(shooterSubsystem, pivotSubsystem, operatorRightStickY, operatorLeftBumper, operatorDpadUp, operatorDpadDown));
 
@@ -175,7 +182,7 @@ public class RobotContainer {
     // operatorXButton.onTrue(new InstantCommand(() -> pivotSubsystem.setPivot(360.0 * PivotConstants.PIVOT_START_CLIMB_ANGLE)));
     // operatorXButton.onFalse(new InstantCommand(() -> pivotSubsystem.setPivot(360.0 * PivotConstants.PIVOT_END_CLIMB_ANGLE)));
 
-    // operatorAButton.whileTrue(new ManualPivot(pivotSubsystem, ()->modifyAxisCubed(operatorRightStickY)));
+    driverAButton.whileTrue(new ManualPivot(pivotSubsystem, ()->modifyAxisCubed(driverRightStickX)));
     // operatorAButton.whileTrue(new ManualShoot(shooterSubsystem,()-> modifyAxisCubed(operatorLeftStickY)));
   }
 

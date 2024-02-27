@@ -29,7 +29,7 @@ public class TowerIntake extends Command {
 
   @Override
   public void execute() {
-    pivotSubsystem.setPivot(PivotConstants.PIVOT_INTAKE_ANGLE * 360.0);
+    pivotSubsystem.setPivot(PivotConstants.PIVOT_INTAKE_ANGLE);
 
     if (pivotSubsystem.isPivotWithinAcceptableError()) {
       if (intakeReverse) {
@@ -52,6 +52,7 @@ public class TowerIntake extends Command {
   public void end(boolean interrupted) {
     intakeSubsystem.setIntakeSpeed(0);
     shooterSubsystem.setRollerSpeed(0);
+    pivotSubsystem.set(0);
   }
 
   // Returns true when the command should end.

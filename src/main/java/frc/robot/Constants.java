@@ -232,17 +232,17 @@ public final class Constants {
     public static final int FOLLOWER_PIVOT_MOTOR_ID = 10;
     public static final int PIVOT_ENCODER_ID = 33;
 
-    public static final double MIN_ANGLE = -0.150380859375;
-    public static final double MAX_ANGLE = 0.25732421875;
+    public static final double MIN_ANGLE = -0.015380859375; //-0.150380859375
+    public static final double MAX_ANGLE = 0.37158203125;
 
-    public static final double PIVOT_INTAKE_ANGLE = MIN_ANGLE;
+    public static final double PIVOT_INTAKE_ANGLE = -0.006591796875;
 
     public static final double PIVOT_P = 180; // 215
-    public static final double PIVOT_I = 0.0000000;
+    public static final double PIVOT_I = 60;
     public static final double PIVOT_D = 0.000000;
     public static final double PIVOT_G = 1.7320;
 
-    public static final double ANGLE_ZERO = 0.125244140625;
+    public static final double ANGLE_ZERO = -0.0146484375; // 0.125244140625
     public static final SensorDirectionValue ENCODER_REVERSED = SensorDirectionValue.Clockwise_Positive;
 
     public static final double SHOOT_AMP_ANGLE = 0.0351464844;
@@ -250,21 +250,21 @@ public final class Constants {
 
     public static final double PIVOT_NEUTRAL_ANGLE = 0;
 
-    public static final double PIVOT_START_CLIMB_ANGLE = 0.25341796875;
-    public static final double PIVOT_END_CLIMB_ANGLE = -0.18017578125;
+    public static final double PIVOT_START_CLIMB_ANGLE = 0;
+    public static final double PIVOT_END_CLIMB_ANGLE = 0;
 
     public static double[][] SPEAKER_PIVOT_POSITION = {
-      // Distance, Angle (degrees)
-      {1.428135605694207, -0.152841796875 * 360.0}, 
-      {2.17654981003848, -0.1094283975207 * 360.0},
-      {3.283281041464165, -0.0765234375 * 360.0},
-      {3.691442931925188, -0.07505625 * 360.0}
+      // Distance, Angle (rotations)
+      {1.428135605694207, -0.01294921875}, 
+      {2.17654981003848, 0.0304641806043},
+      {3.283281041464165, 0.063369140625},
+      {3.691442931925188, 0.064836328125}
     };
   }
 
   public static final class ShooterConstants {
     public static final int LEADER_FLYWHEEL_ID = 4;
-    public static final int FOLLOWER_FLYWHEEL_ID = 6;
+    public static final int FOLLOWER_FLYWHEEL_ID = 11;
     public static final int ROLLER_MOTOR_ID = 2;
 
     public static final int SHOOTER_NOTE_SENSOR_ID = 0;
