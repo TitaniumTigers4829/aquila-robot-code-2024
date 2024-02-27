@@ -216,7 +216,7 @@ public final class Constants {
     public static final double BLUE_SPEAKER_Y = 5.511;
 
     public static final double RED_LOADING_STATION_X = 1.1;
-    public static final double RED_LOADING_STATION_Y = 1.169; // nice
+    public static final double RED_LOADING_STATION_Y = 1.169;
 
     public static final double BLUE_LOADING_STATION_X = 15.41;
     public static final double BLUE_LOADING_STATION_Y = 1.13;
@@ -232,17 +232,17 @@ public final class Constants {
     public static final int FOLLOWER_PIVOT_MOTOR_ID = 10;
     public static final int PIVOT_ENCODER_ID = 33;
 
-    public static final double MIN_ANGLE = -0.015380859375; //-0.150380859375
+    public static final double MIN_ANGLE = -0.015380859375;
     public static final double MAX_ANGLE = 0.37158203125;
 
     public static final double PIVOT_INTAKE_ANGLE = -0.006591796875;
 
-    public static final double PIVOT_P = 180; // 215
+    public static final double PIVOT_P = 180;
     public static final double PIVOT_I = 60;
     public static final double PIVOT_D = 0.000000;
     public static final double PIVOT_G = 1.7320;
 
-    public static final double ANGLE_ZERO = -0.0146484375; // 0.125244140625
+    public static final double ANGLE_ZERO = -0.0146484375;
     public static final SensorDirectionValue ENCODER_REVERSED = SensorDirectionValue.Clockwise_Positive;
 
     public static final double SHOOT_AMP_ANGLE = 0.0351464844;
@@ -319,13 +319,6 @@ public final class Constants {
     public static final double Y_TOLERANCE = 0.02;
     public static final double THETA_TOLERANCE = 1.25;
 
-    public static final HolonomicPathFollowerConfig PATH_FOLLOWER_CONFIG = new HolonomicPathFollowerConfig(
-      TRANSLATION_CONSTANTS, 
-      ROTATION_CONSTANTS, // Rotation constants 
-      DriveConstants.MAX_SPEED_METERS_PER_SECOND, 
-      0.4, // Drive base radius (distance from center to furthest module) 
-      new ReplanningConfig()
-    );
   }
 
   public static final class JoystickConstants {

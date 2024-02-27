@@ -4,6 +4,7 @@ import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.MotionMagicExpoVoltage;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
@@ -32,6 +33,9 @@ public class SwerveModule {
   private final StatusSignal<Double> driveMotorVelocity;
   private final StatusSignal<Double> driveMotorPosition;
   private final StatusSignal<Double> turnEncoderPos;
+
+  private final MotionMagicVoltage turnOutput;
+  private final VelocityVoltage driveOutput;
   
   private String name;
 
@@ -61,6 +65,9 @@ public class SwerveModule {
     turnEncoder = new CANcoder(turnEncoderChannel, HardwareConstants.CANIVORE_CAN_BUS_STRING);
     driveMotor = new TalonFX(driveMotorChannel, HardwareConstants.CANIVORE_CAN_BUS_STRING);
     turnMotor = new TalonFX(turnMotorChannel, HardwareConstants.CANIVORE_CAN_BUS_STRING);
+
+    turnOutput = new MotionMagicVoltage(0);
+    driveOutput = new VelocityVoltage(0);
     
     CANcoderConfiguration turnEncoderConfig = new CANcoderConfiguration();
     turnEncoderConfig.MagnetSensor.MagnetOffset = -angleZero;
@@ -112,10 +119,6 @@ public class SwerveModule {
 
     ParentDevice.optimizeBusUtilizationForAll(turnEncoder, driveMotor, turnMotor);
   }
-   /** Returns the drive velocity in ctre units so no conversions are needed for feedforward. */
-   public double getCharacterizationVelocity() {
-    return driveMotorVelocity.refresh().getValueAsDouble();
-  }
 
   /**
    * Gets the heading of the module
@@ -136,13 +139,6 @@ public class SwerveModule {
     double speedMetersPerSecond = ModuleConstants.DRIVE_TO_METERS_PER_SECOND * driveMotorVelocity.getValueAsDouble();
 
     return new SwerveModuleState(speedMetersPerSecond, Rotation2d.fromRotations(getModuleHeading()));
-  }
-
-  /**sets voltage of drive motor, used to characterize */
-  public void setVoltage(double volts){
-    turnMotor.setControl(new VoltageOut(0));
-    VoltageOut kSOut = new VoltageOut(volts);
-    driveMotor.setControl(kSOut);
   }
 
   /**
@@ -167,27 +163,19 @@ public class SwerveModule {
     // Optimize the reference state to avoid spinning further than 90 degrees
     SwerveModuleState optimizedDesiredState = SwerveModuleState.optimize(desiredState, new Rotation2d(turnRadians));
 
-    // SmartDashboard.putNumber(name + "desired state", optimizedDesiredState.angle.getDegrees());
     if (Math.abs(optimizedDesiredState.speedMetersPerSecond) < 0.01) {
       driveMotor.set(0);
       turnMotor.set(0);
       return;
     }
 
-    // SmartDashboard.putNumber(name + " error", optimizedDesiredState.speedMetersPerSecond - getState().speedMetersPerSecond);
-    // SmartDashboard.putNumber(name + "current speed", driveMotorVelocity.refresh().getValueAsDouble());
-    //     SmartDashboard.putNumber(name + " desired", optimizedDesiredState.speedMetersPerSecond); 
-
     // Converts meters per second to rotations per second
     double desiredDriveRPS = optimizedDesiredState.speedMetersPerSecond 
      * ModuleConstants.DRIVE_GEAR_RATIO / ModuleConstants.WHEEL_CIRCUMFERENCE_METERS;
 
-    VelocityVoltage driveOutput = new VelocityVoltage(desiredDriveRPS); // test this... might not work.
-    driveMotor.setControl(driveOutput);
+    driveMotor.setControl(driveOutput.withVelocity(desiredDriveRPS));
     
-    MotionMagicVoltage turnOutput =
-     new MotionMagicVoltage(optimizedDesiredState.angle.getRotations());
-    turnMotor.setControl(turnOutput);
+    turnMotor.setControl(turnOutput.withPosition(optimizedDesiredState.angle.getRotations()));
 
   }
 

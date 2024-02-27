@@ -6,8 +6,6 @@ package frc.robot;
 
 import java.util.function.DoubleSupplier;
 
-import org.opencv.core.RotatedRect;
-
 import com.pathplanner.lib.commands.FollowPathHolonomic;
 import com.pathplanner.lib.path.PathPlannerPath;
 

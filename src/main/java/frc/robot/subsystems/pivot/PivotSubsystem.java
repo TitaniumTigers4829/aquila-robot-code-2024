@@ -30,18 +30,16 @@ import frc.robot.Constants.PivotConstants;
 import frc.robot.extras.SingleLinearInterpolator;
 
 public class PivotSubsystem extends SubsystemBase {
-  private final CANcoder pivotEncoder;
-  private long counter;
 
+  private final CANcoder pivotEncoder;
   private final TalonFX leaderPivotMotor;
   private final TalonFX followerPivotMotor;
+
   private final MotionMagicVoltage mmRequest;
 
   private final SingleLinearInterpolator speakerAngleLookupValues;
 
   private final StatusSignal<Double> pivotPos;
-  private final StatusSignal<Double> leaderPosition;
-  // private final StatusSignal<Double> leaderError;
   private double pivotTargetAngle;
 
   /** Creates a new PivotSubsystem. */
@@ -49,6 +47,7 @@ public class PivotSubsystem extends SubsystemBase {
     leaderPivotMotor = new TalonFX(PivotConstants.LEADER_PIVOT_MOTOR_ID);
     followerPivotMotor = new TalonFX(PivotConstants.FOLLOWER_PIVOT_MOTOR_ID);
     pivotEncoder = new CANcoder(PivotConstants.PIVOT_ENCODER_ID);
+
     mmRequest = new MotionMagicVoltage(0);
 
     speakerAngleLookupValues = new SingleLinearInterpolator(PivotConstants.SPEAKER_PIVOT_POSITION);
@@ -83,10 +82,8 @@ public class PivotSubsystem extends SubsystemBase {
     followerPivotMotor.getConfigurator().apply(pivotConfig, HardwareConstants.TIMEOUT_S);
 
     pivotPos = pivotEncoder.getAbsolutePosition();
-    leaderPosition = leaderPivotMotor.getPosition();
-    // leaderError = leaderPivotMotor.getClosedLoopError();
 
-    BaseStatusSignal.setUpdateFrequencyForAll(HardwareConstants.SIGNAL_FREQUENCY, pivotPos, leaderPosition);
+    BaseStatusSignal.setUpdateFrequencyForAll(HardwareConstants.SIGNAL_FREQUENCY, pivotPos);
     ParentDevice.optimizeBusUtilizationForAll(leaderPivotMotor, followerPivotMotor, pivotEncoder);
   }
 
@@ -104,10 +101,13 @@ public class PivotSubsystem extends SubsystemBase {
    *@return pivot error between desired and actual state in degrees
   */
   public boolean isPivotWithinAcceptableError() {
-    //return Math.abs(pivotTargetAngle - getRotation()) < PivotConstants.PIVOT_ACCEPTABLE_ERROR;
-    return true;
+    return Math.abs(pivotTargetAngle - getRotation()) < PivotConstants.PIVOT_ACCEPTABLE_ERROR;
   }
 
+  /**
+   * sets the output of the pivot
+   * @param output output value from -1 to 1.
+   */
   public void set(double output) {
     leaderPivotMotor.set(output);
     followerPivotMotor.set(output);
@@ -146,7 +146,5 @@ public class PivotSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     SmartDashboard.putNumber("pivot pos", pivotPos.refresh().getValueAsDouble());
-    SmartDashboard.putNumber("motor pos", leaderPosition.refresh().getValueAsDouble());
-    // SmartDashboard.putNumber("error", leaderError.refresh().getValueAsDouble());
   }
 }

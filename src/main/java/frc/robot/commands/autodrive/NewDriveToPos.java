@@ -55,7 +55,7 @@ public class NewDriveToPos extends DriveCommandBase {
       driveSubsystem::getPose,
       driveSubsystem::getRobotRelativeSpeeds,
       driveSubsystem::drive,
-      TrajectoryConstants.PATH_FOLLOWER_CONFIG,
+      TrajectoryConstants.CONFIG,
       0.0, // distance to travel before rotating
       driveSubsystem
     );

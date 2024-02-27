@@ -119,7 +119,7 @@ public class DriveSubsystem extends SubsystemBase {
       this::resetOdometry, 
       this::getRobotRelativeSpeeds, 
       this::drive, 
-      Constants.TrajectoryConstants.PATH_FOLLOWER_CONFIG,
+      TrajectoryConstants.CONFIG,
       ()->false,
       this
     );
@@ -167,12 +167,6 @@ public class DriveSubsystem extends SubsystemBase {
   /**pid on the chassis rotation, used during auto */
   public void mergeDrive(ChassisSpeeds speeds, double rotationControl) {
     drive(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, rotationControl, false);
-  }
-  
-  
-  /** Returns the average drive velocity in radians/sec. */
-  public double getCharacterizationVelocity() {
-    return frontLeftSwerveModule.getCharacterizationVelocity();
   }
 
   /**
@@ -292,12 +286,6 @@ public class DriveSubsystem extends SubsystemBase {
     return swerveModulePositions;
   }
 
-  public void setCharacterizationVoltage(double volts) {
-    frontLeftSwerveModule.setVoltage(volts);
-    frontRightSwerveModule.setVoltage(volts);
-    rearLeftSwerveModule.setVoltage(volts);
-    rearRightSwerveModule.setVoltage(volts);
-  }
   /**
    * Sets the modules to the specified states.
    * @param desiredStates The desired states for the swerve modules. The
@@ -331,7 +319,7 @@ public class DriveSubsystem extends SubsystemBase {
       this::getPose,
       this::getRobotRelativeSpeeds,
       this::drive,
-      TrajectoryConstants.PATH_FOLLOWER_CONFIG,
+      TrajectoryConstants.CONFIG,
       0.0, // distance to travel before rotating
       this
     );

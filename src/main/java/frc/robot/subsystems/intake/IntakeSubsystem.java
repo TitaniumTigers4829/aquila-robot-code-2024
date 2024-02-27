@@ -34,7 +34,7 @@ public class IntakeSubsystem extends SubsystemBase {
    * @param speed the speed to set
    */
   public void setIntakeSpeed(double speed) {
-    if (speed < 0.01) { 
+    if (Math.abs(speed) < 0.1) { 
       intakeMotor.set(0);
     }
     intakeMotor.set(speed);
