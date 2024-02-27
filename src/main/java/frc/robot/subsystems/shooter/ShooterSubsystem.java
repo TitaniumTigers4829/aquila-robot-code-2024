@@ -97,8 +97,8 @@ public class ShooterSubsystem extends SubsystemBase {
    * @param speed speed (m/s) of the rollers
    */
   public void setRollerSpeed(double speed) {
-    if(speed < ShooterConstants.ROLLER_SPEED) { 
-      rollerMotor.set(-1);
+    if(Math.abs(speed) < 0.1) { 
+      rollerMotor.set(0);
     }
     rollerMotor.set(speed);
   }
