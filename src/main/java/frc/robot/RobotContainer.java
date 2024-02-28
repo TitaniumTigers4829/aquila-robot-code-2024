@@ -179,7 +179,7 @@ public class RobotContainer {
 
   public Command getAutonomousCommand() {
     // return new ParallelCommandGroup(
-    return new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "wheeepsho", true);
+    return new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "blue 4 note start", true);
     //   new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem, false)
     // );
     // return null;
