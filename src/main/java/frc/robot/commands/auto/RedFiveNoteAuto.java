@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.intake.TowerIntake;
 import frc.robot.subsystems.intake.IntakeSubsystem;
+import frc.robot.subsystems.led.LEDSubsystem;
 import frc.robot.subsystems.pivot.PivotSubsystem;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.swerve.DriveSubsystem;
@@ -18,31 +19,31 @@ import frc.robot.subsystems.vision.VisionSubsystem;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class RedFiveNoteAuto extends SequentialCommandGroup {
   /** Creates a new BlueSixNoteAuto. */
-  public RedFiveNoteAuto(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, IntakeSubsystem intakeSubsystem, PivotSubsystem pivotSubsystem, ShooterSubsystem shooterSubsystem) {
+  public RedFiveNoteAuto(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, IntakeSubsystem intakeSubsystem, PivotSubsystem pivotSubsystem, ShooterSubsystem shooterSubsystem, LEDSubsystem ledSubsystem) {
 
     addCommands(
       new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, visionSubsystem, pivotSubsystem),
       new ParallelRaceGroup(
         new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "Red note 3").withTimeout(3),
-        new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem)
+        new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem, ledSubsystem)
       ),
       new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, visionSubsystem, pivotSubsystem),
 
       new ParallelRaceGroup(
         new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "red note #3 to #4"),
-        new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem)
+        new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem, ledSubsystem)
       ),
       new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, visionSubsystem, pivotSubsystem),
 
       new ParallelRaceGroup(
         new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "red note #4 to #5"),
-        new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem)
+        new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem, ledSubsystem)
       ),
       new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, visionSubsystem, pivotSubsystem),
 
       new ParallelRaceGroup(
         new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "red note #5 to #6"),
-        new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem)
+        new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem, ledSubsystem)
       ),
       new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, visionSubsystem, pivotSubsystem)
 
