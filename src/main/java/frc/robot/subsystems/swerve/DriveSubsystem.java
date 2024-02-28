@@ -334,6 +334,13 @@ public class DriveSubsystem extends SubsystemBase {
     return currentPathfindingCommand;
   }
 
+  public void runVolts(double volts) {
+    frontLeftSwerveModule.setVolts(volts);
+    frontRightSwerveModule.setVolts(volts);
+    rearLeftSwerveModule.setVolts(volts);
+    rearRightSwerveModule.setVolts(volts);
+  }
+
   /**
    * cancels the pathfinding command
    */

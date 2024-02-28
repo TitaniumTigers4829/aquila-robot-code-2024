@@ -21,6 +21,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.HardwareConstants;
 import frc.robot.Constants.ModuleConstants;
 
@@ -153,6 +154,11 @@ public class SwerveModule {
     return new SwerveModulePosition(position, rotation);
   }
 
+  public void setVolts(double volts) {
+    turnMotor.setControl(new VoltageOut(0));
+    driveMotor.setControl(new VoltageOut(volts));
+  }
+
   /**
    * Sets the desired state for the module and sends calculated output from controller to the motor.
    * @param desiredState Desired state with speed and angle.
@@ -169,9 +175,16 @@ public class SwerveModule {
       return;
     }
 
+
     // Converts meters per second to rotations per second
     double desiredDriveRPS = optimizedDesiredState.speedMetersPerSecond 
      * ModuleConstants.DRIVE_GEAR_RATIO / ModuleConstants.WHEEL_CIRCUMFERENCE_METERS;
+     
+      SmartDashboard.putNumber("desired speed", desiredDriveRPS);
+
+      SmartDashboard.putNumber("error", desiredDriveRPS - driveMotorVelocity.refresh().getValue());
+
+      SmartDashboard.putNumber("current speed", driveMotorVelocity.refresh().getValue());
 
     driveMotor.setControl(driveOutput.withVelocity(desiredDriveRPS));
     
@@ -192,7 +205,6 @@ public class SwerveModule {
    * This is called in the periodic of DriveSubsystem
    */
   public void periodicFunction() {
-    SmartDashboard.putNumber(name + "offset", turnEncoderPos.refresh().getValueAsDouble());
   }
 
 }

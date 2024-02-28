@@ -134,17 +134,16 @@ public class RobotContainer {
     POVButton operatorDpadDown = new POVButton(operatorJoystick, 180);
 
     // manual driving
-    // Command driveCommand = new Drive(driveSubsystem, visionSubsystem,
-    //   () -> modifyAxisCubedPolar(driverLeftStickY, driverLeftStickX)[0],
-    //   () -> modifyAxisCubedPolar(driverLeftStickY, driverLeftStickX)[1],
-    //   () -> modifyAxisCubed(driverRightStickX),
-    //   () -> !driverRightBumper.getAsBoolean()
-    // );
+    Command driveCommand = new Drive(driveSubsystem, visionSubsystem,
+      () -> modifyAxisCubedPolar(driverLeftStickY, driverLeftStickX)[0],
+      () -> modifyAxisCubedPolar(driverLeftStickY, driverLeftStickX)[1],
+      () -> modifyAxisCubed(driverRightStickX),
+      () -> !driverRightBumper.getAsBoolean()
+    );
 
-    // driveSubsystem.setDefaultCommand(driveCommand);
+    driveSubsystem.setDefaultCommand(driveCommand);
     
-    // driverRightDirectionPad.onTrue(new InstantCommand(driveSubsystem::zeroHeading));
-    // driverRightDirectionPad.onTrue(new InstantCommand(() -> driveSubsystem.resetOdometry(driveSubsystem.getPose())));
+    driverRightDirectionPad.onTrue(new InstantCommand(driveSubsystem::zeroHeading));
   
     // // realtime trajectories
     // // amp
@@ -181,11 +180,12 @@ public class RobotContainer {
 
     driverAButton.whileTrue(new ManualPivot(pivotSubsystem, ()->modifyAxisCubed(driverRightStickX)));
     // operatorAButton.whileTrue(new ManualShoot(shooterSubsystem,()-> modifyAxisCubed(operatorLeftStickY)));
+
   }
 
   public Command getAutonomousCommand() {
     // return new ParallelCommandGroup(
-    return new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "blue to note 3", true);
+    return new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "wheeepsho", true);
     //   new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem, false)
     // );
     // return null;
