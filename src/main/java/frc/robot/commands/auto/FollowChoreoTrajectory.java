@@ -5,9 +5,7 @@
 package frc.robot.commands.auto;
 
 import com.choreo.lib.Choreo;
-import com.choreo.lib.ChoreoControlFunction;
 import com.choreo.lib.ChoreoTrajectory;
-import com.choreo.lib.ChoreoTrajectoryState;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;

@@ -4,7 +4,6 @@
 
 package frc.robot.commands.autodrive;
 
-import java.util.function.BooleanSupplier;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 

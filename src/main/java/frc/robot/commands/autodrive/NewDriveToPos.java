@@ -6,7 +6,6 @@ package frc.robot.commands.autodrive;
 
 import java.util.function.BooleanSupplier;
 
-import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathfindHolonomic;
 
 import edu.wpi.first.math.geometry.Pose2d;

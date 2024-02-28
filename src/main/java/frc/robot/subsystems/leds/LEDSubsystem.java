@@ -4,23 +4,13 @@
 
 package frc.robot.subsystems.leds;
 
-import java.sql.Driver;
-
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.LEDConstants;
-import frc.robot.Constants.LEDConstants.SparkConstants;
-import frc.robot.extras.SmarterDashboardRegistry;
 import frc.robot.Constants.LEDConstants.LEDProcess;
 
 
 public class LEDSubsystem extends SubsystemBase {
-
   private Spark ledSpark;
 
   private LEDProcess process;
