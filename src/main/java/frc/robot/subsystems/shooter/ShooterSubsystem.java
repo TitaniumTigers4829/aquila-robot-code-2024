@@ -44,7 +44,7 @@ public class ShooterSubsystem extends SubsystemBase {
     shooterConfig.Slot0.kV = ShooterConstants.SHOOT_V;
     shooterConfig.Slot0.kA = ShooterConstants.SHOOT_A;
     shooterConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
-    shooterConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive; 
+    shooterConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive; 
     shooterConfig.MotorOutput.DutyCycleNeutralDeadband = HardwareConstants.MIN_FALCON_DEADBAND;
 
     shooterConfig.CurrentLimits.StatorCurrentLimit = ShooterConstants.SHOOTER_STATOR_LIMIT;
@@ -53,7 +53,7 @@ public class ShooterSubsystem extends SubsystemBase {
     shooterConfig.CurrentLimits.SupplyCurrentLimitEnable = ShooterConstants.SHOOTER_SUPPLY_ENABLE;
 
     leaderFlywheel.getConfigurator().apply(shooterConfig, HardwareConstants.TIMEOUT_S);
-    shooterConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+    shooterConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
     followerFlywheel.getConfigurator().apply(shooterConfig, HardwareConstants.TIMEOUT_S);
 
     TalonFXConfiguration rollerConfig = new TalonFXConfiguration();
@@ -108,7 +108,7 @@ public class ShooterSubsystem extends SubsystemBase {
    * @return True if we are within an acceptable range (of rpm) to shoot
    */
   public boolean isShooterWithinAcceptableError() {
-    return Math.abs(shooterTargetRPM - getShooterRPM()) < 200;
+    return Math.abs(shooterTargetRPM - getShooterRPM()) < ShooterConstants.SHOOTER_ACCEPTABLE_RPM_ERROR;
   }
 
   public boolean isReadyToShoot(double headingError) {
@@ -126,7 +126,6 @@ public class ShooterSubsystem extends SubsystemBase {
     // RPM --> RPS
     SmartDashboard.putNumber("targetRPM", desiredRPM);
     SmartDashboard.putNumber("error", desiredRPM - (leaderVelocity.refresh().getValueAsDouble() * 60));
-    SmartDashboard.putNumber("current velocity", (leaderVelocity.refresh().getValueAsDouble() * 60));
 
     leaderFlywheel.setControl(velocityRequest.withVelocity(desiredRPM / 60.0));
     followerFlywheel.setControl(velocityRequest.withVelocity(desiredRPM / 60.0));
@@ -153,6 +152,6 @@ public class ShooterSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     SmartDashboard.putBoolean("sensor", getSensor());
+    SmartDashboard.putNumber("current velocity", (leaderVelocity.refresh().getValueAsDouble() * 60));
   }
-
 }
