@@ -45,10 +45,10 @@ public class PivotSubsystem extends SubsystemBase {
 
     speakerAngleLookupValues = new SingleLinearInterpolator(PivotConstants.SPEAKER_PIVOT_POSITION);
 
-    CANcoderConfiguration turnEncoderConfig = new CANcoderConfiguration();
-    turnEncoderConfig.MagnetSensor.MagnetOffset = -PivotConstants.ANGLE_ZERO;
-    turnEncoderConfig.MagnetSensor.SensorDirection = PivotConstants.ENCODER_REVERSED;
-    pivotEncoder.getConfigurator().apply(turnEncoderConfig, HardwareConstants.TIMEOUT_S);
+    CANcoderConfiguration pivotEncoderConfig = new CANcoderConfiguration();
+    pivotEncoderConfig.MagnetSensor.MagnetOffset = -PivotConstants.ANGLE_ZERO;
+    pivotEncoderConfig.MagnetSensor.SensorDirection = PivotConstants.ENCODER_REVERSED;
+    pivotEncoder.getConfigurator().apply(pivotEncoderConfig, HardwareConstants.TIMEOUT_S);
 
     TalonFXConfiguration pivotConfig = new TalonFXConfiguration();
     pivotConfig.Slot0.kP = PivotConstants.PIVOT_P;
