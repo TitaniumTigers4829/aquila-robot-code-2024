@@ -237,9 +237,9 @@ public final class Constants {
 
     public static final double PIVOT_INTAKE_ANGLE = -0.006591796875;
 
-    public static final double PIVOT_P = 180;
-    public static final double PIVOT_I = 0; // 60
-    public static final double PIVOT_D = 0.000000;
+    public static final double PIVOT_P = 180.0;
+    public static final double PIVOT_I = 0.0; // 60
+    public static final double PIVOT_D = 0.0;
     public static final double PIVOT_G = 1.7320;
 
     public static final double PIVOT_NEUTRAL_SPEED = 0;
@@ -252,17 +252,18 @@ public final class Constants {
 
     public static final double PIVOT_NEUTRAL_ANGLE = 0;
 
+    //TODO: get these!!!!!11
     public static final double PIVOT_START_CLIMB_ANGLE = 0;
     public static final double PIVOT_END_CLIMB_ANGLE = 0;
 
     public static double[][] SPEAKER_PIVOT_POSITION = {
       // Distance, Angle (rotations)
       {1.428135605694207, -0.01294921875},
-      {1.499,0.060302734375}, 
+      {1.499, 0.060302734375}, 
       {2.17654981003848, 0.0304641806043},
       {3.283281041464165, 0.063369140625},
       {3.691442931925188, 0.064836328125},
-      {4.318,0.0925}
+      {4.318, 0.0925}
     };
   }
 
@@ -306,10 +307,10 @@ public final class Constants {
     public static final double DRIVE_BASE_RADIUS = Math.sqrt(Math.pow(DriveConstants.TRACK_WIDTH, 2) + Math.pow(DriveConstants.WHEEL_BASE, 2));
     public static final double MAX_SPEED = 5.7;
     public static final double MAX_ACCELERATION = 3;
-    public static final double REALTIME_TRANSLATION_CONTROLLER_P = 6.5; // 0.35
+    public static final double REALTIME_TRANSLATION_CONTROLLER_P = 6.5; 
     public static final double REALTIME_TRANSLATION_CONTROLLER_I  = 0.000;
     public static final double REALTIME_TRANSLATION_CONTROLLER_D = 0.0;
-    public static final double REALTIME_THETA_CONTROLLER_P = 0.05; // 0
+    public static final double REALTIME_THETA_CONTROLLER_P = 0.05;
     public static final double AUTO_SHOOT_HEADING_OFFSET = 2;
 
     public static final double MAX_ANGULAR_SPEED_RADIANS_PER_SECOND = 2;
