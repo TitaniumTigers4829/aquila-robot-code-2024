@@ -293,7 +293,7 @@ public final class Constants {
     public static final double SHOOT_A = 0.00520;
 
     public static final double ROLLER_SPEED = 0.2;
-    public static final double SHOOT_AMP_SPEED = 2000;
+    public static final double SHOOT_AMP_RPM = 2000;
     
     public static final double AUTO_SHOOT_P = 0.0;
     public static final double AUTO_SHOOT_I = 0.0;

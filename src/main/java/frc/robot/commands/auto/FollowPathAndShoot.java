@@ -92,15 +92,16 @@ public class FollowPathAndShoot extends DriveCommandBase {
     // arctangent for desired heading
     desiredHeading = Math.atan2((speakerPos.getY() - robotPos.getY()), (speakerPos.getX() - robotPos.getX())) * 180.0 / Math.PI;
     // heading error (also used in isReadyToShoot())
-    headingError = driveSubsystem.getHeading() - desiredHeading - headingOffset;
+    headingError = desiredHeading - driveSubsystem.getHeading() - headingOffset;
     // get PID output
     rotationControl = thetaController.calculate(headingError, 0);
 
+    shooterSubsystem.setRPM(ShooterConstants.SHOOT_SPEAKER_RPM);
+    pivotSubsystem.setPivotFromDistance(distance);
 
     // if we are ready to shoot:
     if (shooterSubsystem.isReadyToShoot(headingError) && pivotSubsystem.isPivotWithinAcceptableError()) {
-    shooterSubsystem.setRPM(6000);
-    pivotSubsystem.setPivotFromDistance(distance);
+      shooterSubsystem.setRollerSpeed(ShooterConstants.ROLLER_SPEED);
     }
   }
 
