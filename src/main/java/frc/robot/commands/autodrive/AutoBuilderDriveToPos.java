@@ -15,7 +15,7 @@ import frc.robot.commands.drive.DriveCommandBase;
 import frc.robot.subsystems.swerve.DriveSubsystem;
 import frc.robot.subsystems.vision.VisionSubsystem;
 
-public class NewSquaredDriveToPos extends DriveCommandBase {
+public class AutoBuilderDriveToPos extends DriveCommandBase {
   private final DriveSubsystem driveSubsystem;
   private final VisionSubsystem visionSubsystem;
 
@@ -25,7 +25,7 @@ public class NewSquaredDriveToPos extends DriveCommandBase {
   Command controllerCommand;
 
   /** Creates a new NewDriveToPos. */
-  public NewSquaredDriveToPos(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, double finalX, double finalY, double finalRot) {
+  public AutoBuilderDriveToPos(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, double finalX, double finalY, double finalRot) {
     super(driveSubsystem, visionSubsystem);
     this.driveSubsystem = driveSubsystem;
     this.visionSubsystem = visionSubsystem;
@@ -56,6 +56,11 @@ public class NewSquaredDriveToPos extends DriveCommandBase {
   @Override
   public void execute() {
     super.execute();
+    // TODO: LEDs
+    // if (Math.abs(endPose.getX() - driveSubsystem.getPose().getX()) < TrajectoryConstants.X_TOLERANCE
+    //   && Math.abs(endPose.getY() - driveSubsystem.getPose().getY()) < TrajectoryConstants.Y_TOLERANCE
+    //   && Math.abs(endPose.getRotation().getDegrees() - driveSubsystem.getPose().getRotation().getDegrees()) < TrajectoryConstants.THETA_TOLERANCE) {
+    // }
   }
 
   // Called once the command ends or is interrupted.

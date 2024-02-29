@@ -111,6 +111,11 @@ public class ShooterSubsystem extends SubsystemBase {
     return Math.abs(shooterTargetRPM - getShooterRPM()) < ShooterConstants.SHOOTER_ACCEPTABLE_RPM_ERROR;
   }
 
+  /**
+   * gets if the shooter is within an acceptable rpm of the desired
+   * @param headingError heading error of the drivetrain
+   * @return true if shooter rpm is within and acceptable error
+   */
   public boolean isReadyToShoot(double headingError) {
     return (Math.abs(headingError) < DriveConstants.HEADING_ACCEPTABLE_ERROR_DEGREES) && isShooterWithinAcceptableError();
   }
@@ -122,10 +127,6 @@ public class ShooterSubsystem extends SubsystemBase {
   public void setRPM(double desiredRPM) {
 
     shooterTargetRPM = desiredRPM;
-    // SmartDashboard.putNumber("Shoter desired", shooterTargetRPM);
-    // RPM --> RPS
-    SmartDashboard.putNumber("targetRPM", desiredRPM);
-    SmartDashboard.putNumber("error", desiredRPM - (leaderVelocity.refresh().getValueAsDouble() * 60));
 
     leaderFlywheel.setControl(velocityRequest.withVelocity(desiredRPM / 60.0));
     followerFlywheel.setControl(velocityRequest.withVelocity(desiredRPM / 60.0));

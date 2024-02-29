@@ -68,11 +68,7 @@ public class DriveToPos extends DriveCommandBase {
   public void execute() {
     super.execute();
     
-    // TODO: LEDs
-    // if (Math.abs(endPose.getX() - driveSubsystem.getPose().getX()) < TrajectoryConstants.X_TOLERANCE
-    //   && Math.abs(endPose.getY() - driveSubsystem.getPose().getY()) < TrajectoryConstants.Y_TOLERANCE
-    //   && Math.abs(endPose.getRotation().getDegrees() - driveSubsystem.getPose().getRotation().getDegrees()) < TrajectoryConstants.THETA_TOLERANCE) {
-    // }
+ 
   }
 
   // Called once the command ends or is interrupted.

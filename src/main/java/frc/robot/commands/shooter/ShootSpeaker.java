@@ -32,8 +32,6 @@ public class ShootSpeaker extends DriveCommandBase {
   private final BooleanSupplier isFieldRelative;
 
   private double headingError = 0;
-  private boolean movingNote = false;
-  private int rollerCounter = 0;
 
   private final ProfiledPIDController turnController = new ProfiledPIDController(
     ShooterConstants.AUTO_SHOOT_P,

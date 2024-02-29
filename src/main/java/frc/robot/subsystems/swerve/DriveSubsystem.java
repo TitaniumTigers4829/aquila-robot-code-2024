@@ -125,7 +125,7 @@ public class DriveSubsystem extends SubsystemBase {
     );
   }
 
-  /**gets the chassis speeds */
+  /**gets the chassis speeds*/
   public ChassisSpeeds getRobotRelativeSpeeds() {
     return DriveConstants.DRIVE_KINEMATICS.toChassisSpeeds(
       frontLeftSwerveModule.getState(),
@@ -299,55 +299,6 @@ public class DriveSubsystem extends SubsystemBase {
     frontRightSwerveModule.setDesiredState(desiredStates[1]);
     rearLeftSwerveModule.setDesiredState(desiredStates[2]);
     rearRightSwerveModule.setDesiredState(desiredStates[3]);
-  }
-
-  /**
-   * builds a pathfinding command
-   * @param finalX  final x pos of the path in meters
-   * @param finalY final y pos of the path in meters
-   * @param finalRot final rotation of the path in degrees
-   * @return
-   */
-  public Command buildPathfindingCommand(double finalX, double finalY, double finalRot) {
-    Pose2d endPose = new Pose2d(finalX, finalY, Rotation2d.fromDegrees(finalRot));
-
-    // create the following command
-    currentPathfindingCommand = new PathfindHolonomic(
-      endPose,
-      TrajectoryConstants.PATH_CONSTRAINTS,
-      0.0, // end velocity
-      this::getPose,
-      this::getRobotRelativeSpeeds,
-      this::drive,
-      TrajectoryConstants.CONFIG,
-      0.0, // distance to travel before rotating
-      this
-    );
-
-    return currentPathfindingCommand;
-  }
-
-  /**
-   * gets the pathfinding command
-   */
-  public Command getPathfindingCommand() {
-    return currentPathfindingCommand;
-  }
-
-  public void runVolts(double volts) {
-    frontLeftSwerveModule.setVolts(volts);
-    frontRightSwerveModule.setVolts(volts);
-    rearLeftSwerveModule.setVolts(volts);
-    rearRightSwerveModule.setVolts(volts);
-  }
-
-  /**
-   * cancels the pathfinding command
-   */
-  public void cancelPathfindingCommand() {
-    if (currentPathfindingCommand != null) {
-      currentPathfindingCommand.cancel();
-    }
   }
 
   public void periodic() {
