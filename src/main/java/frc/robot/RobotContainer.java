@@ -22,6 +22,7 @@ import frc.robot.extras.SmarterDashboardRegistry;
 import frc.robot.commands.shooter.ManualPivot;
 import frc.robot.commands.shooter.ShootAmp;
 import frc.robot.commands.shooter.ShootSpeaker;
+import frc.robot.commands.shooter.TestShooter;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.pivot.PivotSubsystem;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
@@ -102,6 +103,8 @@ public class RobotContainer {
     JoystickButton driverAButton = new JoystickButton(driverJoystick, JoystickConstants.A_BUTTON_ID);
     JoystickButton driverBButton = new JoystickButton(driverJoystick, JoystickConstants.B_BUTTON_ID);
 
+    JoystickButton driverYButton = new JoystickButton(driverJoystick, JoystickConstants.Y_BUTTON_ID);
+
     // shoot
     Trigger driverLeftTrigger = new Trigger(() -> (driverJoystick.getRawAxis(JoystickConstants.LEFT_TRIGGER_ID) > 0.2));
     JoystickButton operatorAButton = new JoystickButton(operatorJoystick, JoystickConstants.A_BUTTON_ID);
@@ -150,6 +153,9 @@ public class RobotContainer {
     // shoot
     // operatorBButton.whileTrue(new ShootFromSubwoofer(shooterSubsystem, pivotSubsystem));
     driverRightTrigger.whileTrue(new ShootSpeaker(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, driverLeftStickX, driverLeftStickY, driverRightBumper));
+    //driverRightTrigger.whileTrue(new TestShooter(shooterSubsystem));
+
+    
     // operatorRightTrigger.whileTrue(new ShootSpeaker(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, driverLeftStickX, driverLeftStickY, driverRightBumper));
 
     // intake
@@ -171,6 +177,12 @@ public class RobotContainer {
     // climb
     // operatorXButton.onTrue(new InstantCommand(() -> pivotSubsystem.setPivot(360.0 * PivotConstants.PIVOT_START_CLIMB_ANGLE)));
     // operatorXButton.onFalse(new InstantCommand(() -> pivotSubsystem.setPivot(360.0 * PivotConstants.PIVOT_END_CLIMB_ANGLE)));
+    // driverYButton.onTrue(new InstantCommand(() -> pivotSubsystem.set(-0.25)));
+    // driverYButton.onFalse(new InstantCommand(() -> pivotSubsystem.set(0.0)));
+    // driverBButton.onTrue(new InstantCommand(() -> pivotSubsystem.set(0.25)));
+    // driverBButton.onFalse(new InstantCommand(() -> pivotSubsystem.set(0.0)));
+    
+
 
     operatorAButton.whileTrue(new ManualPivot(pivotSubsystem, ()->modifyAxisCubed(operatorRightStickY)));
     // operatorAButton.whileTrue(new ManualShoot(shooterSubsystem,()-> modifyAxisCubed(operatorLeftStickY)));
@@ -179,7 +191,7 @@ public class RobotContainer {
 
   public Command getAutonomousCommand() {
     // return new ParallelCommandGroup(
-    return new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "blue 4 note start", true);
+    return new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "red 3 note", true);
     //   new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem, false)
     // );
     // return null;

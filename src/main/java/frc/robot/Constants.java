@@ -257,10 +257,12 @@ public final class Constants {
 
     public static double[][] SPEAKER_PIVOT_POSITION = {
       // Distance, Angle (rotations)
-      {1.428135605694207, -0.01294921875}, 
+      {1.428135605694207, -0.01294921875},
+      {1.499,0.060302734375}, 
       {2.17654981003848, 0.0304641806043},
       {3.283281041464165, 0.063369140625},
-      {3.691442931925188, 0.064836328125}
+      {3.691442931925188, 0.064836328125},
+      {4.318,0.0925}
     };
   }
 
@@ -307,7 +309,7 @@ public final class Constants {
     public static final double REALTIME_TRANSLATION_CONTROLLER_P = 6.5; // 0.35
     public static final double REALTIME_TRANSLATION_CONTROLLER_I  = 0.000;
     public static final double REALTIME_TRANSLATION_CONTROLLER_D = 0.0;
-    public static final double REALTIME_THETA_CONTROLLER_P = 0.38; // 0
+    public static final double REALTIME_THETA_CONTROLLER_P = 0.05; // 0
     public static final double AUTO_SHOOT_HEADING_OFFSET = 2;
 
     public static final double MAX_ANGULAR_SPEED_RADIANS_PER_SECOND = 2;

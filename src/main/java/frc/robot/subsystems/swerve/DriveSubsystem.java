@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.TrajectoryConstants;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.extras.SmarterDashboardRegistry;
@@ -352,6 +353,6 @@ public class DriveSubsystem extends SubsystemBase {
   public void periodic() {
     SmarterDashboardRegistry.setPose(getPose());
     SmartDashboard.putString("odometry", odometry.getEstimatedPosition().toString());
-    SmartDashboard.putNumber("speakerDistance", getPose().getTranslation().getDistance(SmarterDashboardRegistry.getSpeakerPos()));
+    SmartDashboard.putNumber("speakerDistance", getPose().getTranslation().getX() - FieldConstants.RED_SPEAKER_X);
   }
 }
