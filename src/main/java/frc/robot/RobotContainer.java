@@ -162,14 +162,14 @@ public class RobotContainer {
     // operatorLeftTrigger.whileTrue(new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem, false));
 
     // Shoot amp
-    driverAButton.whileTrue(new ShootAmp(shooterSubsystem, pivotSubsystem));
+    // driverAButton.whileTrue(new ShootAmp(shooterSubsystem, pivotSubsystem));
 
     // climb
     // operatorXButton.onTrue(new InstantCommand(() -> pivotSubsystem.setPivot(PivotConstants.PIVOT_START_CLIMB_ANGLE)));
     // operatorXButton.onFalse(new InstantCommand(() -> pivotSubsystem.setPivot(PivotConstants.PIVOT_END_CLIMB_ANGLE)));
 
-    operatorAButton.whileTrue(new ManualPivot(pivotSubsystem, ()->modifyAxisCubed(operatorRightStickY)));
-    operatorAButton.whileTrue(new ManualShoot(shooterSubsystem, ()-> modifyAxisCubed(operatorLeftStickY)));
+    // operatorAButton.whileTrue(new ManualPivot(pivotSubsystem, ()->modifyAxisCubed(operatorRightStickY)));
+    // operatorAButton.whileTrue(new ManualShoot(shooterSubsystem, ()-> modifyAxisCubed(operatorLeftStickY)));
 
   }
 

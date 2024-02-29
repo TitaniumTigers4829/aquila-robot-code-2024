@@ -17,6 +17,7 @@ import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.commands.drive.DriveCommandBase;
+import frc.robot.extras.SmarterDashboardRegistry;
 import frc.robot.subsystems.pivot.PivotSubsystem;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.swerve.DriveSubsystem;
@@ -69,7 +70,9 @@ public class ShootSpeaker extends DriveCommandBase {
       //otherwise default to blue alliance
       isRed = true;
     }
+    SmartDashboard.putBoolean("red", isRed);
     speakerPos = isRed ? new Translation2d(FieldConstants.RED_SPEAKER_X, FieldConstants.RED_SPEAKER_Y) : new Translation2d(FieldConstants.BLUE_SPEAKER_X, FieldConstants.BLUE_SPEAKER_Y);
+    SmartDashboard.putString("speakerPos", speakerPos.toString());
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -80,31 +83,32 @@ public class ShootSpeaker extends DriveCommandBase {
     // get positions of various things
     Translation2d robotPos = driveSubsystem.getPose().getTranslation();
     // distance (for speaker lookups)
-    double distance = visionSubsystem.getDistanceFromClosestAprilTag();
+    double distance = robotPos.getDistance(speakerPos);
     // arctangent for desired heading
-    desiredHeading = Math.atan2((speakerPos.getY() - robotPos.getY()), (speakerPos.getX() - robotPos.getX())) * 180.0 / Math.PI;
+    desiredHeading = Math.atan2((robotPos.getY() - speakerPos.getY()), (robotPos.getX() - speakerPos.getX()));
     // heading error (also used in isReadyToShoot())
-    headingError = desiredHeading - driveSubsystem.getHeading();
+    headingError = desiredHeading - driveSubsystem.getRotation2d().getRadians();
     // get PID output
-    SmartDashboard.putNumber("desired Heading", desiredHeading * 180.0 / Math.PI);
+    SmartDashboard.putNumber("desired Heading", desiredHeading);
     SmartDashboard.putNumber("drivetrain error", headingError);
-    SmartDashboard.putNumber("current heading", driveSubsystem.getHeading());
-    double turnOutput = turnController.calculate(headingError, 0); 
+    SmartDashboard.putNumber("current heading", driveSubsystem.getRotation2d().getRadians());
+    double turnOutput = deadband(turnController.calculate(headingError, 0)); 
+    SmartDashboard.putNumber("turnOutput", turnOutput);
 
     // allow the driver to drive slowly (NOT full speed - will mess up shooter)
     driveSubsystem.drive(
       deadband(leftY.getAsDouble()) * 0.5, 
       deadband(leftX.getAsDouble()) * 0.5, 
       turnOutput, 
-      isFieldRelative.getAsBoolean()
+      !isFieldRelative.getAsBoolean()
     );
 
-    shooterSubsystem.setRPM(ShooterConstants.SHOOT_SPEAKER_RPM);
-    pivotSubsystem.setPivotFromDistance(distance);
+    // shooterSubsystem.setRPM(ShooterConstants.SHOOT_SPEAKER_RPM);
+    // pivotSubsystem.setPivotFromDistance(distance);
     // if we are ready to shoot:
-    if (isReadyToShoot()) {
-      shooterSubsystem.setRollerSpeed(ShooterConstants.ROLLER_SPEED);
-    }
+    // if (isReadyToShoot()) {
+    //   shooterSubsystem.setRollerSpeed(ShooterConstants.ROLLER_SPEED);
+    // }
   }
 
   // Called once the command ends or is interrupted.

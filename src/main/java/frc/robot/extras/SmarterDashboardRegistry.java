@@ -44,7 +44,7 @@ public class SmarterDashboardRegistry {
   public static void setPose(Pose2d robotPose) {
     pose[0] = robotPose.getX();
     pose[1] = robotPose.getY();
-    pose[2] = robotPose.getRotation().getDegrees();
+    pose[2] = robotPose.getRotation().getRadians();
     SmartDashboard.putNumberArray("botPose", pose);
   }
 

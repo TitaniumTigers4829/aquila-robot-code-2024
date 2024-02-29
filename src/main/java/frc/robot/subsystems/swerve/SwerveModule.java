@@ -178,11 +178,11 @@ public class SwerveModule {
     double desiredDriveRPS = optimizedDesiredState.speedMetersPerSecond 
      * ModuleConstants.DRIVE_GEAR_RATIO / ModuleConstants.WHEEL_CIRCUMFERENCE_METERS;
      
-      SmartDashboard.putNumber("desired speed", desiredDriveRPS);
+      // SmartDashboard.putNumber("desired speed", desiredDriveRPS);
 
-      SmartDashboard.putNumber("error", desiredDriveRPS - driveMotorVelocity.refresh().getValue());
+      // SmartDashboard.putNumber("error", desiredDriveRPS - driveMotorVelocity.refresh().getValue());
 
-      SmartDashboard.putNumber("current speed", driveMotorVelocity.refresh().getValue());
+      // SmartDashboard.putNumber("current speed", driveMotorVelocity.refresh().getValue());
 
     driveMotor.setControl(driveOutput.withVelocity(desiredDriveRPS));
     
