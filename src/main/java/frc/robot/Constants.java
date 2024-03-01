@@ -228,6 +228,7 @@ public final class Constants {
 
     public static final int OTB_PIVOT_ID = 0-9;
     public static final int OTB_INTAKE_ID = 0-9;
+    public static final double OTB_ROTOR_OFFSET = 0.0;
 
     public static final double MM_ACCELERATION = 4;
     public static final double MM_VELOCITY = 10;
