@@ -15,7 +15,9 @@ import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.JoystickConstants;
 import frc.robot.Constants.PivotConstants;
+import frc.robot.commands.auto.BlueNoteOne;
 import frc.robot.commands.auto.FollowChoreoTrajectory;
+import frc.robot.commands.auto.TrajAndIntake;
 import frc.robot.commands.drive.Drive;
 import frc.robot.commands.intake.TowerIntake;
 import frc.robot.extras.SmarterDashboardRegistry;
@@ -176,6 +178,8 @@ public class RobotContainer {
 
   public Command getAutonomousCommand() {
     // return null;
-    return new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "blue to note 1", true);
+    return new TrajAndIntake(driveSubsystem, visionSubsystem, intakeSubsystem, pivotSubsystem, shooterSubsystem);
+    // return new BlueNoteOne(driveSubsystem, visionSubsystem, intakeSubsystem, shooterSubsystem, pivotSubsystem);
+    // return new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "blue to note 1", true);
   }
 }

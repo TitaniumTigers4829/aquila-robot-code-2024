@@ -59,7 +59,7 @@ public abstract class DriveCommandBase extends Command {
       // Only updates the pose estimator if the limelight pose is new and reliable
       if (currentTimeStampSeconds > lastTimeStampSeconds && ticksAfterSeeing > VisionConstants.FRAMES_BEFORE_ADDING_VISION_MEASUREMENT) {
         Pose2d limelightVisionMeasurement = visionSubsystem.getPoseFromAprilTags();
-        driveSubsystem.addPoseEstimatorVisionMeasurement(limelightVisionMeasurement, Timer.getFPGATimestamp() - visionSubsystem.getLatencySeconds());
+        // driveSubsystem.addPoseEstimatorVisionMeasurement(limelightVisionMeasurement, Timer.getFPGATimestamp() - visionSubsystem.getLatencySeconds());
       }
     } else {
       ticksAfterSeeing = 0;

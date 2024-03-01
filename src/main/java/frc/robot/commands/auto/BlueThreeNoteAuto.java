@@ -13,25 +13,20 @@
 // import frc.robot.subsystems.intake.IntakeSubsystem;
 // import frc.robot.subsystems.pivot.PivotSubsystem;
 // import frc.robot.subsystems.shooter.ShooterSubsystem;
-// import frc.robot.subsystems.swerve.DriveSubsystem;
+// import frc.robot.subsystems.  swerve.DriveSubsystem;
 // import frc.robot.subsystems.vision.VisionSubsystem;
 
 // // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // // information, see:
 // // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-// public class BlueSixNoteAuto extends SequentialCommandGroup {
-//   /** Creates a new BlueSixNoteAuto. */
-//   public BlueSixNoteAuto(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, IntakeSubsystem intakeSubsystem, PivotSubsystem pivotSubsystem, ShooterSubsystem shooterSubsystem) {
+// public class BlueThreeNoteAuto extends SequentialCommandGroup {
+//   /** Creates a new BlueFourNoteAuto. */
+//   public BlueThreeNoteAuto(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, IntakeSubsystem intakeSubsystem, PivotSubsystem pivotSubsystem, ShooterSubsystem shooterSubsystem) {
 
 //     addCommands(
-//       new FollowPathAndShoot(driveSubsystem, visionSubsystem, pivotSubsystem, shooterSubsystem, "blue 4 note start", true).withTimeout(5),
+//       new FollowPathAndShoot(driveSubsystem, visionSubsystem, pivotSubsystem, shooterSubsystem, "blue note #1 auto").withTimeout(5),
 //       new ParallelRaceGroup(
-//         new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "blue note 3 to note 4", false).withTimeout(3),
-//         new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem, false)
-//       ),
-//       new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, visionSubsystem, pivotSubsystem).withTimeout(2),
-//       new ParallelRaceGroup(
-//         new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "blue to note 5", false).withTimeout(3),
+//         new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "blue 1 to 2", true).withTimeout(3),
 //         new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem, false)
 //       ),
 //       new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, visionSubsystem, pivotSubsystem).withTimeout(2)

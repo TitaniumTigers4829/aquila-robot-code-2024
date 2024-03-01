@@ -4,7 +4,14 @@
 
 package frc.robot.commands.auto;
 
+import javax.swing.GroupLayout.SequentialGroup;
+
+import com.choreo.lib.Choreo;
+
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.commands.intake.TowerIntake;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.pivot.PivotSubsystem;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
@@ -17,12 +24,12 @@ import frc.robot.subsystems.vision.VisionSubsystem;
 public class BlueNoteOne extends SequentialCommandGroup {
   /** Creates a new BlueSimpleTwoNote. */
   public BlueNoteOne(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, IntakeSubsystem intakeSubsystem, ShooterSubsystem shooterSubsystem, PivotSubsystem pivotSubsystem) {
-    // Add your commands in the addCommands() call, e.g.
-    // addCommands(new FooCommand(), new BarCommand());
+
     addCommands(
-      new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, visionSubsystem, pivotSubsystem).withTimeout(3),
-      new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "blue to note 1", true).withTimeout(3),
-      new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, visionSubsystem, pivotSubsystem).withTimeout(3)
+      new InstantCommand(()->driveSubsystem.resetOdometry(Choreo.getTrajectory("blue to note 1").getInitialPose())),
+      new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem).withTimeout(3),
+      new TrajAndIntake(driveSubsystem, visionSubsystem, intakeSubsystem, pivotSubsystem, shooterSubsystem)
+      // new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem).withTimeout(3)
     );
   }
 }
