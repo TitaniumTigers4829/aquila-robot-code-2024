@@ -92,11 +92,11 @@ public class SpinUpForSpeaker extends DriveCommandBase {
     // heading error (also used in isReadyToShoot())
     headingError = desiredHeading - driveSubsystem.getRotation2d().getRadians();
     // get PID output
-    SmartDashboard.putNumber("desired Heading", desiredHeading);
-    SmartDashboard.putNumber("drivetrain error", headingError);
-    SmartDashboard.putNumber("current heading", driveSubsystem.getRotation2d().getRadians());
+    // SmartDashboard.putNumber("desired Heading", desiredHeading);
+    // SmartDashboard.putNumber("drivetrain error", headingError);
+    // SmartDashboard.putNumber("current heading", driveSubsystem.getRotation2d().getRadians());
     double turnOutput = deadband(turnController.calculate(headingError, 0)); 
-    SmartDashboard.putNumber("turnOutput", turnOutput);
+    // SmartDashboard.putNumber("turnOutput", turnOutput);
 
     // allow the driver to drive slowly (NOT full speed - will mess up shooter)
     if (actualShootTime.getAsBoolean()) {

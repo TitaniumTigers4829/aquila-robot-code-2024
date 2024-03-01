@@ -37,7 +37,7 @@ public class TowerIntake extends Command {
     pivotSubsystem.setPivot(PivotConstants.PIVOT_INTAKE_ANGLE);
     //intakeSubsystem.setIntakeAngle(IntakeConstants.OTB_INTAKE_ANGLE);
 
-    if (pivotSubsystem.isPivotWithinAcceptableError()) { //intakeSubsystem.isIntakeWithinAcceptableError()
+    if (pivotSubsystem.isPivotWithinAcceptableError()) {
       if (intakeReverse) {
         leds.setProcess(LEDProcess.REVERSE_INTAKE);
         shooterSubsystem.setRollerSpeed(-ShooterConstants.ROLLER_INTAKE_SPEED); //reverse otb?

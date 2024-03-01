@@ -74,9 +74,9 @@ public class ShootSpeaker extends DriveCommandBase {
       //otherwise default to red alliance
       isRed = true;
     }
-    SmartDashboard.putBoolean("red", isRed);
+    // SmartDashboard.putBoolean("red", isRed);
     speakerPos = isRed ? new Translation2d(FieldConstants.RED_SPEAKER_X, FieldConstants.RED_SPEAKER_Y) : new Translation2d(FieldConstants.BLUE_SPEAKER_X, FieldConstants.BLUE_SPEAKER_Y);
-    SmartDashboard.putString("speakerPos", speakerPos.toString());
+    // SmartDashboard.putString("speakerPos", speakerPos.toString());
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -95,7 +95,7 @@ public class ShootSpeaker extends DriveCommandBase {
       desiredHeading = Math.atan2((robotPos.getY() - speakerPos.getY()), (robotPos.getX() - speakerPos.getX()));
     }
     // heading error (also used in isReadyToShoot())
-    headingError = desiredHeading - driveSubsystem.getRotation2d().getRadians();
+    headingError = desiredHeading - driveSubsystem.getPose().getRotation().getRadians();
     // get PID output
     // SmartDashboard.putNumber("desired Heading", desiredHeading);
     // SmartDashboard.putNumber("drivetrain error", headingError);
@@ -120,7 +120,6 @@ public class ShootSpeaker extends DriveCommandBase {
       shooterSubsystem.setRollerSpeed(ShooterConstants.ROLLER_SHOOT_SPEED);
     } else {
       leds.setProcess(LEDProcess.FINISH_LINE_UP);
-      shooterSubsystem.setRollerSpeed(0);
     }
   }
 

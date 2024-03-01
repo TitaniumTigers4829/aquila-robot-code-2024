@@ -223,17 +223,6 @@ public class DriveSubsystem extends SubsystemBase {
     return odometry.getEstimatedPosition();
   }
 
-  // /**
-  //  * Updates the pose estimator with the pose calculated from the swerve
-  //  * modules.
-  //  */
-  // public void addPoseEstimatorSwerveMeasurement() {
-  //   // TODO: experiment with using updateWithTime()
-  //   odometry.update(
-  //     getFieldRelativeRotation2d(),
-  //     getModulePositions()
-  //   );
-  // }
 
   /**
    * Updates the pose estimator with the pose calculated from the swerve

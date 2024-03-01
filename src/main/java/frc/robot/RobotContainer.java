@@ -19,8 +19,10 @@ import frc.robot.Constants.JoystickConstants;
 import frc.robot.Constants.LEDConstants.LEDProcess;
 import frc.robot.Constants.PivotConstants;
 import frc.robot.commands.auto.BlueNoteOne;
+import frc.robot.commands.auto.BlueNoteThree;
 import frc.robot.commands.auto.FollowChoreoTrajectory;
 import frc.robot.commands.auto.Red4NoteAuto;
+import frc.robot.commands.auto.ShootSpeakerAuto;
 import frc.robot.commands.auto.TrajAndIntake;
 import frc.robot.commands.drive.Drive;
 import frc.robot.commands.intake.TowerIntake;
@@ -151,7 +153,8 @@ public class RobotContainer {
 
     driveSubsystem.setDefaultCommand(driveCommand);
     
-    driverRightDirectionPad.onTrue(new InstantCommand(driveSubsystem::zeroHeading));
+    // driverRightDirectionPad.onTrue(new InstantCommand(()-> driveSubsystem.zeroHeading()));
+    driverRightDirectionPad.onTrue(new InstantCommand(() -> driveSubsystem.resetOdometry(new Pose2d(driveSubsystem.getPose().getX(), driveSubsystem.getPose().getY(), new Rotation2d()))));
 
     // // realtime trajectories
     // // amp
@@ -168,6 +171,7 @@ public class RobotContainer {
     operatorRightTrigger.whileTrue(new ShootSpeaker(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, driverLeftStickX, driverLeftStickY, driverRightBumper, ledSubsystem));
     operatorLeftTrigger.whileTrue(new ShootAmp(shooterSubsystem, pivotSubsystem, ledSubsystem));
 
+    driverYButton.whileTrue(new ShootAmp(shooterSubsystem, pivotSubsystem, ledSubsystem));
     // intake
     driverLeftTrigger.whileTrue(new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem, false, ledSubsystem));
     operatorLeftBumper.whileTrue(new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem, false, ledSubsystem));
@@ -188,9 +192,12 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
+    // driveSubsystem.resetOdometry(new Pose2d(1.3980597257614136, 5.493067741394043, new Rotation2d()));
+    // return new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, ledSubsystem);
     // return null;
-    // return new TrajAndIntake(driveSubsystem, visionSubsystem, intakeSubsystem, pivotSubsystem, shooterSubsystem, ledSubsystem);
-    return new BlueNoteOne(driveSubsystem, visionSubsystem, intakeSubsystem, shooterSubsystem, pivotSubsystem, ledSubsystem);
+    // return new TrajAndIntake(driveSubsystem, visionSubsystem, intakeSubsystem, pivotSubsystem, shooterSubsystem, ledSubsystem, "blue to note 1", true);
+    // return new BlueNoteOne(driveSubsystem, visionSubsystem, intakeSubsystem, shooterSubsystem, pivotSubsystem, ledSubsystem);
+    return new BlueNoteThree(driveSubsystem, visionSubsystem, intakeSubsystem, shooterSubsystem, pivotSubsystem, ledSubsystem);
     // return new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "blue to note 1", true);
   }
 }

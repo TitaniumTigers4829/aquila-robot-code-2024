@@ -43,7 +43,7 @@ public class FollowChoreoTrajectory extends DriveCommandBase {
       driveSubsystem
     );
     this.resetOdometry = resetOdometry;
-    addRequirements(visionSubsystem);
+    addRequirements(driveSubsystem, visionSubsystem);
   }
 
   // Called when the command is initially scheduled.
@@ -52,18 +52,20 @@ public class FollowChoreoTrajectory extends DriveCommandBase {
     if (resetOdometry) {  
       driveSubsystem.resetOdometry(traj.getInitialPose());
     }
-    controllerCommand.schedule();
+    controllerCommand.initialize();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     super.execute();
+    controllerCommand.execute();
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    controllerCommand.end(interrupted);
     driveSubsystem.drive(0, 0, 0, false);
   }
 

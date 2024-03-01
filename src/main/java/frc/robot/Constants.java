@@ -266,8 +266,8 @@ public final class Constants {
     public static final double ANGLE_ZERO = -0.0146484375;
     public static final SensorDirectionValue ENCODER_REVERSED = SensorDirectionValue.Clockwise_Positive;
 
-    public static final double SHOOT_AMP_ANGLE = 0.202392578125;
-    public static final double PIVOT_ACCEPTABLE_ERROR = 0.02;
+    public static final double SHOOT_AMP_ANGLE = 0.182392578125;
+    public static final double PIVOT_ACCEPTABLE_ERROR = 0.015;
 
     public static final double PIVOT_NEUTRAL_ANGLE = 0;
 
@@ -277,14 +277,21 @@ public final class Constants {
 
     public static double[][] SPEAKER_PIVOT_POSITION = {
       // Distance, Angle (rotations)
-      {1.428135605694207, -0.01294921875},
-      {1.513626315332695, 0.002985546875},
-      {1.607687212613875, 0.0341796875},
-      {2.199788271106015, 0.055908203125},
-      {2.151161601578627, 0.06494140625},
-      {2.46957842854858, 0.05223515625},
-      {2.470271751032532, 0.0577109375},
-      {2.603608079740319, 0.062255859375},
+      {1.37, 0.0},
+      {1.6, 0.021},
+      {1.8, 0.028},
+      {2.0, 0.04},
+      {2.2, 0.042},
+      {2.4, 0.045},
+      {2.6, 0.0485},
+      {2.7, 0.0515},
+      {2.8, 0.056},
+      {3.0, 0.061},
+      {3.2, 0.063},
+      {3.4, 0.0666},
+      {3.6, 0.0697},
+      {3.8, 0.074},
+      {4.0, 0.077},
     };
   }
 
@@ -329,7 +336,7 @@ public final class Constants {
     public static final double DRIVE_BASE_RADIUS = Math.sqrt(Math.pow(DriveConstants.TRACK_WIDTH, 2) + Math.pow(DriveConstants.WHEEL_BASE, 2));
     public static final double MAX_SPEED = 5.7;
     public static final double MAX_ACCELERATION = 3;
-    public static final double REALTIME_TRANSLATION_CONTROLLER_P = 10; // 6.5
+    public static final double REALTIME_TRANSLATION_CONTROLLER_P = 15; // 6.5
     public static final double REALTIME_TRANSLATION_CONTROLLER_I  = 0.000;
     public static final double REALTIME_TRANSLATION_CONTROLLER_D = 0.0;
     public static final double REALTIME_THETA_CONTROLLER_P = 8;
