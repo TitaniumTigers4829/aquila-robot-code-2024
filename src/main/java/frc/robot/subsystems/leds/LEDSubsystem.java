@@ -33,7 +33,6 @@ public class LEDSubsystem extends SubsystemBase {
   public void periodic() {
     
   }
-
   
   public void setProcess(LEDProcess process) {
     this.process = process;
