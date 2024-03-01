@@ -22,7 +22,7 @@ import frc.robot.Constants.IntakeConstants;
 public class IntakeSubsystem extends SubsystemBase {
   private final TalonFX intakeMotor;
   // private final TalonFX otbPivotMotor; // otb = over the bumper
-  // private final TalonFX otbMotor;
+  // private final TalonFX otbIntakeMotor;
 
   //private final StatusSignal<Double> otbPos;
   // private final StatusSignal<Double> otbPivotVelocity;
@@ -34,8 +34,8 @@ public class IntakeSubsystem extends SubsystemBase {
   /** Creates a new IntakeSubsystem. */
   public IntakeSubsystem() {
     intakeMotor = new TalonFX(IntakeConstants.INTAKE_MOTOR_ID);
-    // otbPivotMotor = new TalonFX(IntakeConstants.INTAKE_PIVOT_MOTOR_ID);
-    // otbMotor = new TalonFX(IntakeConstants.OVERTHEBUMPER_INTAKE_MOTOR_ID);
+    // otbPivotMotor = new TalonFX(IntakeConstants.OTB_PIVOT_ID);
+    // otbIntakeMotor = new TalonFX(IntakeConstants.OTB_INTAKE_ID);
     mmRequest = new MotionMagicVoltage(0);
 
 
@@ -65,14 +65,14 @@ public class IntakeSubsystem extends SubsystemBase {
 
     TalonFXConfiguration intakeConfig = new TalonFXConfiguration();
     intakeConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    // otbMotor.getConfigurator().apply(intakeConfig, HardwareConstants.TIMEOUT_S);
+    // otbIntakeMotor.getConfigurator().apply(intakeConfig, HardwareConstants.TIMEOUT_S);
     intakeMotor.getConfigurator().apply(intakeConfig, HardwareConstants.TIMEOUT_S);
 
     // otbPivotVelocity = otbPivotMotor.getVelocity();
-    // otbVelocity = otbMotor.getVelocity();
+    // otbVelocity = otbIntakeMotor.getVelocity();
 
     BaseStatusSignal.setUpdateFrequencyForAll(HardwareConstants.SIGNAL_FREQUENCY); //, otbVelocity, otbPivotVelocity
-    ParentDevice.optimizeBusUtilizationForAll( intakeMotor); //otbPivotMotor, otbMotor,
+    ParentDevice.optimizeBusUtilizationForAll( intakeMotor); //otbPivotMotor, otbIntakeMotor,
   }
 
   /**
@@ -91,7 +91,7 @@ public class IntakeSubsystem extends SubsystemBase {
   // }
 
   // public void setOTBIntakeSpeed() {
-  //   otbMotor.set(IntakeConstants.INTAKE_OVERTHEBUMPER_SPEED);
+  //   otbIntakeMotor.set(IntakeConstants.INTAKE_OVERTHEBUMPER_SPEED);
   // }
 
   // public double getRotation() {
@@ -99,7 +99,7 @@ public class IntakeSubsystem extends SubsystemBase {
   //   return otbPos.getValueAsDouble();
   // }
   //public boolean isIntakeWithinAcceptableError() {
-  //       return Math.abs(intakeTargetAngle - getRotation()) < IntakeConstants.PIVOT_ACCEPTABLE_ERROR;
+  //       return Math.abs(intakeTargetAngle - getRotation()) < IntakeConstants.INTAKE_PIVOT_ACCEPTABLE_ERROR);
   // }
 
   @Override
