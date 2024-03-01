@@ -88,6 +88,8 @@ public class RobotContainer {
   }
 
   public void teleopInit() {
+    // driveSubsystem.zeroHeading();
+    // driveSubsystem.resetOdometry(driveSubsystem.getPose());
     configureButtonBindings();
   }
 
@@ -139,6 +141,7 @@ public class RobotContainer {
     driveSubsystem.setDefaultCommand(driveCommand);
     
     driverRightDirectionPad.onTrue(new InstantCommand(driveSubsystem::zeroHeading));
+    driverRightDirectionPad.onTrue(new InstantCommand(()->driveSubsystem.resetOdometry(driveSubsystem.getPose())));
 
     // // realtime trajectories
     // // amp
@@ -150,7 +153,7 @@ public class RobotContainer {
 
     // shoot
     driverRightTrigger.whileTrue(new ShootSpeaker(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, driverLeftStickX, driverLeftStickY, driverRightBumper));
-    //driverRightTrigger.whileTrue(new TestShooter(shooterSubsystem));
+    operatorRightBumper.whileTrue(new TestShooter(shooterSubsystem));
 
     // operatorRightTrigger.whileTrue(new ShootSpeaker(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, driverLeftStickX, driverLeftStickY, driverRightBumper));
 
@@ -168,9 +171,7 @@ public class RobotContainer {
     // operatorXButton.onTrue(new InstantCommand(() -> pivotSubsystem.setPivot(PivotConstants.PIVOT_START_CLIMB_ANGLE)));
     // operatorXButton.onFalse(new InstantCommand(() -> pivotSubsystem.setPivot(PivotConstants.PIVOT_END_CLIMB_ANGLE)));
 
-    // operatorAButton.whileTrue(new ManualPivot(pivotSubsystem, ()->modifyAxisCubed(operatorRightStickY)));
-    // operatorAButton.whileTrue(new ManualShoot(shooterSubsystem, ()-> modifyAxisCubed(operatorLeftStickY)));
-
+    operatorAButton.whileTrue(new ManualPivot(pivotSubsystem, ()->modifyAxisCubed(operatorRightStickY)));
   }
 
   public Command getAutonomousCommand() {

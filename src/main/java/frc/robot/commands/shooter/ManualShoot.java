@@ -29,6 +29,7 @@ public class ManualShoot extends Command {
   @Override
   public void execute() {
     shooterSubsystem.setRPM(speed.getAsDouble());
+    
   }
 
   // Called once the command ends or is interrupted.

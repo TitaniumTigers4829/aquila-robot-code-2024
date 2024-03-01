@@ -33,7 +33,7 @@ public class ShootAmp extends Command {
     shooterSubsystem.setRPM(ShooterConstants.SHOOT_AMP_RPM);
 
     if (pivotSubsystem.isPivotWithinAcceptableError() && shooterSubsystem.isShooterWithinAcceptableError()) {
-      shooterSubsystem.setRollerSpeed(ShooterConstants.ROLLER_SPEED);
+      shooterSubsystem.setRollerSpeed(ShooterConstants.ROLLER_SHOOT_SPEED);
     }
   }
 

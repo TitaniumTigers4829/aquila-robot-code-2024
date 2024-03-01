@@ -67,7 +67,7 @@ public class ShootSpeaker extends DriveCommandBase {
       //and if it's red, we're red
       isRed = alliance.get() == Alliance.Red;
     } else {
-      //otherwise default to blue alliance
+      //otherwise default to red alliance
       isRed = true;
     }
     SmartDashboard.putBoolean("red", isRed);
@@ -85,15 +85,20 @@ public class ShootSpeaker extends DriveCommandBase {
     // distance (for speaker lookups)
     double distance = robotPos.getDistance(speakerPos);
     // arctangent for desired heading
-    desiredHeading = Math.atan2((robotPos.getY() - speakerPos.getY()), (robotPos.getX() - speakerPos.getX()));
+    if (isRed) {
+      desiredHeading = Math.atan2((speakerPos.getY() - robotPos.getY()), (speakerPos.getX() - robotPos.getX()));
+    } else {
+      desiredHeading = Math.atan2((robotPos.getY() - speakerPos.getY()), (robotPos.getX() - speakerPos.getX()));
+    }
     // heading error (also used in isReadyToShoot())
     headingError = desiredHeading - driveSubsystem.getRotation2d().getRadians();
     // get PID output
-    SmartDashboard.putNumber("desired Heading", desiredHeading);
-    SmartDashboard.putNumber("drivetrain error", headingError);
-    SmartDashboard.putNumber("current heading", driveSubsystem.getRotation2d().getRadians());
+    // SmartDashboard.putNumber("desired Heading", desiredHeading);
+    // SmartDashboard.putNumber("drivetrain error", headingError);
+    // SmartDashboard.putNumber("current heading", driveSubsystem.getRotation2d().getRadians());
     double turnOutput = deadband(turnController.calculate(headingError, 0)); 
-    SmartDashboard.putNumber("turnOutput", turnOutput);
+    // SmartDashboard.putNumber("turnOutput", turnOutput);
+    SmartDashboard.putNumber("speakerDistance", distance);
 
     // allow the driver to drive slowly (NOT full speed - will mess up shooter)
     driveSubsystem.drive(
@@ -103,12 +108,12 @@ public class ShootSpeaker extends DriveCommandBase {
       !isFieldRelative.getAsBoolean()
     );
 
-    // shooterSubsystem.setRPM(ShooterConstants.SHOOT_SPEAKER_RPM);
-    // pivotSubsystem.setPivotFromDistance(distance);
+    shooterSubsystem.setRPM(ShooterConstants.SHOOT_SPEAKER_RPM);
+    pivotSubsystem.setPivotFromDistance(distance);
     // if we are ready to shoot:
-    // if (isReadyToShoot()) {
-    //   shooterSubsystem.setRollerSpeed(ShooterConstants.ROLLER_SPEED);
-    // }
+    if (isReadyToShoot()) {
+      shooterSubsystem.setRollerSpeed(ShooterConstants.ROLLER_SHOOT_SPEED);
+    }
   }
 
   // Called once the command ends or is interrupted.

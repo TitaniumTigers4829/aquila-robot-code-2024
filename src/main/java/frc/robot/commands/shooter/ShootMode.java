@@ -111,7 +111,7 @@ public class ShootMode extends DriveCommandBase {
       shooterSubsystem.setRollerSpeed(-0.1);
     }
     else if(actualShoot && movingNote) {
-      shooterSubsystem.setRollerSpeed(ShooterConstants.ROLLER_SPEED);
+      shooterSubsystem.setRollerSpeed(ShooterConstants.ROLLER_SHOOT_SPEED);
     }
     else if(!movingNote && actualShoot){
       SmartDashboard.putString("Should Never Reach for Shooting", "Not ready to shoot due to either pivot, shooter, or heading error.");

@@ -238,7 +238,7 @@ public final class Constants {
     public static final double PIVOT_INTAKE_ANGLE = -0.006591796875;
 
     public static final double PIVOT_P = 180.0;
-    public static final double PIVOT_I = 0.0; // 60
+    public static final double PIVOT_I = 0.0; //60.0 
     public static final double PIVOT_D = 0.0;
     public static final double PIVOT_G = 1.7320;
 
@@ -259,11 +259,13 @@ public final class Constants {
     public static double[][] SPEAKER_PIVOT_POSITION = {
       // Distance, Angle (rotations)
       {1.428135605694207, -0.01294921875},
-      {1.499, 0.060302734375}, 
-      {2.17654981003848, 0.0304641806043},
-      {3.283281041464165, 0.063369140625},
-      {3.691442931925188, 0.064836328125},
-      {4.318, 0.0925}
+      {1.513626315332695, 0.002985546875},
+      {1.607687212613875, 0.0341796875},
+      {2.199788271106015, 0.055908203125},
+      {2.151161601578627, 0.06494140625},
+      {2.46957842854858, 0.05223515625},
+      {2.470271751032532, 0.0577109375},
+      {2.603608079740319, 0.062255859375},
     };
   }
 
@@ -293,10 +295,11 @@ public final class Constants {
     public static final double SHOOT_V = 0.12287;
     public static final double SHOOT_A = 0.00520;
 
-    public static final double ROLLER_SPEED = 0.2;
+    public static final double ROLLER_SHOOT_SPEED = 1;
+    public static final double ROLLER_INTAKE_SPEED = 0.2;
     public static final double SHOOT_AMP_RPM = 2000;
     
-    public static final double AUTO_SHOOT_P = 5.0;
+    public static final double AUTO_SHOOT_P = 4.5;
     public static final double AUTO_SHOOT_I = 0.0;
     public static final double AUTO_SHOOT_D = 0.0;
     public static Constraints AUTO_SHOOT_CONSTRAINTS = new Constraints(DriveConstants.MAX_ANGULAR_SPEED_RADIANS_PER_SECOND, 2);

@@ -4,13 +4,21 @@
 
 package frc.robot.commands.shooter;
 
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
+import frc.robot.subsystems.swerve.DriveSubsystem;
 
 public class TestShooter extends Command {
   private ShooterSubsystem shooterSubsystem;
+  private DriveSubsystem driveSubsystem;
+  private Translation2d speakerPos;
+  private boolean isRed = false;
+
   /** Creates a new TestShooter. */
   public TestShooter(ShooterSubsystem shooterSubsystem) {
     this.shooterSubsystem = shooterSubsystem;
@@ -24,10 +32,12 @@ public class TestShooter extends Command {
   @Override
   public void execute () {
 
+    // SmartDashboard.putNumber("SpeakerDist", distance);
+
     shooterSubsystem.setRPM(ShooterConstants.SHOOT_SPEAKER_RPM);
     // if we are ready to shoot:
     if (isReadyToShoot()) {
-      shooterSubsystem.setRollerSpeed(ShooterConstants.ROLLER_SPEED);
+      shooterSubsystem.setRollerSpeed(ShooterConstants.ROLLER_SHOOT_SPEED);
     }
   }
 

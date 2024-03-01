@@ -34,14 +34,14 @@ public class TowerIntake extends Command {
 
     if (pivotSubsystem.isPivotWithinAcceptableError()) { //intakeSubsystem.isIntakeWithinAcceptableError()
       if (intakeReverse) {
-        shooterSubsystem.setRollerSpeed(-ShooterConstants.ROLLER_SPEED); //reverse otb?
+        shooterSubsystem.setRollerSpeed(-ShooterConstants.ROLLER_INTAKE_SPEED); //reverse otb?
         intakeSubsystem.setIntakeSpeed(-IntakeConstants.INTAKE_SPEED);
       } else {
         if (!shooterSubsystem.getSensor()) {
           intakeSubsystem.setIntakeSpeed(0);
           shooterSubsystem.setRollerSpeed(0);
         } else {
-          shooterSubsystem.setRollerSpeed(ShooterConstants.ROLLER_SPEED); //run otb
+          shooterSubsystem.setRollerSpeed(ShooterConstants.ROLLER_INTAKE_SPEED); //run otb
           intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_SPEED);
         }
       }
