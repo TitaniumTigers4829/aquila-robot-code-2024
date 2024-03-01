@@ -210,10 +210,10 @@ public final class Constants {
     public static final Rotation2d BLUE_AMP_ROTATION = Rotation2d.fromDegrees(90);
     
     public static final double RED_SPEAKER_X = 16.511;
-    public static final double RED_SPEAKER_Y = 5.529;
+    public static final double RED_SPEAKER_Y = 5.55;
 
     public static final double BLUE_SPEAKER_X = 0;
-    public static final double BLUE_SPEAKER_Y = 5.511;
+    public static final double BLUE_SPEAKER_Y = 5.55;
 
     public static final double RED_LOADING_STATION_X = 1.1;
     public static final double RED_LOADING_STATION_Y = 1.169;
@@ -248,7 +248,7 @@ public final class Constants {
     public static final SensorDirectionValue ENCODER_REVERSED = SensorDirectionValue.Clockwise_Positive;
 
     public static final double SHOOT_AMP_ANGLE = 0.202392578125;
-    public static final double PIVOT_ACCEPTABLE_ERROR = 0.01;
+    public static final double PIVOT_ACCEPTABLE_ERROR = 0.02;
 
     public static final double PIVOT_NEUTRAL_ANGLE = 0;
 

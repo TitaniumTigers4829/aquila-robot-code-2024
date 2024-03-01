@@ -94,6 +94,7 @@ public class PivotSubsystem extends SubsystemBase {
    *@return pivot error between desired and actual state in degrees
   */
   public boolean isPivotWithinAcceptableError() {
+    SmartDashboard.putNumber("pivot error", Math.abs(pivotTargetAngle - getRotation()));
     return Math.abs(pivotTargetAngle - getRotation()) < PivotConstants.PIVOT_ACCEPTABLE_ERROR;
   }
 
