@@ -105,7 +105,7 @@ public final class Constants {
 
     public static final double MAX_SPEED_METERS_PER_SECOND = 6.95;
 
-    public static final double HEADING_ACCEPTABLE_ERROR_DEGREES = 2;
+    public static final double HEADING_ACCEPTABLE_ERROR_RADIANS = Units.degreesToRadians(2);
   }
   
   public static final class ModuleConstants { 

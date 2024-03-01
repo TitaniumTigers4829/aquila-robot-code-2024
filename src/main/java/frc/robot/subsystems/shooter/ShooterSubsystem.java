@@ -117,7 +117,7 @@ public class ShooterSubsystem extends SubsystemBase {
    * @return true if shooter rpm is within and acceptable error
    */
   public boolean isReadyToShoot(double headingError) {
-    return (Math.abs(headingError) < DriveConstants.HEADING_ACCEPTABLE_ERROR_DEGREES) && isShooterWithinAcceptableError();
+    return (Math.abs(headingError) < DriveConstants.HEADING_ACCEPTABLE_ERROR_RADIANS) && isShooterWithinAcceptableError();
   }
 
   /**
