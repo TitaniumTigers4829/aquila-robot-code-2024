@@ -91,7 +91,7 @@ public class ShootSpeakerAuto extends DriveCommandBase {
     // if we are ready to shoot:
     if (isReadyToShoot()) {
       // do the stuff
-      shooterSubsystem.setRPM(6000);
+      shooterSubsystem.setRPM(ShooterConstants.SHOOT_SPEAKER_RPM);
       pivotSubsystem.setPivotFromDistance(distance);
     }
   }
@@ -109,6 +109,6 @@ public class ShootSpeakerAuto extends DriveCommandBase {
     return false;
   }
   public boolean isReadyToShoot() {
-    return Math.abs(headingError) < DriveConstants.HEADING_ACCEPTABLE_ERROR_DEGREES && shooterSubsystem.isShooterWithinAcceptableError() && pivotSubsystem.isPivotWithinAcceptableError();
+    return Math.abs(headingError) < DriveConstants.HEADING_ACCEPTABLE_ERROR_RADIANS && shooterSubsystem.isShooterWithinAcceptableError() && pivotSubsystem.isPivotWithinAcceptableError();
   }
 }

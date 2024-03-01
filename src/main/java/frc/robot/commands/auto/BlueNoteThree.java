@@ -4,12 +4,9 @@
 
 package frc.robot.commands.auto;
 
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.intake.TowerIntake;
-import frc.robot.commands.shooter.ShootSpeaker;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.pivot.PivotSubsystem;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
@@ -19,19 +16,25 @@ import frc.robot.subsystems.vision.VisionSubsystem;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class BlueSixNoteAuto extends SequentialCommandGroup {
-  /** Creates a new BlueSixNoteAuto. */
-  public BlueSixNoteAuto(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, IntakeSubsystem intakeSubsystem, PivotSubsystem pivotSubsystem, ShooterSubsystem shooterSubsystem) {
-
+public class BlueNoteThree extends SequentialCommandGroup {
+  /** Creates a new BlueSimpleTwoNote. */
+  public BlueNoteThree(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, IntakeSubsystem intakeSubsystem, ShooterSubsystem shooterSubsystem, PivotSubsystem pivotSubsystem) {
+    // Add your commands in the addCommands() call, e.g.
+    // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new FollowPathAndShoot(driveSubsystem, visionSubsystem, pivotSubsystem, shooterSubsystem, "blue 4 note start", true).withTimeout(5),
+      new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, visionSubsystem, pivotSubsystem).withTimeout(2),
       new ParallelRaceGroup(
-        new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "blue note 3 to note 4", false).withTimeout(3),
+        new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "blue to note 1", false).withTimeout(4.2),
         new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem, false)
       ),
       new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, visionSubsystem, pivotSubsystem).withTimeout(2),
       new ParallelRaceGroup(
-        new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "blue to note 5", false).withTimeout(3),
+        new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "blue note 1 to 2", false).withTimeout(4.2),
+        new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem, false)
+      ),
+      new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, visionSubsystem, pivotSubsystem).withTimeout(2),
+      new ParallelRaceGroup(
+        new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "blue note 2 to 3", false).withTimeout(4.2),
         new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem, false)
       ),
       new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, visionSubsystem, pivotSubsystem).withTimeout(2)

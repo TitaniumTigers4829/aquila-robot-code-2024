@@ -4,11 +4,9 @@
 
 package frc.robot.commands.auto;
 
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.intake.TowerIntake;
-import frc.robot.commands.shooter.ShootSpeaker;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.pivot.PivotSubsystem;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
@@ -18,17 +16,19 @@ import frc.robot.subsystems.vision.VisionSubsystem;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class BlueFiveNoteAuto extends SequentialCommandGroup {
-  /** Creates a new BlueSixNoteAuto. */
-  public BlueFiveNoteAuto(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, IntakeSubsystem intakeSubsystem, PivotSubsystem pivotSubsystem, ShooterSubsystem shooterSubsystem) {
-
+public class BlueNoteSeven2 extends SequentialCommandGroup {
+  /** Creates a new BlueNoteEight1. */
+  public BlueNoteSeven2(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, IntakeSubsystem intakeSubsystem, PivotSubsystem pivotSubsystem, ShooterSubsystem shooterSubsystem) {
+    // Add your commands in the addCommands() call, e.g.
+    // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new FollowPathAndShoot(driveSubsystem, visionSubsystem, pivotSubsystem, shooterSubsystem, "blue 4 note start", true),
       new ParallelRaceGroup(
-        new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "blue note 3 to note 4", false),
+        new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "blue note 8", false).withTimeout(4.2),
         new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem, false)
       ),
-      new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, visionSubsystem, pivotSubsystem)
-      );
-    }
+      new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, visionSubsystem, pivotSubsystem).withTimeout(2.5),
+      new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "blue note 9", false).withTimeout(4.2),
+      new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, visionSubsystem, pivotSubsystem).withTimeout(2.5)
+    );
+  }
 }
