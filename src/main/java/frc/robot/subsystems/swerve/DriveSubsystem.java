@@ -24,6 +24,7 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.FieldConstants;
@@ -224,13 +225,25 @@ public class DriveSubsystem extends SubsystemBase {
     return odometry.getEstimatedPosition();
   }
 
+  // /**
+  //  * Updates the pose estimator with the pose calculated from the swerve
+  //  * modules.
+  //  */
+  // public void addPoseEstimatorSwerveMeasurement() {
+  //   // TODO: experiment with using updateWithTime()
+  //   odometry.update(
+  //     getFieldRelativeRotation2d(),
+  //     getModulePositions()
+  //   );
+  // }
+
   /**
    * Updates the pose estimator with the pose calculated from the swerve
    * modules.
    */
   public void addPoseEstimatorSwerveMeasurement() {
-    // TODO: experiment with using updateWithTime()
-    odometry.update(
+    odometry.updateWithTime(
+      Timer.getFPGATimestamp(),
       getFieldRelativeRotation2d(),
       getModulePositions()
     );
@@ -263,8 +276,7 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   /**
-   * Resets the odometry to the specified pose, but keeps the current 
-   * rotation.
+   * Resets the odometry to the specified pose and rotation.
    */
   public void resetOdometry(Pose2d pose) {
     odometry.resetPosition(getRotation2d(), getModulePositions(), pose);

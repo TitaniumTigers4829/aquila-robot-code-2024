@@ -2,6 +2,7 @@ package frc.robot.subsystems.vision;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.Constants.FieldConstants;
@@ -144,6 +145,8 @@ public class VisionSubsystem extends SubsystemBase {
       ? VisionConstants.FRONT_LIMELIGHT_NAME : VisionConstants.BACK_LIMELIGHT_NAME;
     currentlyUsedLimelightResults = currentlyUsedLimelight == VisionConstants.FRONT_LIMELIGHT_NAME
       ? frontLimelightResults : backLimelightResults;
+
+    SmartDashboard.putNumber("distance from apriltag", getDistanceFromClosestAprilTag());
 
     // Turns the limelight LEDs on if they can't see an april tag
     if (!canSeeAprilTags()) {

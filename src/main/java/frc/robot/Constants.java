@@ -172,20 +172,20 @@ public final class Constants {
     // TODO: Actually tune/do math for these
     public static final double[][] ONE_APRIL_TAG_LOOKUP_TABLE = {
       // {distance in meters, x std deviation, y std deviation, r (in degrees) std deviation}
-      {0, 0.01, 0.05, 10},
-      {1.5, 0.01, 0.01, 10},
-      {3, 0.15, 1.2, 30},
-      {4.5, 1.5, 5.0, 90},
-      {6, 3.0, 8.0, 180}
+      {0, 0.02, 0.02, Units.degreesToRadians(2)},
+      {1.5, 0.05, 0.05, Units.degreesToRadians(5)},
+      {3, 1.2, 1.2, Units.degreesToRadians(25)},
+      {4.5, 5.5, 5.5, Units.degreesToRadians(90)},
+      {8, 10.0, 10.0, Units.degreesToRadians(180)}
     };
 
     public static final double[][] TWO_APRIL_TAG_LOOKUP_TABLE = {
       // {distance in meters, x std deviation, y std deviation, r (in degrees) std deviation}
-      {0, 0.01, 0.01, 5},
-      {1.5, 0.02, 0.02, 5},
-      {3, 0.04, 0.04, 15},
-      {4.5, 0.1, 0.1, 30},
-      {6, 0.3, 0.3, 60}
+      {0, 0.01, 0.01, Units.degreesToRadians(0.5)},
+      {1.5, 0.03, 0.03, Units.degreesToRadians(0.7)},
+      {3, 0.06, 0.06, Units.degreesToRadians(4)},
+      {4.5, 0.15, 0.15, Units.degreesToRadians(30)},
+      {8, 1.0, 1.0, Units.degreesToRadians(90)}
     };
   }
 
