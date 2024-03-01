@@ -146,7 +146,7 @@ public class SwerveModule {
    */
   public SwerveModulePosition getPosition() {
     driveMotorPosition.refresh();
-    double position = ModuleConstants.DRIVE_TO_METERS * driveMotorPosition.getValue();
+    double position = ModuleConstants.DRIVE_TO_METERS * -driveMotorPosition.getValue();
     Rotation2d rotation = Rotation2d.fromRotations(getModuleHeading());
     SmartDashboard.putString(name, new SwerveModulePosition(position, rotation).toString());
     return new SwerveModulePosition(position, rotation);

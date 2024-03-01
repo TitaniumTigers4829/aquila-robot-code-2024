@@ -38,7 +38,7 @@ public class FollowChoreoTrajectory extends DriveCommandBase {
       new PIDController(TrajectoryConstants.REALTIME_TRANSLATION_CONTROLLER_P, TrajectoryConstants.REALTIME_TRANSLATION_CONTROLLER_I, TrajectoryConstants.REALTIME_TRANSLATION_CONTROLLER_D), 
       new PIDController(TrajectoryConstants.REALTIME_TRANSLATION_CONTROLLER_P, TrajectoryConstants.REALTIME_TRANSLATION_CONTROLLER_I, TrajectoryConstants.REALTIME_TRANSLATION_CONTROLLER_D), 
       new PIDController(TrajectoryConstants.REALTIME_THETA_CONTROLLER_P, 0, 0), 
-      (ChassisSpeeds speeds) -> driveSubsystem.drive(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, speeds.omegaRadiansPerSecond, false),
+      (ChassisSpeeds speeds) -> driveSubsystem.drive(speeds),
       ()->false,
       driveSubsystem
     );

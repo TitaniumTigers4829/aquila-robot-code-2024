@@ -5,6 +5,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import java.util.Optional;
 
+import javax.management.openmbean.OpenDataException;
+
 import com.kauailabs.navx.frc.AHRS;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathfindHolonomic;
@@ -161,7 +163,7 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public void drive(ChassisSpeeds speeds) {
-    drive(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, speeds.omegaRadiansPerSecond, true);
+    drive(-speeds.vxMetersPerSecond, -speeds.vyMetersPerSecond, -speeds.omegaRadiansPerSecond, false);
   }
 
   /**pid on the chassis rotation, used during auto */
@@ -192,9 +194,7 @@ public class DriveSubsystem extends SubsystemBase {
   public Rotation2d getFieldRelativeRotation2d() {
     // Because the field isn't vertically symmetrical, we have the pose coordinates always start from the bottom left
     double rotationDegrees = getHeading();
-    if (alliance.isPresent() && alliance.get() == DriverStation.Alliance.Blue) {
-      rotationDegrees += 0;
-    } else {
+    if (alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red) {
       rotationDegrees += 180;
     }
     return Rotation2d.fromDegrees(rotationDegrees % 360);
@@ -231,7 +231,7 @@ public class DriveSubsystem extends SubsystemBase {
   public void addPoseEstimatorSwerveMeasurement() {
     // TODO: experiment with using updateWithTime()
     odometry.update(
-      getRotation2d(),
+      getFieldRelativeRotation2d(),
       getModulePositions()
     );
   }

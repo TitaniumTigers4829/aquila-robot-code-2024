@@ -107,7 +107,9 @@ public class SpinUpForSpeaker extends DriveCommandBase {
         !isFieldRelative.getAsBoolean()
       );
       if (isReadyToShoot()) {
-        shooterSubsystem.setRollerSpeed(ShooterConstants.ROLLER_SPEED);
+        shooterSubsystem.setRollerSpeed(ShooterConstants.ROLLER_SHOOT_SPEED);
+      } else {
+        shooterSubsystem.setRollerSpeed(0);
       }
     } else {
       driveSubsystem.drive(

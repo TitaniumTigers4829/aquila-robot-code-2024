@@ -175,6 +175,7 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    return new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "red 3 note", true);
+    // return null;
+    return new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "2mtrfwd", true);
   }
 }
