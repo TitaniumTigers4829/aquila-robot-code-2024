@@ -117,7 +117,7 @@ public final class Constants {
 
     //TODO: Test these:
     public static final double DRIVE_SUPPLY_LIMIT = 40.0;
-    public static final double DRIVE_STATOR_LIMIT = 55.0;
+    public static final double DRIVE_STATOR_LIMIT = 55.0;  // TODO: Do we need this? -Z
 
     public static final double TURN_P = 116.0; 
     public static final double TURN_I = 0.0;
@@ -310,10 +310,10 @@ public final class Constants {
     public static final double DRIVE_BASE_RADIUS = Math.sqrt(Math.pow(DriveConstants.TRACK_WIDTH, 2) + Math.pow(DriveConstants.WHEEL_BASE, 2));
     public static final double MAX_SPEED = 5.7;
     public static final double MAX_ACCELERATION = 3;
-    public static final double REALTIME_TRANSLATION_CONTROLLER_P = 6.5; // 6.5
+    public static final double REALTIME_TRANSLATION_CONTROLLER_P = 10; // 6.5
     public static final double REALTIME_TRANSLATION_CONTROLLER_I  = 0.000;
     public static final double REALTIME_TRANSLATION_CONTROLLER_D = 0.0;
-    public static final double REALTIME_THETA_CONTROLLER_P = 0.05;
+    public static final double REALTIME_THETA_CONTROLLER_P = 8;
     public static final double AUTO_SHOOT_HEADING_OFFSET = 2;
 
     public static final double MAX_ANGULAR_SPEED_RADIANS_PER_SECOND = 2;

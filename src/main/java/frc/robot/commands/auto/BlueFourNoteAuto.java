@@ -19,7 +19,7 @@ public class BlueFourNoteAuto extends SequentialCommandGroup {
   public BlueFourNoteAuto(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, IntakeSubsystem intakeSubsystem, PivotSubsystem pivotSubsystem, ShooterSubsystem shooterSubsystem) {
 
     addCommands(
-      new FollowPathAndShoot(driveSubsystem, visionSubsystem, pivotSubsystem, shooterSubsystem, "blue 4 note start", true).withTimeout(5)
+      new FollowPathAndShoot(driveSubsystem, visionSubsystem, pivotSubsystem, shooterSubsystem, "blue 4 note start", true)
     );
   }
 }

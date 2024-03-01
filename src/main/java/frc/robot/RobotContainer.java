@@ -19,6 +19,7 @@ import frc.robot.Constants.JoystickConstants;
 import frc.robot.Constants.PivotConstants;
 import frc.robot.commands.auto.BlueNoteOne;
 import frc.robot.commands.auto.FollowChoreoTrajectory;
+import frc.robot.commands.auto.Red4NoteAuto;
 import frc.robot.commands.auto.TrajAndIntake;
 import frc.robot.commands.drive.Drive;
 import frc.robot.commands.intake.TowerIntake;
@@ -177,7 +178,8 @@ public class RobotContainer {
 
     operatorAButton.whileTrue(new ManualPivot(pivotSubsystem, ()->modifyAxisCubed(operatorRightStickY)));
   
-    operatorXButton.onTrue(new InstantCommand(() -> pivotSubsystem.setPivot(PivotConstants.PIVOT_START_CLIMB_ANGLE)));
+    operatorXButton.onTrue(new Red4NoteAuto(driveSubsystem, visionSubsystem, intakeSubsystem, pivotSubsystem, shooterSubsystem));
+    // operatorXButton.onTrue(new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "blue to note 1", true));
   }
 
   public Command getAutonomousCommand() {
