@@ -7,17 +7,21 @@ package frc.robot.commands.shooter;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.ShooterConstants;
+import frc.robot.Constants.LEDConstants.LEDProcess;
+import frc.robot.subsystems.leds.LEDSubsystem;
 import frc.robot.subsystems.pivot.PivotSubsystem;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 
 public class ShootAmp extends Command {
   private final ShooterSubsystem shooterSubsystem;
   private final PivotSubsystem pivotSubsystem;
+  private final LEDSubsystem leds;
   
   /** Creates a new ShootSpeaker. */
-  public ShootAmp(ShooterSubsystem shooterSubsystem, PivotSubsystem pivotSubsystem) {
+  public ShootAmp(ShooterSubsystem shooterSubsystem, PivotSubsystem pivotSubsystem, LEDSubsystem leds) {
     this.shooterSubsystem = shooterSubsystem;
     this.pivotSubsystem = pivotSubsystem;
+    this.leds = leds;
     addRequirements(shooterSubsystem);
   }
 
@@ -34,12 +38,17 @@ public class ShootAmp extends Command {
 
     if (pivotSubsystem.isPivotWithinAcceptableError() && shooterSubsystem.isShooterWithinAcceptableError()) {
       shooterSubsystem.setRollerSpeed(ShooterConstants.ROLLER_SHOOT_SPEED);
+      leds.setProcess(LEDProcess.SHOOT);
+    } else {
+      leds.setProcess(LEDProcess.FINISH_LINE_UP);
+      shooterSubsystem.setRollerSpeed(0);
     }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    leds.setProcess(LEDProcess.DEFAULT);
     shooterSubsystem.setFlywheelNeutral();
     pivotSubsystem.setPivot(PivotConstants.PIVOT_INTAKE_ANGLE);
     shooterSubsystem.setRollerSpeed(ShooterConstants.ROLLER_NEUTRAL_SPEED);

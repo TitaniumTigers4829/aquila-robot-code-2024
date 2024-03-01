@@ -16,8 +16,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.ShooterConstants;
+import frc.robot.Constants.LEDConstants.LEDProcess;
 import frc.robot.commands.drive.DriveCommandBase;
 import frc.robot.extras.SmarterDashboardRegistry;
+import frc.robot.subsystems.leds.LEDSubsystem;
 import frc.robot.subsystems.pivot.PivotSubsystem;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.swerve.DriveSubsystem;
@@ -28,6 +30,7 @@ public class ShootSpeakerAuto extends DriveCommandBase {
   private final ShooterSubsystem shooterSubsystem;
   private final PivotSubsystem pivotSubsystem;
   private final VisionSubsystem visionSubsystem;
+  private final LEDSubsystem ledSubsystem;
 
   private double headingError = 0;
 
@@ -43,12 +46,13 @@ public class ShootSpeakerAuto extends DriveCommandBase {
   private Translation2d speakerPos;
   
   /** Creates a new ShootSpeaker. */
-  public ShootSpeakerAuto(DriveSubsystem driveSubsystem, ShooterSubsystem shooterSubsystem, PivotSubsystem pivotSubsystem, VisionSubsystem visionSubsystem) {
+  public ShootSpeakerAuto(DriveSubsystem driveSubsystem, ShooterSubsystem shooterSubsystem, PivotSubsystem pivotSubsystem, VisionSubsystem visionSubsystem, LEDSubsystem ledSubsystem) {
     super(driveSubsystem, visionSubsystem);
     this.driveSubsystem = driveSubsystem;
     this.shooterSubsystem = shooterSubsystem;
     this.pivotSubsystem = pivotSubsystem;
     this.visionSubsystem = visionSubsystem;
+    this.ledSubsystem = ledSubsystem;
     addRequirements(shooterSubsystem, driveSubsystem, pivotSubsystem);
   }
 
@@ -100,6 +104,10 @@ public class ShootSpeakerAuto extends DriveCommandBase {
     // if we are ready to shoot:
     if (isReadyToShoot()) {
       shooterSubsystem.setRollerSpeed(ShooterConstants.ROLLER_SHOOT_SPEED);
+      ledSubsystem.setProcess(LEDProcess.SHOOT);
+    } else {
+      ledSubsystem.setProcess(LEDProcess.FINISH_LINE_UP);
+      shooterSubsystem.setRollerSpeed(0);
     }
   }
 
@@ -109,6 +117,7 @@ public class ShootSpeakerAuto extends DriveCommandBase {
     shooterSubsystem.setFlywheelNeutral();
     shooterSubsystem.setRollerSpeed(0);
     pivotSubsystem.setPivot(PivotConstants.PIVOT_INTAKE_ANGLE);
+    ledSubsystem.setProcess(LEDProcess.DEFAULT);
   }
 
   // Returns true when the command should end.

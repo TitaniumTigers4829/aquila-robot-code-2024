@@ -5,11 +5,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import java.util.Optional;
 
-import javax.management.openmbean.OpenDataException;
-
 import com.kauailabs.navx.frc.AHRS;
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.commands.PathfindHolonomic;
 
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.Vector;
@@ -215,6 +212,7 @@ public class DriveSubsystem extends SubsystemBase {
    */
   public void zeroHeading() {
     gyro.reset();
+    gyroOffset = 0;
   }
 
   /**

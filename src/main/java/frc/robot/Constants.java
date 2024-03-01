@@ -229,7 +229,7 @@ public final class Constants {
     public static final int OTB_PIVOT_ID = 0-9;
     public static final int OTB_INTAKE_ID = 0-9;
 
-    public static final double MM_ACCELERATION - 4;
+    public static final double MM_ACCELERATION = 4;
     public static final double MM_VELOCITY = 10;
 
     public static final double INTAKE_P = 0-9;
@@ -381,11 +381,7 @@ public final class Constants {
 
   
   public static final class LEDConstants {
-
-    public static final int LEDPort = 0;
-    public static final double ANIMATION_SPEED = 24; // "frames" per second
-
-    public static final double ALLIANCE_ANIMATION_STRENGTH = 0.2; // 0-1
+    public static final int LED_PORT = 0;
 
     public static final class SparkConstants {
       // This subclass contains the constant values for the LED patterns.
@@ -440,19 +436,17 @@ public final class Constants {
       RAINBOW (SparkConstants.RAINBOW, 0, 0, 0),
       RED_ALLIANCE (SparkConstants.RED_ALLIANCE_BLINKIN, 255, 0, 0),
       BLUE_ALLIANCE (SparkConstants.OCEAN, 0, 0, 255),
-      SCORING_CUBE (SparkConstants.HEARTBEAT_1, 255, 255, 0),
-      SCORING_CONE (SparkConstants.HEARTBEAT_2, 128, 0, 255),
+      SHOOT(SparkConstants.WHITE, 0, 0, 255),
       OFF (SparkConstants.BLACK, 0, 0, 0),
-      CUBE (SparkConstants.PURPLE, 255, 0, 200),
-      CONE (SparkConstants.YELLOW, 255, 255, 0),
-      AUTONOMOUS (SparkConstants.RAINBOW_WAVE, 0, 0, 0),
-      LINE_UP (SparkConstants.GREEN, 0, 255, 0),
-      FINISH_LINE_UP (SparkConstants.SHOT_WHITE, 255, 255, 255),
+      AUTONOMOUS (SparkConstants.SHOT_WHITE, 0, 0, 0),
+      REVERSE_INTAKE (SparkConstants.RED, 0, 255, 0),
+      FINISH_LINE_UP (SparkConstants.GREEN, 255, 255, 255),
       GREEN (SparkConstants.GREEN, 0, 255, 0),
       RED (SparkConstants.RED, 255, 0, 0),
-      INTAKE (SparkConstants.MAGENTA, 255, 0, 255);
+      INTAKE (SparkConstants.RED, 255, 0, 0),
+      NOTE_IN (SparkConstants.GREEN, 0, 255, 0);
 
-      private final double sparkValue;
+      public final double sparkValue;
       private final int red, green, blue;
       LEDProcess(double sparkValue, int red, int green, int blue) {
         this.sparkValue = sparkValue;
@@ -460,10 +454,6 @@ public final class Constants {
         this.green = green;
         this.blue = blue;
       }
-      public double getSparkValue() { return sparkValue; }
-      public int getRed() { return red; }
-      public int getGreen() { return green; }
-      public int getBlue() { return blue; }
     }
   }
 }

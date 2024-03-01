@@ -14,10 +14,12 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.FieldConstants;
+import frc.robot.Constants.LEDConstants.LEDProcess;
 import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.commands.drive.DriveCommandBase;
 import frc.robot.extras.SmarterDashboardRegistry;
+import frc.robot.subsystems.leds.LEDSubsystem;
 import frc.robot.subsystems.pivot.PivotSubsystem;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.swerve.DriveSubsystem;
@@ -28,6 +30,7 @@ public class ShootSpeaker extends DriveCommandBase {
   private final ShooterSubsystem shooterSubsystem;
   private final PivotSubsystem pivotSubsystem;
   private final VisionSubsystem visionSubsystem;
+  private final LEDSubsystem leds;
 
   private final DoubleSupplier leftX, leftY;
   private final BooleanSupplier isFieldRelative;
@@ -46,7 +49,7 @@ public class ShootSpeaker extends DriveCommandBase {
   private Translation2d speakerPos;
   
   /** Creates a new ShootSpeaker. */
-  public ShootSpeaker(DriveSubsystem driveSubsystem, ShooterSubsystem shooterSubsystem, PivotSubsystem pivotSubsystem, VisionSubsystem visionSubsystem, DoubleSupplier leftX, DoubleSupplier leftY, BooleanSupplier isFieldRelative) {
+  public ShootSpeaker(DriveSubsystem driveSubsystem, ShooterSubsystem shooterSubsystem, PivotSubsystem pivotSubsystem, VisionSubsystem visionSubsystem, DoubleSupplier leftX, DoubleSupplier leftY, BooleanSupplier isFieldRelative, LEDSubsystem leds) {
     super(driveSubsystem, visionSubsystem);
     this.driveSubsystem = driveSubsystem;
     this.shooterSubsystem = shooterSubsystem;
@@ -55,6 +58,7 @@ public class ShootSpeaker extends DriveCommandBase {
     this.leftX = leftX;
     this.leftY = leftY;
     this.isFieldRelative = isFieldRelative;
+    this.leds = leds;
     addRequirements(shooterSubsystem, driveSubsystem, pivotSubsystem);
   }
 
@@ -112,7 +116,11 @@ public class ShootSpeaker extends DriveCommandBase {
     pivotSubsystem.setPivotFromDistance(distance);
     // if we are ready to shoot:
     if (isReadyToShoot()) {
+      leds.setProcess(LEDProcess.SHOOT);
       shooterSubsystem.setRollerSpeed(ShooterConstants.ROLLER_SHOOT_SPEED);
+    } else {
+      leds.setProcess(LEDProcess.FINISH_LINE_UP);
+      shooterSubsystem.setRollerSpeed(0);
     }
   }
 
@@ -122,6 +130,7 @@ public class ShootSpeaker extends DriveCommandBase {
     shooterSubsystem.setFlywheelNeutral();
     shooterSubsystem.setRollerSpeed(0);
     pivotSubsystem.setPivot(PivotConstants.PIVOT_INTAKE_ANGLE);
+    leds.setProcess(LEDProcess.DEFAULT);
   }
 
   // Returns true when the command should end.
