@@ -75,20 +75,33 @@ public class IntakeSubsystem extends SubsystemBase {
     intakeMotor.set(speed);
   }
 
+  /**
+   * sets the over-the-bumper intake pivot angle
+   */
   public void setIntakeAngle(double angle) {
     // intakeTargetAngle = angle;
     // otbPivotMotor.setControl(mmRequest.withPosition(angle));
   }
 
+  /**
+   * sets the over-the-bumper intake speed
+   */
   public void setOTBIntakeSpeed() {
     // otbIntakeMotor.set(IntakeConstants.INTAKE_OVERTHEBUMPER_SPEED);
   }
 
+  /**
+   * gets the relative rotation of the pivot motor
+   */
   public double getRotation() {
     // otbPos.refresh();
     // return otbPos.getValueAsDouble();
     return 0.0;
   }
+
+  /**
+   * gets if otb intake pivot is within acceptable error
+   */
   public boolean isIntakeWithinAcceptableError() {
     // return Math.abs(intakeTargetAngle - getRotation()) < IntakeConstants.INTAKE_PIVOT_ACCEPTABLE_ERROR;
     return true;

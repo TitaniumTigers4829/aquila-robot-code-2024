@@ -30,8 +30,8 @@ public class BlueNoteOne extends SequentialCommandGroup {
     addCommands(
       // new InstantCommand(()->driveSubsystem.resetOdometry(Choreo.getTrajectory("blue to note 1").getInitialPose())),
       // new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, leds).withTimeout(3),
-      new ShootSpeaker(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, ()->0, ()->0, ()->false, leds).withTimeout(3),
-      new TrajAndIntake(driveSubsystem, visionSubsystem, intakeSubsystem, pivotSubsystem, shooterSubsystem, leds, "blue to note 1", true)
+      new ShootSpeaker(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, ()->0, ()->0, ()->false, leds).withTimeout(3)
+      
       // new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, leds).withTimeout(3)
     );
   }
