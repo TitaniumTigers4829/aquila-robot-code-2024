@@ -148,7 +148,7 @@ public class DriveSubsystem extends SubsystemBase {
     // SmartDashboard.putBoolean("isFieldRelative", fieldRelative);
     SwerveModuleState[] swerveModuleStates = DriveConstants.DRIVE_KINEMATICS.toSwerveModuleStates(
       fieldRelative
-      ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rotationSpeed, getRotation2d())
+      ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rotationSpeed, getFieldRelativeRotation2d())
       : new ChassisSpeeds(xSpeed, ySpeed, rotationSpeed));
     SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, DriveConstants.MAX_SPEED_METERS_PER_SECOND);
     
@@ -189,11 +189,15 @@ public class DriveSubsystem extends SubsystemBase {
    */
   public Rotation2d getFieldRelativeRotation2d() {
     // Because the field isn't vertically symmetrical, we have the pose coordinates always start from the bottom left
-    double rotationDegrees = getHeading();
-    if (alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red) {
-      rotationDegrees += 180;
-    }
+    double rotationDegrees = getHeading() + getAllianceAngleOffset();
     return Rotation2d.fromDegrees(rotationDegrees % 360);
+  }
+
+  /**
+   * Returns 0 degrees if the robot is on the blue alliance, 180 if on the red alliance.
+   */
+  public double getAllianceAngleOffset() {
+    return alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red ? 180 : 0;
   }
   
   /**
@@ -229,7 +233,7 @@ public class DriveSubsystem extends SubsystemBase {
   public void addPoseEstimatorSwerveMeasurement() {
     odometry.updateWithTime(
       Timer.getFPGATimestamp(),
-      getFieldRelativeRotation2d(),
+      getRotation2d(),
       getModulePositions()
     );
   }

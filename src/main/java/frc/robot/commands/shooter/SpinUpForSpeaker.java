@@ -118,9 +118,6 @@ public class SpinUpForSpeaker extends DriveCommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    shooterSubsystem.setFlywheelNeutral();
-    shooterSubsystem.setRollerSpeed(0);
-    pivotSubsystem.setPivot(PivotConstants.PIVOT_INTAKE_ANGLE);
     leds.setProcess(LEDProcess.DEFAULT);
   }
 
