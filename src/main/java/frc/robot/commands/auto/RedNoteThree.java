@@ -27,7 +27,7 @@ public class RedNoteThree extends SequentialCommandGroup {
         new InstantCommand(()->driveSubsystem.resetOdometry(Choreo.getTrajectory("red to note 1").getInitialPose())),
         new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, leds).withTimeout(2.0),
         new ParallelCommandGroup(
-            new FollowChoreoTraject/ory(driveSubsystem, visionSubsystem, "red to note 1", true),
+            new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "red to note 1", true),
             new IntakeAuto(intakeSubsystem, pivotSubsystem, shooterSubsystem, leds)
         ),
         new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, leds).withTimeout(2.0),

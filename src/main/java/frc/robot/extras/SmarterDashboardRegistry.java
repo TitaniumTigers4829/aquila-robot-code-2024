@@ -48,6 +48,10 @@ public class SmarterDashboardRegistry {
     SmartDashboard.putNumberArray("botPose", pose);
   }
 
+  public static boolean isRed() {
+    return isRed;
+  }
+
   public static void setLimelightPose(Pose2d limelightPose) {
     limelight_pose[0] = limelightPose.getX();
     limelight_pose[1] = limelightPose.getY();
