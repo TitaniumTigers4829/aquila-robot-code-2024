@@ -12,6 +12,7 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.LEDConstants.LEDProcess;
 import frc.robot.Constants.PivotConstants;
@@ -99,8 +100,8 @@ public class SpinUpForSpeaker extends DriveCommandBase {
 
     // allow the driver to drive slowly (NOT full speed - will mess up shooter)
     driveSubsystem.drive(
-      deadband(leftY.getAsDouble()), 
-      deadband(leftX.getAsDouble()), 
+      deadband(leftY.getAsDouble()) * DriveConstants.MAX_SPEED_METERS_PER_SECOND, 
+      deadband(leftX.getAsDouble()) * DriveConstants.MAX_SPEED_METERS_PER_SECOND, 
       turnOutput, 
       !isFieldRelative.getAsBoolean()
     );
