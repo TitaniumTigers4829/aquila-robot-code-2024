@@ -25,22 +25,22 @@ public class BlueNoteThree extends SequentialCommandGroup {
   public BlueNoteThree(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, IntakeSubsystem intakeSubsystem, ShooterSubsystem shooterSubsystem, PivotSubsystem pivotSubsystem, LEDSubsystem leds) {
     addCommands(
         new InstantCommand(()->driveSubsystem.resetOdometry(Choreo.getTrajectory("blue to note 1").getInitialPose())),
-        new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, leds, intakeSubsystem).withTimeout(2.0),
+        new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, leds).withTimeout(2.0),
         new ParallelCommandGroup(
             new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "blue to note 1", true),
             new IntakeAuto(intakeSubsystem, pivotSubsystem, shooterSubsystem, leds)
         ),
-        new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, leds, intakeSubsystem).withTimeout(2.0),
+        new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, leds).withTimeout(2.0),
         new ParallelCommandGroup(
             new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "blue note 1 to 2", false),
             new IntakeAuto(intakeSubsystem, pivotSubsystem, shooterSubsystem, leds)
         ),
-        new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, leds, intakeSubsystem).withTimeout(2.0),
+        new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, leds).withTimeout(2.0),
         new ParallelCommandGroup(
             new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "blue note 2 to 3", false),
             new IntakeAuto(intakeSubsystem, pivotSubsystem, shooterSubsystem, leds)
         ),
-        new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, leds, intakeSubsystem).withTimeout(2.0)
+        new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, leds).withTimeout(2.0)
     );
   }
 }
