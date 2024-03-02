@@ -1,6 +1,5 @@
 package frc.robot.subsystems.swerve;
 
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import java.util.Optional;
@@ -24,7 +23,6 @@ import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.DriveConstants;
-import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.TrajectoryConstants;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.extras.SmarterDashboardRegistry;
@@ -46,7 +44,7 @@ public class DriveSubsystem extends SubsystemBase {
 
   private final AHRS gyro;
   private final SwerveDrivePoseEstimator odometry;
-  private Command currentPathfindingCommand;
+  // private Command currentPathfindingCommand;
 
   private final Optional<DriverStation.Alliance> alliance;
 

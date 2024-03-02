@@ -18,7 +18,6 @@ import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.commands.drive.DriveCommandBase;
-import frc.robot.extras.SmarterDashboardRegistry;
 import frc.robot.subsystems.pivot.PivotSubsystem;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.swerve.DriveSubsystem;

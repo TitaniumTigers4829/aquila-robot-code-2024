@@ -5,22 +5,16 @@
 package frc.robot.commands.auto;
 
 import java.util.Optional;
-import java.util.function.BooleanSupplier;
-import java.util.function.DoubleSupplier;
-
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.FieldConstants;
-import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.LEDConstants.LEDProcess;
 import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.commands.drive.DriveCommandBase;
-import frc.robot.extras.SmarterDashboardRegistry;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.leds.LEDSubsystem;
 import frc.robot.subsystems.pivot.PivotSubsystem;
@@ -33,7 +27,6 @@ public class ShootSpeakerAuto extends DriveCommandBase {
   private final ShooterSubsystem shooterSubsystem;
   private final PivotSubsystem pivotSubsystem;
   private final VisionSubsystem visionSubsystem;
-  private final IntakeSubsystem intakeSubsystem;
   private final LEDSubsystem leds;
 
   private double headingError = 0;
@@ -50,14 +43,13 @@ public class ShootSpeakerAuto extends DriveCommandBase {
   private Translation2d speakerPos;
   
   /** Creates a new ShootSpeaker. */
-  public ShootSpeakerAuto(DriveSubsystem driveSubsystem, ShooterSubsystem shooterSubsystem, PivotSubsystem pivotSubsystem, VisionSubsystem visionSubsystem, LEDSubsystem leds, IntakeSubsystem intakeSubsystem) {
+  public ShootSpeakerAuto(DriveSubsystem driveSubsystem, ShooterSubsystem shooterSubsystem, PivotSubsystem pivotSubsystem, VisionSubsystem visionSubsystem, LEDSubsystem leds) {
     super(driveSubsystem, visionSubsystem);
     this.driveSubsystem = driveSubsystem;
     this.shooterSubsystem = shooterSubsystem;
     this.pivotSubsystem = pivotSubsystem;
     this.visionSubsystem = visionSubsystem;
     this.leds = leds;
-    this.intakeSubsystem = intakeSubsystem;
     addRequirements(shooterSubsystem, driveSubsystem, pivotSubsystem);
   }
 

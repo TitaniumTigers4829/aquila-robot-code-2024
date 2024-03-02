@@ -6,10 +6,7 @@ package frc.robot.commands.shooter;
 
 import java.util.function.DoubleSupplier;
 
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.PivotConstants;
 import frc.robot.subsystems.pivot.PivotSubsystem;
 import frc.robot.subsystems.swerve.DriveSubsystem;
