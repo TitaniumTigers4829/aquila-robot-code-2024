@@ -197,7 +197,7 @@ public class DriveSubsystem extends SubsystemBase {
    * Returns 0 degrees if the robot is on the blue alliance, 180 if on the red alliance.
    */
   public double getAllianceAngleOffset() {
-    return alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red ? 180 : 0;
+    return alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red ? 180.0 : 0.0;
   }
   
   /**
