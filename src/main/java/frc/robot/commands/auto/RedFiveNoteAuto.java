@@ -24,25 +24,25 @@
 //       new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, visionSubsystem, pivotSubsystem),
 //       new ParallelRaceGroup(
 //         new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "Red note 3").withTimeout(3),
-//         new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem, false)
+        // new IntakeAuto(intakeSubsystem, pivotSubsystem, shooterSubsystem, leds)
 //       ),
 //       new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, visionSubsystem, pivotSubsystem),
 
 //       new ParallelRaceGroup(
 //         new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "red note #3 to #4"),
-//         new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem, false)
+        // new IntakeAuto(intakeSubsystem, pivotSubsystem, shooterSubsystem, leds)
 //       ),
 //       new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, visionSubsystem, pivotSubsystem),
 
 //       new ParallelRaceGroup(
 //         new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "red note #4 to #5"),
-//         new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem, false)
+        // new IntakeAuto(intakeSubsystem, pivotSubsystem, shooterSubsystem, leds)
 //       ),
 //       new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, visionSubsystem, pivotSubsystem),
 
 //       new ParallelRaceGroup(
 //         new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "red note #5 to #6"),
-//         new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem, false)
+        // new IntakeAuto(intakeSubsystem, pivotSubsystem, shooterSubsystem, leds)
 //       ),
 //       new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, visionSubsystem, pivotSubsystem)
 

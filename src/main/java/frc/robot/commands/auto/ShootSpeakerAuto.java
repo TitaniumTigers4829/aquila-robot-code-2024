@@ -13,6 +13,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.LEDConstants.LEDProcess;
@@ -47,7 +48,6 @@ public class ShootSpeakerAuto extends DriveCommandBase {
   private boolean isRed = false;
   private double desiredHeading = 0;
   private Translation2d speakerPos;
-  private boolean goodToShoot;
   
   /** Creates a new ShootSpeaker. */
   public ShootSpeakerAuto(DriveSubsystem driveSubsystem, ShooterSubsystem shooterSubsystem, PivotSubsystem pivotSubsystem, VisionSubsystem visionSubsystem, LEDSubsystem leds, IntakeSubsystem intakeSubsystem) {
@@ -76,14 +76,12 @@ public class ShootSpeakerAuto extends DriveCommandBase {
     // SmartDashboard.putBoolean("red", isRed);
     speakerPos = isRed ? new Translation2d(FieldConstants.RED_SPEAKER_X, FieldConstants.RED_SPEAKER_Y) : new Translation2d(FieldConstants.BLUE_SPEAKER_X, FieldConstants.BLUE_SPEAKER_Y);
     // SmartDashboard.putString("speakerPos", speakerPos.toString());
-    goodToShoot = false;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     super.execute();
-    SmartDashboard.putBoolean("good", goodToShoot);
   
     // get positions of various things
     Translation2d robotPos = driveSubsystem.getPose().getTranslation();
@@ -110,32 +108,15 @@ public class ShootSpeakerAuto extends DriveCommandBase {
       turnOutput, 
       false
     );
-
-    if (goodToShoot) {
-      shooterSubsystem.setRPM(ShooterConstants.SHOOT_SPEAKER_RPM);
-      pivotSubsystem.setPivotFromDistance(distance);
-      // if we are ready to shoot:
-      if (isReadyToShoot()) {
-        leds.setProcess(LEDProcess.SHOOT);
-        shooterSubsystem.setRollerSpeed(ShooterConstants.ROLLER_SHOOT_SPEED);
-      } else {
-        leds.setProcess(LEDProcess.FINISH_LINE_UP);
-        shooterSubsystem.setRollerSpeed(0);
-      }
+    shooterSubsystem.setRPM(ShooterConstants.SHOOT_SPEAKER_RPM);
+    pivotSubsystem.setPivotFromDistance(distance);
+    // if we are ready to shoot:
+    if (isReadyToShoot()) {
+      leds.setProcess(LEDProcess.SHOOT);
+      shooterSubsystem.setRollerSpeed(ShooterConstants.ROLLER_SHOOT_SPEED);
     } else {
-      pivotSubsystem.setPivot(PivotConstants.PIVOT_INTAKE_ANGLE);
-      if (pivotSubsystem.isPivotWithinAcceptableError()) {
-        if (!shooterSubsystem.getSensor()) {
-          leds.setProcess(LEDProcess.INTAKE);
-          shooterSubsystem.setRollerSpeed(ShooterConstants.ROLLER_INTAKE_SPEED);
-          intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_SPEED);
-        } else {
-          goodToShoot = true;
-          leds.setProcess(LEDProcess.NOTE_IN);
-          intakeSubsystem.setIntakeSpeed(0);
-          shooterSubsystem.setRollerSpeed(0);
-        }
-      }
+      leds.setProcess(LEDProcess.FINISH_LINE_UP);
+      shooterSubsystem.setRollerSpeed(0);
     }
   }
 
@@ -154,7 +135,7 @@ public class ShootSpeakerAuto extends DriveCommandBase {
     return false;
   }
   public boolean isReadyToShoot() {
-    return shooterSubsystem.isShooterWithinAcceptableError() && pivotSubsystem.isPivotWithinAcceptableError();
+    return shooterSubsystem.isShooterWithinAcceptableError() && pivotSubsystem.isPivotWithinAcceptableError() && Math.abs(headingError) < DriveConstants.HEADING_ACCEPTABLE_ERROR_RADIANS;
   }
 
   private double deadband(double val) {

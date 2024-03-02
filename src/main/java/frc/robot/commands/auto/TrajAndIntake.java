@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants.IntakeConstants;
+import frc.robot.commands.intake.IntakeAuto;
 import frc.robot.commands.intake.TowerIntake;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.leds.LEDSubsystem;
@@ -26,7 +27,7 @@ public class TrajAndIntake extends ParallelRaceGroup {
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
       new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, path, resetOdometry),
-      new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem, false, leds)
+            new IntakeAuto(intakeSubsystem, pivotSubsystem, shooterSubsystem, leds)
     );
   }
 }

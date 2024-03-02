@@ -27,7 +27,7 @@
 //       new FollowPathAndShoot(driveSubsystem, visionSubsystem, pivotSubsystem, shooterSubsystem, "blue note #1 auto").withTimeout(5),
 //       new ParallelRaceGroup(
 //         new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "blue 1 to 2", true).withTimeout(3),
-//         new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem, false)
+        // new IntakeAuto(intakeSubsystem, pivotSubsystem, shooterSubsystem, leds)
 //       ),
 //       new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, visionSubsystem, pivotSubsystem).withTimeout(2)
 //     );

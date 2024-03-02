@@ -7,8 +7,10 @@ package frc.robot.commands.auto;
 import com.choreo.lib.Choreo;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.commands.intake.IntakeAuto;
 import frc.robot.commands.intake.TowerIntake;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.leds.LEDSubsystem;
@@ -27,22 +29,22 @@ public class BlueNoteThree extends SequentialCommandGroup {
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
         new InstantCommand(()->driveSubsystem.resetOdometry(Choreo.getTrajectory("blue to note 1").getInitialPose())),
-        // new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, leds, intakeSubsystem).withTimeout(5),
-        // new ParallelRaceGroup(
-        new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "blue to note 1", true),
-            // new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem, false, leds)
-        // ),
-        // new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, leds, intakeSubsystem).withTimeout(5),
-        // new ParallelRaceGroup(
-        new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "blue note 1 to 2", false),
-            // new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem, false, leds)
-        // ),
-        // new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, leds, intakeSubsystem).withTimeout(5),
-        // new ParallelRaceGroup(
-        new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "blue note 2 to 3", false)
-        //     new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem, false, leds)
-        // ),
-        // new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, leds, intakeSubsystem).withTimeout(5)
+        new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, leds, intakeSubsystem).withTimeout(2.0),
+        new ParallelCommandGroup(
+            new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "blue to note 1", true),
+            new IntakeAuto(intakeSubsystem, pivotSubsystem, shooterSubsystem, leds)
+        ),
+        new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, leds, intakeSubsystem).withTimeout(2.0),
+        new ParallelCommandGroup(
+            new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "blue note 1 to 2", false),
+            new IntakeAuto(intakeSubsystem, pivotSubsystem, shooterSubsystem, leds)
+        ),
+        new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, leds, intakeSubsystem).withTimeout(2.0),
+        new ParallelCommandGroup(
+            new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "blue note 2 to 3", false),
+            new IntakeAuto(intakeSubsystem, pivotSubsystem, shooterSubsystem, leds)
+        ),
+        new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, leds, intakeSubsystem).withTimeout(2.0)
     );
   }
 }

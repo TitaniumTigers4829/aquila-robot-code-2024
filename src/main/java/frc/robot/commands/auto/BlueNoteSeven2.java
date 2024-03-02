@@ -24,7 +24,7 @@
 //     addCommands(
 //       new ParallelRaceGroup(
 //         new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "blue note 8", false).withTimeout(4.2),
-//         new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem, false)
+//         new IntakeAuto(intakeSubsystem, pivotSubsystem, shooterSubsystem, leds)
 //       ),
 //       new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, visionSubsystem, pivotSubsystem).withTimeout(2.5),
 //       new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "blue note 9", false).withTimeout(4.2),

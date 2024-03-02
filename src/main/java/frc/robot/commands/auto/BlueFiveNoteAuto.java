@@ -26,7 +26,7 @@
 //       new FollowPathAndShoot(driveSubsystem, visionSubsystem, pivotSubsystem, shooterSubsystem, "blue 4 note start", true),
 //       new ParallelRaceGroup(
 //         new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "blue note 3 to note 4", false),
-//         new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem, false)
+//         new IntakeAuto(intakeSubsystem, pivotSubsystem, shooterSubsystem, leds)
 //       ),
 //       new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, visionSubsystem, pivotSubsystem)
 //       );
