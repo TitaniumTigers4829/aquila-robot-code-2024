@@ -11,6 +11,7 @@ import java.util.function.DoubleSupplier;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.DriveConstants;
@@ -89,20 +90,25 @@ public class ShootSpeaker extends DriveCommandBase {
     // distance (for speaker lookups)
     double distance = robotPos.getDistance(speakerPos);
     // arctangent for desired heading
-    if (isRed) {
-      desiredHeading = Math.atan2((speakerPos.getY() - robotPos.getY()), (speakerPos.getX() - robotPos.getX()));
-    } else {
+    // if (isRed) {
+    //   desiredHeading = Math.atan2((speakerPos.getY() - robotPos.getY()), (speakerPos.getX() - robotPos.getX()));
+    // } else {
       desiredHeading = Math.atan2((robotPos.getY() - speakerPos.getY()), (robotPos.getX() - speakerPos.getX()));
-    }
-    // heading error (also used in isReadyToShoot())
-    headingError = desiredHeading - driveSubsystem.getPose().getRotation().getRadians();
+      // }
+  
+      headingError = desiredHeading - driveSubsystem.getOdometryRotation2d().getRadians();
+  
+      turnController.enableContinuousInput(-Math.PI, Math.PI);
+      double turnOutput = deadband(turnController.calculate(headingError, 0)); 
+    // if (headingError >= Math.PI) {
+    //   headingError = Math.PI - headingError;
+    // }
     // get PID output
-    // SmartDashboard.putNumber("desired Heading", desiredHeading);
+    //SmartDashboard.putNumber("desired Heading", desiredHeading);
     // SmartDashboard.putNumber("drivetrain error", headingError);
     // SmartDashboard.putNumber("current heading", driveSubsystem.getRotation2d().getRadians());
-    double turnOutput = deadband(turnController.calculate(headingError, 0)); 
     // SmartDashboard.putNumber("turnOutput", turnOutput);
-    SmartDashboard.putNumber("speakerDistance", distance);
+    //SmartDashboard.putNumber("speakerDistance", distance);
 
     // allow the driver to drive slowly (NOT full speed - will mess up shooter)
     driveSubsystem.drive(

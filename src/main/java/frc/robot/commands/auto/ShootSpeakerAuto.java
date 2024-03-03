@@ -8,6 +8,7 @@ import java.util.Optional;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.FieldConstants;
@@ -28,6 +29,7 @@ public class ShootSpeakerAuto extends DriveCommandBase {
   private final PivotSubsystem pivotSubsystem;
   private final VisionSubsystem visionSubsystem;
   private final LEDSubsystem leds;
+  private final Timer timer;
 
   private double headingError = 0;
 
@@ -50,12 +52,14 @@ public class ShootSpeakerAuto extends DriveCommandBase {
     this.pivotSubsystem = pivotSubsystem;
     this.visionSubsystem = visionSubsystem;
     this.leds = leds;
+    timer = new Timer();
     addRequirements(shooterSubsystem, driveSubsystem, pivotSubsystem);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    timer.reset();
     Optional<Alliance> alliance = DriverStation.getAlliance();
     //if alliance is detected
     if (alliance.isPresent()) {
@@ -80,17 +84,12 @@ public class ShootSpeakerAuto extends DriveCommandBase {
     // distance (for speaker lookups)
     double distance = robotPos.getDistance(speakerPos);
     // arctangent for desired heading
-    if (isRed) {
-      desiredHeading = Math.atan2((speakerPos.getY() - robotPos.getY()), (speakerPos.getX() - robotPos.getX()));
-    } else {
-      desiredHeading = Math.atan2((robotPos.getY() - speakerPos.getY()), (robotPos.getX() - speakerPos.getX()));
-    }
-    // heading error (also used in isReadyToShoot())
-    headingError = desiredHeading - driveSubsystem.getPose().getRotation().getRadians();
-    // get PID output
-    // SmartDashboard.putNumber("desired Heading", desiredHeading);
-    // SmartDashboard.putNumber("drivetrain error", headingError);
-    // SmartDashboard.putNumber("current heading", driveSubsystem.getRotation2d().getRadians());
+    desiredHeading = Math.atan2((robotPos.getY() - speakerPos.getY()), (robotPos.getX() - speakerPos.getX()));
+    // }
+
+    headingError = desiredHeading - driveSubsystem.getOdometryRotation2d().getRadians();
+
+    turnController.enableContinuousInput(-Math.PI, Math.PI);
     double turnOutput = deadband(turnController.calculate(headingError, 0)); 
     // SmartDashboard.putNumber("turnOutput", turnOutput);
     // SmartDashboard.putNumber("speakerDistance", distance);
@@ -110,6 +109,10 @@ public class ShootSpeakerAuto extends DriveCommandBase {
       leds.setProcess(LEDProcess.FINISH_LINE_UP);
       shooterSubsystem.setRollerSpeed(0);
     }
+
+    if (shooterSubsystem.getSensor() && !timer.hasElapsed(0.001)) {
+      timer.start();
+    }
   }
 
   // Called once the command ends or is interrupted.
@@ -124,7 +127,7 @@ public class ShootSpeakerAuto extends DriveCommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return timer.hasElapsed(0.3);
   }
   public boolean isReadyToShoot() {
     return shooterSubsystem.isShooterWithinAcceptableError() && pivotSubsystem.isPivotWithinAcceptableError() && Math.abs(headingError) < DriveConstants.HEADING_ACCEPTABLE_ERROR_RADIANS;
