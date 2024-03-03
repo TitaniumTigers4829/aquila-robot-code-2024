@@ -5,7 +5,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import java.util.Optional;
 
 import com.kauailabs.navx.frc.AHRS;
-import com.pathplanner.lib.auto.AutoBuilder;
 
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.Vector;
@@ -103,7 +102,7 @@ public class DriveSubsystem extends SubsystemBase {
       DriveConstants.DRIVE_KINEMATICS,
       getGyroRotation2d(),
       getModulePositions(),
-      new Pose2d(), // This is the position for where the robot starts the match, use setPose() to set it in autonomous init
+      new Pose2d(), // This is the position for where the robot starts the match, use resetOdometry() to set it in autonomous init
       stateStandardDeviations,
       visionMeasurementStandardDeviations
     );
@@ -129,7 +128,7 @@ public class DriveSubsystem extends SubsystemBase {
       frontRightSwerveModule.getState(),
       rearLeftSwerveModule.getState(),
       rearRightSwerveModule.getState()
-      );
+    );
   }
 
   /**
@@ -147,7 +146,7 @@ public class DriveSubsystem extends SubsystemBase {
     // SmartDashboard.putBoolean("isFieldRelative", fieldRelative);
     SwerveModuleState[] swerveModuleStates = DriveConstants.DRIVE_KINEMATICS.toSwerveModuleStates(
       fieldRelative
-      ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rotationSpeed, getOdometryFieldRelativeRotation2d())
+      ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rotationSpeed, getOdometryAllianceRelativeRotation2d())
       : new ChassisSpeeds(xSpeed, ySpeed, rotationSpeed));
     SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, DriveConstants.MAX_SPEED_METERS_PER_SECOND);
     
@@ -227,18 +226,14 @@ public class DriveSubsystem extends SubsystemBase {
     return getPose().getRotation();
   }
 
-
   /**
    * Returns a Rotation2d for the heading of the robot relative to the
    * field from the driver's perspective. This method is needed so that the
    * drive command and poseEstimator don't fight each other. It uses odometry rotation.
    */
-  public Rotation2d getOdometryFieldRelativeRotation2d() {
-    // Because the field isn't vertically symmetrical, we have the pose coordinates always start from the bottom left
-    double rotationDegrees = getOdometryRotation2d().getDegrees() + getAllianceAngleOffset();
-    return Rotation2d.fromDegrees(rotationDegrees % 360);
+  public Rotation2d getOdometryAllianceRelativeRotation2d() {
+    return getPose().getRotation().plus(Rotation2d.fromDegrees(getAllianceAngleOffset()));
   }
-
 
   /**
    * Updates the pose estimator with the pose calculated from the swerve
@@ -247,7 +242,7 @@ public class DriveSubsystem extends SubsystemBase {
   public void addPoseEstimatorSwerveMeasurement() {
     odometry.updateWithTime(
       Timer.getFPGATimestamp(),
-      getGyroFieldRelativeRotation2d(),
+      getGyroRotation2d(),
       getModulePositions()
     );
   }

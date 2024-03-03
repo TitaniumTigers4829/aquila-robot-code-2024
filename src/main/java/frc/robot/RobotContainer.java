@@ -121,8 +121,6 @@ public class RobotContainer {
   }
 
   public void teleopInit() {
-    // driveSubsystem.zeroHeading();
-    // driveSubsystem.resetOdometry(Choreo.getTrajectory("red to note 1").getInitialPose());
     configureButtonBindings();
   }
 
@@ -189,7 +187,7 @@ public class RobotContainer {
       Rotation2d.fromDegrees(driveSubsystem.getAllianceAngleOffset())))));
 
     // OPERATOR BUTTONS
-    operatorBButton.whileTrue(new ManualIntakePivot(intakeSubsystem,()->modifyAxisCubed(operatorLeftStickY)));
+    operatorBButton.whileTrue(new ManualIntakePivot(intakeSubsystem, ()->modifyAxisCubed(operatorLeftStickY)));
 
     operatorRightTrigger.whileTrue(new ShootSpeaker(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, driverLeftStickX, driverLeftStickY, driverRightBumper, ledSubsystem));
     operatorRightBumper.whileTrue(new ShootAmp(shooterSubsystem, pivotSubsystem, ledSubsystem));
@@ -204,8 +202,9 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    // driveSubsystem.resetOdometry(new Pose2d(driveSubsystem.getPose().getX(), driveSubsystem.getPose().getY(), 
-      // Rotation2d.fromDegrees(driveSubsystem.getAllianceAngleOffset())));
+    // Resets the pose factoring in the robot side
+    driveSubsystem.resetOdometry(new Pose2d(driveSubsystem.getPose().getX(), driveSubsystem.getPose().getY(), 
+      Rotation2d.fromDegrees(driveSubsystem.getAllianceAngleOffset())));
     return autoChooser.getSelected();
   }
 }
