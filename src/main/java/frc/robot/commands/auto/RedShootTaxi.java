@@ -22,7 +22,7 @@ public class RedShootTaxi extends SequentialCommandGroup {
     addCommands(
       new InstantCommand(()->driveSubsystem.resetOdometry(Choreo.getTrajectory("redsimple").getInitialPose())),
       new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, leds).withTimeout(5.0),
-      new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "redsimple", true)
+      new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "redsimple", false)
     );
   }
 }

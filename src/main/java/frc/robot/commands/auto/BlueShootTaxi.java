@@ -30,7 +30,7 @@ public class BlueShootTaxi extends SequentialCommandGroup {
     addCommands(
       new InstantCommand(()->driveSubsystem.resetOdometry(Choreo.getTrajectory("bluesimple").getInitialPose())),
       new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, leds).withTimeout(5.0),
-      new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "bluesimple", true)
+      new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "bluesimple", false)
     );
   }
 }

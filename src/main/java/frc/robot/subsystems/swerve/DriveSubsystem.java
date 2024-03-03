@@ -23,7 +23,6 @@ import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.DriveConstants;
-import frc.robot.Constants.TrajectoryConstants;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.extras.SmarterDashboardRegistry;
 
@@ -102,7 +101,7 @@ public class DriveSubsystem extends SubsystemBase {
   
     odometry = new SwerveDrivePoseEstimator(
       DriveConstants.DRIVE_KINEMATICS,
-      getRotation2d(),
+      getGyroRotation2d(),
       getModulePositions(),
       new Pose2d(), // This is the position for where the robot starts the match, use setPose() to set it in autonomous init
       stateStandardDeviations,
@@ -112,15 +111,15 @@ public class DriveSubsystem extends SubsystemBase {
     alliance = DriverStation.getAlliance();
     
     // Configure AutoBuilder
-    AutoBuilder.configureHolonomic(
-      this::getPose, 
-      this::resetOdometry, 
-      this::getRobotRelativeSpeeds, 
-      this::drive, 
-      TrajectoryConstants.CONFIG,
-      ()->false,
-      this
-    );
+    // AutoBuilder.configureHolonomic(
+    //   this::getPose, 
+    //   this::resetOdometry, 
+    //   this::getRobotRelativeSpeeds, 
+    //   this::drive, 
+    //   TrajectoryConstants.CONFIG,
+    //   ()->false,
+    //   this
+    // );
   }
 
   /**gets the chassis speeds*/
@@ -148,7 +147,7 @@ public class DriveSubsystem extends SubsystemBase {
     // SmartDashboard.putBoolean("isFieldRelative", fieldRelative);
     SwerveModuleState[] swerveModuleStates = DriveConstants.DRIVE_KINEMATICS.toSwerveModuleStates(
       fieldRelative
-      ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rotationSpeed, getFieldRelativeRotation2d())
+      ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rotationSpeed, getOdometryFieldRelativeRotation2d())
       : new ChassisSpeeds(xSpeed, ySpeed, rotationSpeed));
     SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, DriveConstants.MAX_SPEED_METERS_PER_SECOND);
     
@@ -178,19 +177,15 @@ public class DriveSubsystem extends SubsystemBase {
   /**
    * Returns a Rotation2d for the heading of the robot.
    */  
-  public Rotation2d getRotation2d() {
+  public Rotation2d getGyroRotation2d() {
     return Rotation2d.fromDegrees(getHeading());
   }
 
   /**
-   * Returns a Rotation2d for the heading of the robot relative to the
-   * field from the driver's perspective. This method is needed so that the
-   * drive command and poseEstimator don't fight each other.
-   */
-  public Rotation2d getFieldRelativeRotation2d() {
-    // Because the field isn't vertically symmetrical, we have the pose coordinates always start from the bottom left
-    double rotationDegrees = getHeading() + getAllianceAngleOffset();
-    return Rotation2d.fromDegrees(rotationDegrees % 360);
+   * Returns a Rotation2d for the heading of the robot.
+   */  
+  public Rotation2d getGyroFieldRelativeRotation2d() {
+    return Rotation2d.fromDegrees(getHeading() + getAllianceAngleOffset());
   }
 
   /**
@@ -225,6 +220,25 @@ public class DriveSubsystem extends SubsystemBase {
     return odometry.getEstimatedPosition();
   }
 
+  /**
+   * Returns a Rotation2d for the heading of the robot
+   */
+  public Rotation2d getOdometryRotation2d() {
+    return getPose().getRotation();
+  }
+
+
+  /**
+   * Returns a Rotation2d for the heading of the robot relative to the
+   * field from the driver's perspective. This method is needed so that the
+   * drive command and poseEstimator don't fight each other. It uses odometry rotation.
+   */
+  public Rotation2d getOdometryFieldRelativeRotation2d() {
+    // Because the field isn't vertically symmetrical, we have the pose coordinates always start from the bottom left
+    double rotationDegrees = getOdometryRotation2d().getDegrees() + getAllianceAngleOffset();
+    return Rotation2d.fromDegrees(rotationDegrees % 360);
+  }
+
 
   /**
    * Updates the pose estimator with the pose calculated from the swerve
@@ -233,7 +247,7 @@ public class DriveSubsystem extends SubsystemBase {
   public void addPoseEstimatorSwerveMeasurement() {
     odometry.updateWithTime(
       Timer.getFPGATimestamp(),
-      getRotation2d(),
+      getGyroFieldRelativeRotation2d(),
       getModulePositions()
     );
   }
@@ -268,7 +282,7 @@ public class DriveSubsystem extends SubsystemBase {
    * Resets the odometry to the specified pose and rotation.
    */
   public void resetOdometry(Pose2d pose) {
-    odometry.resetPosition(getRotation2d(), getModulePositions(), pose);
+    odometry.resetPosition(getGyroRotation2d(), getModulePositions(), pose);
   }
 
   /**
@@ -304,6 +318,8 @@ public class DriveSubsystem extends SubsystemBase {
 
   public void periodic() {
     SmarterDashboardRegistry.setPose(getPose());
+    SmartDashboard.putNumber("heading", getHeading());
     SmartDashboard.putString("odometry", odometry.getEstimatedPosition().toString());
+    // SmartDashboard.putNumber("offset", rearLeftSwerveModule.getState().angle.getRotations());
   }
 }

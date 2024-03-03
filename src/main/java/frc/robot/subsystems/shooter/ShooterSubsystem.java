@@ -97,7 +97,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
   /**
    * gets if a note is sensed by the beam break
-   * @return true if the Digital Input is tripped 
+   * @return true if there is no note
    */
   public boolean getSensor() {
     return noteSensor.get();

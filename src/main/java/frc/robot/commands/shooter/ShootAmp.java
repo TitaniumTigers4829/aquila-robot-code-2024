@@ -41,7 +41,7 @@ public class ShootAmp extends Command {
       leds.setProcess(LEDProcess.SHOOT);
     } else {
       leds.setProcess(LEDProcess.FINISH_LINE_UP);
-      shooterSubsystem.setRollerSpeed(0);
+      // shooterSubsystem.setRollerSpeed(0);
     }
   }
 

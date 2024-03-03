@@ -6,11 +6,15 @@ package frc.robot;
 
 import java.util.function.DoubleSupplier;
 
+import com.choreo.lib.Choreo;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -19,11 +23,16 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.JoystickConstants;
 import frc.robot.Constants.LEDConstants.LEDProcess;
 import frc.robot.commands.auto.BlueNoteThree;
+import frc.robot.commands.auto.BlueShootTaxi;
+import frc.robot.commands.auto.FenderShotThenTaxi;
 import frc.robot.commands.auto.RedNoteThree;
+import frc.robot.commands.auto.RedShootTaxi;
+import frc.robot.commands.auto.SimplyTaxi;
 import frc.robot.commands.drive.Drive;
 import frc.robot.commands.intake.TowerIntake;
 import frc.robot.extras.SmarterDashboardRegistry;
 import frc.robot.commands.shooter.ManualPivot;
+import frc.robot.commands.intake.ManualIntakePivot;
 import frc.robot.commands.shooter.ShootAmp;
 import frc.robot.commands.shooter.ShootSpeaker;
 import frc.robot.commands.shooter.SpinUpForSpeaker;
@@ -45,6 +54,10 @@ public class RobotContainer {
   private final IntakeSubsystem intakeSubsystem;
   private final PivotSubsystem pivotSubsystem;
   private final LEDSubsystem ledSubsystem;
+
+  private final boolean isRed;
+
+  private final SendableChooser<Command> autoChooser;
   
   public RobotContainer() {
     SmarterDashboardRegistry.initialize();
@@ -54,7 +67,18 @@ public class RobotContainer {
     intakeSubsystem = new IntakeSubsystem();
     pivotSubsystem = new PivotSubsystem();
     ledSubsystem = new LEDSubsystem();
+    isRed = DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red;
 
+    autoChooser = new SendableChooser<Command>();
+    autoChooser.setDefaultOption("red 4note", new RedNoteThree(driveSubsystem, visionSubsystem, intakeSubsystem, shooterSubsystem, pivotSubsystem, ledSubsystem));
+    autoChooser.addOption("blue 4note", new BlueNoteThree(driveSubsystem, visionSubsystem, intakeSubsystem, shooterSubsystem, pivotSubsystem, ledSubsystem));
+    autoChooser.addOption("red shoot+taxi", new RedShootTaxi(driveSubsystem, visionSubsystem, intakeSubsystem, shooterSubsystem, pivotSubsystem, ledSubsystem));
+    autoChooser.addOption("blue shoot+taxi", new BlueShootTaxi(driveSubsystem, visionSubsystem, intakeSubsystem, shooterSubsystem, pivotSubsystem, ledSubsystem));
+    autoChooser.addOption("fendershot+taxi", new FenderShotThenTaxi(driveSubsystem, visionSubsystem, pivotSubsystem, shooterSubsystem, ledSubsystem));
+    autoChooser.addOption("just taxi", new SimplyTaxi(driveSubsystem));
+    autoChooser.addOption("nothing", null);
+
+    SmartDashboard.putData("autoChooser", autoChooser);
     ledSubsystem.setProcess(LEDProcess.DEFAULT);
   }
   
@@ -98,7 +122,7 @@ public class RobotContainer {
 
   public void teleopInit() {
     // driveSubsystem.zeroHeading();
-    // driveSubsystem.resetOdometry(driveSubsystem.getPose());
+    // driveSubsystem.resetOdometry(Choreo.getTrajectory("red to note 1").getInitialPose());
     configureButtonBindings();
   }
 
@@ -165,6 +189,8 @@ public class RobotContainer {
       Rotation2d.fromDegrees(driveSubsystem.getAllianceAngleOffset())))));
 
     // OPERATOR BUTTONS
+    operatorBButton.whileTrue(new ManualIntakePivot(intakeSubsystem,()->modifyAxisCubed(operatorLeftStickY)));
+
     operatorRightTrigger.whileTrue(new ShootSpeaker(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, driverLeftStickX, driverLeftStickY, driverRightBumper, ledSubsystem));
     operatorRightBumper.whileTrue(new ShootAmp(shooterSubsystem, pivotSubsystem, ledSubsystem));
     operatorDpadUp.whileTrue(new SubwooferShot(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, driverLeftStickX, operatorLeftStickY, driverRightStickX, driverRightBumper, ledSubsystem));
@@ -178,11 +204,8 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Blue) {
-      return new BlueNoteThree(driveSubsystem, visionSubsystem, intakeSubsystem, shooterSubsystem, pivotSubsystem, ledSubsystem);
-    } else {
-      return new RedNoteThree(driveSubsystem, visionSubsystem, intakeSubsystem, shooterSubsystem, pivotSubsystem, ledSubsystem);
-    }
-    // return null;
+    // driveSubsystem.resetOdometry(new Pose2d(driveSubsystem.getPose().getX(), driveSubsystem.getPose().getY(), 
+      // Rotation2d.fromDegrees(driveSubsystem.getAllianceAngleOffset())));
+    return autoChooser.getSelected();
   }
 }

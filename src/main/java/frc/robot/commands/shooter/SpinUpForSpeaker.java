@@ -88,14 +88,26 @@ public class SpinUpForSpeaker extends DriveCommandBase {
     // distance (for speaker lookups)
     double distance = robotPos.getDistance(speakerPos);
     // arctangent for desired heading
-    if (isRed) {
-      desiredHeading = Math.atan2((speakerPos.getY() - robotPos.getY()), (speakerPos.getX() - robotPos.getX()));
-    } else {
-      desiredHeading = Math.atan2((robotPos.getY() - speakerPos.getY()), (robotPos.getX() - speakerPos.getX()));
-    }
+    // // if (isRed) {
+    // //   desiredHeading = Math.atan2((speakerPos.getY() - robotPos.getY()), (speakerPos.getX() - robotPos.getX()));
+    // // } else {
+    // desiredHeading = Math.atan2((robotPos.getY() - speakerPos.getY()), (robotPos.getX() - speakerPos.getX()));
+    // // }
     // heading error (also used in isReadyToShoot())
-    headingError = desiredHeading - driveSubsystem.getPose().getRotation().getRadians();
+    // headingError = desiredHeading - driveSubsystem.getPose().getRotation().getRadians();
 
+    
+    // turnController.enableContinuousInput(-Math.PI, Math.PI);
+
+    // if (isRed) {
+    //   desiredHeading = Math.atan2((speakerPos.getY() - robotPos.getY()), (speakerPos.getX() - robotPos.getX()));
+    // } else {
+    desiredHeading = Math.atan2((robotPos.getY() - speakerPos.getY()), (robotPos.getX() - speakerPos.getX()));
+    // }
+
+    headingError = desiredHeading - driveSubsystem.getOdometryRotation2d().getRadians();
+
+    turnController.enableContinuousInput(-Math.PI, Math.PI);
     double turnOutput = deadband(turnController.calculate(headingError, 0)); 
 
     // allow the driver to drive slowly (NOT full speed - will mess up shooter)
@@ -119,8 +131,11 @@ public class SpinUpForSpeaker extends DriveCommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    shooterSubsystem.setFlywheelNeutral();
+    shooterSubsystem.setRollerSpeed(0);
+    pivotSubsystem.setPivot(PivotConstants.PIVOT_INTAKE_ANGLE);
     leds.setProcess(LEDProcess.DEFAULT);
-  }
+    }
 
   // Returns true when the command should end.
   @Override

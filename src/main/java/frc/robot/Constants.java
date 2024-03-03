@@ -226,9 +226,9 @@ public final class Constants {
     public static final int INTAKE_MOTOR_ID = 16;
     public static final double INTAKE_SPEED = 0.7;
 
-    public static final int OTB_PIVOT_ID = 0-9;
-    public static final int OTB_INTAKE_ID = 0-9;
-    public static final double OTB_ROTOR_OFFSET = 0.0;
+    public static final int OTB_PIVOT_ID = 50;
+    public static final int OTB_INTAKE_ID = 40;
+    public static final double OTB_ROTOR_OFFSET = -0.3095703125;
 
     public static final double MM_ACCELERATION = 4;
     public static final double MM_VELOCITY = 10;
@@ -251,7 +251,7 @@ public final class Constants {
     public static final int FOLLOWER_PIVOT_MOTOR_ID = 10;
     public static final int PIVOT_ENCODER_ID = 33;
 
-    public static final double MIN_ANGLE = -0.015380859375;
+    public static final double MIN_ANGLE = -0.015080078125;
     public static final double MAX_ANGLE = 0.37158203125;
 
     public static final double PIVOT_INTAKE_ANGLE = -0.006591796875;
@@ -263,7 +263,7 @@ public final class Constants {
 
     public static final double PIVOT_NEUTRAL_SPEED = 0;
 
-    public static final double ANGLE_ZERO = -0.0146484375;
+    public static final double ANGLE_ZERO = -0.02783203125;//-0.0146484375;
     public static final SensorDirectionValue ENCODER_REVERSED = SensorDirectionValue.Clockwise_Positive;
 
     public static final double SHOOT_AMP_ANGLE = 0.182392578125;
