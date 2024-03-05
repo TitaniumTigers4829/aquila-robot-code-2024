@@ -50,12 +50,18 @@ public class VisionSubsystem extends SubsystemBase {
    * that is closest to an april tag. 
    */
   public Pose2d getPoseFromAprilTags() {
-    Pose2d botPose = LimelightHelpers.getBotPose2d(currentlyUsedLimelight);
-    // The origin of botpose is at the center of the field
-    double robotX = botPose.getX() + FieldConstants.FIELD_LENGTH_METERS / 2;
-    double robotY = botPose.getY() + FieldConstants.FIELD_WIDTH_METERS / 2;
-    Rotation2d robotRotation = botPose.getRotation();
-    return new Pose2d(robotX, robotY, robotRotation);
+    if (canSeeAprilTags()) {
+      Pose2d botPose = LimelightHelpers.getBotPose2d(currentlyUsedLimelight);
+      // The origin of botpose is at the center of the field
+      double robotX = botPose.getX() + FieldConstants.FIELD_LENGTH_METERS / 2;
+      double robotY = botPose.getY() + FieldConstants.FIELD_WIDTH_METERS / 2;
+      Rotation2d robotRotation = botPose.getRotation();
+      SmartDashboard.putBoolean("notag", false);
+      return new Pose2d(robotX, robotY, robotRotation);
+    } else {
+      SmartDashboard.putBoolean("notag", true);
+      return new Pose2d();
+    }
   }
 
   /**

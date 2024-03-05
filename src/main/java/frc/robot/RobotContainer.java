@@ -22,16 +22,20 @@ import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.JoystickConstants;
 import frc.robot.Constants.LEDConstants.LEDProcess;
+import frc.robot.commands.auto.BlueNoteEight;
 import frc.robot.commands.auto.BlueNoteThree;
 import frc.robot.commands.auto.BlueShootTaxi;
 import frc.robot.commands.auto.FenderShotThenTaxi;
 import frc.robot.commands.auto.RedNoteThree;
 import frc.robot.commands.auto.RedShootTaxi;
 import frc.robot.commands.auto.SimplyTaxi;
+import frc.robot.commands.auto.FollowChoreoTrajectory;
+import frc.robot.commands.auto.RedNoteEight;
 import frc.robot.commands.drive.Drive;
 import frc.robot.commands.intake.TowerIntake;
 import frc.robot.extras.SmarterDashboardRegistry;
 import frc.robot.commands.shooter.ManualPivot;
+import frc.robot.commands.intake.IntakeAuto;
 import frc.robot.commands.intake.ManualIntakePivot;
 import frc.robot.commands.shooter.ShootAmp;
 import frc.robot.commands.shooter.ShootSpeaker;
@@ -75,7 +79,11 @@ public class RobotContainer {
     autoChooser.addOption("red shoot+taxi", new RedShootTaxi(driveSubsystem, visionSubsystem, intakeSubsystem, shooterSubsystem, pivotSubsystem, ledSubsystem));
     autoChooser.addOption("blue shoot+taxi", new BlueShootTaxi(driveSubsystem, visionSubsystem, intakeSubsystem, shooterSubsystem, pivotSubsystem, ledSubsystem));
     autoChooser.addOption("fendershot+taxi", new FenderShotThenTaxi(driveSubsystem, visionSubsystem, pivotSubsystem, shooterSubsystem, ledSubsystem));
-    autoChooser.addOption("just taxi", new SimplyTaxi(driveSubsystem));
+    autoChooser.addOption("fendershot", new SubwooferShot(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, ()->0, ()->0, ()->0, ()->false, ledSubsystem));
+    autoChooser.addOption("testingintakeauto", new IntakeAuto(intakeSubsystem, pivotSubsystem, shooterSubsystem, ledSubsystem));
+    autoChooser.addOption("Red far note 8", new RedNoteEight(driveSubsystem, visionSubsystem, intakeSubsystem, shooterSubsystem, pivotSubsystem, ledSubsystem));
+    autoChooser.addOption("blue far note 8", new BlueNoteEight(driveSubsystem, visionSubsystem, intakeSubsystem, shooterSubsystem, pivotSubsystem, ledSubsystem));
+    autoChooser.addOption("gyroresettesting", new InstantCommand(()->driveSubsystem.resetOdometry(new Pose2d(0, 0, Rotation2d.fromRadians(-2.0701431295199386)))));
     autoChooser.addOption("nothing", null);
 
     SmartDashboard.putData("autoChooser", autoChooser);
@@ -131,6 +139,7 @@ public class RobotContainer {
     DoubleSupplier driverRightStickX = () -> driverJoystick.getRawAxis(JoystickConstants.RIGHT_STICK_X_ID);
     JoystickButton driverRightBumper = new JoystickButton(driverJoystick, JoystickConstants.RIGHT_BUMPER_ID);
     POVButton driverRightDirectionPad = new POVButton(driverJoystick, JoystickConstants.RIGHT_D_PAD_ID);
+    POVButton driverLeftDirectionPad = new POVButton(driverJoystick, 270);
     JoystickButton driverLeftBumper = new JoystickButton(driverJoystick, 5);
 
     // autodrive
@@ -184,7 +193,8 @@ public class RobotContainer {
     
     // Resets the robot angle in the odometry, factors in which alliance the robot is on
     driverRightDirectionPad.onTrue(new InstantCommand(() -> driveSubsystem.resetOdometry(new Pose2d(driveSubsystem.getPose().getX(), driveSubsystem.getPose().getY(), 
-      Rotation2d.fromDegrees(driveSubsystem.getAllianceAngleOffset())))));
+          Rotation2d.fromDegrees(driveSubsystem.getAllianceAngleOffset())))));
+    driverLeftDirectionPad.onTrue(new InstantCommand(() -> driveSubsystem.resetOdometry(visionSubsystem.getPoseFromAprilTags())));
 
     // OPERATOR BUTTONS
     operatorBButton.whileTrue(new ManualIntakePivot(intakeSubsystem, ()->modifyAxisCubed(operatorLeftStickY)));

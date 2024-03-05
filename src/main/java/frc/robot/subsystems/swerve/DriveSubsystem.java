@@ -20,6 +20,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.VisionConstants;
@@ -44,7 +45,7 @@ public class DriveSubsystem extends SubsystemBase {
   private final SwerveDrivePoseEstimator odometry;
   // private Command currentPathfindingCommand;
 
-  private final Optional<DriverStation.Alliance> alliance;
+  private Optional<DriverStation.Alliance> alliance;
 
   private double gyroOffset = 0.0;
 
@@ -106,7 +107,6 @@ public class DriveSubsystem extends SubsystemBase {
       stateStandardDeviations,
       visionMeasurementStandardDeviations
     );
-
     alliance = DriverStation.getAlliance();
     
     // Configure AutoBuilder
@@ -191,7 +191,19 @@ public class DriveSubsystem extends SubsystemBase {
    * Returns 0 degrees if the robot is on the blue alliance, 180 if on the red alliance.
    */
   public double getAllianceAngleOffset() {
-    return alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red ? 180.0 : 0.0;
+    alliance = DriverStation.getAlliance();
+    double offset = alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red ? 180.0 : 0.0;
+    SmartDashboard.putNumber("offset", offset);
+    return offset;
+  }
+
+  public Rotation2d applyAllianceRotationOffset(Rotation2d rot) {
+    if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red) {
+      return new Rotation2d(-rot.getCos(), rot.getSin());
+    }
+    else {
+      return rot;
+    }
   }
   
   /**
@@ -232,7 +244,7 @@ public class DriveSubsystem extends SubsystemBase {
    * drive command and poseEstimator don't fight each other. It uses odometry rotation.
    */
   public Rotation2d getOdometryAllianceRelativeRotation2d() {
-    return getPose().getRotation().plus(Rotation2d.fromDegrees(getAllianceAngleOffset()));
+    return getPose().getRotation().plus(Rotation2d.fromDegrees(getAllianceAngleOffset())); 
   }
 
   /**
@@ -312,9 +324,11 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public void periodic() {
-    SmarterDashboardRegistry.setPose(getPose());
+    Pose2d pose = getPose();
+    SmarterDashboardRegistry.setPose(pose);
+    SmartDashboard.putBoolean("screwed", Math.abs(pose.getX()) > 20);
     SmartDashboard.putNumber("heading", getHeading());
-    SmartDashboard.putString("odometry", odometry.getEstimatedPosition().toString());
+    SmartDashboard.putString("odometry", pose.toString());
     // SmartDashboard.putNumber("offset", rearLeftSwerveModule.getState().angle.getRotations());
   }
 }

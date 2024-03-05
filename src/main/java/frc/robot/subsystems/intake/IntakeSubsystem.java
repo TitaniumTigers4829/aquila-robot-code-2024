@@ -52,8 +52,8 @@ public class IntakeSubsystem extends SubsystemBase {
     // TODO: tune
     intakePivotConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold = IntakeConstants.MAX_OVERTHEBUMPER_ANGLE;
     intakePivotConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = IntakeConstants.MIN_OVERTHEBUMPER_ANGLE;
-    intakePivotConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
-    intakePivotConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
+    intakePivotConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = false;
+    intakePivotConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = false;
 
     intakePivotConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
     intakePivotConfig.Feedback.FeedbackRotorOffset = IntakeConstants.OTB_ROTOR_OFFSET;

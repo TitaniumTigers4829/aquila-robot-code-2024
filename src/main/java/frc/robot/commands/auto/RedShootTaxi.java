@@ -6,6 +6,8 @@ package frc.robot.commands.auto;
 
 import com.choreo.lib.Choreo;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.intake.IntakeSubsystem;
@@ -20,7 +22,7 @@ public class RedShootTaxi extends SequentialCommandGroup {
   public RedShootTaxi(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, IntakeSubsystem intakeSubsystem, ShooterSubsystem shooterSubsystem, PivotSubsystem pivotSubsystem, LEDSubsystem leds) {
 
     addCommands(
-      new InstantCommand(()->driveSubsystem.resetOdometry(Choreo.getTrajectory("redsimple").getInitialPose())),
+      new InstantCommand(()->driveSubsystem.resetOdometry(new Pose2d(15.7587890625, 4.4402618408203125, Rotation2d.fromRadians(-2.096547608393006)))),
       new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, leds).withTimeout(5.0),
       new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "redsimple", false)
     );

@@ -263,7 +263,7 @@ public final class Constants {
 
     public static final double PIVOT_NEUTRAL_SPEED = 0;
 
-    public static final double ANGLE_ZERO = -0.02783203125;//-0.0146484375;
+    public static final double ANGLE_ZERO = -0.026123046875;//-0.00732421875;//-0.0146484375;
     public static final SensorDirectionValue ENCODER_REVERSED = SensorDirectionValue.Clockwise_Positive;
 
     public static final double SHOOT_AMP_ANGLE = 0.182392578125;

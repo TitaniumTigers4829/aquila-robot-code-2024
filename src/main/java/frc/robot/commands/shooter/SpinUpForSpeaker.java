@@ -105,7 +105,10 @@ public class SpinUpForSpeaker extends DriveCommandBase {
     desiredHeading = Math.atan2((robotPos.getY() - speakerPos.getY()), (robotPos.getX() - speakerPos.getX()));
     // }
 
+    //current
     headingError = desiredHeading - driveSubsystem.getOdometryRotation2d().getRadians();
+    //test
+    // headingError = desiredHeading - driveSubsystem.applyAllianceRotationOffset(driveSubsystem.getOdometryRotation2d()).getRadians();
 
     turnController.enableContinuousInput(-Math.PI, Math.PI);
     double turnOutput = deadband(turnController.calculate(headingError, 0)); 

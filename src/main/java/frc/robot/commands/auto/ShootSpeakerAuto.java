@@ -110,7 +110,7 @@ public class ShootSpeakerAuto extends DriveCommandBase {
       shooterSubsystem.setRollerSpeed(0);
     }
 
-    if (shooterSubsystem.getSensor() && !timer.hasElapsed(0.001)) {
+    if (!shooterSubsystem.getSensor() && !timer.hasElapsed(0.001)) {
       timer.start();
     }
   }
@@ -127,7 +127,8 @@ public class ShootSpeakerAuto extends DriveCommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return timer.hasElapsed(0.3);
+    // return timer.hasElapsed(0.3);
+    return false;
   }
   public boolean isReadyToShoot() {
     return shooterSubsystem.isShooterWithinAcceptableError() && pivotSubsystem.isPivotWithinAcceptableError() && Math.abs(headingError) < DriveConstants.HEADING_ACCEPTABLE_ERROR_RADIANS;

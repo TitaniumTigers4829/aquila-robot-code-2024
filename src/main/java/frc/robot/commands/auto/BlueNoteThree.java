@@ -4,10 +4,15 @@
 
 package frc.robot.commands.auto;
 
+import javax.management.InstanceNotFoundException;
+
 import com.choreo.lib.Choreo;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.intake.IntakeAuto;
 import frc.robot.subsystems.intake.IntakeSubsystem;
@@ -24,23 +29,27 @@ public class BlueNoteThree extends SequentialCommandGroup {
   /** Creates a new BlueSimpleTwoNote. */
   public BlueNoteThree(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, IntakeSubsystem intakeSubsystem, ShooterSubsystem shooterSubsystem, PivotSubsystem pivotSubsystem, LEDSubsystem leds) {
     addCommands(
-        new InstantCommand(()->driveSubsystem.resetOdometry(Choreo.getTrajectory("blue to note 1").getInitialPose())),
-        new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, leds),
-        new ParallelCommandGroup(
+        new InstantCommand(()->driveSubsystem.resetOdometry(new Pose2d(1.3980597257614136, 5.493067741394043, Rotation2d.fromRadians(0)))),
+        new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, leds).withTimeout(1.7),
+        new ParallelRaceGroup(
             new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "blue to note 1", false),
             new IntakeAuto(intakeSubsystem, pivotSubsystem, shooterSubsystem, leds)
         ),
-        new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, leds),
-        new ParallelCommandGroup(
+        new IntakeAuto(intakeSubsystem, pivotSubsystem, shooterSubsystem, leds).withTimeout(1.5),
+        new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, leds).withTimeout(1.7),
+        new ParallelRaceGroup(
             new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "blue note 1 to 2", false),
             new IntakeAuto(intakeSubsystem, pivotSubsystem, shooterSubsystem, leds)
         ),
-        new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, leds),
-        new ParallelCommandGroup(
+        new IntakeAuto(intakeSubsystem, pivotSubsystem, shooterSubsystem, leds).withTimeout(1.5),
+        new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, leds).withTimeout(1.7),
+        new ParallelRaceGroup(
             new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "blue note 2 to 3", false),
             new IntakeAuto(intakeSubsystem, pivotSubsystem, shooterSubsystem, leds)
         ),
-        new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, leds)
+        new IntakeAuto(intakeSubsystem, pivotSubsystem, shooterSubsystem, leds).withTimeout(1.5),
+        new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, leds).withTimeout(1.7)
+        
     );
   }
 }

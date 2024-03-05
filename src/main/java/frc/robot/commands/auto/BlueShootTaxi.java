@@ -8,6 +8,8 @@ import javax.swing.GroupLayout.SequentialGroup;
 
 import com.choreo.lib.Choreo;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -28,7 +30,7 @@ public class BlueShootTaxi extends SequentialCommandGroup {
   public BlueShootTaxi(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, IntakeSubsystem intakeSubsystem, ShooterSubsystem shooterSubsystem, PivotSubsystem pivotSubsystem, LEDSubsystem leds) {
 
     addCommands(
-      new InstantCommand(()->driveSubsystem.resetOdometry(Choreo.getTrajectory("bluesimple").getInitialPose())),
+      new InstantCommand(()->driveSubsystem.resetOdometry(new Pose2d(0.7696159482002258, 4.439030170440674, Rotation2d.fromRadians(-1.048231168606524)))),
       new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, leds).withTimeout(5.0),
       new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "bluesimple", false)
     );

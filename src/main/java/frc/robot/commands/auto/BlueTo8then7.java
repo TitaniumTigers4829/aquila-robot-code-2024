@@ -6,6 +6,8 @@ package frc.robot.commands.auto;
 
 import com.choreo.lib.Choreo;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -24,7 +26,7 @@ public class BlueTo8then7 extends SequentialCommandGroup {
   /** Creates a new BlueTo8then7. */
   public BlueTo8then7(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, IntakeSubsystem intakeSubsystem, PivotSubsystem pivotSubsystem, ShooterSubsystem shooterSubsystem, LEDSubsystem ledSubsystem) {
     addCommands(
-      new InstantCommand(()->driveSubsystem.resetOdometry(Choreo.getTrajectory("blue to note 8").getInitialPose())),
+      new InstantCommand(()->driveSubsystem.resetOdometry(new Pose2d(0.6634833812713623, 4.427470684051514, Rotation2d.fromRadians(-1.0460003824312716)))),
       new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, ledSubsystem).withTimeout(2),
       new ParallelCommandGroup(
         new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "blue to note 8", false),
@@ -37,7 +39,7 @@ public class BlueTo8then7 extends SequentialCommandGroup {
         new IntakeAuto(intakeSubsystem, pivotSubsystem, shooterSubsystem, ledSubsystem)
       ),
       new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "blue note 7 to shoot", false),
-      new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, ledSubsystem)
+      new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, ledSubsystem).withTimeout(1.7)
     );
   }
 }
