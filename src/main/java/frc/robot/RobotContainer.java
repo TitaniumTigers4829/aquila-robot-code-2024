@@ -6,8 +6,6 @@ package frc.robot;
 
 import java.util.function.DoubleSupplier;
 
-import com.choreo.lib.Choreo;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -30,11 +28,6 @@ import frc.robot.commands.auto.BlueShootTaxi;
 import frc.robot.commands.auto.FenderShotThenTaxi;
 import frc.robot.commands.auto.RedNoteThree;
 import frc.robot.commands.auto.RedShootTaxi;
-import frc.robot.commands.auto.SimplyTaxi;
-import frc.robot.commands.autodrive.AutoBuilderDriveToPos;
-import frc.robot.commands.autodrive.DriveToAmp;
-import frc.robot.commands.autodrive.DriveToAmp2;
-import frc.robot.commands.auto.FollowChoreoTrajectory;
 import frc.robot.commands.auto.RedNoteEight;
 import frc.robot.commands.drive.Drive;
 import frc.robot.commands.intake.TowerIntake;
