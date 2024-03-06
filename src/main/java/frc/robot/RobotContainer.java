@@ -28,6 +28,7 @@ import frc.robot.commands.auto.BlueShootTaxi;
 import frc.robot.commands.auto.FenderShotThenTaxi;
 import frc.robot.commands.auto.RedNoteThree;
 import frc.robot.commands.auto.RedShootTaxi;
+import frc.robot.commands.autodrive.DriveToAmp2;
 import frc.robot.commands.auto.RedNoteEight;
 import frc.robot.commands.drive.Drive;
 import frc.robot.commands.intake.TowerIntake;
