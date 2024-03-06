@@ -20,7 +20,9 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.JoystickConstants;
+import frc.robot.Constants.TrajectoryConstants;
 import frc.robot.Constants.LEDConstants.LEDProcess;
 import frc.robot.commands.auto.BlueNoteEight;
 import frc.robot.commands.auto.BlueNoteThree;
@@ -29,6 +31,9 @@ import frc.robot.commands.auto.FenderShotThenTaxi;
 import frc.robot.commands.auto.RedNoteThree;
 import frc.robot.commands.auto.RedShootTaxi;
 import frc.robot.commands.auto.SimplyTaxi;
+import frc.robot.commands.autodrive.AutoBuilderDriveToPos;
+import frc.robot.commands.autodrive.DriveToAmp;
+import frc.robot.commands.autodrive.DriveToAmp2;
 import frc.robot.commands.auto.FollowChoreoTrajectory;
 import frc.robot.commands.auto.RedNoteEight;
 import frc.robot.commands.drive.Drive;
@@ -187,7 +192,8 @@ public class RobotContainer {
     // Driver should be allowed to do under the bumper intake to avoid lag with operator. Should not be able to do OTB because should be focused on driving and not worry too much about other obstacles and robots
     driverLeftTrigger.whileTrue(new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem, false, ledSubsystem));
     driverLeftBumper.whileTrue(new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem, true, ledSubsystem));
-    
+    // driverYButton.whileTrue(new AutoBuilderDriveToPos(driveSubsystem, visionSubsystem, 1, 0, 0));
+    driverYButton.whileTrue(new DriveToAmp2(driveSubsystem, visionSubsystem));
     // Shoot Mode (Doesn't actually shoot but revs flywheels, aims drivetrain and pivot toward speaker)
     driverRightTrigger.whileTrue(new SpinUpForSpeaker(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, driverLeftStickX, driverLeftStickY, driverRightBumper, ledSubsystem));
     

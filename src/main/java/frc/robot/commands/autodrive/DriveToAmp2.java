@@ -27,19 +27,19 @@ import frc.robot.commands.drive.DriveCommandBase;
 import frc.robot.subsystems.swerve.DriveSubsystem;
 import frc.robot.subsystems.vision.VisionSubsystem;
 
-public class DriveToAmp extends DriveCommandBase {
+public class DriveToAmp2 extends DriveCommandBase {
   private final DriveSubsystem driveSubsystem;
   private final VisionSubsystem visionSubsystem;
 
   // private final BooleanSupplier isFinished;
 //   private final double finalX, finalY, finalRot;
   private boolean isRed = false;
-  private PathPlannerPath ampPos;
+  private Pose2d ampPos;
 
   Command controllerCommand;
 
   /** Creates a new NewDriveToPos. */
-  public DriveToAmp(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem) {
+  public DriveToAmp2(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem) {
     super(driveSubsystem, visionSubsystem);
     this.driveSubsystem = driveSubsystem;
     this.visionSubsystem = visionSubsystem;
@@ -65,14 +65,12 @@ public class DriveToAmp extends DriveCommandBase {
       //otherwise default to blue alliance
       isRed = true;
     }
-    // ampPos = isRed ? new Translation2d(FieldConstants.RED_AMP_SHOOT_X, FieldConstants.RED_AMP_SHOOT_Y) : new Translation2d(FieldConstants.BLUE_AMP_SHOOT_X, FieldConstants.BLUE_AMP_SHOOT_Y);
-
-     ampPos = isRed ? PathPlannerPath.fromChoreoTrajectory("RedAmpTraj") : PathPlannerPath.fromChoreoTrajectory("BlueAmpTraj");
+     ampPos = isRed ? new Pose2d(FieldConstants.RED_AMP_SHOOT_X, FieldConstants.RED_AMP_SHOOT_Y, FieldConstants.RED_AMP_ROTATION) : new Pose2d(FieldConstants.BLUE_AMP_X, FieldConstants.BLUE_AMP_Y, FieldConstants.BLUE_AMP_ROTATION);
 
     // // TODO: rotation?
     // Pose2d endPose = new Pose2d(finalX, finalY, new Rotation2d());
 
-    controllerCommand = AutoBuilder.pathfindThenFollowPath(
+    controllerCommand = AutoBuilder.pathfindToPose(
       ampPos,
       TrajectoryConstants.PATH_CONSTRAINTS,
       0.0
@@ -85,10 +83,10 @@ public class DriveToAmp extends DriveCommandBase {
   @Override
   public void execute() {
     super.execute();
-       // TODO: LEDs
-    // if (Math.abs(endPose.getX() - driveSubsystem.getPose().getX()) < TrajectoryConstants.X_TOLERANCE
-    //   && Math.abs(endPose.getY() - driveSubsystem.getPose().getY()) < TrajectoryConstants.Y_TOLERANCE
-    //   && Math.abs(endPose.getRotation().getDegrees() - driveSubsystem.getPose().getRotation().getDegrees()) < TrajectoryConstants.THETA_TOLERANCE) {
+      //  TODO: LEDs
+    // if (Math.abs(ampPos.getX() - driveSubsystem.getPose().getX()) < TrajectoryConstants.X_TOLERANCE
+    //   && Math.abs(ampPos.getY() - driveSubsystem.getPose().getY()) < TrajectoryConstants.Y_TOLERANCE
+    //   && Math.abs(ampPos.getRotation().getDegrees() - driveSubsystem.getPose().getRotation().getDegrees()) < TrajectoryConstants.THETA_TOLERANCE) {
     // }
   }
 

@@ -206,7 +206,7 @@ public final class Constants {
     public static final double BLUE_AMP_SHOOT_X = 1.9;
     public static final double BLUE_AMP_SHOOT_Y = 7.767;
 
-    public static final Rotation2d RED_AMP_ROTATION = Rotation2d.fromDegrees(90);
+    public static final Rotation2d RED_AMP_ROTATION = Rotation2d.fromDegrees(-90);
     public static final Rotation2d BLUE_AMP_ROTATION = Rotation2d.fromDegrees(90);
     
     public static final double RED_SPEAKER_X = 16.511;
@@ -334,8 +334,8 @@ public final class Constants {
   public static final class TrajectoryConstants {
 
     public static final double DRIVE_BASE_RADIUS = Math.sqrt(Math.pow(DriveConstants.TRACK_WIDTH, 2) + Math.pow(DriveConstants.WHEEL_BASE, 2));
-    public static final double MAX_SPEED = 5.7;
-    public static final double MAX_ACCELERATION = 3;
+    public static final double MAX_SPEED = 5.0;
+    public static final double MAX_ACCELERATION = 2.0;
     public static final double REALTIME_TRANSLATION_CONTROLLER_P = 9; // 6.5
     public static final double REALTIME_TRANSLATION_CONTROLLER_I  = 0.000;
     public static final double REALTIME_TRANSLATION_CONTROLLER_D = 0.0;
@@ -349,8 +349,8 @@ public final class Constants {
     // The length of the field in the y direction (top to bottom)
     public static final double FIELD_WIDTH_METERS = 8.0137;
 
-    public static final PIDConstants TRANSLATION_CONSTANTS = new PIDConstants(REALTIME_TRANSLATION_CONTROLLER_P);
-    public static final PIDConstants ROTATION_CONSTANTS = new PIDConstants(REALTIME_THETA_CONTROLLER_P);
+    public static final PIDConstants TRANSLATION_CONSTANTS = new PIDConstants(0.1);
+    public static final PIDConstants ROTATION_CONSTANTS = new PIDConstants(0.08);
     public static final HolonomicPathFollowerConfig CONFIG = new HolonomicPathFollowerConfig(TRANSLATION_CONSTANTS, ROTATION_CONSTANTS, MAX_SPEED, 0.876, new ReplanningConfig());
 
     // Constraint for the motion profiled robot angle controller
