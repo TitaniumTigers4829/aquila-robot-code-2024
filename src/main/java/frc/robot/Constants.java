@@ -261,6 +261,9 @@ public final class Constants {
     public static final double PIVOT_D = 0.0;
     public static final double PIVOT_G = 1.7320;
 
+    public static final double MAX_VELOCITY_ROTATIONS_PER_SEC = 4;
+    public static final double MAX_ACCELERATION_ROTATIONS_PER_SEC_SQUARED = 10;
+
     public static final double PIVOT_NEUTRAL_SPEED = 0;
 
     public static final double ANGLE_ZERO = -0.026123046875;//-0.00732421875;//-0.0146484375;

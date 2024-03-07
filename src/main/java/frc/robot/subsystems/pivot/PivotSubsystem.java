@@ -56,8 +56,8 @@ public class PivotSubsystem extends SubsystemBase {
     pivotConfig.Slot0.kD = PivotConstants.PIVOT_D;
     pivotConfig.Slot0.kG = PivotConstants.PIVOT_G;
 
-    pivotConfig.MotionMagic.MotionMagicAcceleration = 4;
-    pivotConfig.MotionMagic.MotionMagicCruiseVelocity = 10;
+    pivotConfig.MotionMagic.MotionMagicAcceleration = PivotConstants.MAX_VELOCITY_ROTATIONS_PER_SECOND;
+    pivotConfig.MotionMagic.MotionMagicCruiseVelocity = PivotConstants.MAX_ACCELERATION_ROTATIONS_PER_SECOND_SQUARED;
 
     pivotConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     pivotConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive; 
