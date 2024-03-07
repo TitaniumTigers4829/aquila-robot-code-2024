@@ -60,8 +60,6 @@ public class ShooterSubsystem extends SubsystemBase {
     rollerConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     rollerConfig.MotorOutput.DutyCycleNeutralDeadband = HardwareConstants.MIN_FALCON_DEADBAND;
     rollerMotor.getConfigurator().apply(rollerConfig, HardwareConstants.TIMEOUT_S);
-    rollerMotor.set(0);
-
     leaderVelocity = leaderFlywheel.getVelocity();
     followerVelocity = followerFlywheel.getVelocity();
 
@@ -74,12 +72,6 @@ public class ShooterSubsystem extends SubsystemBase {
    * @param speed the speed (m/s) of the flywheel
    */
   public void setShooterSpeed(double speed) {
-
-    if (Math.abs(speed) < 0.1 ) {
-      leaderFlywheel.set(0);
-      followerFlywheel.set(0);
-    }
-
     leaderFlywheel.set(speed);
     followerFlywheel.set(speed);
   }
@@ -89,9 +81,6 @@ public class ShooterSubsystem extends SubsystemBase {
    * @param speed speed (m/s) of the rollers
    */
   public void setRollerSpeed(double speed) {
-    if(Math.abs(speed) < 0.1) { 
-      rollerMotor.set(0);
-    }
     rollerMotor.set(speed);
   }
 
