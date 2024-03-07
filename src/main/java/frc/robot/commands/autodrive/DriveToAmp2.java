@@ -65,7 +65,7 @@ public class DriveToAmp2 extends DriveCommandBase {
       //otherwise default to blue alliance
       isRed = true;
     }
-     ampPos = isRed ? new Pose2d(FieldConstants.RED_AMP_SHOOT_X, FieldConstants.RED_AMP_SHOOT_Y, FieldConstants.RED_AMP_ROTATION) : new Pose2d(FieldConstants.BLUE_AMP_X, FieldConstants.BLUE_AMP_Y, FieldConstants.BLUE_AMP_ROTATION);
+     ampPos = isRed ? new Pose2d(FieldConstants.RED_AMP_SHOOT_X, FieldConstants.RED_AMP_SHOOT_Y, FieldConstants.RED_AMP_ROTATION) : new Pose2d(FieldConstants.BLUE_AMP_SHOOT_X, FieldConstants.BLUE_AMP_SHOOT_Y, FieldConstants.BLUE_AMP_ROTATION);
 
     // // TODO: rotation?
     // Pose2d endPose = new Pose2d(finalX, finalY, new Rotation2d());
