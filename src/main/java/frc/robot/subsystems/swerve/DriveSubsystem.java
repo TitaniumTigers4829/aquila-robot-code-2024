@@ -198,15 +198,6 @@ public class DriveSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("offset", offset);
     return offset;
   }
-
-  public Rotation2d applyAllianceRotationOffset(Rotation2d rot) {
-    if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red) {
-      return new Rotation2d(-rot.getCos(), rot.getSin());
-    }
-    else {
-      return rot;
-    }
-  }
   
   /**
    * Sets the offset of the gyro.

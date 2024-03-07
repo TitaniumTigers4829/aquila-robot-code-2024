@@ -76,8 +76,8 @@ public class PivotSubsystem extends SubsystemBase {
 
     pivotPos = pivotEncoder.getAbsolutePosition();
 
-    BaseStatusSignal.setUpdateFrequencyForAll(HardwareConstants.SIGNAL_FREQUENCY);
-    ParentDevice.optimizeBusUtilizationForAll(leaderPivotMotor, followerPivotMotor);
+    BaseStatusSignal.setUpdateFrequencyForAll(HardwareConstants.SIGNAL_FREQUENCY, pivotPos);
+    ParentDevice.optimizeBusUtilizationForAll(leaderPivotMotor, followerPivotMotor, pivotEncoder);
   }
 
   /**

@@ -68,7 +68,7 @@ public class IntakeSubsystem extends SubsystemBase {
     otbPos = otbPivotMotor.getPosition();
 
     BaseStatusSignal.setUpdateFrequencyForAll(HardwareConstants.SIGNAL_FREQUENCY, otbPivotVelocity, otbPos);
-    ParentDevice.optimizeBusUtilizationForAll(intakeMotor);//, otbPivotMotor, otbIntakeMotor);
+    ParentDevice.optimizeBusUtilizationForAll(intakeMotor, otbPivotMotor, otbIntakeMotor);
   }
 
   /**
@@ -99,7 +99,6 @@ public class IntakeSubsystem extends SubsystemBase {
   public double getRotation() {
     otbPos.refresh();
     return otbPos.getValueAsDouble();
-    // return 0.0;
   }
 
   /**
@@ -107,7 +106,6 @@ public class IntakeSubsystem extends SubsystemBase {
    */
   public boolean isIntakeWithinAcceptableError() {
     return Math.abs(intakeTargetAngle - getRotation()) < IntakeConstants.INTAKE_PIVOT_ACCEPTABLE_ERROR;
-    // return true;
   }
 
   public void setPivotSpeed(double speed) {

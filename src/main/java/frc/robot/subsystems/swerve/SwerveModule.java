@@ -152,11 +152,6 @@ public class SwerveModule {
     return new SwerveModulePosition(position, rotation);
   }
 
-  public void setVolts(double volts) {
-    turnMotor.setControl(new VoltageOut(0));
-    driveMotor.setControl(new VoltageOut(volts));
-  }
-
   /**
    * Sets the desired state for the module and sends calculated output from controller to the motor.
    * @param desiredState Desired state with speed and angle.
