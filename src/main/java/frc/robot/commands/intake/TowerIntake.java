@@ -43,7 +43,7 @@ public class TowerIntake extends Command {
         shooterSubsystem.setRollerSpeed(-ShooterConstants.ROLLER_INTAKE_SPEED); //reverse otb?
         intakeSubsystem.setIntakeSpeed(-IntakeConstants.INTAKE_SPEED);
       } else {
-        if (!shooterSubsystem.getSensor()) {
+        if (shooterSubsystem.hasNote()) {
           leds.setProcess(LEDProcess.NOTE_IN);
           intakeSubsystem.setIntakeSpeed(0);
           shooterSubsystem.setRollerSpeed(0);

@@ -35,7 +35,7 @@ public class IntakeAuto extends Command {
     //intakeSubsystem.setIntakeAngle(IntakeConstants.OTB_INTAKE_ANGLE);
 
     if (pivotSubsystem.isPivotWithinAcceptableError()) {
-      if (!shooterSubsystem.getSensor()) {
+      if (shooterSubsystem.hasNote()) {
         leds.setProcess(LEDProcess.NOTE_IN);
         intakeSubsystem.setIntakeSpeed(0);
         shooterSubsystem.setRollerSpeed(0);
@@ -61,6 +61,6 @@ public class IntakeAuto extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return !shooterSubsystem.getSensor();
+    return shooterSubsystem.hasNote();
   }
 }

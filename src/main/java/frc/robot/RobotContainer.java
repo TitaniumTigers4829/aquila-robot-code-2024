@@ -25,7 +25,6 @@ import frc.robot.Constants.LEDConstants.LEDProcess;
 import frc.robot.commands.auto.BlueNoteEight;
 import frc.robot.commands.auto.BlueNoteThree;
 import frc.robot.commands.auto.BlueShootTaxi;
-import frc.robot.commands.auto.FenderShotThenTaxi;
 import frc.robot.commands.auto.RedNoteThree;
 import frc.robot.commands.auto.RedShootTaxi;
 import frc.robot.commands.autodrive.DriveToAmp2;
@@ -58,8 +57,6 @@ public class RobotContainer {
   private final PivotSubsystem pivotSubsystem;
   private final LEDSubsystem ledSubsystem;
 
-  private final boolean isRed;
-
   private final SendableChooser<Command> autoChooser;
   
   public RobotContainer() {
@@ -70,14 +67,12 @@ public class RobotContainer {
     intakeSubsystem = new IntakeSubsystem();
     pivotSubsystem = new PivotSubsystem();
     ledSubsystem = new LEDSubsystem();
-    isRed = DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red;
 
     autoChooser = new SendableChooser<Command>();
     autoChooser.setDefaultOption("red 4note", new RedNoteThree(driveSubsystem, visionSubsystem, intakeSubsystem, shooterSubsystem, pivotSubsystem, ledSubsystem));
     autoChooser.addOption("blue 4note", new BlueNoteThree(driveSubsystem, visionSubsystem, intakeSubsystem, shooterSubsystem, pivotSubsystem, ledSubsystem));
     autoChooser.addOption("red shoot+taxi", new RedShootTaxi(driveSubsystem, visionSubsystem, intakeSubsystem, shooterSubsystem, pivotSubsystem, ledSubsystem));
     autoChooser.addOption("blue shoot+taxi", new BlueShootTaxi(driveSubsystem, visionSubsystem, intakeSubsystem, shooterSubsystem, pivotSubsystem, ledSubsystem));
-    autoChooser.addOption("fendershot+taxi", new FenderShotThenTaxi(driveSubsystem, visionSubsystem, pivotSubsystem, shooterSubsystem, ledSubsystem));
     autoChooser.addOption("fendershot", new SubwooferShot(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, ()->0, ()->0, ()->0, ()->false, ledSubsystem));
     autoChooser.addOption("testingintakeauto", new IntakeAuto(intakeSubsystem, pivotSubsystem, shooterSubsystem, ledSubsystem));
     autoChooser.addOption("Red far note 8", new RedNoteEight(driveSubsystem, visionSubsystem, intakeSubsystem, shooterSubsystem, pivotSubsystem, ledSubsystem));
@@ -213,6 +208,7 @@ public class RobotContainer {
 
   public Command getAutonomousCommand() {
     // Resets the pose factoring in the robot side
+    // This is just a failsafe, pose should be reset at the beginning of auto
     driveSubsystem.resetOdometry(new Pose2d(driveSubsystem.getPose().getX(), driveSubsystem.getPose().getY(), 
       Rotation2d.fromDegrees(driveSubsystem.getAllianceAngleOffset())));
     return autoChooser.getSelected();

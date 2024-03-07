@@ -96,11 +96,11 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   /**
-   * gets if a note is sensed by the beam break
-   * @return true if there is no note
+   * Gets if the tower has a note in it
+   * @return true if there is a note
    */
-  public boolean getSensor() {
-    return noteSensor.get();
+  public boolean hasNote() {
+    return !noteSensor.get();
   }
 
   /**
@@ -152,7 +152,7 @@ public class ShooterSubsystem extends SubsystemBase {
   
   @Override
   public void periodic() {
-    SmartDashboard.putBoolean("sensor", getSensor());
+    SmartDashboard.putBoolean("has note", hasNote());
     // SmartDashboard.putNumber("current velocity", (leaderVelocity.refresh().getValueAsDouble() * 60));
   }
 }
