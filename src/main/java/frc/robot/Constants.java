@@ -117,7 +117,7 @@ public final class Constants {
 
     //TODO: Test these:
     public static final double DRIVE_SUPPLY_LIMIT = 40.0;
-    public static final double DRIVE_STATOR_LIMIT = 55.0;  // TODO: Do we need this? -Z
+    public static final double DRIVE_STATOR_LIMIT = 55.0;  // TODO: Yes (choreo+not killing the battery) - R
 
     public static final double TURN_P = 116.0; 
     public static final double TURN_I = 0.0;
@@ -329,6 +329,9 @@ public final class Constants {
     public static final double AUTO_SHOOT_I = 0.0;
     public static final double AUTO_SHOOT_D = 0.0;
     public static Constraints AUTO_SHOOT_CONSTRAINTS = new Constraints(DriveConstants.MAX_ANGULAR_SPEED_RADIANS_PER_SECOND, 2);
+
+    // TODO: calc
+    public static final double NOTE_LAUNCH_VELOCITY = 10.1;
   }
 
   public static final class TrajectoryConstants {
@@ -349,8 +352,8 @@ public final class Constants {
     // The length of the field in the y direction (top to bottom)
     public static final double FIELD_WIDTH_METERS = 8.0137;
 
-    public static final PIDConstants TRANSLATION_CONSTANTS = new PIDConstants(REALTIME_TRANSLATION_CONTROLLER_P);
-    public static final PIDConstants ROTATION_CONSTANTS = new PIDConstants(REALTIME_THETA_CONTROLLER_P);
+    public static final PIDConstants TRANSLATION_CONSTANTS = new PIDConstants(REALTIME_TRANSLATION_CONTROLLER_P, 0, 0);
+    public static final PIDConstants ROTATION_CONSTANTS = new PIDConstants(REALTIME_THETA_CONTROLLER_P, 0, 0);
     public static final HolonomicPathFollowerConfig CONFIG = new HolonomicPathFollowerConfig(TRANSLATION_CONSTANTS, ROTATION_CONSTANTS, MAX_SPEED, 0.876, new ReplanningConfig());
 
     // Constraint for the motion profiled robot angle controller

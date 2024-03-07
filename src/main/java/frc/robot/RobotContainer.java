@@ -83,6 +83,7 @@ public class RobotContainer {
     autoChooser.addOption("nothing", null);
 
     SmartDashboard.putData("autoChooser", autoChooser);
+    
     ledSubsystem.setProcess(LEDProcess.DEFAULT);
   }
   
@@ -125,6 +126,7 @@ public class RobotContainer {
   }
 
   public void teleopInit() {
+    SmarterDashboardRegistry.initialize();
     configureButtonBindings();
   }
 
@@ -133,6 +135,7 @@ public class RobotContainer {
     DoubleSupplier driverLeftStickX = () -> driverJoystick.getRawAxis(JoystickConstants.LEFT_STICK_X_ID);
     DoubleSupplier driverLeftStickY = () -> driverJoystick.getRawAxis(JoystickConstants.LEFT_STICK_Y_ID);
     DoubleSupplier driverRightStickX = () -> driverJoystick.getRawAxis(JoystickConstants.RIGHT_STICK_X_ID);
+    DoubleSupplier driverLeftStick[] = new DoubleSupplier[]{()->modifyAxisCubedPolar(driverLeftStickX, driverLeftStickY)[0], ()->modifyAxisCubedPolar(driverLeftStickX, driverLeftStickY)[1]};
     JoystickButton driverRightBumper = new JoystickButton(driverJoystick, JoystickConstants.RIGHT_BUMPER_ID);
     POVButton driverRightDirectionPad = new POVButton(driverJoystick, JoystickConstants.RIGHT_D_PAD_ID);
     POVButton driverLeftDirectionPad = new POVButton(driverJoystick, 270);
@@ -170,8 +173,8 @@ public class RobotContainer {
 
     //driving
     Command driveCommand = new Drive(driveSubsystem, visionSubsystem,
-      () -> modifyAxisCubedPolar(driverLeftStickY, driverLeftStickX)[0],
-      () -> modifyAxisCubedPolar(driverLeftStickY, driverLeftStickX)[1],
+      driverLeftStick[0],
+      driverLeftStick[1],
       () -> modifyAxisCubed(driverRightStickX),
       () -> !driverRightBumper.getAsBoolean()
     );
@@ -185,7 +188,7 @@ public class RobotContainer {
     driverLeftBumper.whileTrue(new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem, true, ledSubsystem));
     
     // Shoot Mode (Doesn't actually shoot but revs flywheels, aims drivetrain and pivot toward speaker)
-    driverRightTrigger.whileTrue(new SpinUpForSpeaker(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, driverLeftStickX, driverLeftStickY, driverRightBumper, ledSubsystem));
+    driverRightTrigger.whileTrue(new SpinUpForSpeaker(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, driverLeftStick[0], driverLeftStick[1], driverRightBumper, ledSubsystem));
     
     // Resets the robot angle in the odometry, factors in which alliance the robot is on
     driverRightDirectionPad.onTrue(new InstantCommand(() -> driveSubsystem.resetOdometry(new Pose2d(driveSubsystem.getPose().getX(), driveSubsystem.getPose().getY(), 
@@ -195,9 +198,9 @@ public class RobotContainer {
     // OPERATOR BUTTONS
     operatorBButton.whileTrue(new ManualIntakePivot(intakeSubsystem, ()->modifyAxisCubed(operatorLeftStickY)));
 
-    operatorRightTrigger.whileTrue(new ShootSpeaker(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, driverLeftStickX, driverLeftStickY, driverRightBumper, ledSubsystem));
+    operatorRightTrigger.whileTrue(new ShootSpeaker(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, driverLeftStick[0], driverLeftStick[1], driverRightBumper, ledSubsystem));
     operatorRightBumper.whileTrue(new ShootAmp(shooterSubsystem, pivotSubsystem, ledSubsystem));
-    operatorDpadUp.whileTrue(new SubwooferShot(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, driverLeftStickX, operatorLeftStickY, driverRightStickX, driverRightBumper, ledSubsystem));
+    operatorDpadUp.whileTrue(new SubwooferShot(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, driverLeftStick[0], driverLeftStick[1], driverRightStickX, driverRightBumper, ledSubsystem));
     
     // Intake
     operatorLeftTrigger.whileTrue(new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem, false, ledSubsystem));
@@ -208,6 +211,7 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
+    SmarterDashboardRegistry.initialize();
     // Resets the pose factoring in the robot side
     driveSubsystem.resetOdometry(new Pose2d(driveSubsystem.getPose().getX(), driveSubsystem.getPose().getY(), 
       Rotation2d.fromDegrees(driveSubsystem.getAllianceAngleOffset())));

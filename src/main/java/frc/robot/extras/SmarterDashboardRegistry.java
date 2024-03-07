@@ -12,6 +12,7 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.FieldConstants;
 
@@ -55,7 +56,7 @@ public class SmarterDashboardRegistry {
   public static void setLimelightPose(Pose2d limelightPose) {
     limelight_pose[0] = limelightPose.getX();
     limelight_pose[1] = limelightPose.getY();
-    limelight_pose[2] = limelightPose.getRotation().getDegrees();
+    limelight_pose[2] = limelightPose.getRotation().getRadians();
     SmartDashboard.putNumberArray("limelightPose", limelight_pose);
   }
 

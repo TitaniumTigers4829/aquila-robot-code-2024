@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import java.util.Optional;
 
 import com.kauailabs.navx.frc.AHRS;
+import com.pathplanner.lib.auto.AutoBuilder;
 
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.Vector;
@@ -23,6 +24,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.TrajectoryConstants;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.extras.SmarterDashboardRegistry;
 
@@ -110,15 +112,15 @@ public class DriveSubsystem extends SubsystemBase {
     alliance = DriverStation.getAlliance();
     
     // Configure AutoBuilder
-    // AutoBuilder.configureHolonomic(
-    //   this::getPose, 
-    //   this::resetOdometry, 
-    //   this::getRobotRelativeSpeeds, 
-    //   this::drive, 
-    //   TrajectoryConstants.CONFIG,
-    //   ()->false,
-    //   this
-    // );
+    AutoBuilder.configureHolonomic(
+      this::getPose, 
+      this::resetOdometry, 
+      this::getRobotRelativeSpeeds, 
+      this::drive, 
+      TrajectoryConstants.CONFIG,
+      ()->false,
+      this
+    );
   }
 
   /**gets the chassis speeds*/
