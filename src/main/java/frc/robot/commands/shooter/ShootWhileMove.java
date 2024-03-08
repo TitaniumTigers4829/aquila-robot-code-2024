@@ -13,7 +13,6 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.LEDConstants.LEDProcess;
@@ -47,8 +46,6 @@ public class ShootWhileMove extends DriveCommandBase {
   private boolean isRed = false;
   private double desiredHeading = 0;
   private Translation2d speakerPos;
-  // default to -0.02 because that is the defualt loop time
-  private double lastDistance = 0;
   
   /** Creates a new ShootSpeaker. */
   public ShootWhileMove(DriveSubsystem driveSubsystem, ShooterSubsystem shooterSubsystem, PivotSubsystem pivotSubsystem, VisionSubsystem visionSubsystem, DoubleSupplier[] leftStick, BooleanSupplier isFieldRelative, LEDSubsystem leds) {
@@ -76,7 +73,6 @@ public class ShootWhileMove extends DriveCommandBase {
     }
     speakerPos = isRed ? new Translation2d(FieldConstants.RED_SPEAKER_X, FieldConstants.RED_SPEAKER_Y) : new Translation2d(FieldConstants.BLUE_SPEAKER_X, FieldConstants.BLUE_SPEAKER_Y);
     turnController.enableContinuousInput(-Math.PI, Math.PI);
-    lastDistance = speakerPos.getDistance(driveSubsystem.getPose().getTranslation());
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -91,7 +87,7 @@ public class ShootWhileMove extends DriveCommandBase {
     // speeds
     ChassisSpeeds speeds = driveSubsystem.getRobotRelativeSpeeds();
     // how much to adjust the position by
-    double dt = lastDistance / ShooterConstants.NOTE_LAUNCH_VELOCITY;
+    double dt = robotPos.getDistance(speakerPos) / ShooterConstants.NOTE_LAUNCH_VELOCITY;
     // adjust x and y position
     double dx = speeds.vxMetersPerSecond * dt;
     double dy = speeds.vyMetersPerSecond * dt;
@@ -129,8 +125,6 @@ public class ShootWhileMove extends DriveCommandBase {
     } else {
       leds.setProcess(LEDProcess.FINISH_LINE_UP);
     }
-
-    lastDistance = distance;
   }
 
   // Called once the command ends or is interrupted.
