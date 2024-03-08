@@ -47,9 +47,8 @@ public class ShootWhileMove extends DriveCommandBase {
   private boolean isRed = false;
   private double desiredHeading = 0;
   private Translation2d speakerPos;
-  private Timer timer;
   // default to -0.02 because that is the defualt loop time
-  private double lastTime = -0.02;
+  private double lastDistance = 0;
   
   /** Creates a new ShootSpeaker. */
   public ShootWhileMove(DriveSubsystem driveSubsystem, ShooterSubsystem shooterSubsystem, PivotSubsystem pivotSubsystem, VisionSubsystem visionSubsystem, DoubleSupplier[] leftStick, BooleanSupplier isFieldRelative, LEDSubsystem leds) {
@@ -60,7 +59,6 @@ public class ShootWhileMove extends DriveCommandBase {
     this.leftStick = leftStick;
     this.isFieldRelative = isFieldRelative;
     this.leds = leds;
-    timer = new Timer();
     addRequirements(shooterSubsystem, driveSubsystem, pivotSubsystem, visionSubsystem);
   }
 
@@ -78,8 +76,7 @@ public class ShootWhileMove extends DriveCommandBase {
     }
     speakerPos = isRed ? new Translation2d(FieldConstants.RED_SPEAKER_X, FieldConstants.RED_SPEAKER_Y) : new Translation2d(FieldConstants.BLUE_SPEAKER_X, FieldConstants.BLUE_SPEAKER_Y);
     turnController.enableContinuousInput(-Math.PI, Math.PI);
-    timer.reset();
-    timer.start();
+    lastDistance = speakerPos.getDistance(driveSubsystem.getPose().getTranslation());
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -94,7 +91,7 @@ public class ShootWhileMove extends DriveCommandBase {
     // speeds
     ChassisSpeeds speeds = driveSubsystem.getRobotRelativeSpeeds();
     // how much to adjust the position by
-    double dt = timer.get() - lastTime;
+    double dt = lastDistance / ShooterConstants.NOTE_LAUNCH_VELOCITY;
     // adjust x and y position
     double dx = speeds.vxMetersPerSecond * dt;
     double dy = speeds.vyMetersPerSecond * dt;
@@ -133,7 +130,7 @@ public class ShootWhileMove extends DriveCommandBase {
       leds.setProcess(LEDProcess.FINISH_LINE_UP);
     }
 
-    lastTime = timer.get();
+    lastDistance = distance;
   }
 
   // Called once the command ends or is interrupted.
