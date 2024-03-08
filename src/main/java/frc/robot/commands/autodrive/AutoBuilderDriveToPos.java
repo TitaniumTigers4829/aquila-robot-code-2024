@@ -35,6 +35,7 @@ public class AutoBuilderDriveToPos extends DriveCommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    driveSubsystem.resetOdometry(new Pose2d(0,0, Rotation2d.fromDegrees(0)));
     Pose2d endPose = new Pose2d(finalX, finalY, finalRot);
 
     controllerCommand = AutoBuilder.pathfindToPose(
