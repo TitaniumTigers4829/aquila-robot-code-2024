@@ -100,7 +100,7 @@ public class ShootWhileMove extends DriveCommandBase {
     // continue the command as normal
     double distance = robotPos.getDistance(speakerPos);
     // heading error
-    headingError = desiredHeading - theta;
+    headingError = desiredHeading - (Math.atan2(robotPos.getX() - speakerPos.getX(), robotPos.getY() - speakerPos.getY()));
 
     // deadband output for a steadier shot when we are really close to the target
     double turnOutput = deadband(turnController.calculate(headingError, 0));
