@@ -32,7 +32,6 @@ public class IntakeAuto extends Command {
   @Override
   public void execute() {
     pivotSubsystem.setPivot(PivotConstants.PIVOT_INTAKE_ANGLE);
-    //intakeSubsystem.setIntakeAngle(IntakeConstants.OTB_INTAKE_ANGLE);
 
     if (pivotSubsystem.isPivotWithinAcceptableError()) {
       if (shooterSubsystem.hasNote()) {
@@ -41,7 +40,7 @@ public class IntakeAuto extends Command {
         shooterSubsystem.setRollerSpeed(0);
       } else {
         leds.setProcess(LEDProcess.INTAKE);
-        shooterSubsystem.setRollerSpeed(ShooterConstants.ROLLER_INTAKE_SPEED); //run otb
+        shooterSubsystem.setRollerSpeed(ShooterConstants.ROLLER_INTAKE_SPEED); 
         intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_SPEED);
       }
 

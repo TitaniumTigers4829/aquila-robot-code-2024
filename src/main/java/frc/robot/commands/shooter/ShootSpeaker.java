@@ -17,6 +17,7 @@ import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.LEDConstants.LEDProcess;
 import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.ShooterConstants;
+import frc.robot.Constants.LEDConstants.LEDProcess;
 import frc.robot.commands.drive.DriveCommandBase;
 import frc.robot.subsystems.leds.LEDSubsystem;
 import frc.robot.subsystems.pivot.PivotSubsystem;
@@ -130,6 +131,7 @@ public class ShootSpeaker extends DriveCommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    leds.setProcess(LEDProcess.DEFAULT);
     shooterSubsystem.setFlywheelNeutral();
     shooterSubsystem.setRollerSpeed(0);
     pivotSubsystem.setPivot(PivotConstants.PIVOT_INTAKE_ANGLE);

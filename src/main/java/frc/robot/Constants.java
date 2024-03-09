@@ -21,6 +21,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.motorcontrol.Spark;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
@@ -225,25 +226,6 @@ public final class Constants {
   public static final class IntakeConstants {
     public static final int INTAKE_MOTOR_ID = 16;
     public static final double INTAKE_SPEED = 0.7;
-
-    public static final int OTB_PIVOT_ID = 50;
-    public static final int OTB_INTAKE_ID = 40;
-    public static final double OTB_ROTOR_OFFSET = -0.3095703125;
-
-    public static final double MM_ACCELERATION = 4;
-    public static final double MM_VELOCITY = 10;
-
-    public static final double INTAKE_P = 0;
-    public static final double INTAKE_I = 0;
-    public static final double INTAKE_D = 0;
-    public static final double INTAKE_G = 0;
-
-    public static final double MAX_OVERTHEBUMPER_ANGLE = 0-9;
-    public static final double MIN_OVERTHEBUMPER_ANGLE = 0-9;
-
-    public static final double INTAKE_OVERTHEBUMPER_SPEED = 1;
-
-    public static final double INTAKE_PIVOT_ACCEPTABLE_ERROR = 0.01;
   }
 
   public static final class PivotConstants {
