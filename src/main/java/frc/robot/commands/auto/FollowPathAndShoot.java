@@ -7,6 +7,7 @@ package frc.robot.commands.auto;
 import java.util.Optional;
 
 import com.choreo.lib.Choreo;
+import com.choreo.lib.ChoreoTrajectory;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -15,7 +16,6 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.TrajectoryConstants;
@@ -34,6 +34,7 @@ public class FollowPathAndShoot extends DriveCommandBase {
   private Command controllerCommand;
   private Translation2d speakerPos;
   private boolean isRed;
+  private boolean resetOdometry;
   private double rotationControl;
   private double desiredHeading;
   private double headingError = 0;
@@ -47,19 +48,24 @@ public class FollowPathAndShoot extends DriveCommandBase {
   );
 
   /** Creates a new FollowPathAndShoot. */
-  public FollowPathAndShoot(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, PivotSubsystem pivotSubsystem, ShooterSubsystem shooterSubsystem, String path) {
+  public FollowPathAndShoot(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, PivotSubsystem pivotSubsystem, ShooterSubsystem shooterSubsystem, String path, boolean resetOdometry) {
     super(driveSubsystem, visionSubsystem);
     this.driveSubsystem = driveSubsystem;
     this.visionSubsystem = visionSubsystem;
     this.pivotSubsystem = pivotSubsystem;
     this.shooterSubsystem = shooterSubsystem;
+    this.resetOdometry = resetOdometry;
+    ChoreoTrajectory traj = Choreo.getTrajectory(path);
+    if (resetOdometry) {
+      driveSubsystem.resetOdometry(traj.getInitialPose());
+    }
     controllerCommand = Choreo.choreoSwerveCommand(
-      Choreo.getTrajectory(path),
+      traj,
       driveSubsystem::getPose, 
-      new PIDController(TrajectoryConstants.REALTIME_TRANSLATION_CONTROLLER_P, 0, 0), 
-      new PIDController(TrajectoryConstants.REALTIME_TRANSLATION_CONTROLLER_P, 0, 0), 
-      new PIDController(TrajectoryConstants.REALTIME_THETA_CONTROLLER_P, 0, 0), 
-      (ChassisSpeeds speeds) -> driveSubsystem.mergeDrive(speeds, rotationControl),
+      new PIDController(TrajectoryConstants.AUTO_TRANSLATION_P, 0, 0), 
+      new PIDController(TrajectoryConstants.AUTO_TRANSLATION_P, 0, 0), 
+      new PIDController(TrajectoryConstants.AUTO_THETA_P, 0, 0), 
+      (ChassisSpeeds speeds) -> mergeDrive(speeds),
         ()->false,
       // TODO: scuffed
       driveSubsystem);
@@ -91,17 +97,18 @@ public class FollowPathAndShoot extends DriveCommandBase {
     // distance (for speaker lookups)
     double distance = robotPos.getDistance(speakerPos);
     // arctangent for desired heading
-    desiredHeading = Math.atan2((speakerPos.getY() - robotPos.getY()), (speakerPos.getX() - robotPos.getX())) * 180.0 / Math.PI;
+    desiredHeading = Math.atan2((robotPos.getY() - speakerPos.getY()), (robotPos.getX() - speakerPos.getX()));
     // heading error (also used in isReadyToShoot())
-    headingError = driveSubsystem.getHeading() - desiredHeading - headingOffset;
+    headingError = desiredHeading - driveSubsystem.getHeading() - headingOffset;
     // get PID output
     rotationControl = thetaController.calculate(headingError, 0);
 
+    shooterSubsystem.setRPM(ShooterConstants.SHOOT_SPEAKER_RPM);
+    pivotSubsystem.setPivotFromDistance(distance);
 
     // if we are ready to shoot:
     if (shooterSubsystem.isReadyToShoot(headingError) && pivotSubsystem.isPivotWithinAcceptableError()) {
-    shooterSubsystem.setShooterRPMFromDistance(distance);
-    pivotSubsystem.setPivotFromDistance(distance);
+      shooterSubsystem.setRollerSpeed(ShooterConstants.ROLLER_SHOOT_SPEED);
     }
   }
 
@@ -117,4 +124,7 @@ public class FollowPathAndShoot extends DriveCommandBase {
     return controllerCommand.isFinished();
   }
 
+  private void mergeDrive(ChassisSpeeds speeds) {
+    driveSubsystem.drive(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, rotationControl, false);
+  }
 }

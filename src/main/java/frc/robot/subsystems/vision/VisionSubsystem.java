@@ -2,6 +2,7 @@ package frc.robot.subsystems.vision;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.Constants.FieldConstants;
@@ -12,25 +13,14 @@ import frc.robot.extras.LimelightHelpers.LimelightTarget_Fiducial;
 public class VisionSubsystem extends SubsystemBase {
 
   private LimelightResults currentlyUsedLimelightResults;
-  private LimelightResults frontLimelightResults = LimelightHelpers.getLatestResults(VisionConstants.FRONT_LIMELIGHT_NAME);;
-  private LimelightResults backLimelightResults = LimelightHelpers.getLatestResults(VisionConstants.BACK_LIMELIGHT_NAME);;
+  private LimelightResults frontLimelightResults = LimelightHelpers.getLatestResults(VisionConstants.FRONT_LIMELIGHT_NAME);
+  private LimelightResults backLimelightResults = LimelightHelpers.getLatestResults(VisionConstants.BACK_LIMELIGHT_NAME);
   private String currentlyUsedLimelight = VisionConstants.FRONT_LIMELIGHT_NAME;
   private boolean wasFrontLimelightUsedLast = false;
-  
-  // SingleLinearInterpolator leftSpeakerLookupValues;
-  // SingleLinearInterpolator speakerAngleLookupValues;
 
-  // SingleLinearInterpolator leftAmpLookupValues;
-  // SingleLinearInterpolator ampAngleLookupValues;
 
   public VisionSubsystem() {
     currentlyUsedLimelightResults = LimelightHelpers.getLatestResults(VisionConstants.FRONT_LIMELIGHT_NAME);
-    
-    // leftSpeakerLookupValues = new SingleLinearInterpolator(ShooterConstants.LEFT_MOTOR_SPEAKER_VALUES);
-    // speakerAngleLookupValues = new SingleLinearInterpolator(ShooterConstants.SPEAKER_PIVOT_SPEAKER_POSITION);
-
-    // leftAmpLookupValues = new SingleLinearInterpolator(ShooterConstants.LEFT_MOTOR_AMP_VALUES);
-    // ampAngleLookupValues = new SingleLinearInterpolator(ShooterConstants.SPEAKER_PIVOT_AMP_POSITION);
   }
 
   /**
@@ -49,12 +39,18 @@ public class VisionSubsystem extends SubsystemBase {
    * that is closest to an april tag. 
    */
   public Pose2d getPoseFromAprilTags() {
-    Pose2d botPose = LimelightHelpers.getBotPose2d(currentlyUsedLimelight);
-    // The origin of botpose is at the center of the field
-    double robotX = botPose.getX() + FieldConstants.FIELD_LENGTH_METERS / 2;
-    double robotY = botPose.getY() + FieldConstants.FIELD_WIDTH_METERS / 2;
-    Rotation2d robotRotation = botPose.getRotation();
-    return new Pose2d(robotX, robotY, robotRotation);
+    if (canSeeAprilTags()) {
+      Pose2d botPose = LimelightHelpers.getBotPose2d(currentlyUsedLimelight);
+      // The origin of botpose is at the center of the field
+      double robotX = botPose.getX() + FieldConstants.FIELD_LENGTH_METERS / 2;
+      double robotY = botPose.getY() + FieldConstants.FIELD_WIDTH_METERS / 2;
+      Rotation2d robotRotation = botPose.getRotation();
+      SmartDashboard.putBoolean("notag", false);
+      return new Pose2d(robotX, robotY, robotRotation);
+    } else {
+      SmartDashboard.putBoolean("notag", true);
+      return new Pose2d();
+    }
   }
 
   /**
@@ -145,6 +141,8 @@ public class VisionSubsystem extends SubsystemBase {
     currentlyUsedLimelightResults = currentlyUsedLimelight == VisionConstants.FRONT_LIMELIGHT_NAME
       ? frontLimelightResults : backLimelightResults;
 
+    SmartDashboard.putNumber("distance from apriltag", getDistanceFromClosestAprilTag());
+
     // Turns the limelight LEDs on if they can't see an april tag
     if (!canSeeAprilTags()) {
       LimelightHelpers.setLEDMode_ForceOn(VisionConstants.FRONT_LIMELIGHT_NAME);
@@ -155,26 +153,4 @@ public class VisionSubsystem extends SubsystemBase {
     }
   }
 
-  /**
-   * Gets the data needed for shooting into the speaker
-   * @return double[leftFlywheelSpeed shooterAngle, desiredHeading]
-   */
-  // public double[] getSpeakerShooterData() {
-  //   double[] shooterData = new double[3];
-  //   Translation2d pose = getPoseFromAprilTags().getTranslation();
-  //   Optional<Alliance> alliance = DriverStation.getAlliance();
-  //   boolean isRed;
-  //   if (alliance.isPresent()) {
-  //     isRed = alliance.get() == Alliance.Red;
-  //   } else {
-  //     isRed = true;
-  //   }
-  //   Translation2d speakerPosition = isRed ? new Translation2d(FieldConstants.RED_SPEAKER_X, FieldConstants.RED_SPEAKER_Y) : new Translation2d(FieldConstants.BLUE_SPEAKER_X, FieldConstants.BLUE_SPEAKER_Y);
-
-  //   double distance = pose.getDistance(speakerPosition);
-  //   shooterData[0] = leftSpeakerLookupValues.getLookupValue(distance); //Use a linear interpolator to determine speed for shooter
-  //   shooterData[1] = speakerAngleLookupValues.getLookupValue(distance); //Use a linear interpolator to determine angle for shooter
-  //   shooterData[2] = Math.atan2(speakerPosition.getY() - pose.getY(), speakerPosition.getX() - pose.getX()) * 180.0 * Math.PI; //Determine desired rotation of robot for shooter
-  //   return shooterData;
-  // }
 }

@@ -3,7 +3,9 @@
 package frc.robot.commands.drive;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.extras.MultiLinearInterpolator;
@@ -29,8 +31,8 @@ public abstract class DriveCommandBase extends Command {
    * @param visionSubsystem The subsystem for vision measurements
    */
   public DriveCommandBase(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem) {
-    this.visionSubsystem = visionSubsystem;
     this.driveSubsystem = driveSubsystem;
+    this.visionSubsystem = visionSubsystem;
     // It is important that you do addRequirements(driveSubsystem, visionSubsystem) in whatever command extends this
   }
 
@@ -60,6 +62,7 @@ public abstract class DriveCommandBase extends Command {
       if (currentTimeStampSeconds > lastTimeStampSeconds && ticksAfterSeeing > VisionConstants.FRAMES_BEFORE_ADDING_VISION_MEASUREMENT) {
         Pose2d limelightVisionMeasurement = visionSubsystem.getPoseFromAprilTags();
         driveSubsystem.addPoseEstimatorVisionMeasurement(limelightVisionMeasurement, Timer.getFPGATimestamp() - visionSubsystem.getLatencySeconds());
+        SmartDashboard.putString("llodometyr", limelightVisionMeasurement.toString());
       }
     } else {
       ticksAfterSeeing = 0;

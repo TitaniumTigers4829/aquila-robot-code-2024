@@ -4,10 +4,16 @@
 
 package frc.robot.extras;
 
+import java.util.Optional;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Constants.FieldConstants;
 
 /** Add your docs here. */
 public class SmarterDashboardRegistry {
@@ -17,11 +23,33 @@ public class SmarterDashboardRegistry {
   // isActive, isRedAlliance, isSpeaker
   private static boolean[] pathData = new boolean[]{false, false, false};
 
+  private static boolean isRed;
+  private static Pose2d ampPos;
+  private static Translation2d speakerPos;
+  private static Translation2d loadingStationPos;
+
+  public static void initialize() {
+    Optional<Alliance> alliance = DriverStation.getAlliance();
+    if (alliance.isPresent()) {
+      isRed = alliance.get() == Alliance.Red;
+    } else {
+      isRed = true;
+    }
+
+    ampPos = isRed ? new Pose2d(FieldConstants.RED_AMP_X, FieldConstants.RED_AMP_Y, FieldConstants.RED_AMP_ROTATION) : new Pose2d(FieldConstants.BLUE_AMP_X, FieldConstants.BLUE_AMP_Y, FieldConstants.BLUE_AMP_ROTATION);
+    speakerPos = isRed ? new Translation2d(FieldConstants.RED_SPEAKER_X, FieldConstants.RED_SPEAKER_Y) : new Translation2d(FieldConstants.BLUE_SPEAKER_X, FieldConstants.BLUE_SPEAKER_Y);
+    loadingStationPos = isRed ? new Translation2d(FieldConstants.RED_LOADING_STATION_X, FieldConstants.RED_LOADING_STATION_Y) : new Translation2d(FieldConstants.BLUE_LOADING_STATION_X, FieldConstants.BLUE_LOADING_STATION_Y);
+  }
+
   public static void setPose(Pose2d robotPose) {
     pose[0] = robotPose.getX();
     pose[1] = robotPose.getY();
-    pose[2] = robotPose.getRotation().getDegrees();
+    pose[2] = robotPose.getRotation().getRadians();
     SmartDashboard.putNumberArray("botPose", pose);
+  }
+
+  public static boolean isRed() {
+    return isRed;
   }
 
   public static void setLimelightPose(Pose2d limelightPose) {
@@ -55,5 +83,17 @@ public class SmarterDashboardRegistry {
 
   public static boolean[] getPathData() {
     return pathData;
+  }
+
+  public static Translation2d getSpeakerPos() {
+    return speakerPos;
+  }
+
+  public static Pose2d getAmpPos() {
+    return ampPos;
+  }
+
+  public static Translation2d getLoadingStationPos() {
+    return loadingStationPos;
   }
 }

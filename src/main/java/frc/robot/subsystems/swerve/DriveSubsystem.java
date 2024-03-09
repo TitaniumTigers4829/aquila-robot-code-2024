@@ -1,13 +1,12 @@
 package frc.robot.subsystems.swerve;
 
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+import java.util.Arrays;
 import java.util.Optional;
 
 import com.kauailabs.navx.frc.AHRS;
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.commands.PathfindHolonomic;
 
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.Vector;
@@ -22,8 +21,9 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.TrajectoryConstants;
 import frc.robot.Constants.VisionConstants;
@@ -46,9 +46,9 @@ public class DriveSubsystem extends SubsystemBase {
 
   private final AHRS gyro;
   private final SwerveDrivePoseEstimator odometry;
-  private Command currentPathfindingCommand;
+  // private Command currentPathfindingCommand;
 
-  private final Optional<DriverStation.Alliance> alliance;
+  private Optional<DriverStation.Alliance> alliance;
 
   private double gyroOffset = 0.0;
 
@@ -104,13 +104,12 @@ public class DriveSubsystem extends SubsystemBase {
   
     odometry = new SwerveDrivePoseEstimator(
       DriveConstants.DRIVE_KINEMATICS,
-      getRotation2d(),
+      getGyroRotation2d(),
       getModulePositions(),
-      new Pose2d(), // This is the position for where the robot starts the match, use setPose() to set it in autonomous init
+      new Pose2d(), // This is the position for where the robot starts the match, use resetOdometry() to set it in autonomous init
       stateStandardDeviations,
       visionMeasurementStandardDeviations
     );
-
     alliance = DriverStation.getAlliance();
     
     // Configure AutoBuilder
@@ -119,20 +118,20 @@ public class DriveSubsystem extends SubsystemBase {
       this::resetOdometry, 
       this::getRobotRelativeSpeeds, 
       this::drive, 
-      Constants.TrajectoryConstants.PATH_FOLLOWER_CONFIG,
+      TrajectoryConstants.CONFIG,
       ()->false,
       this
     );
   }
 
-  /**gets the chassis speeds */
+  /**gets the chassis speeds*/
   public ChassisSpeeds getRobotRelativeSpeeds() {
     return DriveConstants.DRIVE_KINEMATICS.toChassisSpeeds(
       frontLeftSwerveModule.getState(),
       frontRightSwerveModule.getState(),
       rearLeftSwerveModule.getState(),
       rearRightSwerveModule.getState()
-      );
+    );
   }
 
   /**
@@ -150,7 +149,7 @@ public class DriveSubsystem extends SubsystemBase {
     // SmartDashboard.putBoolean("isFieldRelative", fieldRelative);
     SwerveModuleState[] swerveModuleStates = DriveConstants.DRIVE_KINEMATICS.toSwerveModuleStates(
       fieldRelative
-      ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rotationSpeed, getRotation2d())
+      ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rotationSpeed, getOdometryAllianceRelativeRotation2d())
       : new ChassisSpeeds(xSpeed, ySpeed, rotationSpeed));
     SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, DriveConstants.MAX_SPEED_METERS_PER_SECOND);
     
@@ -161,18 +160,29 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public void drive(ChassisSpeeds speeds) {
-    drive(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, speeds.omegaRadiansPerSecond, true);
+    drive(-speeds.vxMetersPerSecond, -speeds.vyMetersPerSecond, -speeds.omegaRadiansPerSecond, false);
   }
 
   /**pid on the chassis rotation, used during auto */
   public void mergeDrive(ChassisSpeeds speeds, double rotationControl) {
     drive(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, rotationControl, false);
   }
+
   
-  
-  /** Returns the average drive velocity in radians/sec. */
-  public double getCharacterizationVelocity() {
-    return frontLeftSwerveModule.getCharacterizationVelocity();
+  /** Runs in a circle at omega. */
+  public void runWheelRadiusCharacterization(double omegaSpeed) {
+    drive(0, 0, omegaSpeed, false);
+  } 
+
+  /** Get the position of all drive wheels in radians. */
+  public double[] getWheelRadiusCharacterizationPosition() {
+    double[] wheelPositions = {
+      frontLeftSwerveModule.getState().angle.getRadians(),
+      frontRightSwerveModule.getState().angle.getRadians(),
+      rearLeftSwerveModule.getState().angle.getRadians(),
+      rearRightSwerveModule.getState().angle.getRadians()
+    };
+    return wheelPositions;
   }
 
   /**
@@ -186,24 +196,25 @@ public class DriveSubsystem extends SubsystemBase {
   /**
    * Returns a Rotation2d for the heading of the robot.
    */  
-  public Rotation2d getRotation2d() {
+  public Rotation2d getGyroRotation2d() {
     return Rotation2d.fromDegrees(getHeading());
   }
 
   /**
-   * Returns a Rotation2d for the heading of the robot relative to the
-   * field from the driver's perspective. This method is needed so that the
-   * drive command and poseEstimator don't fight each other.
+   * Returns a Rotation2d for the heading of the robot.
+   */  
+  public Rotation2d getGyroFieldRelativeRotation2d() {
+    return Rotation2d.fromDegrees(getHeading() + getAllianceAngleOffset());
+  }
+
+  /**
+   * Returns 0 degrees if the robot is on the blue alliance, 180 if on the red alliance.
    */
-  public Rotation2d getFieldRelativeRotation2d() {
-    // Because the field isn't vertically symmetrical, we have the pose coordinates always start from the bottom left
-    double rotationDegrees = getHeading();
-    if (alliance.isPresent() && alliance.get() == DriverStation.Alliance.Blue) {
-      rotationDegrees += 0;
-    } else {
-      rotationDegrees += 180;
-    }
-    return Rotation2d.fromDegrees(rotationDegrees % 360);
+  public double getAllianceAngleOffset() {
+    alliance = DriverStation.getAlliance();
+    double offset = alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red ? 180.0 : 0.0;
+    SmartDashboard.putNumber("offset", offset);
+    return offset;
   }
   
   /**
@@ -220,6 +231,7 @@ public class DriveSubsystem extends SubsystemBase {
    */
   public void zeroHeading() {
     gyro.reset();
+    gyroOffset = 0;
   }
 
   /**
@@ -231,13 +243,29 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   /**
+   * Returns a Rotation2d for the heading of the robot
+   */
+  public Rotation2d getOdometryRotation2d() {
+    return getPose().getRotation();
+  }
+
+  /**
+   * Returns a Rotation2d for the heading of the robot relative to the
+   * field from the driver's perspective. This method is needed so that the
+   * drive command and poseEstimator don't fight each other. It uses odometry rotation.
+   */
+  public Rotation2d getOdometryAllianceRelativeRotation2d() {
+    return getPose().getRotation().plus(Rotation2d.fromDegrees(getAllianceAngleOffset())); 
+  }
+
+  /**
    * Updates the pose estimator with the pose calculated from the swerve
    * modules.
    */
   public void addPoseEstimatorSwerveMeasurement() {
-    // TODO: experiment with using updateWithTime()
-    odometry.update(
-      getRotation2d(),
+    odometry.updateWithTime(
+      Timer.getFPGATimestamp(),
+      getGyroRotation2d(),
       getModulePositions()
     );
   }
@@ -269,11 +297,10 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   /**
-   * Resets the odometry to the specified pose, but keeps the current 
-   * rotation.
+   * Resets the odometry to the specified pose and rotation.
    */
   public void resetOdometry(Pose2d pose) {
-    odometry.resetPosition(getRotation2d(), getModulePositions(), pose);
+    odometry.resetPosition(getGyroRotation2d(), getModulePositions(), pose);
   }
 
   /**
@@ -292,12 +319,6 @@ public class DriveSubsystem extends SubsystemBase {
     return swerveModulePositions;
   }
 
-  public void setCharacterizationVoltage(double volts) {
-    frontLeftSwerveModule.setVoltage(volts);
-    frontRightSwerveModule.setVoltage(volts);
-    rearLeftSwerveModule.setVoltage(volts);
-    rearRightSwerveModule.setVoltage(volts);
-  }
   /**
    * Sets the modules to the specified states.
    * @param desiredStates The desired states for the swerve modules. The
@@ -313,50 +334,12 @@ public class DriveSubsystem extends SubsystemBase {
     rearRightSwerveModule.setDesiredState(desiredStates[3]);
   }
 
-  /**
-   * builds a pathfinding command
-   * @param finalX  final x pos of the path in meters
-   * @param finalY final y pos of the path in meters
-   * @param finalRot final rotation of the path in degrees
-   * @return
-   */
-  public Command buildPathfindingCommand(double finalX, double finalY, double finalRot) {
-    Pose2d endPose = new Pose2d(finalX, finalY, Rotation2d.fromDegrees(finalRot));
-
-    // create the following command
-    currentPathfindingCommand = new PathfindHolonomic(
-      endPose,
-      TrajectoryConstants.PATH_CONSTRAINTS,
-      0.0, // end velocity
-      this::getPose,
-      this::getRobotRelativeSpeeds,
-      this::drive,
-      TrajectoryConstants.PATH_FOLLOWER_CONFIG,
-      0.0, // distance to travel before rotating
-      this
-    );
-
-    return currentPathfindingCommand;
-  }
-
-  /**
-   * gets the pathfinding command
-   */
-  public Command getPathfindingCommand() {
-    return currentPathfindingCommand;
-  }
-
-  /**
-   * cancels the pathfinding command
-   */
-  public void cancelPathfindingCommand() {
-    if (currentPathfindingCommand != null) {
-      currentPathfindingCommand.cancel();
-    }
-  }
-
   public void periodic() {
-    SmartDashboard.putString("odometry", odometry.getEstimatedPosition().toString());
+    Pose2d pose = getPose();
+    SmarterDashboardRegistry.setPose(pose);
+    SmartDashboard.putBoolean("screwed", Math.abs(pose.getX()) > 20);
+    SmartDashboard.putNumber("heading", getHeading());
+    SmartDashboard.putString("odometry", pose.toString());
+    // SmartDashboard.putNumber("offset", rearLeftSwerveModule.getState().angle.getRotations());
   }
-  
 }
