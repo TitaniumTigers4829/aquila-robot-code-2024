@@ -31,8 +31,6 @@ public class DriveToAmp extends DriveCommandBase {
   private final DriveSubsystem driveSubsystem;
   private final VisionSubsystem visionSubsystem;
 
-  // private final BooleanSupplier isFinished;
-//   private final double finalX, finalY, finalRot;
   private boolean isRed = false;
   private Pose2d ampPos;
 
@@ -43,17 +41,13 @@ public class DriveToAmp extends DriveCommandBase {
     super(driveSubsystem, visionSubsystem);
     this.driveSubsystem = driveSubsystem;
     this.visionSubsystem = visionSubsystem;
-    // this.finalX = finalX;
-    // this.finalY = finalY;
-    // this.finalRot = finalRot;
-    // this.isFinished = isFinished;
     addRequirements(driveSubsystem, visionSubsystem);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-   driveSubsystem.resetOdometry(new Pose2d(0,0,Rotation2d.fromDegrees(0)));
+   driveSubsystem.resetOdometry(driveSubsystem.getPose());
 
     // driveSubsystem.resetOdometry(driveSubsystem.getPose());
     Optional<Alliance> alliance = DriverStation.getAlliance();
