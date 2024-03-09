@@ -35,11 +35,12 @@ import frc.robot.commands.intake.TowerIntake;
 import frc.robot.extras.SmarterDashboardRegistry;
 import frc.robot.commands.shooter.ManualPivot;
 import frc.robot.commands.intake.IntakeAuto;
-import frc.robot.commands.intake.ManualIntakePivot;
 import frc.robot.commands.shooter.ShootAmp;
 import frc.robot.commands.shooter.ShootSpeaker;
 import frc.robot.commands.shooter.SpinUpForSpeaker;
 import frc.robot.commands.shooter.SubwooferShot;
+import frc.robot.commands.testing.WheelRadiusCharacterization;
+import frc.robot.commands.testing.WheelRadiusCharacterization.Direction;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.leds.LEDSubsystem;
 import frc.robot.subsystems.pivot.PivotSubsystem;
@@ -193,8 +194,7 @@ public class RobotContainer {
     driverLeftDirectionPad.onTrue(new InstantCommand(() -> driveSubsystem.resetOdometry(visionSubsystem.getPoseFromAprilTags())));
 
     // OPERATOR BUTTONS
-    operatorBButton.whileTrue(new ManualIntakePivot(intakeSubsystem, ()->modifyAxisCubed(operatorLeftStickY)));
-
+    operatorYButton.whileTrue(new WheelRadiusCharacterization(driveSubsystem, Direction.CLOCKWISE));
     operatorRightTrigger.whileTrue(new ShootSpeaker(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, driverLeftStickX, driverLeftStickY, driverRightBumper, ledSubsystem));
     operatorRightBumper.whileTrue(new ShootAmp(shooterSubsystem, pivotSubsystem, ledSubsystem));
     operatorDpadUp.whileTrue(new SubwooferShot(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, driverLeftStickX, operatorLeftStickY, driverRightStickX, driverRightBumper, ledSubsystem));

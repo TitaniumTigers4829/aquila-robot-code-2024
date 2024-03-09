@@ -2,6 +2,7 @@ package frc.robot.subsystems.swerve;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+import java.util.Arrays;
 import java.util.Optional;
 
 import com.kauailabs.navx.frc.AHRS;
@@ -165,6 +166,23 @@ public class DriveSubsystem extends SubsystemBase {
   /**pid on the chassis rotation, used during auto */
   public void mergeDrive(ChassisSpeeds speeds, double rotationControl) {
     drive(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, rotationControl, false);
+  }
+
+  
+  /** Runs in a circle at omega. */
+  public void runWheelRadiusCharacterization(double omegaSpeed) {
+    drive(0, 0, omegaSpeed, false);
+  } 
+
+  /** Get the position of all drive wheels in radians. */
+  public double[] getWheelRadiusCharacterizationPosition() {
+    double[] wheelPositions = {
+      frontLeftSwerveModule.getState().angle.getRadians(),
+      frontRightSwerveModule.getState().angle.getRadians(),
+      rearLeftSwerveModule.getState().angle.getRadians(),
+      rearRightSwerveModule.getState().angle.getRadians()
+    };
+    return wheelPositions;
   }
 
   /**
