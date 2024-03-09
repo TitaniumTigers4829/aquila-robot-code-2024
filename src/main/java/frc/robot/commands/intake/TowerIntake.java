@@ -36,7 +36,6 @@ public class TowerIntake extends Command {
   @Override
   public void execute() {
     pivotSubsystem.setPivot(PivotConstants.PIVOT_INTAKE_ANGLE);
-    //intakeSubsystem.setIntakeAngle(IntakeConstants.OTB_INTAKE_ANGLE);
 
     if (pivotSubsystem.isPivotWithinAcceptableError()) {
       if (intakeReverse) {
