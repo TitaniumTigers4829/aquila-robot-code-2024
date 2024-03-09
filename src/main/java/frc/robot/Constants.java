@@ -339,22 +339,17 @@ public final class Constants {
     public static final double DRIVE_BASE_RADIUS = Math.sqrt(Math.pow(DriveConstants.TRACK_WIDTH, 2) + Math.pow(DriveConstants.WHEEL_BASE, 2));
     public static final double MAX_SPEED = 5.0;
     public static final double MAX_ACCELERATION = 1;
-    public static final double REALTIME_TRANSLATION_CONTROLLER_P = 9; // 6.5
-    public static final double REALTIME_TRANSLATION_CONTROLLER_I  = 0.000;
-    public static final double REALTIME_TRANSLATION_CONTROLLER_D = 0.0;
-    public static final double REALTIME_THETA_CONTROLLER_P = 8;
-    public static final double AUTO_SHOOT_HEADING_OFFSET = 2;
+
+    public static final double AUTO_TRANSLATION_P = 9; // 6.5
+    public static final double AUTO_THETA_P = 8;
+    public static final double AUTO_SHOOT_HEADING_OFFSET = 2; 
 
     public static final double MAX_ANGULAR_SPEED_RADIANS_PER_SECOND = 2;
     public static final double MAX_ANGULAR_SPEED_RADIANS_PER_SECOND_SQUARED = 2;
-    // The length of the field in the x direction (left to right)
-    public static final double FIELD_LENGTH_METERS = 16.54175;
-    // The length of the field in the y direction (top to bottom)
-    public static final double FIELD_WIDTH_METERS = 8.0137;
 
-    public static final PIDConstants TRANSLATION_CONSTANTS = new PIDConstants(0.2);
-    public static final PIDConstants ROTATION_CONSTANTS = new PIDConstants(0.1);
-    public static final HolonomicPathFollowerConfig CONFIG = new HolonomicPathFollowerConfig(TRANSLATION_CONSTANTS, ROTATION_CONSTANTS, MAX_SPEED, 0.876, new ReplanningConfig());
+    public static final PIDConstants REALTIME_TRANSLATION_PID = new PIDConstants(0.2, 0, 0);
+    public static final PIDConstants REALTIME_THETA_PID = new PIDConstants(0.1, 0, 0 );
+    public static final HolonomicPathFollowerConfig CONFIG = new HolonomicPathFollowerConfig(REALTIME_TRANSLATION_PID, REALTIME_THETA_PID, MAX_SPEED, 0.876, new ReplanningConfig());
 
     // Constraint for the motion profiled robot angle controller
     public static final TrapezoidProfile.Constraints THETA_CONTROLLER_CONSTRAINTS =

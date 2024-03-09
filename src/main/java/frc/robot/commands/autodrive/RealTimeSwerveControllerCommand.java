@@ -80,8 +80,8 @@ public class RealTimeSwerveControllerCommand extends Command {
     this.trajectory = trajectory;
     this.poseSupplier = poseSupplier;
     this.controller = new PPHolonomicDriveController(
-      TrajectoryConstants.TRANSLATION_CONSTANTS, 
-      TrajectoryConstants.ROTATION_CONSTANTS, 
+      TrajectoryConstants.REALTIME_TRANSLATION_PID, 
+      TrajectoryConstants.REALTIME_THETA_PID, 
       TrajectoryConstants.MAX_SPEED, 
       TrajectoryConstants.DRIVE_BASE_RADIUS);
     this.outputChassisSpeeds = outputChassisSpeeds;
@@ -176,8 +176,8 @@ public class RealTimeSwerveControllerCommand extends Command {
     this.poseSupplier = poseSupplier;
     this.kinematics = kinematics;
     this.controller = new PPHolonomicDriveController(
-      TrajectoryConstants.TRANSLATION_CONSTANTS, 
-      TrajectoryConstants.ROTATION_CONSTANTS, 
+      TrajectoryConstants.REALTIME_TRANSLATION_PID, 
+      TrajectoryConstants.REALTIME_THETA_PID, 
       TrajectoryConstants.MAX_SPEED, 
       TrajectoryConstants.DRIVE_BASE_RADIUS);
     this.outputModuleStates = outputModuleStates;
