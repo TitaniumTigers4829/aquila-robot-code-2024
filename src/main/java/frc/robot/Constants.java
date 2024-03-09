@@ -342,7 +342,8 @@ public final class Constants {
 
     public static final double AUTO_TRANSLATION_P = 9; // 6.5
     public static final double AUTO_THETA_P = 8;
-    public static final double AUTO_SHOOT_HEADING_OFFSET = 2; 
+    
+    public static final double AUTO_SHOOT_HEADING_OFFSET = 2;
 
     public static final double MAX_ANGULAR_SPEED_RADIANS_PER_SECOND = 2;
     public static final double MAX_ANGULAR_SPEED_RADIANS_PER_SECOND_SQUARED = 2;
