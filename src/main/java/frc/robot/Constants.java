@@ -55,9 +55,9 @@ public final class Constants {
 
     // Wheel base and track width are measured by the center of the swerve modules, not the frame of the robot
     // Distance between centers of right and left wheels on robot
-    public static final double TRACK_WIDTH = Units.inchesToMeters(26);
+    public static final double TRACK_WIDTH = Units.inchesToMeters(21.25);
     // Distance between front and back wheels on robot
-    public static final double WHEEL_BASE = Units.inchesToMeters(26);
+    public static final double WHEEL_BASE = Units.inchesToMeters(21.25);
 
     public static final SwerveDriveKinematics DRIVE_KINEMATICS = new SwerveDriveKinematics(
       new Translation2d(WHEEL_BASE / 2, TRACK_WIDTH / 2), // Front Left
@@ -77,7 +77,7 @@ public final class Constants {
     public static final int REAR_RIGHT_TURN_MOTOR_ID = 7;
 
     public static final int FRONT_LEFT_CANCODER_ID = 11;
-    public static final int FRONT_RIGHT_CANCODER_ID = 0;
+    public static final int FRONT_RIGHT_CANCODER_ID = 12;
     public static final int REAR_LEFT_CANCODER_ID = 14;
     public static final int REAR_RIGHT_CANCODER_ID = 13;
 
@@ -111,7 +111,7 @@ public final class Constants {
   
   public static final class ModuleConstants { 
     public static final double DRIVE_GEAR_RATIO = 4.59;
-    public static final double WHEEL_DIAMETER_METERS = Units.inchesToMeters(4);
+    public static final double WHEEL_DIAMETER_METERS = Units.inchesToMeters(3.8);
     public static final double WHEEL_CIRCUMFERENCE_METERS = WHEEL_DIAMETER_METERS * Math.PI;
     public static final double DRIVE_TO_METERS =  WHEEL_CIRCUMFERENCE_METERS / DRIVE_GEAR_RATIO;
     public static final double DRIVE_TO_METERS_PER_SECOND = WHEEL_CIRCUMFERENCE_METERS / DRIVE_GEAR_RATIO;
@@ -318,12 +318,14 @@ public final class Constants {
 
   public static final class TrajectoryConstants {
 
-    public static final double DRIVE_BASE_RADIUS = Math.sqrt(Math.pow(DriveConstants.TRACK_WIDTH, 2) + Math.pow(DriveConstants.WHEEL_BASE, 2));
+    public static final double DRIVE_BASE_DIAMETER = Math.sqrt(Math.pow(DriveConstants.TRACK_WIDTH, 2) + Math.pow(DriveConstants.WHEEL_BASE, 2));
     public static final double MAX_SPEED = 5.0;
     public static final double MAX_ACCELERATION = 1;
 
-    public static final double AUTO_TRANSLATION_P = 9; // 6.5
-    public static final double AUTO_THETA_P = 8;
+    public static final double AUTO_TRANSLATION_P = 1.5; // 0.95
+    public static final double AUTO_TRANSLATION_D = 0; // 2.4 | 9
+    public static final double AUTO_THETA_P = 1.6; // 2
+    public static final double AUTO_THETA_D = 0.1;
     
     public static final double AUTO_SHOOT_HEADING_OFFSET = 2;
 

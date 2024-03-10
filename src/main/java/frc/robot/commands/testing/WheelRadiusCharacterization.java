@@ -3,6 +3,7 @@ package frc.robot.commands.testing;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -14,7 +15,7 @@ import java.util.function.DoubleSupplier;
 public class WheelRadiusCharacterization extends Command {
   private DriveSubsystem driveSubsystem;
   private static final double characterizationSpeed = 0.1;
-  private static final double driveRadius = TrajectoryConstants.DRIVE_BASE_RADIUS;
+  private static final double driveRadius = TrajectoryConstants.DRIVE_BASE_DIAMETER;
   private static DoubleSupplier gyroYawRadsSupplier;
 
   public enum Direction {
@@ -40,17 +41,15 @@ public class WheelRadiusCharacterization extends Command {
   public WheelRadiusCharacterization(DriveSubsystem driveSubsystem, Direction omegaDirection) {
     this.driveSubsystem = driveSubsystem;
     this.omegaDirection = omegaDirection.value;
-    addRequirements(driveSubsystem);
+    addRequirements(driveSubsystem) ;
   }
 
   @Override
   public void initialize() {
     // Reset
-    gyroYawRadsSupplier = ()-> driveSubsystem.getPose().getRotation().getRadians();
-    lastGyroYawRads = gyroYawRadsSupplier.getAsDouble();
-    accumGyroYawRads = 0.0;
-
+    driveSubsystem.zeroHeading();
     startWheelPositions = driveSubsystem.getWheelRadiusCharacterizationPosition();
+    lastGyroYawRads = driveSubsystem.getGyroRotation2d().getRadians();
 
     omegaLimiter.reset(0);
   }
@@ -62,8 +61,8 @@ public class WheelRadiusCharacterization extends Command {
         omegaLimiter.calculate(omegaDirection * characterizationSpeed));
 
     // Get yaw and wheel positions
-    accumGyroYawRads += MathUtil.angleModulus(gyroYawRadsSupplier.getAsDouble() - lastGyroYawRads);
-    lastGyroYawRads = gyroYawRadsSupplier.getAsDouble();
+    accumGyroYawRads = driveSubsystem.getGyroRotation2d().getRadians() - lastGyroYawRads;
+    // accumGyroYawRads += MathUtil.angleModulus(driveSubsystem.getPose().getRotation().getRadians() - lastGyroYawRads);
     double averageWheelPosition = 0.0;
     double[] wheelPositiions = driveSubsystem.getWheelRadiusCharacterizationPosition();
     for (int i = 0; i < 4; i++) {
@@ -72,6 +71,7 @@ public class WheelRadiusCharacterization extends Command {
     averageWheelPosition /= 4.0;
 
     currentEffectiveWheelRadius = (accumGyroYawRads * driveRadius) / averageWheelPosition;
+    SmartDashboard.putNumber("Drive/RadiusCharacterization/driveRadius",  driveRadius);
     SmartDashboard.putNumber("Drive/RadiusCharacterization/DrivePosition",  averageWheelPosition);
     SmartDashboard.putNumber("Drive/RadiusCharacterization/AccumGyroYawRads",  accumGyroYawRads);
     SmartDashboard.putNumber("Drive/RadiusCharacterization/CurrentWheelRadiusInches", Units.metersToInches(currentEffectiveWheelRadius));

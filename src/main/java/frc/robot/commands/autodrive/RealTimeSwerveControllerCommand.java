@@ -83,7 +83,7 @@ public class RealTimeSwerveControllerCommand extends Command {
       TrajectoryConstants.REALTIME_TRANSLATION_PID, 
       TrajectoryConstants.REALTIME_THETA_PID, 
       TrajectoryConstants.MAX_SPEED, 
-      TrajectoryConstants.DRIVE_BASE_RADIUS);
+      TrajectoryConstants.DRIVE_BASE_DIAMETER);
     this.outputChassisSpeeds = outputChassisSpeeds;
     this.outputModuleStates = null;
     this.kinematics = null;
@@ -179,7 +179,7 @@ public class RealTimeSwerveControllerCommand extends Command {
       TrajectoryConstants.REALTIME_TRANSLATION_PID, 
       TrajectoryConstants.REALTIME_THETA_PID, 
       TrajectoryConstants.MAX_SPEED, 
-      TrajectoryConstants.DRIVE_BASE_RADIUS);
+      TrajectoryConstants.DRIVE_BASE_DIAMETER);
     this.outputModuleStates = outputModuleStates;
     this.outputChassisSpeeds = null;
     this.useKinematics = true;

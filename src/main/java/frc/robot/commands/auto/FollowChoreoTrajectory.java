@@ -37,7 +37,7 @@ public class FollowChoreoTrajectory extends DriveCommandBase {
       driveSubsystem::getPose, 
       new PIDController(TrajectoryConstants.AUTO_TRANSLATION_P,0, 0), 
       new PIDController(TrajectoryConstants.AUTO_TRANSLATION_P, 0, 0), 
-      new PIDController(TrajectoryConstants.AUTO_THETA_P, 0, 0), 
+      new PIDController(TrajectoryConstants.AUTO_THETA_P, 0, TrajectoryConstants.AUTO_THETA_D), 
       (ChassisSpeeds speeds) -> driveSubsystem.drive(speeds),
       ()->false,
       driveSubsystem

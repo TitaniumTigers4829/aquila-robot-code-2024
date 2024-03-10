@@ -177,10 +177,10 @@ public class DriveSubsystem extends SubsystemBase {
   /** Get the position of all drive wheels in radians. */
   public double[] getWheelRadiusCharacterizationPosition() {
     double[] wheelPositions = {
-      frontLeftSwerveModule.getState().angle.getRadians(),
-      frontRightSwerveModule.getState().angle.getRadians(),
-      rearLeftSwerveModule.getState().angle.getRadians(),
-      rearRightSwerveModule.getState().angle.getRadians()
+      frontLeftSwerveModule.getDrivePositionRadians(),
+      frontRightSwerveModule.getDrivePositionRadians(),
+      rearLeftSwerveModule.getDrivePositionRadians(),
+      rearRightSwerveModule.getDrivePositionRadians()
     };
     return wheelPositions;
   }
