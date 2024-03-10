@@ -118,7 +118,7 @@ public final class Constants {
 
     //TODO: Test these:
     public static final double DRIVE_SUPPLY_LIMIT = 40.0;
-    public static final double DRIVE_STATOR_LIMIT = 55.0;  // TODO: Do we need this? -Z
+    public static final double DRIVE_STATOR_LIMIT = 50.0;  
 
     public static final double TURN_P = 116.0; 
     public static final double TURN_I = 0.0;
@@ -322,8 +322,8 @@ public final class Constants {
     public static final double MAX_SPEED = 5.0;
     public static final double MAX_ACCELERATION = 1;
 
-    public static final double AUTO_TRANSLATION_P = 1.5; // 0.95
-    public static final double AUTO_TRANSLATION_D = 0; // 2.4 | 9
+    public static final double AUTO_TRANSLATION_P = 3.0; // 1.9
+    public static final double AUTO_TRANSLATION_D = 0.1; // 2.4 | 9
     public static final double AUTO_THETA_P = 1.6; // 2
     public static final double AUTO_THETA_D = 0.1;
     

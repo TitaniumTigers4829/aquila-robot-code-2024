@@ -9,6 +9,8 @@ import com.choreo.lib.ChoreoTrajectory;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.trajectory.TrajectoryConfig;
+import edu.wpi.first.math.trajectory.constraint.TrajectoryConstraint;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.TrajectoryConstants;
 import frc.robot.commands.drive.DriveCommandBase;
@@ -35,8 +37,8 @@ public class FollowChoreoTrajectory extends DriveCommandBase {
     controllerCommand = Choreo.choreoSwerveCommand(
       traj,
       driveSubsystem::getPose, 
-      new PIDController(TrajectoryConstants.AUTO_TRANSLATION_P,0, 0), 
-      new PIDController(TrajectoryConstants.AUTO_TRANSLATION_P, 0, 0), 
+      new PIDController(TrajectoryConstants.AUTO_TRANSLATION_P, TrajectoryConstants.AUTO_TRANSLATION_I, TrajectoryConstants.AUTO_TRANSLATION_D), 
+      new PIDController(TrajectoryConstants.AUTO_TRANSLATION_P, TrajectoryConstants.AUTO_TRANSLATION_I, TrajectoryConstants.AUTO_TRANSLATION_D), 
       new PIDController(TrajectoryConstants.AUTO_THETA_P, 0, TrajectoryConstants.AUTO_THETA_D), 
       (ChassisSpeeds speeds) -> driveSubsystem.drive(speeds),
       ()->false,

@@ -41,7 +41,7 @@ public class WheelRadiusCharacterization extends Command {
   public WheelRadiusCharacterization(DriveSubsystem driveSubsystem, Direction omegaDirection) {
     this.driveSubsystem = driveSubsystem;
     this.omegaDirection = omegaDirection.value;
-    addRequirements(driveSubsystem) ;
+    addRequirements(driveSubsystem);
   }
 
   @Override
