@@ -20,6 +20,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.Unit;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 
 /**
@@ -332,6 +333,9 @@ public final class Constants {
 
     // TODO: calc
     public static final double NOTE_LAUNCH_VELOCITY = 10.1;
+
+    public static final double SHOOTER_HEIGHT = Units.inchesToMeters(30);
+    public static final double SPEAKER_HEIGHT = Units.inchesToMeters(80);
   }
 
   public static final class TrajectoryConstants {

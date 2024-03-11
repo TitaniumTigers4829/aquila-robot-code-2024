@@ -112,8 +112,8 @@ public class RobotContainer {
   }
 
   private static double[] modifyAxisCubedPolar(DoubleSupplier xJoystick, DoubleSupplier yJoystick) {
-    double xInput = deadband(xJoystick.getAsDouble(), 0.2);
-    double yInput = deadband(yJoystick.getAsDouble(), 0.2);
+    double xInput = deadband(xJoystick.getAsDouble(), 0.1);
+    double yInput = deadband(yJoystick.getAsDouble(), 0.1);
     if (Math.abs(xInput) > 0 && Math.abs(yInput) > 0) {
       double theta = Math.atan(xInput / yInput);
       double hypotenuse = Math.sqrt(xInput * xInput + yInput * yInput);
@@ -181,8 +181,8 @@ public class RobotContainer {
 
     driveSubsystem.setDefaultCommand(driveCommand);
 
-    // DRIVER BUTTONS
-    // Driver Intake 
+    // DRIVER BUTTONS 
+    // Driver Intake
     // Driver should be allowed to do under the bumper intake to avoid lag with operator. Should not be able to do OTB because should be focused on driving and not worry too much about other obstacles and robots
     driverLeftTrigger.whileTrue(new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem, false, ledSubsystem));
     driverLeftBumper.whileTrue(new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem, true, ledSubsystem));
