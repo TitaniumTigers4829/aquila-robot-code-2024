@@ -217,6 +217,6 @@ public class RobotContainer {
     // This is just a failsafe, pose should be reset at the beginning of auto
     driveSubsystem.resetOdometry(new Pose2d(driveSubsystem.getPose().getX(), driveSubsystem.getPose().getY(), 
       Rotation2d.fromDegrees(driveSubsystem.getAllianceAngleOffset())));
-    return autoChooser.getSelected();
+    return new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "red amp side four note 1", true);
   }
 }
