@@ -117,8 +117,8 @@ public final class Constants {
     public static final double DRIVE_TO_METERS_PER_SECOND = WHEEL_CIRCUMFERENCE_METERS / DRIVE_GEAR_RATIO;
 
     //TODO: Test these:
-    public static final double DRIVE_SUPPLY_LIMIT = 50.0;
-    public static final double DRIVE_STATOR_LIMIT = 60.0;  
+    public static final double DRIVE_SUPPLY_LIMIT = 40.0;
+    public static final double DRIVE_STATOR_LIMIT = 50.0;  
 
     public static final double TURN_P = 116.0; 
     public static final double TURN_I = 0.0;
@@ -320,11 +320,11 @@ public final class Constants {
 
     public static final double DRIVE_BASE_DIAMETER = Math.sqrt(Math.pow(DriveConstants.TRACK_WIDTH, 2) + Math.pow(DriveConstants.WHEEL_BASE, 2));
     public static final double MAX_SPEED = 5.0;
-    public static final double MAX_ACCELERATION = 1;
+    public static final double MAX_ACCELERATION = 3;
 
-    public static final double AUTO_TRANSLATION_P = 1.6; // 3.0; // 1.9
+    public static final double AUTO_TRANSLATION_P = 1.7; // 1.6
     public static final double AUTO_TRANSLATION_D = 0.2; // 0.1; // 2.4 | 9
-    public static final double AUTO_THETA_P = 5.0; // 1.6; // 2
+    public static final double AUTO_THETA_P = 5.0; // 5
     public static final double AUTO_THETA_D = 0.4; // 0.1;
     
     public static final double AUTO_SHOOT_HEADING_OFFSET = 2;
@@ -332,8 +332,8 @@ public final class Constants {
     public static final double MAX_ANGULAR_SPEED_RADIANS_PER_SECOND = 2;
     public static final double MAX_ANGULAR_SPEED_RADIANS_PER_SECOND_SQUARED = 2;
 
-    public static final PIDConstants REALTIME_TRANSLATION_PID = new PIDConstants(0.2, 0, 0);
-    public static final PIDConstants REALTIME_THETA_PID = new PIDConstants(0.1, 0, 0 );
+    public static final PIDConstants REALTIME_TRANSLATION_PID = new PIDConstants(0.5, 0, 0); // 0.2
+    public static final PIDConstants REALTIME_THETA_PID = new PIDConstants(15, 0, 0 ); // 0.1
     public static final HolonomicPathFollowerConfig CONFIG = new HolonomicPathFollowerConfig(REALTIME_TRANSLATION_PID, REALTIME_THETA_PID, MAX_SPEED, 0.876, new ReplanningConfig());
 
     // Constraint for the motion profiled robot angle controller

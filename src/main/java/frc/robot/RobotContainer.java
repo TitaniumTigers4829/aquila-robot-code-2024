@@ -8,9 +8,7 @@ import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -18,9 +16,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.JoystickConstants;
-import frc.robot.Constants.TrajectoryConstants;
 import frc.robot.Constants.LEDConstants.LEDProcess;
 import frc.robot.commands.auto.BlueNoteEight;
 import frc.robot.commands.auto.BlueNoteThree;
@@ -29,14 +25,12 @@ import frc.robot.commands.auto.FollowChoreoTrajectory;
 import frc.robot.commands.auto.RedAmpSideFourNote;
 import frc.robot.commands.auto.RedNoteThree;
 import frc.robot.commands.auto.RedShootTaxi;
-import frc.robot.commands.autodrive.AutoBuilderDriveToPos;
 import frc.robot.commands.autodrive.DriveToAmp;
 import frc.robot.commands.auto.RedNoteEight;
 import frc.robot.commands.drive.Drive;
 import frc.robot.commands.intake.TowerIntake;
 import frc.robot.extras.SmarterDashboardRegistry;
 import frc.robot.commands.shooter.ManualPivot;
-import frc.robot.commands.intake.IntakeAuto;
 import frc.robot.commands.shooter.ShootAmp;
 import frc.robot.commands.shooter.ShootSpeaker;
 import frc.robot.commands.shooter.SpinUpForSpeaker;
@@ -114,8 +108,8 @@ public class RobotContainer {
   }
 
   private static double[] modifyAxisCubedPolar(DoubleSupplier xJoystick, DoubleSupplier yJoystick) {
-    double xInput = deadband(xJoystick.getAsDouble(), 0.2);
-    double yInput = deadband(yJoystick.getAsDouble(), 0.2);
+    double xInput = deadband(xJoystick.getAsDouble(), 0.1);
+    double yInput = deadband(yJoystick.getAsDouble(), 0.1);
     if (Math.abs(xInput) > 0 && Math.abs(yInput) > 0) {
       double theta = Math.atan(xInput / yInput);
       double hypotenuse = Math.sqrt(xInput * xInput + yInput * yInput);
@@ -194,7 +188,7 @@ public class RobotContainer {
     // Resets the robot angle in the odometry, factors in which alliance the robot is on
     // driverRightDirectionPad.onTrue(new InstantCommand(() -> driveSubsystem.resetOdometry(new Pose2d(driveSubsystem.getPose().getX(), driveSubsystem.getPose().getY(), 
     //       Rotation2d.fromDegrees(driveSubsystem.getAllianceAngleOffset())))));
-    driverRightDirectionPad.onTrue(new InstantCommand(() -> driveSubsystem.resetOdometry(new Pose2d(0, 0, 
+    driverRightDirectionPad.onTrue(new InstantCommand(() -> driveSubsystem.resetOdometry(new Pose2d(15.18017578125, 5.555154800415039, 
           Rotation2d.fromDegrees(driveSubsystem.getAllianceAngleOffset())))));
     driverLeftDirectionPad.onTrue(new InstantCommand(() -> driveSubsystem.resetOdometry(visionSubsystem.getPoseFromAprilTags())));
 
@@ -217,6 +211,7 @@ public class RobotContainer {
     // This is just a failsafe, pose should be reset at the beginning of auto
     driveSubsystem.resetOdometry(new Pose2d(driveSubsystem.getPose().getX(), driveSubsystem.getPose().getY(), 
       Rotation2d.fromDegrees(driveSubsystem.getAllianceAngleOffset())));
-    return new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "red amp side four note 1", true);
+      return autoChooser.getSelected();
+    //return new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "red amp side four note 1", true);
   }
 }

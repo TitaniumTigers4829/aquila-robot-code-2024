@@ -31,12 +31,12 @@ public class RedAmpSideFourNote extends SequentialCommandGroup {
       // new SubwooferShot(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, ()->0, ()->0, ()->0, ()->false, ledSubsystem).withTimeout(1.5),
       // // new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, ledSubsystem).withTimeout(1.7),
       // new ParallelCommandGroup(
-        new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "red amp side four note 1", false)
+        new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "red amp side four note 1", false).withTimeout(2),
       //   new IntakeAuto(intakeSubsystem, pivotSubsystem, shooterSubsystem, ledSubsystem).withTimeout(1.9)
       // ),
       // new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, ledSubsystem).withTimeout(1.7),
       // new ParallelCommandGroup(
-      //   new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "red amp side four note 2", false),
+        new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "red amp side four note 2", false)
       //   new IntakeAuto(intakeSubsystem, pivotSubsystem, shooterSubsystem, ledSubsystem).withTimeout(2.6)
       // ),
       // new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "red amp side four note 3", false),
