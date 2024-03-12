@@ -89,19 +89,12 @@ public class ShootSpeaker extends DriveCommandBase {
     // distance (for speaker lookups)
     double distance = robotPos.getDistance(speakerPos);
     // arctangent for desired heading
-    // if (isRed) {
-    //   desiredHeading = Math.atan2((speakerPos.getY() - robotPos.getY()), (speakerPos.getX() - robotPos.getX()));
-    // } else {
       desiredHeading = Math.atan2((robotPos.getY() - speakerPos.getY()), (robotPos.getX() - speakerPos.getX()));
-      // }
   
       headingError = desiredHeading - driveSubsystem.getOdometryRotation2d().getRadians();
   
       turnController.enableContinuousInput(-Math.PI, Math.PI);
       double turnOutput = deadband(turnController.calculate(headingError, 0)); 
-    // if (headingError >= Math.PI) {
-    //   headingError = Math.PI - headingError;
-    // }
     // get PID output
     //SmartDashboard.putNumber("desired Heading", desiredHeading);
     // SmartDashboard.putNumber("drivetrain error", headingError);
