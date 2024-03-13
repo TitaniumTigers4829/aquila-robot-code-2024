@@ -6,7 +6,6 @@ import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
-import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -90,7 +89,6 @@ public class SwerveModule {
     driveConfig.CurrentLimits.StatorCurrentLimit = ModuleConstants.DRIVE_STATOR_LIMIT;
     driveConfig.CurrentLimits.StatorCurrentLimitEnable = true;
     
-    // TODO: current limits
     driveMotor.getConfigurator().apply(driveConfig, HardwareConstants.TIMEOUT_S);
 
     TalonFXConfiguration turnConfig = new TalonFXConfiguration();
@@ -105,7 +103,6 @@ public class SwerveModule {
     turnConfig.MotionMagic.MotionMagicCruiseVelocity = ModuleConstants.MAX_ANGULAR_SPEED_ROTATIONS_PER_SECOND;
     turnConfig.MotionMagic.MotionMagicAcceleration = ModuleConstants.MAX_ANGULAR_ACCELERATION_ROTATIONS_PER_SECOND_SQUARED;
     turnConfig.ClosedLoopGeneral.ContinuousWrap = true;
-    // TODO: config current limits
     turnMotor.getConfigurator().apply(turnConfig, HardwareConstants.TIMEOUT_S);
 
     turnEncoderPos = turnEncoder.getAbsolutePosition();
@@ -169,19 +166,11 @@ public class SwerveModule {
       return;
     }
 
-
     // Converts meters per second to rotations per second
     double desiredDriveRPS = optimizedDesiredState.speedMetersPerSecond 
      * ModuleConstants.DRIVE_GEAR_RATIO / ModuleConstants.WHEEL_CIRCUMFERENCE_METERS;
      
-      // SmartDashboard.putNumber("desired speed", desiredDriveRPS);
-
-      // SmartDashboard.putNumber("error", desiredDriveRPS - driveMotorVelocity.refresh().getValue());
-
-      // SmartDashboard.putNumber("current speed", driveMotorVelocity.refresh().getValue());
-
     driveMotor.setControl(driveOutput.withVelocity(desiredDriveRPS));
-    
     turnMotor.setControl(turnOutput.withPosition(optimizedDesiredState.angle.getRotations()));
 
   }

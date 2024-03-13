@@ -42,13 +42,11 @@ public class VisionSubsystem extends SubsystemBase {
     if (canSeeAprilTags()) {
       Pose2d botPose = LimelightHelpers.getBotPose2d(currentlyUsedLimelight);
       // The origin of botpose is at the center of the field
-      double robotX = botPose.getX() + FieldConstants.FIELD_LENGTH_METERS / 2;
-      double robotY = botPose.getY() + FieldConstants.FIELD_WIDTH_METERS / 2;
+      double robotX = botPose.getX() + FieldConstants.FIELD_LENGTH_METERS / 2.0;
+      double robotY = botPose.getY() + FieldConstants.FIELD_WIDTH_METERS / 2.0;
       Rotation2d robotRotation = botPose.getRotation();
-      SmartDashboard.putBoolean("notag", false);
       return new Pose2d(robotX, robotY, robotRotation);
     } else {
-      SmartDashboard.putBoolean("notag", true);
       return new Pose2d();
     }
   }
@@ -76,8 +74,8 @@ public class VisionSubsystem extends SubsystemBase {
   }
 
   /**
-   * Returns how many april tags the limelight that is being used for pose
-   * estimation can see.
+   * Returns the timestamp for the vision measurement from the limelight that
+   * is being used for pose estimation.
    */
   public double getTimeStampSeconds() {
     return currentlyUsedLimelightResults.targetingResults.timestamp_LIMELIGHT_publish / 1000.0;
