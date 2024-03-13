@@ -1,10 +1,3 @@
-/*----------------------------------------------------------------------------*/
-/* Copyright (c) 2018-2019 FIRST. All Rights Reserved.            */
-/* Open Source Software - may be modified and shared by FRC teams. The code   */
-/* must be accompanied by the FIRST BSD license file in the root directory of */
-/* the project.                                 */
-/*----------------------------------------------------------------------------*/
-
 package frc.robot;
 
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -21,18 +14,8 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
-import edu.wpi.first.wpilibj.motorcontrol.Spark;
 
-/**
- * The Constants class provides a convenient place for teams to hold robot-wide
- * numerical or boolean constants. This class should not be used for any other
- * purpose. All constants should be declared globally (i.e. public static). Do
- * not put anything functional in this class.
- *
- * <p>
- * It is advised to statically import this class (or one of its inner classes)
- * wherever the constants are needed, to reduce verbosity.
- */
+
 public final class Constants {
   public static final class HardwareConstants {
     public static final double TIMEOUT_S = 0.05;
@@ -101,7 +84,6 @@ public final class Constants {
     public static final InvertedValue REAR_LEFT_DRIVE_ENCODER_REVERSED = InvertedValue.Clockwise_Positive;
     public static final InvertedValue REAR_RIGHT_DRIVE_ENCODER_REVERSED = InvertedValue.CounterClockwise_Positive;
     
-    // TODO: tune
     public static final double MAX_ANGULAR_SPEED_RADIANS_PER_SECOND = 5;
 
     public static final double MAX_SPEED_METERS_PER_SECOND = 6.95;
@@ -116,7 +98,6 @@ public final class Constants {
     public static final double DRIVE_TO_METERS =  WHEEL_CIRCUMFERENCE_METERS / DRIVE_GEAR_RATIO;
     public static final double DRIVE_TO_METERS_PER_SECOND = WHEEL_CIRCUMFERENCE_METERS / DRIVE_GEAR_RATIO;
 
-    //TODO: Test these:
     public static final double DRIVE_SUPPLY_LIMIT = 40.0;
     public static final double DRIVE_STATOR_LIMIT = 50.0;  
 
@@ -170,7 +151,6 @@ public final class Constants {
       {Units.inchesToMeters(182.73), Units.inchesToMeters(146.19), Units.inchesToMeters(52.0), 240}, // 16
     };
 
-    // TODO: Actually tune/do math for these
     public static final double[][] ONE_APRIL_TAG_LOOKUP_TABLE = {
       // {distance in meters, x std deviation, y std deviation, r (in degrees) std deviation}
       {0, 0.02, 0.02, Units.degreesToRadians(180)}, // 2
@@ -194,8 +174,6 @@ public final class Constants {
     public static final double FIELD_LENGTH_METERS = Units.inchesToMeters(653);
     public static final double FIELD_WIDTH_METERS = Units.inchesToMeters(325);
 
-    // TODO: in meters from the bottom left of the field
-    // TODO: add point for in front of each:
     public static final double RED_AMP_X = 14.613;
     public static final double RED_AMP_Y = 8.197;
 
@@ -253,12 +231,6 @@ public final class Constants {
 
     public static final double SHOOT_AMP_ANGLE = 0.182392578125;
     public static final double PIVOT_ACCEPTABLE_ERROR = 0.015;
-
-    public static final double PIVOT_NEUTRAL_ANGLE = 0;
-
-    //TODO: get these!!!!!11
-    public static final double PIVOT_START_CLIMB_ANGLE = 0;
-    public static final double PIVOT_END_CLIMB_ANGLE = 0;
 
     public static double[][] SPEAKER_PIVOT_POSITION = {
       // Distance, Angle (rotations)
@@ -322,10 +294,10 @@ public final class Constants {
     public static final double MAX_SPEED = 5.0;
     public static final double MAX_ACCELERATION = 3;
 
-    public static final double AUTO_TRANSLATION_P = 1.7; // 1.6
-    public static final double AUTO_TRANSLATION_D = 0.2; // 0.1; // 2.4 | 9
-    public static final double AUTO_THETA_P = 5.0; // 5
-    public static final double AUTO_THETA_D = 0.4; // 0.1;
+    public static final double AUTO_TRANSLATION_P = 1.7;
+    public static final double AUTO_TRANSLATION_D = 0.2;
+    public static final double AUTO_THETA_P = 5.0;
+    public static final double AUTO_THETA_D = 0.4;
     
     public static final double AUTO_SHOOT_HEADING_OFFSET = 2;
 
@@ -367,7 +339,6 @@ public final class Constants {
     public static final int LEFT_TRIGGER_ID = 2;
     public static final int RIGHT_TRIGGER_ID = 3;
     public static final int RIGHT_STICK_Y_ID = 5;
-
   }
 
   
