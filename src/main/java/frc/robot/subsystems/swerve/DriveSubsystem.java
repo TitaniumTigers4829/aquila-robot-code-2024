@@ -2,7 +2,6 @@ package frc.robot.subsystems.swerve;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-import java.util.Arrays;
 import java.util.Optional;
 
 import com.kauailabs.navx.frc.AHRS;
@@ -22,7 +21,6 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.TrajectoryConstants;
@@ -46,11 +44,8 @@ public class DriveSubsystem extends SubsystemBase {
 
   private final AHRS gyro;
   private final SwerveDrivePoseEstimator odometry;
-  // private Command currentPathfindingCommand;
 
   private Optional<DriverStation.Alliance> alliance;
-
-  private double gyroOffset = 0.0;
 
   /**
    * Creates a new DriveSubsystem.
@@ -187,10 +182,10 @@ public class DriveSubsystem extends SubsystemBase {
 
   /**
    * Returns the heading of the robot in degrees from 0 to 360. 
-   * Counter-clockwise is positive. This factors in gyro offset.
+   * Counter-clockwise is positive.
    */
   public double getHeading() {
-    return (-gyro.getAngle() + this.gyroOffset) % 360;
+    return -gyro.getAngle();
   }
 
   /**
@@ -216,22 +211,12 @@ public class DriveSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("offset", offset);
     return offset;
   }
-  
-  /**
-   * Sets the offset of the gyro.
-   * @param gyroOffset The number of degrees that will be added to the
-   * gyro's angle in getHeading.
-   */
-  public void setGyroOffset(double gyroOffset) {
-    this.gyroOffset = gyroOffset;
-  }
 
   /**
    * Zeroes the heading of the robot.
    */
   public void zeroHeading() {
     gyro.reset();
-    gyroOffset = 0;
   }
 
   /**
