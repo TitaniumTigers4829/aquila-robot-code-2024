@@ -1,7 +1,3 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot;
 
 import java.util.function.DoubleSupplier;
@@ -177,7 +173,6 @@ public class RobotContainer {
 
     // DRIVER BUTTONS
     // Driver Intake 
-    // Driver should be allowed to do under the bumper intake to avoid lag with operator. Should not be able to do OTB because should be focused on driving and not worry too much about other obstacles and robots
     driverLeftTrigger.whileTrue(new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem, false, ledSubsystem));
     driverLeftBumper.whileTrue(new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem, true, ledSubsystem));
     // driverYButton.whileTrue(new AutoBuilderDriveToPos(driveSubsystem, visionSubsystem, 1, 0, Rotation2d.fromDegrees(0)));
@@ -211,7 +206,7 @@ public class RobotContainer {
     // This is just a failsafe, pose should be reset at the beginning of auto
     driveSubsystem.resetOdometry(new Pose2d(driveSubsystem.getPose().getX(), driveSubsystem.getPose().getY(), 
       Rotation2d.fromDegrees(driveSubsystem.getAllianceAngleOffset())));
-      return autoChooser.getSelected();
+    return autoChooser.getSelected();
     //return new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "red amp side four note 1", true);
   }
 }
