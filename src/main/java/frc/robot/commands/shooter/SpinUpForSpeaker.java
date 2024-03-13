@@ -118,8 +118,8 @@ public class SpinUpForSpeaker extends DriveCommandBase {
   @Override
   public void end(boolean interrupted) {
     shooterSubsystem.setFlywheelNeutral();
-    shooterSubsystem.setRollerSpeed(0);
-    pivotSubsystem.setPivot(PivotConstants.PIVOT_INTAKE_ANGLE);
+    shooterSubsystem.setTowerSpeed(0);
+    pivotSubsystem.setPivotAngle(PivotConstants.PIVOT_INTAKE_ANGLE);
     leds.setProcess(LEDProcess.DEFAULT);
     }
 

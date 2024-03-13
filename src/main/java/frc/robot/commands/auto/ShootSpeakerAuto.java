@@ -103,10 +103,10 @@ public class ShootSpeakerAuto extends DriveCommandBase {
     // if we are ready to shoot:
     if (isReadyToShoot()) {
       leds.setProcess(LEDProcess.SHOOT);
-      shooterSubsystem.setRollerSpeed(ShooterConstants.ROLLER_SHOOT_SPEED);
+      shooterSubsystem.setTowerSpeed(ShooterConstants.ROLLER_SHOOT_SPEED);
     } else {
       leds.setProcess(LEDProcess.FINISH_LINE_UP);
-      shooterSubsystem.setRollerSpeed(0);
+      shooterSubsystem.setTowerSpeed(0);
     }
 
     if (shooterSubsystem.hasNote() && !timer.hasElapsed(0.001)) {
@@ -118,8 +118,8 @@ public class ShootSpeakerAuto extends DriveCommandBase {
   @Override
   public void end(boolean interrupted) {
     shooterSubsystem.setFlywheelNeutral();
-    shooterSubsystem.setRollerSpeed(0);
-    pivotSubsystem.setPivot(PivotConstants.PIVOT_INTAKE_ANGLE);
+    shooterSubsystem.setTowerSpeed(0);
+    pivotSubsystem.setPivotAngle(PivotConstants.PIVOT_INTAKE_ANGLE);
     leds.setProcess(LEDProcess.DEFAULT);
   }
 

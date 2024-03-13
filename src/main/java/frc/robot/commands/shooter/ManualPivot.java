@@ -44,13 +44,13 @@ public class ManualPivot extends Command {
     // double distance = robotPos.getDistance(speakerPos);
 
     // SmartDashboard.putNumber("SpeakerDist", distance);
-    pivotSubsytem.set(speed.getAsDouble());
+    pivotSubsytem.setPivotSpeed(speed.getAsDouble());
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    pivotSubsytem.set(PivotConstants.PIVOT_NEUTRAL_SPEED);
+    pivotSubsytem.setPivotSpeed(PivotConstants.PIVOT_NEUTRAL_SPEED);
   }
 
   // Returns true when the command should end.

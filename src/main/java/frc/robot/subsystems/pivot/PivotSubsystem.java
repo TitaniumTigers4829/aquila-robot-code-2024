@@ -1,7 +1,3 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot.subsystems.pivot;
 
 import com.ctre.phoenix6.BaseStatusSignal;
@@ -81,34 +77,35 @@ public class PivotSubsystem extends SubsystemBase {
   }
 
   /**
-   * @return rotation of pivot in degrees
-  */
-  public double getRotation() {
+   * Gets the angle of the pivot
+   * @return angle of pivot in degrees
+   */
+  public double getAngle() {
     pivotPos.refresh();
     return pivotPos.getValueAsDouble();
   }
 
   /**
-   * returns if the pivot is within an acceptable rotation 
+   * Returns if the pivot is within an acceptable rotation 
    * in relation to the target position
-   *@return pivot error between desired and actual state in degrees
-  */
+   * @return pivot error between desired and actual state in degrees
+   */
   public boolean isPivotWithinAcceptableError() {
-    SmartDashboard.putNumber("pivot error", Math.abs(pivotTargetAngle - getRotation()));
-    return Math.abs(pivotTargetAngle - getRotation()) < PivotConstants.PIVOT_ACCEPTABLE_ERROR;
+    SmartDashboard.putNumber("pivot error", Math.abs(pivotTargetAngle - getAngle()));
+    return Math.abs(pivotTargetAngle - getAngle()) < PivotConstants.PIVOT_ACCEPTABLE_ERROR;
   }
 
   /**
-   * sets the output of the pivot
-   * @param output output value from -1 to 1.
+   * Sets the output of the pivot
+   * @param output output value from -1.0 to 1.0
    */
-  public void set(double output) {
+  public void setPivotSpeed(double output) {
     leaderPivotMotor.set(output);
     followerPivotMotor.set(output);
   }
 
   /**
-   * gets the target angle of the pivot motors in degrees
+   * Gets the target angle of the pivot in degrees
    * @return the target angle
    */
   public double getPivotTarget() {
@@ -116,21 +113,21 @@ public class PivotSubsystem extends SubsystemBase {
   }
 
   /**
-   * uses distance in meters from the speaker to set the pivot angle (degrees) of the shooter
+   * Uses distance in meters from the speaker to set the pivot angle (degrees) of the shooter
    * @param distance the distance in meters from the speaker
    */
   public void setPivotFromDistance(double distance) {
     SmartDashboard.putNumber("distance", distance);
     double angle = speakerAngleLookupValues.getLookupValue(distance);
     pivotTargetAngle = angle;
-    setPivot(angle);
+    setPivotAngle(angle);
   }
 
   /**
-   * sets the pivot using the leader/follower motors
+   * Sets the pivot using the leader/follower motors
    * @param angle the angle (degrees) to set
    */
-  public void setPivot(double angle) {
+  public void setPivotAngle(double angle) {
     pivotTargetAngle = angle;
     SmartDashboard.putNumber("desired pivot angle", pivotTargetAngle);
     leaderPivotMotor.setControl(mmRequest.withPosition(angle));

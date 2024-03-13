@@ -31,16 +31,16 @@ public class IntakeAuto extends Command {
 
   @Override
   public void execute() {
-    pivotSubsystem.setPivot(PivotConstants.PIVOT_INTAKE_ANGLE);
+    pivotSubsystem.setPivotAngle(PivotConstants.PIVOT_INTAKE_ANGLE);
 
     if (pivotSubsystem.isPivotWithinAcceptableError()) {
       if (shooterSubsystem.hasNote()) {
         leds.setProcess(LEDProcess.NOTE_IN);
         intakeSubsystem.setIntakeSpeed(0);
-        shooterSubsystem.setRollerSpeed(0);
+        shooterSubsystem.setTowerSpeed(0);
       } else {
         leds.setProcess(LEDProcess.INTAKE);
-        shooterSubsystem.setRollerSpeed(ShooterConstants.ROLLER_INTAKE_SPEED); 
+        shooterSubsystem.setTowerSpeed(ShooterConstants.ROLLER_INTAKE_SPEED); 
         intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_SPEED);
       }
 
@@ -53,8 +53,8 @@ public class IntakeAuto extends Command {
   public void end(boolean interrupted) {
     leds.setProcess(LEDProcess.DEFAULT);
     intakeSubsystem.setIntakeSpeed(0);
-    shooterSubsystem.setRollerSpeed(0);
-    pivotSubsystem.set(0);
+    shooterSubsystem.setTowerSpeed(0);
+    pivotSubsystem.setPivotSpeed(0);
   }
 
   // Returns true when the command should end.
