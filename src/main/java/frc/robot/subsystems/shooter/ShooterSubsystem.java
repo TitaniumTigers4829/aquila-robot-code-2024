@@ -61,6 +61,7 @@ public class ShooterSubsystem extends SubsystemBase {
     rollerConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     rollerConfig.MotorOutput.DutyCycleNeutralDeadband = HardwareConstants.MIN_FALCON_DEADBAND;
     rollerMotor.getConfigurator().apply(rollerConfig, HardwareConstants.TIMEOUT_S);
+    
     leaderVelocity = leaderFlywheel.getVelocity();
     followerVelocity = followerFlywheel.getVelocity();
 

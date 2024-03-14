@@ -22,6 +22,7 @@ public class LEDSubsystem extends SubsystemBase {
     setProcess(LEDProcess.OFF);
     isRed = DriverStation.getAlliance().isPresent() && (DriverStation.getAlliance().get() == Alliance.Red);
   }
+  
   public void setProcess(LEDProcess process) {
     this.process = process;
   }
