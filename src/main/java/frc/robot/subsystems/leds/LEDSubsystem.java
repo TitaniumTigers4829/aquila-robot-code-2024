@@ -23,10 +23,19 @@ public class LEDSubsystem extends SubsystemBase {
     isRed = DriverStation.getAlliance().isPresent() && (DriverStation.getAlliance().get() == Alliance.Red);
   }
   
+  /**
+   * sets the process of the leds
+   * @param process the process to set
+   */
   public void setProcess(LEDProcess process) {
     this.process = process;
   }
 
+  /**
+   * gets the spark (color) value to set from the process
+   * @param pr the process
+   * @return the spark value from the process
+   */
   private double getSparkFromProcess(LEDProcess pr) {
     switch (pr) {
       case DEFAULT:
@@ -37,6 +46,11 @@ public class LEDSubsystem extends SubsystemBase {
         return pr.sparkValue;
     }
   }
+
+  /**
+   * the led alliance color based on what alliance we are on
+   * @return the led color (red vs blue).
+   */
   private double allianceColor() {
     if (isRed) {
       return LEDProcess.RED_ALLIANCE.sparkValue;
@@ -45,6 +59,10 @@ public class LEDSubsystem extends SubsystemBase {
     }
   }
 
+  /**
+   * sets the default color of the leds.
+   * @return auto led value it robot is in auto, otherwise alliance color
+   */
   private double defaultColor() {
     if (DriverStation.isAutonomous()) {
       return LEDProcess.AUTONOMOUS.sparkValue;
@@ -53,6 +71,9 @@ public class LEDSubsystem extends SubsystemBase {
     }
   }
 
+  /**
+   * turns off the leds
+   */
   public void off() {
     process = LEDProcess.OFF;
   }
