@@ -94,7 +94,7 @@ public final class Constants {
   
   public static final class ModuleConstants { 
     public static final double DRIVE_GEAR_RATIO = 4.59;
-    public static final double WHEEL_DIAMETER_METERS = Units.inchesToMeters(3.82);
+    public static final double WHEEL_DIAMETER_METERS = Units.inchesToMeters(3.825135354232951);
     public static final double WHEEL_CIRCUMFERENCE_METERS = WHEEL_DIAMETER_METERS * Math.PI;
     public static final double DRIVE_TO_METERS =  WHEEL_CIRCUMFERENCE_METERS / DRIVE_GEAR_RATIO;
     public static final double DRIVE_TO_METERS_PER_SECOND = WHEEL_CIRCUMFERENCE_METERS / DRIVE_GEAR_RATIO;
@@ -304,7 +304,7 @@ public final class Constants {
 
     public static final double AUTO_TRANSLATION_P = 1.7;
     public static final double AUTO_TRANSLATION_D = 0.2;
-    public static final double AUTO_THETA_P = 5.0;
+    public static final double AUTO_THETA_P = 4.5; // 5
     public static final double AUTO_THETA_D = 0.4;
     
     public static final double AUTO_SHOOT_HEADING_OFFSET = 2;
