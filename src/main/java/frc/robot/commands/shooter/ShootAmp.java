@@ -33,11 +33,11 @@ public class ShootAmp extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    pivotSubsystem.setPivot(PivotConstants.SHOOT_AMP_ANGLE);
+    pivotSubsystem.setPivotAngle(PivotConstants.SHOOT_AMP_ANGLE);
     shooterSubsystem.setRPM(ShooterConstants.SHOOT_AMP_RPM);
 
     if (pivotSubsystem.isPivotWithinAcceptableError() && shooterSubsystem.isShooterWithinAcceptableError()) {
-      shooterSubsystem.setRollerSpeed(ShooterConstants.ROLLER_SHOOT_SPEED);
+      shooterSubsystem.setTowerSpeed(ShooterConstants.ROLLER_SHOOT_SPEED);
       leds.setProcess(LEDProcess.SHOOT);
     } else {
       leds.setProcess(LEDProcess.FINISH_LINE_UP);
@@ -50,8 +50,8 @@ public class ShootAmp extends Command {
   public void end(boolean interrupted) {
     leds.setProcess(LEDProcess.DEFAULT);
     shooterSubsystem.setFlywheelNeutral();
-    pivotSubsystem.setPivot(PivotConstants.PIVOT_INTAKE_ANGLE);
-    shooterSubsystem.setRollerSpeed(ShooterConstants.ROLLER_NEUTRAL_SPEED);
+    pivotSubsystem.setPivotAngle(PivotConstants.PIVOT_INTAKE_ANGLE);
+    shooterSubsystem.setTowerSpeed(ShooterConstants.ROLLER_NEUTRAL_SPEED);
   }
 
   // Returns true when the command should end.

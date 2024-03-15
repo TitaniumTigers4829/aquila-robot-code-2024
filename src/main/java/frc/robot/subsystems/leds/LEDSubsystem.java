@@ -1,7 +1,3 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot.subsystems.leds;
 
 import edu.wpi.first.wpilibj.DriverStation;
@@ -26,10 +22,20 @@ public class LEDSubsystem extends SubsystemBase {
     setProcess(LEDProcess.OFF);
     isRed = DriverStation.getAlliance().isPresent() && (DriverStation.getAlliance().get() == Alliance.Red);
   }
+  
+  /**
+   * Sets the process of the LEDs
+   * @param process The process to set
+   */
   public void setProcess(LEDProcess process) {
     this.process = process;
   }
 
+  /**
+   * Gets the spark (color) value to set from the process
+   * @param pr The process
+   * @return The spark value from the process
+   */
   private double getSparkFromProcess(LEDProcess pr) {
     switch (pr) {
       case DEFAULT:
@@ -40,6 +46,11 @@ public class LEDSubsystem extends SubsystemBase {
         return pr.sparkValue;
     }
   }
+
+  /**
+   * The LED alliance color based on what alliance we are on
+   * @return The LED color (red vs blue).
+   */
   private double allianceColor() {
     if (isRed) {
       return LEDProcess.RED_ALLIANCE.sparkValue;
@@ -48,6 +59,10 @@ public class LEDSubsystem extends SubsystemBase {
     }
   }
 
+  /**
+   * Sets the default color of the LEDs.
+   * @return Auto LED color if robot is in auto, otherwise alliance color
+   */
   private double defaultColor() {
     if (DriverStation.isAutonomous()) {
       return LEDProcess.AUTONOMOUS.sparkValue;
@@ -56,6 +71,9 @@ public class LEDSubsystem extends SubsystemBase {
     }
   }
 
+  /**
+   * Turns the LEDs off
+   */
   public void off() {
     process = LEDProcess.OFF;
   }

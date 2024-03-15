@@ -88,28 +88,11 @@ public class SpinUpForSpeaker extends DriveCommandBase {
     // distance (for speaker lookups)
     double distance = robotPos.getDistance(speakerPos);
     // arctangent for desired heading
-    // // if (isRed) {
-    // //   desiredHeading = Math.atan2((speakerPos.getY() - robotPos.getY()), (speakerPos.getX() - robotPos.getX()));
-    // // } else {
-    // desiredHeading = Math.atan2((robotPos.getY() - speakerPos.getY()), (robotPos.getX() - speakerPos.getX()));
-    // // }
-    // heading error (also used in isReadyToShoot())
-    // headingError = desiredHeading - driveSubsystem.getPose().getRotation().getRadians();
-
-    
-    // turnController.enableContinuousInput(-Math.PI, Math.PI);
-
-    // if (isRed) {
-    //   desiredHeading = Math.atan2((speakerPos.getY() - robotPos.getY()), (speakerPos.getX() - robotPos.getX()));
-    // } else {
     desiredHeading = Math.atan2((robotPos.getY() - speakerPos.getY()), (robotPos.getX() - speakerPos.getX()));
-    // }
 
     //current
     headingError = desiredHeading - driveSubsystem.getOdometryRotation2d().getRadians();
-    //test
-    // headingError = desiredHeading - driveSubsystem.applyAllianceRotationOffset(driveSubsystem.getOdometryRotation2d()).getRadians();
-
+    
     turnController.enableContinuousInput(-Math.PI, Math.PI);
     double turnOutput = deadband(turnController.calculate(headingError, 0)); 
 
@@ -135,8 +118,8 @@ public class SpinUpForSpeaker extends DriveCommandBase {
   @Override
   public void end(boolean interrupted) {
     shooterSubsystem.setFlywheelNeutral();
-    shooterSubsystem.setRollerSpeed(0);
-    pivotSubsystem.setPivot(PivotConstants.PIVOT_INTAKE_ANGLE);
+    shooterSubsystem.setTowerSpeed(0);
+    pivotSubsystem.setPivotAngle(PivotConstants.PIVOT_INTAKE_ANGLE);
     leds.setProcess(LEDProcess.DEFAULT);
     }
 

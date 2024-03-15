@@ -1,121 +1,36 @@
 package frc.robot.subsystems.intake;
 
-import com.ctre.phoenix6.BaseStatusSignal;
-import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.MotionMagicVoltage;
-import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
-import com.ctre.phoenix6.signals.GravityTypeValue;
-import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.HardwareConstants;
 import frc.robot.Constants.IntakeConstants;
 
 public class IntakeSubsystem extends SubsystemBase {
   private final TalonFX intakeMotor;
-  private final TalonFX otbPivotMotor; // otb = over the bumper
-  private final TalonFX otbIntakeMotor;
-
-  private final StatusSignal<Double> otbPos;
-  private final StatusSignal<Double> otbPivotVelocity;
-  private double intakeTargetAngle;
-
-  private final MotionMagicVoltage mmRequest;
 
   /** Creates a new IntakeSubsystem. */
   public IntakeSubsystem() {
     intakeMotor = new TalonFX(IntakeConstants.INTAKE_MOTOR_ID);
-    otbPivotMotor = new TalonFX(IntakeConstants.OTB_PIVOT_ID);
-    otbIntakeMotor = new TalonFX(IntakeConstants.OTB_INTAKE_ID);
-    mmRequest = new MotionMagicVoltage(0);
-
-    TalonFXConfiguration intakePivotConfig = new TalonFXConfiguration();
-    intakePivotConfig.Slot0.kP = IntakeConstants.INTAKE_P;
-    intakePivotConfig.Slot0.kI = IntakeConstants.INTAKE_I;
-    intakePivotConfig.Slot0.kD = IntakeConstants.INTAKE_D;
-    intakePivotConfig.Slot0.kG = IntakeConstants.INTAKE_G;
-
-    intakePivotConfig.Slot0.GravityType = GravityTypeValue.Arm_Cosine;
-
-    intakePivotConfig.MotionMagic.MotionMagicAcceleration = IntakeConstants.MM_ACCELERATION;
-    intakePivotConfig.MotionMagic.MotionMagicCruiseVelocity = IntakeConstants.MM_VELOCITY;
-
-    intakePivotConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    intakePivotConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive; 
-    intakePivotConfig.MotorOutput.DutyCycleNeutralDeadband = HardwareConstants.MIN_FALCON_DEADBAND;
     
-    // TODO: tune
-    intakePivotConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold = IntakeConstants.MAX_OVERTHEBUMPER_ANGLE;
-    intakePivotConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = IntakeConstants.MIN_OVERTHEBUMPER_ANGLE;
-    intakePivotConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = false;
-    intakePivotConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = false;
-
-    intakePivotConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
-    intakePivotConfig.Feedback.FeedbackRotorOffset = IntakeConstants.OTB_ROTOR_OFFSET;
-
-    otbPivotMotor.getConfigurator().apply(intakePivotConfig, HardwareConstants.TIMEOUT_S);
-
     TalonFXConfiguration intakeConfig = new TalonFXConfiguration();
     intakeConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     intakeMotor.getConfigurator().apply(intakeConfig, HardwareConstants.TIMEOUT_S);
 
-    otbPivotVelocity = otbPivotMotor.getVelocity();
-    otbPos = otbPivotMotor.getPosition();
-
-    BaseStatusSignal.setUpdateFrequencyForAll(HardwareConstants.SIGNAL_FREQUENCY, otbPivotVelocity, otbPos);
-    ParentDevice.optimizeBusUtilizationForAll(intakeMotor);//, otbPivotMotor, otbIntakeMotor);
+    intakeMotor.optimizeBusUtilization(HardwareConstants.SIGNAL_FREQUENCY);
   }
 
   /**
-   * sets the intake speed
+   * Sets the intake speed
+   * @param speed 1.0 being the max speed, -1.0 being the min speed
    */
   public void setIntakeSpeed(double speed) {
     intakeMotor.set(speed);
   }
 
-  /**
-   * sets the over-the-bumper intake pivot angle
-   */
-  public void setIntakeAngle(double angle) {
-    intakeTargetAngle = angle;
-    otbPivotMotor.setControl(mmRequest.withPosition(angle));
-  }
-
-  /**
-   * sets the over-the-bumper intake speed
-   */
-  public void setOTBIntakeSpeed() {
-    otbIntakeMotor.set(IntakeConstants.INTAKE_OVERTHEBUMPER_SPEED);
-  }
-
-  /**
-   * gets the relative rotation of the pivot motor
-   */
-  public double getRotation() {
-    otbPos.refresh();
-    return otbPos.getValueAsDouble();
-    // return 0.0;
-  }
-
-  /**
-   * gets if otb intake pivot is within acceptable error
-   */
-  public boolean isIntakeWithinAcceptableError() {
-    return Math.abs(intakeTargetAngle - getRotation()) < IntakeConstants.INTAKE_PIVOT_ACCEPTABLE_ERROR;
-    // return true;
-  }
-
-  public void setPivotSpeed(double speed) {
-    otbPivotMotor.set(speed);
-  }
-
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("intakePos", getRotation());
   }
 }

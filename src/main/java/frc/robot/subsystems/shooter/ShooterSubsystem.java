@@ -19,6 +19,7 @@ public class ShooterSubsystem extends SubsystemBase {
   private final TalonFX leaderFlywheel;
   private final TalonFX followerFlywheel;
   private final TalonFX rollerMotor;
+  
   private final DigitalInput noteSensor;
 
   private final StatusSignal<Double> leaderVelocity;
@@ -60,8 +61,7 @@ public class ShooterSubsystem extends SubsystemBase {
     rollerConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     rollerConfig.MotorOutput.DutyCycleNeutralDeadband = HardwareConstants.MIN_FALCON_DEADBAND;
     rollerMotor.getConfigurator().apply(rollerConfig, HardwareConstants.TIMEOUT_S);
-    rollerMotor.set(0);
-
+    
     leaderVelocity = leaderFlywheel.getVelocity();
     followerVelocity = followerFlywheel.getVelocity();
 
@@ -70,41 +70,23 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   /**
-   * sets the speed of the flywheel
-   * @param speed the speed (m/s) of the flywheel
+   * Sets the speed of the rollers to transfer note from tower to shooter
+   * @param speed 1.0 being the max speed, -1.0 being the min speed
    */
-  public void setShooterSpeed(double speed) {
-
-    if (Math.abs(speed) < 0.1 ) {
-      leaderFlywheel.set(0);
-      followerFlywheel.set(0);
-    }
-
-    leaderFlywheel.set(speed);
-    followerFlywheel.set(speed);
-  }
-
-  /**
-   * sets the speed of the rollers to transfer note from tower to shooter
-   * @param speed speed (m/s) of the rollers
-   */
-  public void setRollerSpeed(double speed) {
-    if(Math.abs(speed) < 0.1) { 
-      rollerMotor.set(0);
-    }
+  public void setTowerSpeed(double speed) {
     rollerMotor.set(speed);
   }
 
   /**
-   * gets if a note is sensed by the beam break
-   * @return true if there is no note
+   * Gets if the tower has a note in it
+   * @return true if there is a note
    */
-  public boolean getSensor() {
-    return noteSensor.get();
+  public boolean hasNote() {
+    return !noteSensor.get();
   }
 
   /**
-   * the error between the target rpm and actual rpm of the shooter
+   * The error between the target rpm and actual rpm of the shooter
    * @return True if we are within an acceptable range (of rpm) to shoot
    */
   public boolean isShooterWithinAcceptableError() {
@@ -112,7 +94,7 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   /**
-   * gets if the shooter is within an acceptable rpm of the desired
+   * Gets if the shooter is within an acceptable rpm of the desired
    * @param headingError heading error of the drivetrain
    * @return true if shooter rpm is within and acceptable error
    */
@@ -121,20 +103,18 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   /**
-   * sets RPM of both leader and follower flywheel motors
+   * Sets RPM of both leader and follower flywheel motors
    * @param desiredRPM sets the rpm of the leader motor
    */
   public void setRPM(double desiredRPM) {
-
     shooterTargetRPM = desiredRPM;
-
     leaderFlywheel.setControl(velocityRequest.withVelocity(desiredRPM / 60.0));
     followerFlywheel.setControl(velocityRequest.withVelocity(desiredRPM / 60.0));
   }
 
 
   /**
-   * sets flywheel speed (m/s) to 0
+   * Sets flywheel speed to 0
    */
   public void setFlywheelNeutral() {
     leaderFlywheel.set(0);
@@ -142,17 +122,17 @@ public class ShooterSubsystem extends SubsystemBase {
   }
   
   /**
-   * gets the current shooter RPM
+   * Gets the current shooter RPM
    * @return returns the current shooter rpm as a double
    */
   public double getShooterRPM() {
     leaderVelocity.refresh();
-    return leaderVelocity.getValueAsDouble() * 60;
+    return leaderVelocity.getValueAsDouble() * 60.0;
   }
   
   @Override
   public void periodic() {
-    SmartDashboard.putBoolean("sensor", getSensor());
+    SmartDashboard.putBoolean("has note", hasNote());
     // SmartDashboard.putNumber("current velocity", (leaderVelocity.refresh().getValueAsDouble() * 60));
   }
 }

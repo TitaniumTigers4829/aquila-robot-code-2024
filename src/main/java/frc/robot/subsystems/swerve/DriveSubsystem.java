@@ -21,7 +21,6 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.TrajectoryConstants;
@@ -45,11 +44,8 @@ public class DriveSubsystem extends SubsystemBase {
 
   private final AHRS gyro;
   private final SwerveDrivePoseEstimator odometry;
-  // private Command currentPathfindingCommand;
 
   private Optional<DriverStation.Alliance> alliance;
-
-  private double gyroOffset = 0.0;
 
   /**
    * Creates a new DriveSubsystem.
@@ -167,12 +163,29 @@ public class DriveSubsystem extends SubsystemBase {
     drive(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, rotationControl, false);
   }
 
+  
+  /** Runs in a circle at omega. */
+  public void runWheelRadiusCharacterization(double omegaSpeed) {
+    drive(0, 0, omegaSpeed, false);
+  } 
+
+  /** Get the position of all drive wheels in radians. */
+  public double[] getWheelRadiusCharacterizationPosition() {
+    double[] wheelPositions = {
+      frontLeftSwerveModule.getDrivePositionRadians(),
+      frontRightSwerveModule.getDrivePositionRadians(),
+      rearLeftSwerveModule.getDrivePositionRadians(),
+      rearRightSwerveModule.getDrivePositionRadians()
+    };
+    return wheelPositions;
+  }
+
   /**
    * Returns the heading of the robot in degrees from 0 to 360. 
-   * Counter-clockwise is positive. This factors in gyro offset.
+   * Counter-clockwise is positive.
    */
   public double getHeading() {
-    return (-gyro.getAngle() + this.gyroOffset) % 360;
+    return -gyro.getAngle();
   }
 
   /**
@@ -199,30 +212,11 @@ public class DriveSubsystem extends SubsystemBase {
     return offset;
   }
 
-  public Rotation2d applyAllianceRotationOffset(Rotation2d rot) {
-    if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red) {
-      return new Rotation2d(-rot.getCos(), rot.getSin());
-    }
-    else {
-      return rot;
-    }
-  }
-  
-  /**
-   * Sets the offset of the gyro.
-   * @param gyroOffset The number of degrees that will be added to the
-   * gyro's angle in getHeading.
-   */
-  public void setGyroOffset(double gyroOffset) {
-    this.gyroOffset = gyroOffset;
-  }
-
   /**
    * Zeroes the heading of the robot.
    */
   public void zeroHeading() {
     gyro.reset();
-    gyroOffset = 0;
   }
 
   /**

@@ -62,9 +62,9 @@ public class FollowPathAndShoot extends DriveCommandBase {
     controllerCommand = Choreo.choreoSwerveCommand(
       traj,
       driveSubsystem::getPose, 
-      new PIDController(TrajectoryConstants.REALTIME_TRANSLATION_CONTROLLER_P, 0, 0), 
-      new PIDController(TrajectoryConstants.REALTIME_TRANSLATION_CONTROLLER_P, 0, 0), 
-      new PIDController(TrajectoryConstants.REALTIME_THETA_CONTROLLER_P, 0, 0), 
+      new PIDController(TrajectoryConstants.AUTO_TRANSLATION_P, 0, 0), 
+      new PIDController(TrajectoryConstants.AUTO_TRANSLATION_P, 0, 0), 
+      new PIDController(TrajectoryConstants.AUTO_THETA_P, 0, 0), 
       (ChassisSpeeds speeds) -> mergeDrive(speeds),
         ()->false,
       // TODO: scuffed
@@ -108,7 +108,7 @@ public class FollowPathAndShoot extends DriveCommandBase {
 
     // if we are ready to shoot:
     if (shooterSubsystem.isReadyToShoot(headingError) && pivotSubsystem.isPivotWithinAcceptableError()) {
-      shooterSubsystem.setRollerSpeed(ShooterConstants.ROLLER_SHOOT_SPEED);
+      shooterSubsystem.setTowerSpeed(ShooterConstants.ROLLER_SHOOT_SPEED);
     }
   }
 

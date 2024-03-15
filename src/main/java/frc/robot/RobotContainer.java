@@ -1,16 +1,10 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot;
 
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -23,20 +17,22 @@ import frc.robot.Constants.LEDConstants.LEDProcess;
 import frc.robot.commands.auto.BlueNoteEight;
 import frc.robot.commands.auto.BlueNoteThree;
 import frc.robot.commands.auto.BlueShootTaxi;
-import frc.robot.commands.auto.FenderShotThenTaxi;
+import frc.robot.commands.auto.FollowChoreoTrajectory;
+import frc.robot.commands.auto.RedAmpSideFourNote;
 import frc.robot.commands.auto.RedNoteThree;
 import frc.robot.commands.auto.RedShootTaxi;
+import frc.robot.commands.autodrive.DriveToAmp;
 import frc.robot.commands.auto.RedNoteEight;
 import frc.robot.commands.drive.Drive;
 import frc.robot.commands.intake.TowerIntake;
 import frc.robot.extras.SmarterDashboardRegistry;
 import frc.robot.commands.shooter.ManualPivot;
-import frc.robot.commands.intake.IntakeAuto;
-import frc.robot.commands.intake.ManualIntakePivot;
 import frc.robot.commands.shooter.ShootAmp;
 import frc.robot.commands.shooter.ShootSpeaker;
 import frc.robot.commands.shooter.SpinUpForSpeaker;
 import frc.robot.commands.shooter.SubwooferShot;
+import frc.robot.commands.testing.WheelRadiusCharacterization;
+import frc.robot.commands.testing.WheelRadiusCharacterization.Direction;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.leds.LEDSubsystem;
 import frc.robot.subsystems.pivot.PivotSubsystem;
@@ -55,8 +51,6 @@ public class RobotContainer {
   private final PivotSubsystem pivotSubsystem;
   private final LEDSubsystem ledSubsystem;
 
-  private final boolean isRed;
-
   private final SendableChooser<Command> autoChooser;
   
   public RobotContainer() {
@@ -67,19 +61,18 @@ public class RobotContainer {
     intakeSubsystem = new IntakeSubsystem();
     pivotSubsystem = new PivotSubsystem();
     ledSubsystem = new LEDSubsystem();
-    isRed = DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red;
 
     autoChooser = new SendableChooser<Command>();
     autoChooser.setDefaultOption("red 4note", new RedNoteThree(driveSubsystem, visionSubsystem, intakeSubsystem, shooterSubsystem, pivotSubsystem, ledSubsystem));
     autoChooser.addOption("blue 4note", new BlueNoteThree(driveSubsystem, visionSubsystem, intakeSubsystem, shooterSubsystem, pivotSubsystem, ledSubsystem));
     autoChooser.addOption("red shoot+taxi", new RedShootTaxi(driveSubsystem, visionSubsystem, intakeSubsystem, shooterSubsystem, pivotSubsystem, ledSubsystem));
     autoChooser.addOption("blue shoot+taxi", new BlueShootTaxi(driveSubsystem, visionSubsystem, intakeSubsystem, shooterSubsystem, pivotSubsystem, ledSubsystem));
-    autoChooser.addOption("fendershot+taxi", new FenderShotThenTaxi(driveSubsystem, visionSubsystem, pivotSubsystem, shooterSubsystem, ledSubsystem));
     autoChooser.addOption("fendershot", new SubwooferShot(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, ()->0, ()->0, ()->0, ()->false, ledSubsystem));
-    autoChooser.addOption("testingintakeauto", new IntakeAuto(intakeSubsystem, pivotSubsystem, shooterSubsystem, ledSubsystem));
     autoChooser.addOption("Red far note 8", new RedNoteEight(driveSubsystem, visionSubsystem, intakeSubsystem, shooterSubsystem, pivotSubsystem, ledSubsystem));
     autoChooser.addOption("blue far note 8", new BlueNoteEight(driveSubsystem, visionSubsystem, intakeSubsystem, shooterSubsystem, pivotSubsystem, ledSubsystem));
-    autoChooser.addOption("gyroresettesting", new InstantCommand(()->driveSubsystem.resetOdometry(new Pose2d(0, 0, Rotation2d.fromRadians(-2.0701431295199386)))));
+    autoChooser.addOption("red amp side 4 note", new RedAmpSideFourNote(driveSubsystem, visionSubsystem, shooterSubsystem, pivotSubsystem, intakeSubsystem, ledSubsystem));
+    autoChooser.addOption("simple fwdback", new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "simple fwdback", true));
+    autoChooser.addOption("1mtrrot", new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "1mtrrot", true));
     autoChooser.addOption("nothing", null);
 
     SmartDashboard.putData("autoChooser", autoChooser);
@@ -173,32 +166,33 @@ public class RobotContainer {
 
     //driving
     Command driveCommand = new Drive(driveSubsystem, visionSubsystem,
-      driverLeftStick[0],
       driverLeftStick[1],
+      driverLeftStick[0],
       () -> modifyAxisCubed(driverRightStickX),
       () -> !driverRightBumper.getAsBoolean()
     );
 
     driveSubsystem.setDefaultCommand(driveCommand);
 
-    // DRIVER BUTTONS 
-    // Driver Intake
-    // Driver should be allowed to do under the bumper intake to avoid lag with operator. Should not be able to do OTB because should be focused on driving and not worry too much about other obstacles and robots
+    // DRIVER BUTTONS
+    // Driver Intake 
     driverLeftTrigger.whileTrue(new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem, false, ledSubsystem));
     driverLeftBumper.whileTrue(new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem, true, ledSubsystem));
-    
+    // driverYButton.whileTrue(new AutoBuilderDriveToPos(driveSubsystem, visionSubsystem, 1, 0, Rotation2d.fromDegrees(0)));
+    driverYButton.whileTrue(new DriveToAmp(driveSubsystem, visionSubsystem));
     // Shoot Mode (Doesn't actually shoot but revs flywheels, aims drivetrain and pivot toward speaker)
     driverRightTrigger.whileTrue(new SpinUpForSpeaker(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, driverLeftStick[0], driverLeftStick[1], driverRightBumper, ledSubsystem));
     
     // Resets the robot angle in the odometry, factors in which alliance the robot is on
-    driverRightDirectionPad.onTrue(new InstantCommand(() -> driveSubsystem.resetOdometry(new Pose2d(driveSubsystem.getPose().getX(), driveSubsystem.getPose().getY(), 
+    // driverRightDirectionPad.onTrue(new InstantCommand(() -> driveSubsystem.resetOdometry(new Pose2d(driveSubsystem.getPose().getX(), driveSubsystem.getPose().getY(), 
+    //       Rotation2d.fromDegrees(driveSubsystem.getAllianceAngleOffset())))));
+    driverRightDirectionPad.onTrue(new InstantCommand(() -> driveSubsystem.resetOdometry(new Pose2d(15.18017578125, 5.555154800415039, 
           Rotation2d.fromDegrees(driveSubsystem.getAllianceAngleOffset())))));
     driverLeftDirectionPad.onTrue(new InstantCommand(() -> driveSubsystem.resetOdometry(visionSubsystem.getPoseFromAprilTags())));
 
     // OPERATOR BUTTONS
-    operatorBButton.whileTrue(new ManualIntakePivot(intakeSubsystem, ()->modifyAxisCubed(operatorLeftStickY)));
-
-    operatorRightTrigger.whileTrue(new ShootSpeaker(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, driverLeftStick[0], driverLeftStick[1], driverRightBumper, ledSubsystem));
+    operatorYButton.whileTrue(new WheelRadiusCharacterization(driveSubsystem, Direction.CLOCKWISE));
+    operatorRightTrigger.whileTrue(new ShootSpeaker(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, driverLeftStickX, driverLeftStickY, driverRightBumper, ledSubsystem));
     operatorRightBumper.whileTrue(new ShootAmp(shooterSubsystem, pivotSubsystem, ledSubsystem));
     operatorDpadUp.whileTrue(new SubwooferShot(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, driverLeftStick[0], driverLeftStick[1], driverRightStickX, driverRightBumper, ledSubsystem));
     
@@ -213,8 +207,10 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     SmarterDashboardRegistry.initialize();
     // Resets the pose factoring in the robot side
+    // This is just a failsafe, pose should be reset at the beginning of auto
     driveSubsystem.resetOdometry(new Pose2d(driveSubsystem.getPose().getX(), driveSubsystem.getPose().getY(), 
       Rotation2d.fromDegrees(driveSubsystem.getAllianceAngleOffset())));
     return autoChooser.getSelected();
+    //return new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "red amp side four note 1", true);
   }
 }

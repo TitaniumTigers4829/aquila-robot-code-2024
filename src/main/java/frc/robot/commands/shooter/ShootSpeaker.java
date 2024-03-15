@@ -17,6 +17,7 @@ import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.LEDConstants.LEDProcess;
 import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.ShooterConstants;
+import frc.robot.Constants.LEDConstants.LEDProcess;
 import frc.robot.commands.drive.DriveCommandBase;
 import frc.robot.subsystems.leds.LEDSubsystem;
 import frc.robot.subsystems.pivot.PivotSubsystem;
@@ -88,19 +89,12 @@ public class ShootSpeaker extends DriveCommandBase {
     // distance (for speaker lookups)
     double distance = robotPos.getDistance(speakerPos);
     // arctangent for desired heading
-    // if (isRed) {
-    //   desiredHeading = Math.atan2((speakerPos.getY() - robotPos.getY()), (speakerPos.getX() - robotPos.getX()));
-    // } else {
       desiredHeading = Math.atan2((robotPos.getY() - speakerPos.getY()), (robotPos.getX() - speakerPos.getX()));
-      // }
   
       headingError = desiredHeading - driveSubsystem.getOdometryRotation2d().getRadians();
   
       turnController.enableContinuousInput(-Math.PI, Math.PI);
       double turnOutput = deadband(turnController.calculate(headingError, 0)); 
-    // if (headingError >= Math.PI) {
-    //   headingError = Math.PI - headingError;
-    // }
     // get PID output
     //SmartDashboard.putNumber("desired Heading", desiredHeading);
     // SmartDashboard.putNumber("drivetrain error", headingError);
@@ -121,7 +115,7 @@ public class ShootSpeaker extends DriveCommandBase {
     // if we are ready to shoot:
     if (isReadyToShoot()) {
       leds.setProcess(LEDProcess.SHOOT);
-      shooterSubsystem.setRollerSpeed(ShooterConstants.ROLLER_SHOOT_SPEED);
+      shooterSubsystem.setTowerSpeed(ShooterConstants.ROLLER_SHOOT_SPEED);
     } else {
       leds.setProcess(LEDProcess.FINISH_LINE_UP);
     }
@@ -130,9 +124,10 @@ public class ShootSpeaker extends DriveCommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    leds.setProcess(LEDProcess.DEFAULT);
     shooterSubsystem.setFlywheelNeutral();
-    shooterSubsystem.setRollerSpeed(0);
-    pivotSubsystem.setPivot(PivotConstants.PIVOT_INTAKE_ANGLE);
+    shooterSubsystem.setTowerSpeed(0);
+    pivotSubsystem.setPivotAngle(PivotConstants.PIVOT_INTAKE_ANGLE);
     leds.setProcess(LEDProcess.DEFAULT);
   }
 

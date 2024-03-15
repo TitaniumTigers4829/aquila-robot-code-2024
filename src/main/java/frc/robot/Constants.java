@@ -1,10 +1,3 @@
-/*----------------------------------------------------------------------------*/
-/* Copyright (c) 2018-2019 FIRST. All Rights Reserved.            */
-/* Open Source Software - may be modified and shared by FRC teams. The code   */
-/* must be accompanied by the FIRST BSD license file in the root directory of */
-/* the project.                                 */
-/*----------------------------------------------------------------------------*/
-
 package frc.robot;
 
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -23,16 +16,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.Unit;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 
-/**
- * The Constants class provides a convenient place for teams to hold robot-wide
- * numerical or boolean constants. This class should not be used for any other
- * purpose. All constants should be declared globally (i.e. public static). Do
- * not put anything functional in this class.
- *
- * <p>
- * It is advised to statically import this class (or one of its inner classes)
- * wherever the constants are needed, to reduce verbosity.
- */
+
 public final class Constants {
   public static final class HardwareConstants {
     public static final double TIMEOUT_S = 0.05;
@@ -55,9 +39,9 @@ public final class Constants {
 
     // Wheel base and track width are measured by the center of the swerve modules, not the frame of the robot
     // Distance between centers of right and left wheels on robot
-    public static final double TRACK_WIDTH = Units.inchesToMeters(26);
+    public static final double TRACK_WIDTH = Units.inchesToMeters(21.25);
     // Distance between front and back wheels on robot
-    public static final double WHEEL_BASE = Units.inchesToMeters(26);
+    public static final double WHEEL_BASE = Units.inchesToMeters(21.25);
 
     public static final SwerveDriveKinematics DRIVE_KINEMATICS = new SwerveDriveKinematics(
       new Translation2d(WHEEL_BASE / 2, TRACK_WIDTH / 2), // Front Left
@@ -77,7 +61,7 @@ public final class Constants {
     public static final int REAR_RIGHT_TURN_MOTOR_ID = 7;
 
     public static final int FRONT_LEFT_CANCODER_ID = 11;
-    public static final int FRONT_RIGHT_CANCODER_ID = 0;
+    public static final int FRONT_RIGHT_CANCODER_ID = 12;
     public static final int REAR_LEFT_CANCODER_ID = 14;
     public static final int REAR_RIGHT_CANCODER_ID = 13;
 
@@ -91,17 +75,16 @@ public final class Constants {
     public static final SensorDirectionValue REAR_LEFT_CANCODER_REVERSED = SensorDirectionValue.CounterClockwise_Positive;
     public static final SensorDirectionValue REAR_RIGHT_CANCODER_REVERSED = SensorDirectionValue.CounterClockwise_Positive;
     
-    public static final InvertedValue FRONT_LEFT_TURN_MOTOR_REVERSED = InvertedValue.Clockwise_Positive;
+    public static final InvertedValue FRONT_LEFT_TURN_MOTOR_REVERSED = InvertedValue.CounterClockwise_Positive;
     public static final InvertedValue FRONT_RIGHT_TURN_MOTOR_REVERSED = InvertedValue.CounterClockwise_Positive;
     public static final InvertedValue REAR_LEFT_TURN_MOTOR_REVERSED = InvertedValue.Clockwise_Positive;
     public static final InvertedValue REAR_RIGHT_TURN_MOTOR_REVERSED = InvertedValue.Clockwise_Positive;
 
     public static final InvertedValue FRONT_LEFT_DRIVE_ENCODER_REVERSED = InvertedValue.CounterClockwise_Positive;
-    public static final InvertedValue FRONT_RIGHT_DRIVE_ENCODER_REVERSED = InvertedValue.CounterClockwise_Positive; 
+    public static final InvertedValue FRONT_RIGHT_DRIVE_ENCODER_REVERSED = InvertedValue.Clockwise_Positive; 
     public static final InvertedValue REAR_LEFT_DRIVE_ENCODER_REVERSED = InvertedValue.Clockwise_Positive;
     public static final InvertedValue REAR_RIGHT_DRIVE_ENCODER_REVERSED = InvertedValue.CounterClockwise_Positive;
     
-    // TODO: tune
     public static final double MAX_ANGULAR_SPEED_RADIANS_PER_SECOND = 5;
 
     public static final double MAX_SPEED_METERS_PER_SECOND = 6.95;
@@ -111,14 +94,13 @@ public final class Constants {
   
   public static final class ModuleConstants { 
     public static final double DRIVE_GEAR_RATIO = 4.59;
-    public static final double WHEEL_DIAMETER_METERS = Units.inchesToMeters(4);
+    public static final double WHEEL_DIAMETER_METERS = Units.inchesToMeters(3.8);
     public static final double WHEEL_CIRCUMFERENCE_METERS = WHEEL_DIAMETER_METERS * Math.PI;
     public static final double DRIVE_TO_METERS =  WHEEL_CIRCUMFERENCE_METERS / DRIVE_GEAR_RATIO;
     public static final double DRIVE_TO_METERS_PER_SECOND = WHEEL_CIRCUMFERENCE_METERS / DRIVE_GEAR_RATIO;
 
-    //TODO: Test these:
     public static final double DRIVE_SUPPLY_LIMIT = 40.0;
-    public static final double DRIVE_STATOR_LIMIT = 55.0;  // TODO: Yes (choreo+not killing the battery) - R
+    public static final double DRIVE_STATOR_LIMIT = 50.0;  
 
     public static final double TURN_P = 116.0; 
     public static final double TURN_I = 0.0;
@@ -170,7 +152,6 @@ public final class Constants {
       {Units.inchesToMeters(182.73), Units.inchesToMeters(146.19), Units.inchesToMeters(52.0), 240}, // 16
     };
 
-    // TODO: Actually tune/do math for these
     public static final double[][] ONE_APRIL_TAG_LOOKUP_TABLE = {
       // {distance in meters, x std deviation, y std deviation, r (in degrees) std deviation}
       {0, 0.02, 0.02, Units.degreesToRadians(180)}, // 2
@@ -194,8 +175,6 @@ public final class Constants {
     public static final double FIELD_LENGTH_METERS = Units.inchesToMeters(653);
     public static final double FIELD_WIDTH_METERS = Units.inchesToMeters(325);
 
-    // TODO: in meters from the bottom left of the field
-    // TODO: add point for in front of each:
     public static final double RED_AMP_X = 14.613;
     public static final double RED_AMP_Y = 8.197;
 
@@ -207,8 +186,8 @@ public final class Constants {
     public static final double BLUE_AMP_SHOOT_X = 1.9;
     public static final double BLUE_AMP_SHOOT_Y = 7.767;
 
-    public static final Rotation2d RED_AMP_ROTATION = Rotation2d.fromDegrees(90);
-    public static final Rotation2d BLUE_AMP_ROTATION = Rotation2d.fromDegrees(90);
+    public static final Rotation2d RED_AMP_ROTATION = Rotation2d.fromDegrees(-90);
+    public static final Rotation2d BLUE_AMP_ROTATION = Rotation2d.fromDegrees(-90);
     
     public static final double RED_SPEAKER_X = 16.511;
     public static final double RED_SPEAKER_Y = 5.55;
@@ -226,25 +205,6 @@ public final class Constants {
   public static final class IntakeConstants {
     public static final int INTAKE_MOTOR_ID = 16;
     public static final double INTAKE_SPEED = 0.7;
-
-    public static final int OTB_PIVOT_ID = 50;
-    public static final int OTB_INTAKE_ID = 40;
-    public static final double OTB_ROTOR_OFFSET = -0.3095703125;
-
-    public static final double MM_ACCELERATION = 4;
-    public static final double MM_VELOCITY = 10;
-
-    public static final double INTAKE_P = 0;
-    public static final double INTAKE_I = 0;
-    public static final double INTAKE_D = 0;
-    public static final double INTAKE_G = 0;
-
-    public static final double MAX_OVERTHEBUMPER_ANGLE = 0-9;
-    public static final double MIN_OVERTHEBUMPER_ANGLE = 0-9;
-
-    public static final double INTAKE_OVERTHEBUMPER_SPEED = 1;
-
-    public static final double INTAKE_PIVOT_ACCEPTABLE_ERROR = 0.01;
   }
 
   public static final class PivotConstants {
@@ -262,6 +222,9 @@ public final class Constants {
     public static final double PIVOT_D = 0.0;
     public static final double PIVOT_G = 1.7320;
 
+    public static final double MAX_VELOCITY_ROTATIONS_PER_SECOND = 4;
+    public static final double MAX_ACCELERATION_ROTATIONS_PER_SECOND_SQUARED = 10;
+
     public static final double PIVOT_NEUTRAL_SPEED = 0;
 
     public static final double ANGLE_ZERO = -0.026123046875;//-0.00732421875;//-0.0146484375;
@@ -269,12 +232,6 @@ public final class Constants {
 
     public static final double SHOOT_AMP_ANGLE = 0.182392578125;
     public static final double PIVOT_ACCEPTABLE_ERROR = 0.015;
-
-    public static final double PIVOT_NEUTRAL_ANGLE = 0;
-
-    //TODO: get these!!!!!11
-    public static final double PIVOT_START_CLIMB_ANGLE = 0;
-    public static final double PIVOT_END_CLIMB_ANGLE = 0;
 
     public static double[][] SPEAKER_PIVOT_POSITION = {
       // Distance, Angle (rotations)
@@ -340,25 +297,23 @@ public final class Constants {
 
   public static final class TrajectoryConstants {
 
-    public static final double DRIVE_BASE_RADIUS = Math.sqrt(Math.pow(DriveConstants.TRACK_WIDTH, 2) + Math.pow(DriveConstants.WHEEL_BASE, 2));
-    public static final double MAX_SPEED = 5.7;
+    public static final double DRIVE_BASE_DIAMETER = Math.sqrt(Math.pow(DriveConstants.TRACK_WIDTH, 2) + Math.pow(DriveConstants.WHEEL_BASE, 2));
+    public static final double MAX_SPEED = 5.0;
     public static final double MAX_ACCELERATION = 3;
-    public static final double REALTIME_TRANSLATION_CONTROLLER_P = 9; // 6.5
-    public static final double REALTIME_TRANSLATION_CONTROLLER_I  = 0.000;
-    public static final double REALTIME_TRANSLATION_CONTROLLER_D = 0.0;
-    public static final double REALTIME_THETA_CONTROLLER_P = 8;
+
+    public static final double AUTO_TRANSLATION_P = 1.7;
+    public static final double AUTO_TRANSLATION_D = 0.2;
+    public static final double AUTO_THETA_P = 5.0;
+    public static final double AUTO_THETA_D = 0.4;
+    
     public static final double AUTO_SHOOT_HEADING_OFFSET = 2;
 
     public static final double MAX_ANGULAR_SPEED_RADIANS_PER_SECOND = 2;
     public static final double MAX_ANGULAR_SPEED_RADIANS_PER_SECOND_SQUARED = 2;
-    // The length of the field in the x direction (left to right)
-    public static final double FIELD_LENGTH_METERS = 16.54175;
-    // The length of the field in the y direction (top to bottom)
-    public static final double FIELD_WIDTH_METERS = 8.0137;
 
-    public static final PIDConstants TRANSLATION_CONSTANTS = new PIDConstants(REALTIME_TRANSLATION_CONTROLLER_P, 0, 0);
-    public static final PIDConstants ROTATION_CONSTANTS = new PIDConstants(REALTIME_THETA_CONTROLLER_P, 0, 0);
-    public static final HolonomicPathFollowerConfig CONFIG = new HolonomicPathFollowerConfig(TRANSLATION_CONSTANTS, ROTATION_CONSTANTS, MAX_SPEED, 0.876, new ReplanningConfig());
+    public static final PIDConstants REALTIME_TRANSLATION_PID = new PIDConstants(0.5, 0, 0); // 0.2
+    public static final PIDConstants REALTIME_THETA_PID = new PIDConstants(15, 0, 0 ); // 0.1
+    public static final HolonomicPathFollowerConfig CONFIG = new HolonomicPathFollowerConfig(REALTIME_TRANSLATION_PID, REALTIME_THETA_PID, MAX_SPEED, 0.876, new ReplanningConfig());
 
     // Constraint for the motion profiled robot angle controller
     public static final TrapezoidProfile.Constraints THETA_CONTROLLER_CONSTRAINTS =
@@ -391,7 +346,6 @@ public final class Constants {
     public static final int LEFT_TRIGGER_ID = 2;
     public static final int RIGHT_TRIGGER_ID = 3;
     public static final int RIGHT_STICK_Y_ID = 5;
-
   }
 
   

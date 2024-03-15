@@ -1,7 +1,3 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot.commands.autodrive;
 
 
@@ -16,31 +12,31 @@ import frc.robot.subsystems.swerve.DriveSubsystem;
 import frc.robot.subsystems.vision.VisionSubsystem;
 
 public class AutoBuilderDriveToPos extends DriveCommandBase {
+
   private final DriveSubsystem driveSubsystem;
   private final VisionSubsystem visionSubsystem;
 
-  // private final BooleanSupplier isFinished;
-  private final double finalX, finalY, finalRot;
+  private final double finalX, finalY;
+  private final Rotation2d finalRot;
 
-  Command controllerCommand;
+  private Command controllerCommand;
 
   /** Creates a new NewDriveToPos. */
-  public AutoBuilderDriveToPos(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, double finalX, double finalY, double finalRot) {
+  public AutoBuilderDriveToPos(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, double finalX, double finalY, Rotation2d finalRot) {
     super(driveSubsystem, visionSubsystem);
     this.driveSubsystem = driveSubsystem;
     this.visionSubsystem = visionSubsystem;
     this.finalX = finalX;
     this.finalY = finalY;
     this.finalRot = finalRot;
-    // this.isFinished = isFinished;
     addRequirements(driveSubsystem, visionSubsystem);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    // TODO: rotation?
-    Pose2d endPose = new Pose2d(finalX, finalY, new Rotation2d());
+    driveSubsystem.resetOdometry(new Pose2d(0,0, Rotation2d.fromDegrees(0)));
+    Pose2d endPose = new Pose2d(finalX, finalY, finalRot);
 
     controllerCommand = AutoBuilder.pathfindToPose(
       endPose,
@@ -49,13 +45,14 @@ public class AutoBuilderDriveToPos extends DriveCommandBase {
       0.0
     );
 
-    controllerCommand.schedule();
+    controllerCommand.initialize();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     super.execute();
+    controllerCommand.execute();
     // TODO: LEDs
     // if (Math.abs(endPose.getX() - driveSubsystem.getPose().getX()) < TrajectoryConstants.X_TOLERANCE
     //   && Math.abs(endPose.getY() - driveSubsystem.getPose().getY()) < TrajectoryConstants.Y_TOLERANCE
@@ -73,6 +70,5 @@ public class AutoBuilderDriveToPos extends DriveCommandBase {
   @Override
   public boolean isFinished() {
     return controllerCommand.isFinished(); 
-    // || isFinished.getAsBoolean();
   }
 }

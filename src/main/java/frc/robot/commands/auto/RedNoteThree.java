@@ -25,22 +25,22 @@ public class RedNoteThree extends SequentialCommandGroup {
   public RedNoteThree(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, IntakeSubsystem intakeSubsystem, ShooterSubsystem shooterSubsystem, PivotSubsystem pivotSubsystem, LEDSubsystem leds) {
     addCommands(
         new InstantCommand(()->driveSubsystem.resetOdometry(new Pose2d(15.1563902742, 5.493067741394043, Rotation2d.fromRadians(3.14159265358979)))),
-        new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, leds).withTimeout(2),
-        new ParallelRaceGroup(
+        // new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, leds).withTimeout(2),
+        // new ParallelRaceGroup(
             new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "red to note 1", false),
-            new IntakeAuto(intakeSubsystem, pivotSubsystem, shooterSubsystem, leds)
-        ),
-        new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, leds).withTimeout(1.7),
-        new ParallelRaceGroup(
+        //     new IntakeAuto(intakeSubsystem, pivotSubsystem, shooterSubsystem, leds).withTimeout(1.7)
+        // ),
+        // new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, leds).withTimeout(1.7),
+        // new ParallelRaceGroup(
             new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "red note 1 to 2", false),
-            new IntakeAuto(intakeSubsystem, pivotSubsystem, shooterSubsystem, leds)
-        ),
-        new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, leds).withTimeout(1.7),
-        new ParallelRaceGroup(
-            new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "red note 2 to 3", false),
-            new IntakeAuto(intakeSubsystem, pivotSubsystem, shooterSubsystem, leds)
-        ),
-        new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, leds).withTimeout(1.7)
+        //     new IntakeAuto(intakeSubsystem, pivotSubsystem, shooterSubsystem, leds).withTimeout(1.7)
+        // ),
+        // new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, leds).withTimeout(1.7),
+        // new ParallelRaceGroup(
+            new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "red note 2 to 3", false)
+        //     new IntakeAuto(intakeSubsystem, pivotSubsystem, shooterSubsystem, leds).withTimeout(2.5)
+        // ),
+        // new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, leds).withTimeout(1.7)
     );
   }
 }
