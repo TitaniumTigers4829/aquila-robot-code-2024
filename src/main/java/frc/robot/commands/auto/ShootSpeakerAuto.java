@@ -121,6 +121,7 @@ public class ShootSpeakerAuto extends DriveCommandBase {
     shooterSubsystem.setTowerSpeed(0);
     pivotSubsystem.setPivotAngle(PivotConstants.PIVOT_INTAKE_ANGLE);
     leds.setProcess(LEDProcess.DEFAULT);
+    driveSubsystem.drive(0, 0, 0, false);
   }
 
   // Returns true when the command should end.
