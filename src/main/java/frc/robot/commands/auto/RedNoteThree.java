@@ -9,6 +9,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.intake.IntakeAuto;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.leds.LEDSubsystem;
@@ -24,16 +25,18 @@ public class RedNoteThree extends SequentialCommandGroup {
   /** Creates a new BlueSimpleTwoNote. */
   public RedNoteThree(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, IntakeSubsystem intakeSubsystem, ShooterSubsystem shooterSubsystem, PivotSubsystem pivotSubsystem, LEDSubsystem leds) {
     addCommands(
-        new InstantCommand(()->driveSubsystem.resetOdometry(new Pose2d(15.1563902742, 5.493067741394043, Rotation2d.fromRadians(3.14159265358979)))),
+        new InstantCommand(()->driveSubsystem.resetOdometry(new Pose2d(15.198075294494629, 5.555154800415039, Rotation2d.fromRadians(3.14159265358979)))),
         // new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, leds).withTimeout(2),
         // new ParallelRaceGroup(
             new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "red to note 1", false),
         //     new IntakeAuto(intakeSubsystem, pivotSubsystem, shooterSubsystem, leds).withTimeout(1.7)
         // ),
+        new WaitCommand(5),
         // new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, leds).withTimeout(1.7),
         // new ParallelRaceGroup(
             new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "red note 1 to 2", false),
-        //     new IntakeAuto(intakeSubsystem, pivotSubsystem, shooterSubsystem, leds).withTimeout(1.7)
+            new WaitCommand(5),
+            //     new IntakeAuto(intakeSubsystem, pivotSubsystem, shooterSubsystem, leds).withTimeout(1.7)
         // ),
         // new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, leds).withTimeout(1.7),
         // new ParallelRaceGroup(

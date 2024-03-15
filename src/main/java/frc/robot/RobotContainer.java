@@ -2,8 +2,11 @@ package frc.robot;
 
 import java.util.function.DoubleSupplier;
 
+import com.ctre.phoenix6.SignalLogger;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -80,6 +83,9 @@ public class RobotContainer {
     SmartDashboard.putData("autoChooser", autoChooser);
     
     ledSubsystem.setProcess(LEDProcess.DEFAULT);
+
+    DataLogManager.start();
+    SignalLogger.start();
   }
   
   private static double deadband(double value, double deadband) {
@@ -190,7 +196,8 @@ public class RobotContainer {
     //       Rotation2d.fromDegrees(driveSubsystem.getAllianceAngleOffset())))));
     driverRightDirectionPad.onTrue(new InstantCommand(() -> driveSubsystem.resetOdometry(new Pose2d(15.18017578125, 5.555154800415039, 
           Rotation2d.fromDegrees(driveSubsystem.getAllianceAngleOffset())))));
-    driverLeftDirectionPad.onTrue(new InstantCommand(() -> driveSubsystem.resetOdometry(visionSubsystem.getPoseFromAprilTags())));
+          // driverLeftDirectionPad.onTrue(new InstantCommand(() -> driveSubsystem.resetOdometry(visionSubsystem.getPoseFromAprilTags())));
+          driverLeftDirectionPad.onTrue(new InstantCommand(() -> driveSubsystem.resetOdometry(new Pose2d(15.752967834472656, 6.664938449859619, Rotation2d.fromRadians(2.0491481821878663)))));
 
     // OPERATOR BUTTONS
     operatorYButton.whileTrue(new WheelRadiusCharacterization(driveSubsystem, Direction.CLOCKWISE));
