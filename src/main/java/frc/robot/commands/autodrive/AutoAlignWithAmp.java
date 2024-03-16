@@ -28,10 +28,10 @@ public class AutoAlignWithAmp extends DriveCommandBase {
   );
 
   private final ProfiledPIDController translationController = new ProfiledPIDController(
-    ShooterConstants.AUTO_SHOOT_P,
-    ShooterConstants.AUTO_SHOOT_I, 
-    ShooterConstants.AUTO_SHOOT_D, 
-    ShooterConstants.AUTO_SHOOT_CONSTRAINTS
+    ShooterConstants.AUTO_LINEUP_P,
+    ShooterConstants.AUTO_LINEUP_I, 
+    ShooterConstants.AUTO_LINEUP_D, 
+    ShooterConstants.AUTO_LINEUP_CONSTRAINTS
   );
 
   /** Creates a new AutoAlignWithAmp. */
