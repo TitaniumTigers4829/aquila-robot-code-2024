@@ -77,7 +77,9 @@ public class AutoAlignWithAmp extends DriveCommandBase {
   }
 
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    driveSubsystem.drive(0, 0, 0, false);
+  }
 
   @Override
   public boolean isFinished() {
