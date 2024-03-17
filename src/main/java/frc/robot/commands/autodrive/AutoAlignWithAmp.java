@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.Constants.FieldConstants;
@@ -67,12 +68,15 @@ public class AutoAlignWithAmp extends DriveCommandBase {
     turnController.enableContinuousInput(-Math.PI, Math.PI);
     double turnOutput = deadband(turnController.calculate(thetaPoseError, 0)); 
 
+    // Gets the chassis speeds for the robot using the odometry rotation (not alliance relative)
+    ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xOutput, yOutput, turnOutput, driveSubsystem.getOdometryRotation2d());
+
     // Drives the robot towards the amp
     driveSubsystem.drive(
-      xOutput,
-      yOutput,
-      turnOutput, 
-      true
+      chassisSpeeds.vxMetersPerSecond,
+      chassisSpeeds.vyMetersPerSecond,
+      chassisSpeeds.omegaRadiansPerSecond,
+      false
     );
   }
 
