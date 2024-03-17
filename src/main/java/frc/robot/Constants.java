@@ -88,8 +88,10 @@ public final class Constants {
     public static final double MAX_ANGULAR_SPEED_RADIANS_PER_SECOND = 5;
 
     public static final double MAX_SPEED_METERS_PER_SECOND = 6.95;
+    public static final double MAX_SHOOT_SPEED_METERS_PER_SECOND = 3;
 
     public static final double HEADING_ACCEPTABLE_ERROR_RADIANS = Units.degreesToRadians(2);
+    public static final double HEADING_ACCEPTABLE_ERROR_MOVING_RADIANS = Units.degreesToRadians(2.5);
   }
   
   public static final class ModuleConstants { 
@@ -178,8 +180,8 @@ public final class Constants {
     public static final double RED_AMP_X = 14.613;
     public static final double RED_AMP_Y = 8.197;
 
-    public static final double RED_AMP_SHOOT_X = 14.613;
-    public static final double RED_AMP_SHOOT_Y = 7.767;
+    public static final double RED_AMP_SHOOT_X = 14.81;
+    public static final double RED_AMP_SHOOT_Y = 7.793;
 
     public static final double BLUE_AMP_X = 1.9;
     public static final double BLUE_AMP_Y = 8.161;
@@ -213,10 +215,10 @@ public final class Constants {
     public static final int FOLLOWER_PIVOT_MOTOR_ID = 10;
     public static final int PIVOT_ENCODER_ID = 33;
 
-    public static final double MIN_ANGLE = -0.015080078125;
-    public static final double MAX_ANGLE = 0.37158203125;
+    public static final double MIN_ANGLE = 0;
+    public static final double MAX_ANGLE = 0.358642578125;
 
-    public static final double PIVOT_INTAKE_ANGLE = -0.006591796875;
+    public static final double PIVOT_INTAKE_ANGLE = 0.01220703125;
 
     public static final double PIVOT_P = 180.0;
     public static final double PIVOT_I = 0.0; //60.0 
@@ -228,7 +230,7 @@ public final class Constants {
 
     public static final double PIVOT_NEUTRAL_SPEED = 0;
 
-    public static final double ANGLE_ZERO = -0.026123046875;//-0.00732421875;//-0.0146484375;
+    public static final double ANGLE_ZERO = -0.006103515625;
     public static final SensorDirectionValue ENCODER_REVERSED = SensorDirectionValue.Clockwise_Positive;
 
     public static final double SHOOT_AMP_ANGLE = 0.182392578125;
@@ -236,21 +238,22 @@ public final class Constants {
 
     public static double[][] SPEAKER_PIVOT_POSITION = {
       // Distance, Angle (rotations)
-      {1.37, 0.0},
-      {1.6, 0.021},
-      {1.8, 0.028},
-      {2.0, 0.04},
-      {2.2, 0.042},
-      {2.4, 0.045},
-      {2.6, 0.0485},
-      {2.7, 0.0515},
-      {2.8, 0.056},
-      {3.0, 0.061},
-      {3.2, 0.063},
-      {3.4, 0.0666},
-      {3.6, 0.0697},
-      {3.8, 0.074},
-      {4.0, 0.077},
+      {1.37, 0.021494140625},
+      {1.5, 0.02862109375},
+      {1.6, 0.03515625},
+      // {1.8, 0.028},
+      // {2.0, 0.04},
+      // {2.2, 0.042},
+      // {2.4, 0.045},
+      // {2.6, 0.0485},
+      // {2.7, 0.0515},
+      // {2.8, 0.056},
+      // {3.0, 0.061},
+      // {3.2, 0.063},
+      // {3.4, 0.0666},
+      // {3.6, 0.0697},
+      // {3.8, 0.074},
+      // {4.0, 0.077},
     };
   }
 
@@ -288,6 +291,21 @@ public final class Constants {
     public static final double AUTO_SHOOT_I = 0.0;
     public static final double AUTO_SHOOT_D = 0.0;
     public static Constraints AUTO_SHOOT_CONSTRAINTS = new Constraints(DriveConstants.MAX_ANGULAR_SPEED_RADIANS_PER_SECOND, 2);
+    
+    public static final double AUTO_SHOOT_MOVE_P = 8.0;
+    public static final double AUTO_SHOOT_MOVE_I = 0.0;
+    public static final double AUTO_SHOOT_MOVE_D = 0.0;
+    public static Constraints AUTO_SHOOT_MOVE_CONSTRAINTS = new Constraints(7, 3);
+    
+    public static final double AUTO_LINEUP_ROTATION_P = 3.5;
+    public static final double AUTO_LINEUP_ROTATION_I = 0.0;
+    public static final double AUTO_LINEUP_ROTATION_D = 0.0;
+    public static Constraints AUTO_LINEUP_ROTATION_CONSTRAINTS = new Constraints(DriveConstants.MAX_ANGULAR_SPEED_RADIANS_PER_SECOND, 2);
+
+    public static final double AUTO_LINEUP_TRANSLATION_P = 5; // 4.5, 4.0
+    public static final double AUTO_LINEUP_TRANSLATION_I = 0.0;
+    public static final double AUTO_LINEUP_TRANSLATION_D = 0.0;
+    public static Constraints AUTO_LINEUP_TRANSLATION_CONSTRAINTS = new Constraints(5, 2);
 
     // TODO: calc
     public static final double NOTE_LAUNCH_VELOCITY = 10.1;

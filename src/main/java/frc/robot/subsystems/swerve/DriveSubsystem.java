@@ -216,7 +216,6 @@ public class DriveSubsystem extends SubsystemBase {
   public double getAllianceAngleOffset() {
     alliance = DriverStation.getAlliance();
     double offset = alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red ? 180.0 : 0.0;
-    SmartDashboard.putNumber("offset", offset);
     return offset;
   }
 
@@ -332,8 +331,8 @@ public class DriveSubsystem extends SubsystemBase {
     SmarterDashboardRegistry.setPose(pose);
     odometryLogger.append(pose.toString());
     SmartDashboard.putBoolean("screwed", Math.abs(pose.getX()) > 20);
-    SmartDashboard.putNumber("heading", getHeading());
     SmartDashboard.putString("odometry", pose.toString());
     // SmartDashboard.putNumber("offset", rearLeftSwerveModule.getState().angle.getRotations());
+    SmartDashboard.putNumber("speakerDistance", pose.getTranslation().getDistance(SmarterDashboardRegistry.getSpeakerPos()));
   }
 }

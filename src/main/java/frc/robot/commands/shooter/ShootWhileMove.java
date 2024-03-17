@@ -14,6 +14,7 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.LEDConstants.LEDProcess;
@@ -38,10 +39,10 @@ public class ShootWhileMove extends DriveCommandBase {
   private double headingError = 0;
 
   private final ProfiledPIDController turnController = new ProfiledPIDController(
-    ShooterConstants.AUTO_SHOOT_P,
-    ShooterConstants.AUTO_SHOOT_I, 
-    ShooterConstants.AUTO_SHOOT_D, 
-    ShooterConstants.AUTO_SHOOT_CONSTRAINTS
+    ShooterConstants.AUTO_SHOOT_MOVE_P,
+    ShooterConstants.AUTO_SHOOT_MOVE_I, 
+    ShooterConstants.AUTO_SHOOT_MOVE_D, 
+    ShooterConstants.AUTO_SHOOT_MOVE_CONSTRAINTS
   );
 
   private boolean isRed = false;
@@ -90,21 +91,17 @@ public class ShootWhileMove extends DriveCommandBase {
     // speeds
     ChassisSpeeds speeds = driveSubsystem.getRobotRelativeSpeeds();
     // this gets the time that the note will be in the air between the robot and the speaker
-    double dt = robotPos3d.getDistance(speakerPos) / ShooterConstants.NOTE_LAUNCH_VELOCITY;
+    double tmpDist = robotPos3d.getDistance(speakerPos);
+    double dt = tmpDist / ShooterConstants.NOTE_LAUNCH_VELOCITY;
     // For shooting while moving, we can pretend that our robot is stationary, but has traveled
     // the distance that was how long the note was in the air for times the robots current velocity
-    double dx = speeds.vxMetersPerSecond * dt;
-    double dy = speeds.vyMetersPerSecond * dt;
-    // get the heading of the robot so we can do some fun trig    
-    double theta = driveSubsystem.getOdometryRotation2d().getRadians();
-    // dx, dy are robot relative, rotated counterclockwise from horizontal Θ radians
-    // adjust the robot pos using:
-    // x = x + ((dx * cos(Θ)) - (dy * sin(Θ)))
-    // y = y + ((dy * cos(Θ)) - (dx * sin(Θ)))
-    robotPose2d = robotPose2d.plus(new Translation2d((dx * Math.cos(theta)) - (dy * Math.sin(theta)), (dy * Math.cos(theta)) + (dx * Math.sin(theta))));
+    double dx = speeds.vxMetersPerSecond * dt * ((tmpDist * 0.05) + 1);
+    double dy = speeds.vyMetersPerSecond * dt * ((tmpDist * 0.05) + 1);
+    // account for the current velocity:
+    robotPose2d.plus(new Translation2d(dx, dy).rotateBy(driveSubsystem.getOdometryRotation2d()));
     // continue the command as normal
     double distance = robotPose2d.getDistance(speakerPos.toTranslation2d());
-    desiredHeading = Math.atan2(robotPos3d.getX() - speakerPos.getX(), robotPos3d.getY() - speakerPos.getY());
+    desiredHeading = Math.atan2(robotPose2d.getY() - speakerPos.getY(), robotPose2d.getX() - speakerPos.getX());
     // heading error
     headingError = desiredHeading - driveSubsystem.getOdometryRotation2d().getRadians();
     
@@ -114,16 +111,17 @@ public class ShootWhileMove extends DriveCommandBase {
     // allow the driver to drive at full speed (fancy math go brrr (hopefully))
     // reason for using a DoubleSupplier[] here is so that the modifyAxisCubedPolar can be used
     driveSubsystem.drive(
-      leftStick[0].getAsDouble() * DriveConstants.MAX_SPEED_METERS_PER_SECOND, 
-      leftStick[1].getAsDouble() * DriveConstants.MAX_SPEED_METERS_PER_SECOND, 
+      leftStick[1].getAsDouble() * DriveConstants.MAX_SHOOT_SPEED_METERS_PER_SECOND, 
+      leftStick[0].getAsDouble() * DriveConstants.MAX_SHOOT_SPEED_METERS_PER_SECOND, 
       turnOutput, 
       !isFieldRelative.getAsBoolean()
     );
 
     // spin up the shooter
     shooterSubsystem.setRPM(ShooterConstants.SHOOT_SPEAKER_RPM);
-    // set the pivot
-    pivotSubsystem.setPivotFromDistance(distance);
+    // TODO: set the pivot
+    // pivotSubsystem.setPivotFromDistance(distance);
+    pivotSubsystem.setPivotAngle(0.14306640625);
     // if we are ready to shoot:
     if (isReadyToShoot()) {
       leds.setProcess(LEDProcess.SHOOT);
@@ -148,7 +146,10 @@ public class ShootWhileMove extends DriveCommandBase {
     return false;
   }
   public boolean isReadyToShoot() {
-    return shooterSubsystem.isShooterWithinAcceptableError() && pivotSubsystem.isPivotWithinAcceptableError() && (Math.abs(headingError) < DriveConstants.HEADING_ACCEPTABLE_ERROR_RADIANS);
+    SmartDashboard.putBoolean("shooter", shooterSubsystem.isShooterWithinAcceptableError());
+    SmartDashboard.putBoolean("pivot", pivotSubsystem.isPivotWithinAcceptableError());
+    SmartDashboard.putBoolean("heading", Math.abs(headingError) < DriveConstants.HEADING_ACCEPTABLE_ERROR_MOVING_RADIANS);
+    return shooterSubsystem.isShooterWithinAcceptableError() && pivotSubsystem.isPivotWithinAcceptableError() && (Math.abs(headingError) < DriveConstants.HEADING_ACCEPTABLE_ERROR_MOVING_RADIANS);
   }
 
   private double deadband(double val) {
