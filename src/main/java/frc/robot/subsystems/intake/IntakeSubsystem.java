@@ -10,11 +10,12 @@ import frc.robot.Constants.IntakeConstants;
 
 public class IntakeSubsystem extends SubsystemBase {
   private final TalonFX intakeMotor;
+  private final LaserCan intakeLc;
 
   /** Creates a new IntakeSubsystem. */
   public IntakeSubsystem() {
     intakeMotor = new TalonFX(IntakeConstants.INTAKE_MOTOR_ID);
-    
+    intakeLc = new LaserCan(0)
     TalonFXConfiguration intakeConfig = new TalonFXConfiguration();
     intakeConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     intakeMotor.getConfigurator().apply(intakeConfig, HardwareConstants.TIMEOUT_S);
@@ -29,7 +30,20 @@ public class IntakeSubsystem extends SubsystemBase {
   public void setIntakeSpeed(double speed) {
     intakeMotor.set(speed);
   }
-
+  public void LaserCanDetectsNote(){
+    return intakeLc.get();
+  }
+  // public void IntakeLEDs(){
+  //   intakeLc = new LaserCan(0);
+    // if (sensor senses note){
+  //   Led = yellow;
+  // }
+    // if (shooter senses note){
+    //   LED = Green;
+    // }
+    // if (intaking note){
+    //   LED = Purple;
+    // }
   @Override
   public void periodic() {
   }
