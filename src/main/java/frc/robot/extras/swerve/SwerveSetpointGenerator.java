@@ -27,7 +27,7 @@ import frc.robot.extras.utils.GeomUtil;
 // @Builder
 // @RequiredArgsConstructor
 // @ExtensionMethod({GeomUtil.class, EqualsUtil.GeomExtensions.class})
-public class SwerveSetpointGenerator {
+public class SwerveSetpointGenerator extends GeomUtil {
   private final SwerveDriveKinematics kinematics;
   private final Translation2d[] moduleLocations;
 
@@ -184,13 +184,13 @@ public class SwerveSetpointGenerator {
     // Special case: desiredState is a complete stop. In this case, module angle is arbitrary, so
     // just use the previous angle.
     boolean need_to_steer = true;
-    // if (desiredState.toTwist2d().epsilonEquals(new Twist2d())) {
-    //   need_to_steer = false;
-    //   for (int i = 0; i < modules.length; ++i) {
-    //     desiredModuleState[i].angle = prevSetpoint.moduleStates()[i].angle;
-    //     desiredModuleState[i].speedMetersPerSecond = 0.0;
-    //   }
-    // }
+    if (toTwist2d(desiredState).equals(new Twist2d())) {
+      need_to_steer = false;
+      for (int i = 0; i < modules.length; ++i) {
+        desiredModuleState[i].angle = prevSetpoint.moduleStates()[i].angle;
+        desiredModuleState[i].speedMetersPerSecond = 0.0;
+      }
+    }
 
     // For each module, compute local Vx and Vy vectors.
     double[] prev_vx = new double[modules.length];
@@ -226,10 +226,10 @@ public class SwerveSetpointGenerator {
           all_modules_should_flip = false;
         }
       }
-    // }
-    // if (all_modules_should_flip
-    //     && !prevSetpoint.chassisSpeeds().toTwist2d().epsilonEquals(new Twist2d())
-    //     && !desiredState.toTwist2d().epsilonEquals(new Twist2d())) {
+    }
+    if (all_modules_should_flip
+        && !toTwist2d(prevSetpoint.chassisSpeeds()).equals(new Twist2d())
+        && !toTwist2d(desiredState).equals(new Twist2d())) {
       // It will (likely) be faster to stop the robot, rotate the modules in place to the complement
       // of the desired
       // angle, and accelerate again.
