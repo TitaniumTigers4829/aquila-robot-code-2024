@@ -1,7 +1,7 @@
 
 // TigerLib 2023
 // Don't edit this unless you know what you're doing
-package frc.robot.extras;
+package frc.robot.extras.interpolators;
 import java.util.Arrays;
 
 public final class MultiLinearInterpolator {

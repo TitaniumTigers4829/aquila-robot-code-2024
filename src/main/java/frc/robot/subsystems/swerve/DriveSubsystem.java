@@ -25,10 +25,16 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.HardwareConstants;
+import frc.robot.Constants.ModuleConstants;
 import frc.robot.Constants.TrajectoryConstants;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.extras.SmarterDashboardRegistry;
+import frc.robot.extras.swerve.ModuleLimits;
+import frc.robot.extras.swerve.SwerveSetpoint;
+import frc.robot.extras.swerve.SwerveSetpointGenerator;
 
 
 public class DriveSubsystem extends SubsystemBase {
@@ -48,9 +54,16 @@ public class DriveSubsystem extends SubsystemBase {
   private final AHRS gyro;
   private final SwerveDrivePoseEstimator odometry;
 
+  private SwerveSetpointGenerator setpointGenerator;
+  private SwerveSetpoint currentSetpoint;
+  private ModuleLimits currentModuleLimits;
+
   private StringLogEntry odometryLogger;
 
   private Optional<DriverStation.Alliance> alliance;
+
+  private ChassisSpeeds desiredSpeeds = new ChassisSpeeds();
+
 
   /**
    * Creates a new DriveSubsystem.
@@ -112,19 +125,12 @@ public class DriveSubsystem extends SubsystemBase {
     );
     alliance = DriverStation.getAlliance();
     
-    // Configure AutoBuilder
-    AutoBuilder.configureHolonomic(
-      this::getPose, 
-      this::resetOdometry, 
-      this::getRobotRelativeSpeeds, 
-      this::drive, 
-      TrajectoryConstants.CONFIG,
-      ()->false,
-      this
-    );
-    
     DataLog log = DataLogManager.getLog();
     odometryLogger = new StringLogEntry(log, "odometry");
+
+    setpointGenerator = new SwerveSetpointGenerator(DriveConstants.DRIVE_KINEMATICS, DriveConstants.MODULE_TRANSLATIONS);
+    currentSetpoint = new SwerveSetpoint(getRobotRelativeSpeeds(), getModuleStates());
+    currentModuleLimits = new ModuleLimits(DriveConstants.MAX_SPEED_METERS_PER_SECOND, 2, DriveConstants.MAX_ANGULAR_SPEED_RADIANS_PER_SECOND);
   }
 
   /**gets the chassis speeds*/
@@ -326,6 +332,20 @@ public class DriveSubsystem extends SubsystemBase {
     rearRightSwerveModule.setDesiredState(desiredStates[3]);
   }
 
+  /**
+   * Gets the swerve module states
+   * @return the module states
+   */
+  public SwerveModuleState[] getModuleStates() {
+    SwerveModuleState[] states = {
+      frontLeftSwerveModule.getState(),
+      frontRightSwerveModule.getState(),
+      rearLeftSwerveModule.getState(),
+      rearRightSwerveModule.getState()
+    };
+    return states;
+  }
+
   public void periodic() {
     Pose2d pose = getPose();
     SmarterDashboardRegistry.setPose(pose);
@@ -334,5 +354,9 @@ public class DriveSubsystem extends SubsystemBase {
     SmartDashboard.putString("odometry", pose.toString());
     // SmartDashboard.putNumber("offset", rearLeftSwerveModule.getState().angle.getRotations());
     SmartDashboard.putNumber("speakerDistance", pose.getTranslation().getDistance(SmarterDashboardRegistry.getSpeakerPos()));
+    currentSetpoint =
+        setpointGenerator.generateSetpoint(
+            currentModuleLimits, currentSetpoint, desiredSpeeds, HardwareConstants.TIMEOUT_S);
+
   }
 }

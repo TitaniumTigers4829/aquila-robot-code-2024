@@ -43,12 +43,14 @@ public final class Constants {
     // Distance between front and back wheels on robot
     public static final double WHEEL_BASE = Units.inchesToMeters(21.25);
 
-    public static final SwerveDriveKinematics DRIVE_KINEMATICS = new SwerveDriveKinematics(
+    public static final Translation2d[] MODULE_TRANSLATIONS = new Translation2d[]{
       new Translation2d(WHEEL_BASE / 2, TRACK_WIDTH / 2), // Front Left
       new Translation2d(WHEEL_BASE / 2, -TRACK_WIDTH / 2), // Front Right
       new Translation2d(-WHEEL_BASE / 2, TRACK_WIDTH / 2), // Rear Left
     new Translation2d(-WHEEL_BASE / 2, -TRACK_WIDTH / 2) // Rear Right
-    );
+    };
+
+    public static final SwerveDriveKinematics DRIVE_KINEMATICS = new SwerveDriveKinematics(MODULE_TRANSLATIONS);
 
     public static final int FRONT_LEFT_DRIVE_MOTOR_ID = 22;
     public static final int FRONT_RIGHT_DRIVE_MOTOR_ID = 24;
