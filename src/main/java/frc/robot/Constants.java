@@ -204,6 +204,9 @@ public final class Constants {
   public static final class IntakeConstants {
     public static final int INTAKE_MOTOR_ID = 16;
     public static final double INTAKE_SPEED = 0.7;
+
+    public static final int INTAKE_LASERCAN_ID = 0-9; // tune
+    public static final double LASERCAN_NOTE_DETECTION_THRESHOLD = 0.0; // tune
   }
 
   public static final class PivotConstants {

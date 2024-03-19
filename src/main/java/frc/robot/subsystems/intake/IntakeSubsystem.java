@@ -4,9 +4,11 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import au.grapplerobotics.LaserCan;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.HardwareConstants;
 import frc.robot.Constants.IntakeConstants;
+
 
 public class IntakeSubsystem extends SubsystemBase {
   private final TalonFX intakeMotor;
@@ -15,7 +17,7 @@ public class IntakeSubsystem extends SubsystemBase {
   /** Creates a new IntakeSubsystem. */
   public IntakeSubsystem() {
     intakeMotor = new TalonFX(IntakeConstants.INTAKE_MOTOR_ID);
-    intakeLc = new LaserCan(0)
+    intakeLc = new LaserCan(0);
     TalonFXConfiguration intakeConfig = new TalonFXConfiguration();
     intakeConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     intakeMotor.getConfigurator().apply(intakeConfig, HardwareConstants.TIMEOUT_S);
@@ -30,8 +32,8 @@ public class IntakeSubsystem extends SubsystemBase {
   public void setIntakeSpeed(double speed) {
     intakeMotor.set(speed);
   }
-  public void LaserCanDetectsNote(){
-    return intakeLc.get();
+  public boolean IntakeHasNote(){
+    return intakeLc.getMeasurement().distance_mm < IntakeConstants.LASERCAN_NOTE_DETECTION_THRESHOLD;
   }
   // public void IntakeLEDs(){
   //   intakeLc = new LaserCan(0);
