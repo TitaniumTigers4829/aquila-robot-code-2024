@@ -206,7 +206,7 @@ public final class Constants {
     public static final double INTAKE_SPEED = 0.7;
 
     public static final int INTAKE_LASERCAN_ID = 0-9; // tune
-    public static final double LASERCAN_NOTE_DETECTION_THRESHOLD = 0.0; // tune
+    public static final double INTAKE_LASERCAN_NOTE_DETECTION_THRESHOLD = 0.0; // tune
   }
 
   public static final class PivotConstants {
@@ -293,6 +293,8 @@ public final class Constants {
     public static final double AUTO_LINEUP_P = 4.5;
     public static final double AUTO_LINEUP_I = 0.0;
     public static final double AUTO_LINEUP_D = 0.0;
+    public static final int SHOOTER_LASERCAN_ID = 0;
+    public static final int SHOOTER_LASERCAN_NOTE_DETECTION_THRESHOLD = 0;
     public static Constraints AUTO_LINEUP_CONSTRAINTS = new Constraints(DriveConstants.MAX_ANGULAR_SPEED_RADIANS_PER_SECOND, 2);
 
   
@@ -416,7 +418,8 @@ public final class Constants {
       GREEN (SparkConstants.GREEN, 0, 255, 0),
       RED (SparkConstants.RED, 255, 0, 0),
       INTAKE (SparkConstants.RED, 255, 0, 0),
-      NOTE_IN (SparkConstants.GREEN, 0, 255, 0);
+      NOTE_IN (SparkConstants.GREEN, 0, 255, 0),
+      YELLOW (SparkConstants.YELLOW, 255, 255, 0);
 
       public final double sparkValue;
       private final int red, green, blue;

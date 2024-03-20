@@ -109,7 +109,7 @@ public class ShootSpeakerAuto extends DriveCommandBase {
       shooterSubsystem.setTowerSpeed(0);
     }
 
-    if (shooterSubsystem.hasNote() && !timer.hasElapsed(0.001)) {
+    if (shooterSubsystem.shooterHasNote() && !timer.hasElapsed(0.001)) {
       timer.start();
     }
   }
