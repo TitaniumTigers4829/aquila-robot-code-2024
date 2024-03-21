@@ -210,6 +210,7 @@ public final class Constants {
     public static final int LEFT_INTAKE_MOTOR_ID = 19;
     public static final int RIGHT_INTAKE_MOTOR_ID = 18;
     public static final double INTAKE_SPEED = 1.0;
+    public static final double INTAKE_NEUTRAL_SPEED = 0.0;
 
     public static final double INTAKE_STATOR_LIMIT = 60;
     public static final double INTAKE_SUPPLY_LIMIT = 40;

@@ -37,6 +37,7 @@ import frc.robot.commands.shooter.ShootAmp;
 import frc.robot.commands.shooter.ShootSpeaker;
 import frc.robot.commands.shooter.ShootWhileMove;
 import frc.robot.commands.shooter.SubwooferShot;
+import frc.robot.commands.testing.TestIntake;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.leds.LEDSubsystem;
 import frc.robot.subsystems.pivot.PivotSubsystem;
@@ -51,7 +52,7 @@ public class RobotContainer {
   // private final DriveSubsystem driveSubsystem;
   private final Joystick driverJoystick = new Joystick(JoystickConstants.DRIVER_JOYSTICK_ID);
   private final Joystick operatorJoystick = new Joystick(JoystickConstants.OPERATOR_JOYSTICK_ID);
-  // private final IntakeSubsystem intakeSubsystem;
+  private final IntakeSubsystem intakeSubsystem;
   private final PivotSubsystem pivotSubsystem;
   private final LEDSubsystem ledSubsystem;
 
@@ -65,6 +66,7 @@ public class RobotContainer {
     // intakeSubsystem = new IntakeSubsystem();
     pivotSubsystem = new PivotSubsystem();
     ledSubsystem = new LEDSubsystem();
+    intakeSubsystem = new IntakeSubsystem();
 
     autoChooser = new SendableChooser<Command>();
     // autoChooser.setDefaultOption("red 4note", new RedNoteThree(driveSubsystem, visionSubsystem, intakeSubsystem, shooterSubsystem, pivotSubsystem, ledSubsystem));
@@ -171,6 +173,7 @@ public class RobotContainer {
 
     shooterSubsystem.setDefaultCommand(new ManualShoot(shooterSubsystem, pivotSubsystem, operatorRightStickY, operatorRightTrigger, operatorLeftTrigger));
 
+    driverAButton.whileTrue(new TestIntake(intakeSubsystem, shooterSubsystem));
     //DRIVER BUTTONS
 
     //driving
