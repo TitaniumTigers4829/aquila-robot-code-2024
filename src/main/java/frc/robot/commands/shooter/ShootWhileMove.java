@@ -66,14 +66,9 @@ public class ShootWhileMove extends DriveCommandBase {
   @Override
   public void initialize() {
     Optional<Alliance> alliance = DriverStation.getAlliance();
-    // if alliance is detected
-    if (alliance.isPresent()) {
-      // and if it's red, we're red
-      isRed = alliance.get() == Alliance.Red;
-    } else {
-      // otherwise default to red alliance
-      isRed = true;
-    }
+    // Sets isRed to true if alliance is red
+    isRed = alliance.isPresent() && alliance.get() == Alliance.Red;  
+
     speakerPos = isRed ? new Translation3d(FieldConstants.RED_SPEAKER_X, FieldConstants.RED_SPEAKER_Y, ShooterConstants.SPEAKER_HEIGHT) 
       : new Translation3d(FieldConstants.BLUE_SPEAKER_X, FieldConstants.BLUE_SPEAKER_Y, ShooterConstants.SPEAKER_HEIGHT);
   }
@@ -84,7 +79,6 @@ public class ShootWhileMove extends DriveCommandBase {
     // update odometry and useful things like that
     super.execute();
     
-    // TODO: someone check my logic here
     // current pose
     Translation2d robotPose2d = driveSubsystem.getPose().getTranslation();
     Translation3d robotPos3d = new Translation3d(robotPose2d.getX(), robotPose2d.getY(), ShooterConstants.SHOOTER_HEIGHT);

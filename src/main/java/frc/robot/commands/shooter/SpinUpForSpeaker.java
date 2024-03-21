@@ -65,14 +65,9 @@ public class SpinUpForSpeaker extends DriveCommandBase {
   @Override
   public void initialize() {
     Optional<Alliance> alliance = DriverStation.getAlliance();
-    //if alliance is detected
-    if (alliance.isPresent()) {
-      //and if it's red, we're red
-      isRed = alliance.get() == Alliance.Red;
-    } else {
-      //otherwise default to red alliance
-      isRed = true;
-    }
+    //sets alliance to red if alliance is red
+    isRed = alliance.isPresent() && alliance.get() == Alliance.Red;  
+
     // SmartDashboard.putBoolean("red", isRed);
     speakerPos = isRed ? new Translation2d(FieldConstants.RED_SPEAKER_X, FieldConstants.RED_SPEAKER_Y) : new Translation2d(FieldConstants.BLUE_SPEAKER_X, FieldConstants.BLUE_SPEAKER_Y);
     // SmartDashboard.putString("speakerPos", speakerPos.toString());
