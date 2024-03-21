@@ -20,7 +20,7 @@ import frc.robot.extras.SingleLinearInterpolator;
 
 public class PivotSubsystem extends SubsystemBase {
 
-  private final CANcoder pivotEncoder;
+  // private final CANcoder pivotEncoder;
   private final TalonFX leaderPivotMotor;
   private final TalonFX followerPivotMotor;
 
@@ -28,23 +28,23 @@ public class PivotSubsystem extends SubsystemBase {
 
   private final SingleLinearInterpolator speakerAngleLookupValues;
 
-  private final StatusSignal<Double> pivotPos;
+  // private final StatusSignal<Double> pivotPos;
   private double pivotTargetAngle;
 
   /** Creates a new PivotSubsystem. */
   public PivotSubsystem() {
     leaderPivotMotor = new TalonFX(PivotConstants.LEADER_PIVOT_MOTOR_ID);
     followerPivotMotor = new TalonFX(PivotConstants.FOLLOWER_PIVOT_MOTOR_ID);
-    pivotEncoder = new CANcoder(PivotConstants.PIVOT_ENCODER_ID);
+    // pivotEncoder = new CANcoder(PivotConstants.PIVOT_ENCODER_ID);
 
     mmRequest = new MotionMagicVoltage(0);
 
     speakerAngleLookupValues = new SingleLinearInterpolator(PivotConstants.SPEAKER_PIVOT_POSITION);
 
-    CANcoderConfiguration pivotEncoderConfig = new CANcoderConfiguration();
-    pivotEncoderConfig.MagnetSensor.MagnetOffset = -PivotConstants.ANGLE_ZERO;
-    pivotEncoderConfig.MagnetSensor.SensorDirection = PivotConstants.ENCODER_REVERSED;
-    pivotEncoder.getConfigurator().apply(pivotEncoderConfig, HardwareConstants.TIMEOUT_S);
+    // CANcoderConfiguration pivotEncoderConfig = new CANcoderConfiguration();
+    // pivotEncoderConfig.MagnetSensor.MagnetOffset = -PivotConstants.ANGLE_ZERO;
+    // pivotEncoderConfig.MagnetSensor.SensorDirection = PivotConstants.ENCODER_REVERSED;
+    // pivotEncoder.getConfigurator().apply(pivotEncoderConfig, HardwareConstants.TIMEOUT_S);
 
     TalonFXConfiguration pivotConfig = new TalonFXConfiguration();
     pivotConfig.Slot0.kP = PivotConstants.PIVOT_P;
@@ -60,7 +60,7 @@ public class PivotSubsystem extends SubsystemBase {
     pivotConfig.MotorOutput.DutyCycleNeutralDeadband = HardwareConstants.MIN_FALCON_DEADBAND;
 
     pivotConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
-    pivotConfig.Feedback.FeedbackRemoteSensorID = pivotEncoder.getDeviceID();
+    // pivotConfig.Feedback.FeedbackRemoteSensorID = pivotEncoder.getDeviceID();
     
     pivotConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold = PivotConstants.MAX_ANGLE;
     pivotConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = PivotConstants.MIN_ANGLE;
@@ -70,10 +70,10 @@ public class PivotSubsystem extends SubsystemBase {
     pivotConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     followerPivotMotor.getConfigurator().apply(pivotConfig, HardwareConstants.TIMEOUT_S);
 
-    pivotPos = pivotEncoder.getAbsolutePosition();
+    // pivotPos = pivotEncoder.getAbsolutePosition();
 
-    BaseStatusSignal.setUpdateFrequencyForAll(HardwareConstants.SIGNAL_FREQUENCY, pivotPos);
-    ParentDevice.optimizeBusUtilizationForAll(leaderPivotMotor, followerPivotMotor, pivotEncoder);
+    // BaseStatusSignal.setUpdateFrequencyForAll(HardwareConstants.SIGNAL_FREQUENCY, pivotPos);
+    ParentDevice.optimizeBusUtilizationForAll(leaderPivotMotor, followerPivotMotor);//, pivotEncoder);
   }
 
   /**
@@ -81,8 +81,9 @@ public class PivotSubsystem extends SubsystemBase {
    * @return angle of pivot in degrees
    */
   public double getAngle() {
-    pivotPos.refresh();
-    return pivotPos.getValueAsDouble();
+    return 0;
+    // pivotPos.refresh();
+    // return pivotPos.getValueAsDouble();
   }
 
   /**
@@ -136,6 +137,6 @@ public class PivotSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("pivot pos", pivotPos.refresh().getValueAsDouble());
+    // SmartDashboard.putNumber("pivot pos", pivotPos.refresh().getValueAsDouble());
   }
 }

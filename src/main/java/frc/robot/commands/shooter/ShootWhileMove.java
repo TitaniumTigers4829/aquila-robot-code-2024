@@ -125,7 +125,7 @@ public class ShootWhileMove extends DriveCommandBase {
     // if we are ready to shoot:
     if (isReadyToShoot()) {
       leds.setProcess(LEDProcess.SHOOT);
-      shooterSubsystem.setTowerSpeed(ShooterConstants.ROLLER_SHOOT_SPEED);
+      shooterSubsystem.setRollerSpeed(ShooterConstants.ROLLER_SHOOT_SPEED);
     } else {
       leds.setProcess(LEDProcess.FINISH_LINE_UP);
     }
@@ -135,7 +135,7 @@ public class ShootWhileMove extends DriveCommandBase {
   @Override
   public void end(boolean interrupted) {
     shooterSubsystem.setFlywheelNeutral();
-    shooterSubsystem.setTowerSpeed(0);
+    shooterSubsystem.setRollerSpeed(0);
     pivotSubsystem.setPivotAngle(PivotConstants.PIVOT_INTAKE_ANGLE);
     leds.setProcess(LEDProcess.DEFAULT);
   }

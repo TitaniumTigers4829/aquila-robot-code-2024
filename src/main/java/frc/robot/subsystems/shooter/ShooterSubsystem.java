@@ -73,7 +73,7 @@ public class ShooterSubsystem extends SubsystemBase {
    * Sets the speed of the rollers to transfer note from tower to shooter
    * @param speed 1.0 being the max speed, -1.0 being the min speed
    */
-  public void setTowerSpeed(double speed) {
+  public void setRollerSpeed(double speed) {
     rollerMotor.set(speed);
   }
 
@@ -119,6 +119,11 @@ public class ShooterSubsystem extends SubsystemBase {
   public void setFlywheelNeutral() {
     leaderFlywheel.set(0);
     followerFlywheel.set(0);
+  }
+
+  public void setSpeed(double speed) {
+    leaderFlywheel.set(speed);
+    followerFlywheel.set(speed);
   }
   
   /**

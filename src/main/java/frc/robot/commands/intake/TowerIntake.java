@@ -40,16 +40,16 @@ public class TowerIntake extends Command {
     if (pivotSubsystem.isPivotWithinAcceptableError()) {
       if (intakeReverse) {
         leds.setProcess(LEDProcess.REVERSE_INTAKE);
-        shooterSubsystem.setTowerSpeed(-ShooterConstants.ROLLER_INTAKE_SPEED); 
+        shooterSubsystem.setRollerSpeed(-ShooterConstants.ROLLER_INTAKE_SPEED); 
         intakeSubsystem.setIntakeSpeed(-IntakeConstants.INTAKE_SPEED);
       } else {
         if (shooterSubsystem.hasNote()) {
           leds.setProcess(LEDProcess.NOTE_IN);
           intakeSubsystem.setIntakeSpeed(0);
-          shooterSubsystem.setTowerSpeed(0);
+          shooterSubsystem.setRollerSpeed(0);
         } else {
           leds.setProcess(LEDProcess.INTAKE);
-          shooterSubsystem.setTowerSpeed(ShooterConstants.ROLLER_INTAKE_SPEED);
+          shooterSubsystem.setRollerSpeed(ShooterConstants.ROLLER_INTAKE_SPEED);
           intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_SPEED);
         }
       }
@@ -61,7 +61,7 @@ public class TowerIntake extends Command {
   public void end(boolean interrupted) {
     leds.setProcess(LEDProcess.DEFAULT);
     intakeSubsystem.setIntakeSpeed(0);
-    shooterSubsystem.setTowerSpeed(0);
+    shooterSubsystem.setRollerSpeed(0);
     pivotSubsystem.setPivotSpeed(0);
   }
 

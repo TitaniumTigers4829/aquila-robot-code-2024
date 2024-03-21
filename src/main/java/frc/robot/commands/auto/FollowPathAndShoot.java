@@ -108,7 +108,7 @@ public class FollowPathAndShoot extends DriveCommandBase {
 
     // if we are ready to shoot:
     if (shooterSubsystem.isReadyToShoot(headingError) && pivotSubsystem.isPivotWithinAcceptableError()) {
-      shooterSubsystem.setTowerSpeed(ShooterConstants.ROLLER_SHOOT_SPEED);
+      shooterSubsystem.setRollerSpeed(ShooterConstants.ROLLER_SHOOT_SPEED);
     }
   }
 

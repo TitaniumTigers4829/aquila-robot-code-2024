@@ -14,10 +14,6 @@ import frc.robot.subsystems.swerve.DriveSubsystem;
 public class ManualPivot extends Command {
   private final PivotSubsystem pivotSubsytem;
   private final DoubleSupplier speed;
-  
-  private DriveSubsystem driveSubsystem;
-  // private Translation2d speakerPos;
-  // private boolean isRed = false;
 
   /** Creates a new SetShooterAngle. */
   public ManualPivot(PivotSubsystem pivotSubsytem, DoubleSupplier speed) {
@@ -29,21 +25,11 @@ public class ManualPivot extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-        // speakerPos = isRed ? new Translation2d(FieldConstants.RED_SPEAKER_X, FieldConstants.RED_SPEAKER_Y) : new Translation2d(FieldConstants.BLUE_SPEAKER_X, FieldConstants.BLUE_SPEAKER_Y);
-
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-
-    
-    // // get positions of various things
-    // Translation2d robotPos = driveSubsystem.getPose().getTranslation();
-    // // distance (for speaker lookups)
-    // double distance = robotPos.getDistance(speakerPos);
-
-    // SmartDashboard.putNumber("SpeakerDist", distance);
     pivotSubsytem.setPivotSpeed(speed.getAsDouble());
   }
 
