@@ -22,6 +22,12 @@ public class IntakeSubsystem extends SubsystemBase {
     TalonFXConfiguration intakeConfig = new TalonFXConfiguration();
     intakeConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     intakeConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+    //TODO: tune these:
+    intakeConfig.CurrentLimits.StatorCurrentLimit = IntakeConstants.INTAKE_STATOR_LIMIT;
+    intakeConfig.CurrentLimits.StatorCurrentLimitEnable = IntakeConstants.INTAKE_STATOR_ENABLE;
+    intakeConfig.CurrentLimits.SupplyCurrentLimit = IntakeConstants.INTAKE_SUPPLY_LIMIT;
+    intakeConfig.CurrentLimits.SupplyCurrentLimitEnable = IntakeConstants.INTAKE_SUPPLY_ENABLE;
+
     leftIntakeMotor.getConfigurator().apply(intakeConfig, HardwareConstants.TIMEOUT_S);
     rightIntakeMotor.getConfigurator().apply(intakeConfig, HardwareConstants.TIMEOUT_S);
 

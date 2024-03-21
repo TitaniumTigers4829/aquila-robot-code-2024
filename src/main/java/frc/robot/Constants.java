@@ -208,12 +208,19 @@ public final class Constants {
     public static final int LEFT_INTAKE_MOTOR_ID = 19;
     public static final int RIGHT_INTAKE_MOTOR_ID = 18;
     public static final double INTAKE_SPEED = 1.0;
+
+    public static final double INTAKE_STATOR_LIMIT = 60;
+    public static final double INTAKE_SUPPLY_LIMIT = 40;
+    public static final boolean INTAKE_STATOR_ENABLE = false;
+    public static final boolean INTAKE_SUPPLY_ENABLE = false;
   }
 
   public static final class PivotConstants {
     public static final int LEADER_PIVOT_MOTOR_ID = 9;
     public static final int FOLLOWER_PIVOT_MOTOR_ID = 10;
     public static final int PIVOT_ENCODER_ID = 33;
+
+    public static final double SUBWOOFER_ANGLE = 0.14771484375;
 
     public static final double MIN_ANGLE = 0;
     public static final double MAX_ANGLE = 0.358642578125;
