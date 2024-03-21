@@ -30,6 +30,8 @@ public final class Constants {
 
     public static final PneumaticsModuleType PNEUMATICS_MODULE_TYPE = PneumaticsModuleType.CTREPCM;
 
+    public static final double DEADBAND_VALUE = 0.05;
+
   }
 
   public static final class DriveConstants {
