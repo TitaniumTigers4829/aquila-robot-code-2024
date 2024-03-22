@@ -14,12 +14,14 @@ import frc.robot.Constants.IntakeConstants;
 public class IntakeSubsystem extends SubsystemBase {
   private final TalonFX leftIntakeMotor;
   private final TalonFX rightIntakeMotor;
+  private final TalonFX flapperMotor;
   // private final LaserCan intakeLc;
 
   /** Creates a new IntakeSubsystem. */
   public IntakeSubsystem() {
     leftIntakeMotor = new TalonFX(IntakeConstants.LEFT_INTAKE_MOTOR_ID);
     rightIntakeMotor = new TalonFX(IntakeConstants.RIGHT_INTAKE_MOTOR_ID);
+    flapperMotor = new TalonFX(IntakeConstants.FLAPPER_MOTOR_ID);
     // intakeLc = new LaserCan(IntakeConstants.INTAKE_LC_ID);
     
     TalonFXConfiguration intakeConfig = new TalonFXConfiguration();
@@ -45,6 +47,15 @@ public class IntakeSubsystem extends SubsystemBase {
     rightIntakeMotor.set(speed);
     leftIntakeMotor.set(speed);
   }
+
+  /**
+   * sets the flapper speed
+   * @param speed speed
+   */
+  public void setFlapperSpeed(double speed) {
+    flapperMotor.set(speed);
+  }
+
 
   public boolean hasNote() {
     return false;

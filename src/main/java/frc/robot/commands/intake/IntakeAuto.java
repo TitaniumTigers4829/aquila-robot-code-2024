@@ -38,10 +38,12 @@ public class IntakeAuto extends Command {
         leds.setProcess(LEDProcess.NOTE_IN);
         intakeSubsystem.setIntakeSpeed(0);
         shooterSubsystem.setRollerSpeed(0);
+        intakeSubsystem.setFlapperSpeed(0);
       } else {
         leds.setProcess(LEDProcess.INTAKE);
         shooterSubsystem.setRollerSpeed(ShooterConstants.ROLLER_INTAKE_SPEED); 
         intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_SPEED);
+        intakeSubsystem.setFlapperSpeed(IntakeConstants.FLAPPER_SPEED);
       }
 
       shooterSubsystem.setRPM(ShooterConstants.SHOOT_SPEAKER_RPM);
