@@ -40,18 +40,17 @@ public class ShooterSubsystem extends SubsystemBase {
     leaderFlywheel = new TalonFX(ShooterConstants.LEADER_FLYWHEEL_ID);
     followerFlywheel = new TalonFX(ShooterConstants.FOLLOWER_FLYWHEEL_ID);
     rollerMotor = new TalonFX(ShooterConstants.ROLLER_MOTOR_ID);
-    noteSensor = new LaserCan(ShooterConstants.TOP_LASERCAN_ID);
 
+    noteSensor = new LaserCan(40);
     SmartDashboard.putBoolean("lasercan bad", false);
-    SmartDashboard.putString("msg", ":D");
     try {
-      noteSensor.setRangingMode(RangingMode.SHORT);
-      noteSensor.setTimingBudget(TimingBudget.TIMING_BUDGET_33MS);
+      noteSensor.setRangingMode(LaserCan.RangingMode.SHORT);
+      noteSensor.setRegionOfInterest(new LaserCan.RegionOfInterest(8, 1, 16, 2));
+      noteSensor.setTimingBudget(LaserCan.TimingBudget.TIMING_BUDGET_33MS);
     } catch (ConfigurationFailedException e) {
       SmartDashboard.putBoolean("lasercan bad", true);
       SmartDashboard.putString("msg", e.getMessage());
     }
-
     velocityRequest = new VelocityVoltage(0);
 
     TalonFXConfiguration shooterConfig = new TalonFXConfiguration();
@@ -101,9 +100,11 @@ public class ShooterSubsystem extends SubsystemBase {
   public boolean hasNote() {
     Measurement tmp = noteSensor.getMeasurement();
     if (tmp != null && tmp.status == LaserCan.LASERCAN_STATUS_VALID_MEASUREMENT) {
+      SmartDashboard.putBoolean("valid", true);
       SmartDashboard.putNumber("measurement", tmp.distance_mm);
       return tmp.distance_mm < ShooterConstants.NOTE_DETECTED_THRESHOLD;
     } else {
+      SmartDashboard.putBoolean("valid", false);
       return false;
     }
     // return !noteSensor.get();
