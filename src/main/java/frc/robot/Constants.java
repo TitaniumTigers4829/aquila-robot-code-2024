@@ -212,7 +212,7 @@ public final class Constants {
     public static final int INTAKE_LC_ID = 0;
     public static final double NOTE_DETECTION_THRESHOLD = 0.0;
 
-    public static final double INTAKE_SPEED = 1.0;
+    public static final double INTAKE_SPEED = 0.7; // TODO: 1.0
     public static final double INTAKE_NEUTRAL_SPEED = 0.0;
 
     public static final double INTAKE_STATOR_LIMIT = 60;
@@ -283,7 +283,7 @@ public final class Constants {
     public static final double SHOOTER_NEUTRAL_SPEED = 0;
 
     public static final int TOP_LASERCAN_ID = 40;
-    public static final double NOTE_DETECTED_THRESHOLD = 0.3;
+    public static final double NOTE_DETECTED_THRESHOLD = 30;
 
     public static final double SHOOT_SPEAKER_RPM = 4000;
 
@@ -297,7 +297,7 @@ public final class Constants {
     public static final double SHOOT_A = 0.00333;
 
     public static final double ROLLER_SHOOT_SPEED = 1;
-    public static final double ROLLER_INTAKE_SPEED = 0.2;
+    public static final double ROLLER_INTAKE_SPEED = 0.1; // TODO: 0.2
     public static final double SHOOT_AMP_RPM = 2000;
     
     public static final double AUTO_SHOOT_P = 4.5;

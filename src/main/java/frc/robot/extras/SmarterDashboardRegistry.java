@@ -115,7 +115,7 @@ public class SmarterDashboardRegistry {
   }
 
   public static void amplifiedStart() {
-    SmartDashboard.putBoolean("isAmped", true);
+    isAmplified = true;
     amplifiedTimeLeft = 10.0;
     timer.reset();
     timer.start();
@@ -126,8 +126,8 @@ public class SmarterDashboardRegistry {
       amplifiedTimeLeft = 10.0 - timer.get();
       SmartDashboard.putNumber("ampTimeLeft", amplifiedTimeLeft);
       if (amplifiedTimeLeft < 0.0) {
-        SmartDashboard.putBoolean("isAmped", false);
         isAmplified = false;
+        timer.stop();
       }
     }
   }
