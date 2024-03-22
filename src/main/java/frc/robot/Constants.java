@@ -182,8 +182,8 @@ public final class Constants {
     public static final double RED_AMP_X = 14.613;
     public static final double RED_AMP_Y = 8.197;
 
-    public static final double RED_AMP_SHOOT_X = 14.81;
-    public static final double RED_AMP_SHOOT_Y = 7.793;
+    public static final double RED_AMP_SHOOT_X = 14.663867950439453;
+    public static final double RED_AMP_SHOOT_Y = 8.198349952697754;
 
     public static final double BLUE_AMP_X = 1.9;
     public static final double BLUE_AMP_Y = 8.161;
@@ -248,8 +248,8 @@ public final class Constants {
     public static final double ANGLE_ZERO = -0.461669921875;
     public static final SensorDirectionValue ENCODER_REVERSED = SensorDirectionValue.Clockwise_Positive;
 
-    public static final double SHOOT_AMP_ANGLE = 0.182392578125;
-    public static final double PIVOT_ACCEPTABLE_ERROR = 0.009;
+    public static final double SHOOT_AMP_ANGLE = 0.35205078125;
+    public static final double PIVOT_ACCEPTABLE_ERROR = 0.015;
 
     public static double[][] SPEAKER_PIVOT_POSITION = {
       // Distance, Angle (rotations)

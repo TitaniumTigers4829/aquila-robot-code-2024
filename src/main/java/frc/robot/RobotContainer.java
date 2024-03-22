@@ -194,8 +194,11 @@ public class RobotContainer {
     // driverLeftTrigger.whileTrue(new ShootSpeaker(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, driverLeftStickX, driverLeftStickY, operatorDpadDown, ledSubsystem));
     driverLeftTrigger.whileTrue(new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem, false, ledSubsystem));
     operatorLeftBumper.whileTrue(new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem, false, ledSubsystem));
-    driverRightTrigger.whileTrue(new ShootSpeaker(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, driverLeftStickX, driverLeftStickY, operatorDpadDown, ledSubsystem));
-    driverLeftTrigger.whileTrue(new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem, false, ledSubsystem));
+    operatorRightBumper.whileTrue(new ShootSpeaker(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, driverLeftStickX, driverLeftStickY, operatorDpadDown, ledSubsystem));
+    driverYButton.whileTrue(new AutoAlignWithAmp(driveSubsystem, visionSubsystem));
+    driverAButton.onTrue(new InstantCommand(() -> driveSubsystem.resetOdometry(new Pose2d(14.663867950439453, 8.198349952697754, driveSubsystem.getGyroRotation2d()))));
+
+    // driverLeftBumper.whileTrue(new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem, true, ledSubsystem));
     // // driverYButton.whileTrue(new AutoBuilderDriveToPos(driveSubsystem, visionSubsystem, 1, 0, Rotation2d.fromDegrees(0)));
     // driverYButton.whileTrue(new AutoAlignWithAmp(driveSubsystem, visionSubsystem));
     // driverRightTrigger.whileTrue(new ShootWhileMove(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, driverLeftStick, driverRightBumper, ledSubsystem));

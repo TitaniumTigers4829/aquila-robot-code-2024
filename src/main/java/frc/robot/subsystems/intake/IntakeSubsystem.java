@@ -6,7 +6,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
-import au.grapplerobotics.LaserCan;
+// import au.grapplerobotics.LaserCan;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.HardwareConstants;
 import frc.robot.Constants.IntakeConstants;
