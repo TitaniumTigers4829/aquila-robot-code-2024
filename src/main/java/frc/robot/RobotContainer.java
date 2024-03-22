@@ -41,6 +41,7 @@ import frc.robot.commands.shooter.SubwooferShot;
 import frc.robot.commands.testing.FeedForwardCharacterization;
 import frc.robot.commands.testing.SetPivotAngle;
 import frc.robot.commands.testing.SetShooterVolts;
+import frc.robot.commands.testing.TestIntake;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.leds.LEDSubsystem;
 import frc.robot.subsystems.pivot.PivotSubsystem;
@@ -69,7 +70,6 @@ public class RobotContainer {
     intakeSubsystem = new IntakeSubsystem();
     pivotSubsystem = new PivotSubsystem();
     ledSubsystem = new LEDSubsystem();
-    intakeSubsystem = new IntakeSubsystem();
 
     autoChooser = new SendableChooser<Command>();
     // autoChooser.setDefaultOption("red 4note", new RedNoteThree(driveSubsystem, visionSubsystem, intakeSubsystem, shooterSubsystem, pivotSubsystem, ledSubsystem));
