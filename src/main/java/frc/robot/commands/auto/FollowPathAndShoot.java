@@ -12,6 +12,7 @@ import com.choreo.lib.ChoreoTrajectory;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -32,7 +33,7 @@ public class FollowPathAndShoot extends DriveCommandBase {
   private PivotSubsystem pivotSubsystem;
   private ShooterSubsystem shooterSubsystem;
   private Command controllerCommand;
-  private Translation2d speakerPos;
+  private Translation3d speakerPos;
   private boolean isRed;
   private boolean resetOdometry;
   private double rotationControl;
@@ -75,7 +76,7 @@ public class FollowPathAndShoot extends DriveCommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    controllerCommand.schedule();
+    controllerCommand.initialize();
 
     Optional<Alliance> alliance = DriverStation.getAlliance();
     if (alliance.isPresent()) {
@@ -83,23 +84,33 @@ public class FollowPathAndShoot extends DriveCommandBase {
     } else {
       isRed = true;
     }
-    speakerPos = isRed ? new Translation2d(FieldConstants.RED_SPEAKER_X, FieldConstants.RED_SPEAKER_Y) : new Translation2d(FieldConstants.BLUE_SPEAKER_X, FieldConstants.BLUE_SPEAKER_Y);
-    headingOffset = isRed ? -1 * TrajectoryConstants.AUTO_SHOOT_HEADING_OFFSET : TrajectoryConstants.AUTO_SHOOT_HEADING_OFFSET;
+    speakerPos = isRed ? new Translation3d(FieldConstants.RED_SPEAKER_X, FieldConstants.RED_SPEAKER_Y, ShooterConstants.SPEAKER_HEIGHT) : new Translation3d(FieldConstants.BLUE_SPEAKER_X, FieldConstants.BLUE_SPEAKER_Y, ShooterConstants.SPEAKER_HEIGHT);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     super.execute();
+    controllerCommand.execute();
 
-    // get positions of various things
-    Translation2d robotPos = SmarterDashboardRegistry.getPose().getTranslation();
-    // distance (for speaker lookups)
-    double distance = robotPos.getDistance(speakerPos);
-    // arctangent for desired heading
-    desiredHeading = Math.atan2((robotPos.getY() - speakerPos.getY()), (robotPos.getX() - speakerPos.getX()));
-    // heading error (also used in isReadyToShoot())
-    headingError = desiredHeading - driveSubsystem.getHeading() - headingOffset;
+    Translation2d robotPose2d = driveSubsystem.getPose().getTranslation();
+    Translation3d robotPos3d = new Translation3d(robotPose2d.getX(), robotPose2d.getY(), ShooterConstants.SHOOTER_HEIGHT);
+    // speeds
+    ChassisSpeeds speeds = driveSubsystem.getRobotRelativeSpeeds();
+    // this gets the time that the note will be in the air between the robot and the speaker
+    double tmpDist = robotPos3d.getDistance(speakerPos);
+    double dt = tmpDist / ShooterConstants.NOTE_LAUNCH_VELOCITY;
+    // For shooting while moving, we can pretend that our robot is stationary, but has traveled
+    // the distance that was how long the note was in the air for times the robots current velocity
+    double dx = speeds.vxMetersPerSecond * dt * ((tmpDist * 0.05) + 1);
+    double dy = speeds.vyMetersPerSecond * dt * ((tmpDist * 0.05) + 1);
+    // account for the current velocity:
+    robotPose2d.plus(new Translation2d(dx, dy).rotateBy(driveSubsystem.getOdometryRotation2d()));
+    // continue the command as normal
+    double distance = robotPose2d.getDistance(speakerPos.toTranslation2d());
+    desiredHeading = Math.atan2(robotPose2d.getY() - speakerPos.getY(), robotPose2d.getX() - speakerPos.getX());
+    // heading error
+    headingError = desiredHeading - driveSubsystem.getOdometryRotation2d().getRadians();
     // get PID output
     rotationControl = thetaController.calculate(headingError, 0);
 
@@ -115,6 +126,7 @@ public class FollowPathAndShoot extends DriveCommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    controllerCommand.end(interrupted);
     driveSubsystem.drive(0, 0, 0, false);
   }
 
