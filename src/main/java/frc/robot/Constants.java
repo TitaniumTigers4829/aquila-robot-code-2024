@@ -209,6 +209,9 @@ public final class Constants {
   public static final class IntakeConstants {
     public static final int LEFT_INTAKE_MOTOR_ID = 19;
     public static final int RIGHT_INTAKE_MOTOR_ID = 18;
+    public static final int INTAKE_LC_ID = 0;
+    public static final double NOTE_DETECTION_THRESHOLD = 0.0;
+
     public static final double INTAKE_SPEED = 1.0;
     public static final double INTAKE_NEUTRAL_SPEED = 0.0;
 
@@ -223,9 +226,9 @@ public final class Constants {
     public static final int FOLLOWER_PIVOT_MOTOR_ID = 10;
     public static final int PIVOT_ENCODER_ID = 33;
 
-    public static final double SUBWOOFER_ANGLE = 0.14771484375;
+    public static final double SUBWOOFER_ANGLE = 0.029;
 
-    public static final double MIN_ANGLE = 0;
+    public static final double MIN_ANGLE = -0.001220703125;
     public static final double MAX_ANGLE = 0.5537109375;
 
     public static final double PIVOT_INTAKE_ANGLE = -0.001220703125;
@@ -240,7 +243,7 @@ public final class Constants {
 
     public static final double PIVOT_NEUTRAL_SPEED = 0;
 
-    public static final double ANGLE_ZERO = 0.540283203125;
+    public static final double ANGLE_ZERO = -0.461669921875;
     public static final SensorDirectionValue ENCODER_REVERSED = SensorDirectionValue.Clockwise_Positive;
 
     public static final double SHOOT_AMP_ANGLE = 0.182392578125;
@@ -279,8 +282,8 @@ public final class Constants {
     public static final double ROLLER_NEUTRAL_SPEED = 0;
     public static final double SHOOTER_NEUTRAL_SPEED = 0;
 
-    public static final int TOP_LASERCAN_ID = 0;
-    public static final double NOTE_DETECTED_THRESHOLD = 0.0;
+    public static final int TOP_LASERCAN_ID = 40;
+    public static final double NOTE_DETECTED_THRESHOLD = 0.3;
 
     public static final double SHOOT_SPEAKER_RPM = 4000;
 
@@ -442,7 +445,8 @@ public final class Constants {
       GREEN (SparkConstants.GREEN, 0, 255, 0),
       RED (SparkConstants.RED, 255, 0, 0),
       INTAKE (SparkConstants.RED, 255, 0, 0),
-      NOTE_IN (SparkConstants.GREEN, 0, 255, 0);
+      NOTE_IN (SparkConstants.GREEN, 0, 255, 0),
+      NOTE_HALFWAY_IN (SparkConstants.YELLOW, 255, 255, 0);
 
       public final double sparkValue;
       private final int red, green, blue;

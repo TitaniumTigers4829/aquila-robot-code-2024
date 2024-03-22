@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.LEDConstants.LEDProcess;
+import frc.robot.extras.SmarterDashboardRegistry;
 import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.LEDConstants.LEDProcess;
@@ -44,9 +45,13 @@ public class TowerIntake extends Command {
         intakeSubsystem.setIntakeSpeed(-IntakeConstants.INTAKE_SPEED);
       } else {
         if (shooterSubsystem.hasNote()) {
-          leds.setProcess(LEDProcess.NOTE_IN);
           intakeSubsystem.setIntakeSpeed(0);
           shooterSubsystem.setRollerSpeed(0);
+          leds.setProcess(LEDProcess.NOTE_IN);
+          SmarterDashboardRegistry.noteIn();
+        // } else if (intakeSubsystem.hasNote()){
+        //   SmarterDashboardRegistry.noteHalfwayIn();
+        //   leds.setProcess(LEDProcess.NOTE_HALFWAY_IN);
         } else {
           leds.setProcess(LEDProcess.INTAKE);
           shooterSubsystem.setRollerSpeed(ShooterConstants.ROLLER_INTAKE_SPEED);

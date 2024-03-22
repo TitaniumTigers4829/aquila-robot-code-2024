@@ -176,7 +176,7 @@ public class RobotContainer {
 
     operatorDpadDown.toggleOnTrue(new ManualShoot(shooterSubsystem, pivotSubsystem, () -> modifyAxisCubed(operatorRightStickY), operatorRightTrigger, operatorLeftTrigger));
 
-    driverAButton.whileTrue(new TestIntake(intakeSubsystem, shooterSubsystem));
+    // driverAButton.whileTrue(new TestIntake(intakeSubsystem, shooterSubsystem));
     //DRIVER BUTTONS
 
     // driving
