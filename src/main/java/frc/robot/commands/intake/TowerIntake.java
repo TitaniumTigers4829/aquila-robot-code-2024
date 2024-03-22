@@ -71,6 +71,7 @@ public class TowerIntake extends Command {
     intakeSubsystem.setIntakeSpeed(0);
     shooterSubsystem.setRollerSpeed(0);
     pivotSubsystem.setPivotSpeed(0);
+    intakeSubsystem.setFlapperSpeed(0);
   }
 
   // Returns true when the command should end.

@@ -209,7 +209,7 @@ public final class Constants {
   public static final class IntakeConstants {
     public static final int LEFT_INTAKE_MOTOR_ID = 19;
     public static final int RIGHT_INTAKE_MOTOR_ID = 18;
-    public static final int FLAPPER_MOTOR_ID = 0-9;
+    public static final int FLAPPER_MOTOR_ID = 1;
     public static final int INTAKE_LC_ID = 0;
     public static final double NOTE_DETECTION_THRESHOLD = 0.0;
 
@@ -249,7 +249,7 @@ public final class Constants {
     public static final SensorDirectionValue ENCODER_REVERSED = SensorDirectionValue.Clockwise_Positive;
 
     public static final double SHOOT_AMP_ANGLE = 0.182392578125;
-    public static final double PIVOT_ACCEPTABLE_ERROR = 0.015;
+    public static final double PIVOT_ACCEPTABLE_ERROR = 0.009;
 
     public static double[][] SPEAKER_PIVOT_POSITION = {
       // Distance, Angle (rotations)
@@ -262,7 +262,7 @@ public final class Constants {
       {2.5, 0.0671484375},
       {2.7, 0.073974609375},
       {2.9, 0.07480078125},
-      {3.1, 0.082134765625},
+      {3.1, 0.083134765625},
       {3.3, 0.084134765625},
       {3.5, 0.085623046875},
       // {3.6, 0.0697},
@@ -299,7 +299,7 @@ public final class Constants {
     public static final double SHOOT_A = 0.00333;
 
     public static final double ROLLER_SHOOT_SPEED = 1;
-    public static final double ROLLER_INTAKE_SPEED = 0.1; // TODO: 0.2
+    public static final double ROLLER_INTAKE_SPEED = 0.2;
     public static final double SHOOT_AMP_RPM = 2000;
     
     public static final double AUTO_SHOOT_P = 4.5;
@@ -325,7 +325,7 @@ public final class Constants {
     // TODO: calc
     public static final double NOTE_LAUNCH_VELOCITY = 10.1;
 
-    public static final double SHOOTER_HEIGHT = Units.inchesToMeters(30);
+    public static final double SHOOTER_HEIGHT = Units.inchesToMeters(28.25);
     public static final double SPEAKER_HEIGHT = Units.inchesToMeters(80);
   }
 

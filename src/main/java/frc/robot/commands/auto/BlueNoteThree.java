@@ -25,13 +25,13 @@ public class BlueNoteThree extends SequentialCommandGroup {
   public BlueNoteThree(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, IntakeSubsystem intakeSubsystem, ShooterSubsystem shooterSubsystem, PivotSubsystem pivotSubsystem, LEDSubsystem leds) {
     addCommands(
         new InstantCommand(()->driveSubsystem.resetOdometry(new Pose2d(1.3980597257614136, 5.493067741394043, Rotation2d.fromRadians(0)))),
-        new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, leds).withTimeout(1.7),
+        new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, leds).withTimeout(1.5),
         new ParallelRaceGroup(
             new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "blue to note 1", false),
-            new IntakeAuto(intakeSubsystem, pivotSubsystem, shooterSubsystem, leds)
+            new IntakeAuto(intakeSubsystem, pivotSubsystem, shooterSubsystem, leds).withTimeout(1.6)
         ),
         new IntakeAuto(intakeSubsystem, pivotSubsystem, shooterSubsystem, leds).withTimeout(1.5),
-        new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, leds).withTimeout(1.7),
+        new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, leds).withTimeout(1.5),
         new ParallelRaceGroup(
             new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "blue note 1 to 2", false),
             new IntakeAuto(intakeSubsystem, pivotSubsystem, shooterSubsystem, leds)

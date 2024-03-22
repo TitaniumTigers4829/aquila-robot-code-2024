@@ -10,6 +10,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.LEDConstants.LEDProcess;
@@ -77,6 +78,7 @@ public class ShootSpeakerAuto extends DriveCommandBase {
     Translation2d robotPos = driveSubsystem.getPose().getTranslation();
     // distance (for speaker lookups)
     double distance = robotPos.getDistance(speakerPos);
+    SmartDashboard.putNumber("dist", distance);
     // arctangent for desired heading
     desiredHeading = Math.atan2((robotPos.getY() - speakerPos.getY()), (robotPos.getX() - speakerPos.getX()));
     // }

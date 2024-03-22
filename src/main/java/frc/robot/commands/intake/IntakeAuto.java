@@ -45,7 +45,6 @@ public class IntakeAuto extends Command {
         intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_SPEED);
         intakeSubsystem.setFlapperSpeed(IntakeConstants.FLAPPER_SPEED);
       }
-
       shooterSubsystem.setRPM(ShooterConstants.SHOOT_SPEAKER_RPM);
     }
   }
@@ -57,6 +56,7 @@ public class IntakeAuto extends Command {
     intakeSubsystem.setIntakeSpeed(0);
     shooterSubsystem.setRollerSpeed(0);
     pivotSubsystem.setPivotSpeed(0);
+    intakeSubsystem.setFlapperSpeed(0);
   }
 
   // Returns true when the command should end.

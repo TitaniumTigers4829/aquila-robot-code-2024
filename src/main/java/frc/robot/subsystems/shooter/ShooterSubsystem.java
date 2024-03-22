@@ -45,7 +45,7 @@ public class ShooterSubsystem extends SubsystemBase {
     SmartDashboard.putBoolean("lasercan bad", false);
     try {
       noteSensor.setRangingMode(LaserCan.RangingMode.SHORT);
-      noteSensor.setRegionOfInterest(new LaserCan.RegionOfInterest(8, 1, 16, 2));
+      noteSensor.setRegionOfInterest(new LaserCan.RegionOfInterest(8, 8, 16, 16));
       noteSensor.setTimingBudget(LaserCan.TimingBudget.TIMING_BUDGET_33MS);
     } catch (ConfigurationFailedException e) {
       SmartDashboard.putBoolean("lasercan bad", true);
