@@ -25,7 +25,7 @@ public class BlueTo8then7 extends SequentialCommandGroup {
   /** Creates a new BlueTo8then7. */
   public BlueTo8then7(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, IntakeSubsystem intakeSubsystem, PivotSubsystem pivotSubsystem, ShooterSubsystem shooterSubsystem, LEDSubsystem ledSubsystem) {
     addCommands(
-      new InstantCommand(()->driveSubsystem.resetOdometry(new Pose2d(0.6634833812713623, 4.427470684051514, Rotation2d.fromRadians(-1.0460003824312716)))),
+      new InstantCommand(()->driveSubsystem.resetOdometry(new Pose2d(0.6992828845977783, 4.373771667480469, Rotation2d.fromRadians(-1.0460003824312716)))),
       new SubwooferShot(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, ()->0, ()->0, ()->0, ()->false, ledSubsystem).withTimeout(1),
       // new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, ledSubsystem).withTimeout(2),
       new ParallelCommandGroup(

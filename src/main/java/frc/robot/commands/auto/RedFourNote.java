@@ -27,7 +27,7 @@ public class RedFourNote extends SequentialCommandGroup {
   /** Creates a new BlueSimpleTwoNote. */
   public RedFourNote(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, IntakeSubsystem intakeSubsystem, ShooterSubsystem shooterSubsystem, PivotSubsystem pivotSubsystem, LEDSubsystem leds) {
     addCommands(
-      new InstantCommand(()->driveSubsystem.resetOdometry(new Pose2d(15.198075294494629, 5.555154800415039, Rotation2d.fromRadians(3.14159265358979)))),
+      new InstantCommand(()->driveSubsystem.resetOdometry(new Pose2d(15.156390274238586, 5.493067741394043, Rotation2d.fromRadians(3.141592653589793)))),
       new SubwooferShot(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, ()->0, ()->0, ()->0, ()->false, leds).withTimeout(1.5),
       new ParallelCommandGroup(
           new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "red to note 1", false),
