@@ -37,7 +37,8 @@ public class BlueTo8then7 extends SequentialCommandGroup {
         new IntakeAuto(intakeSubsystem, pivotSubsystem, shooterSubsystem, ledSubsystem)
       ),
       new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "blue note 7 to shoot", false),
-      new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, ledSubsystem).withTimeout(1.7)
+      new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, ledSubsystem).withTimeout(1.7),
+      new StopShooterAndIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem)
     );
   }
 }

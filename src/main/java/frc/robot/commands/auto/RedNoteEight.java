@@ -35,6 +35,7 @@ public class RedNoteEight extends SequentialCommandGroup {
             new IntakeAuto(intakeSubsystem, pivotSubsystem, shooterSubsystem, leds).withTimeout(3)
         ),
         new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, leds).withTimeout(3),
+        new StopShooterAndIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem),
         new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "red 8 shoot to 7", false)
     );
   }

@@ -43,8 +43,8 @@ public class BlueNoteThree extends SequentialCommandGroup {
             new IntakeAuto(intakeSubsystem, pivotSubsystem, shooterSubsystem, leds)
         ),
         new IntakeAuto(intakeSubsystem, pivotSubsystem, shooterSubsystem, leds).withTimeout(1.5),
-        new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, leds).withTimeout(1.7)
-        
+        new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, leds).withTimeout(1.7),
+        new StopShooterAndIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem)
     );
   }
 }

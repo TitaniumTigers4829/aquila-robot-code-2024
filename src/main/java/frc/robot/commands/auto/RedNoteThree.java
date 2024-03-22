@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.intake.IntakeAuto;
+import frc.robot.commands.shooter.SubwooferShot;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.leds.LEDSubsystem;
 import frc.robot.subsystems.pivot.PivotSubsystem;
@@ -25,8 +26,8 @@ public class RedNoteThree extends SequentialCommandGroup {
   /** Creates a new BlueSimpleTwoNote. */
   public RedNoteThree(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, IntakeSubsystem intakeSubsystem, ShooterSubsystem shooterSubsystem, PivotSubsystem pivotSubsystem, LEDSubsystem leds) {
     addCommands(
-        new InstantCommand(()->driveSubsystem.resetOdometry(new Pose2d(15.198075294494629, 5.555154800415039, Rotation2d.fromRadians(3.14159265358979)))),
-        new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, leds).withTimeout(2),
+      new InstantCommand(()->driveSubsystem.resetOdometry(new Pose2d(15.198075294494629, 5.555154800415039, Rotation2d.fromRadians(3.14159265358979)))),
+      new SubwooferShot(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, ()->0, ()->0, ()->0, ()->false, leds).withTimeout(1.5),
         new ParallelRaceGroup(
             new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "red to note 1", false),
             new IntakeAuto(intakeSubsystem, pivotSubsystem, shooterSubsystem, leds).withTimeout(1.7)
@@ -41,7 +42,8 @@ public class RedNoteThree extends SequentialCommandGroup {
             new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "red note 2 to 3", false),
             new IntakeAuto(intakeSubsystem, pivotSubsystem, shooterSubsystem, leds).withTimeout(2.5)
         ),
-        new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, leds).withTimeout(1.7)
+        new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, leds).withTimeout(1.7),
+        new StopShooterAndIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem)
     );
   }
 }

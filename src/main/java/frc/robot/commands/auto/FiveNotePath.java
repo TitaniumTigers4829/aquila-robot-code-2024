@@ -48,7 +48,8 @@ public class FiveNotePath extends SequentialCommandGroup {
         new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "note 2 to shoot", false),
         new IntakeAuto(intakeSubsystem, pivotSubsystem, shooterSubsystem, ledSubsystem)
       ),
-      new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, ledSubsystem).withTimeout(1)
+      new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, ledSubsystem).withTimeout(1),
+      new StopShooterAndIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem)
     );
   }
 }

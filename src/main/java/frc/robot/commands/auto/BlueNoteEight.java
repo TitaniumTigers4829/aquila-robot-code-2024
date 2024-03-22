@@ -34,7 +34,8 @@ public class BlueNoteEight extends SequentialCommandGroup {
             new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "blue note 8 to shoot", false),
             new IntakeAuto(intakeSubsystem, pivotSubsystem, shooterSubsystem, leds).withTimeout(3)
         ),
-        new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, leds)
+        new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, leds).withTimeout(2),
+        new StopShooterAndIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem)
     );
   }
 }
