@@ -4,6 +4,7 @@ import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.VelocityVoltage;
+import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -82,9 +83,14 @@ public class ShooterSubsystem extends SubsystemBase {
    * @return true if there is a note
    */
   public boolean hasNote() {
-    return !noteSensor.get();
+    // return !noteSensor.get();
+    return false;
   }
 
+  public void setVolts(double volts) {
+    leaderFlywheel.setControl(new VoltageOut(volts));
+    followerFlywheel.setControl(new VoltageOut(volts));
+  }
   /**
    * The error between the target rpm and actual rpm of the shooter
    * @return True if we are within an acceptable range (of rpm) to shoot
@@ -108,6 +114,8 @@ public class ShooterSubsystem extends SubsystemBase {
    */
   public void setRPM(double desiredRPM) {
     shooterTargetRPM = desiredRPM;
+    SmartDashboard.putNumber("target RPM", shooterTargetRPM );
+    SmartDashboard.putNumber("error", (shooterTargetRPM) - leaderVelocity.refresh().getValueAsDouble() * 60.0);
     leaderFlywheel.setControl(velocityRequest.withVelocity(desiredRPM / 60.0));
     followerFlywheel.setControl(velocityRequest.withVelocity(desiredRPM / 60.0));
   }
@@ -134,10 +142,16 @@ public class ShooterSubsystem extends SubsystemBase {
     leaderVelocity.refresh();
     return leaderVelocity.getValueAsDouble() * 60.0;
   }
+
+  public double getFlywheelVelocity() {
+    leaderVelocity.refresh();
+    return leaderVelocity.getValueAsDouble();
+  }
   
   @Override
   public void periodic() {
     SmartDashboard.putBoolean("has note", hasNote());
+    SmartDashboard.putNumber("velocity", leaderVelocity.refresh().getValueAsDouble() * 60.0);
     // SmartDashboard.putNumber("current velocity", (leaderVelocity.refresh().getValueAsDouble() * 60));
   }
 }

@@ -8,7 +8,9 @@ import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
+import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
@@ -20,7 +22,7 @@ import frc.robot.extras.SingleLinearInterpolator;
 
 public class PivotSubsystem extends SubsystemBase {
 
-  // private final CANcoder pivotEncoder;
+  private final CANcoder pivotEncoder;
   private final TalonFX leaderPivotMotor;
   private final TalonFX followerPivotMotor;
 
@@ -28,29 +30,32 @@ public class PivotSubsystem extends SubsystemBase {
 
   private final SingleLinearInterpolator speakerAngleLookupValues;
 
-  // private final StatusSignal<Double> pivotPos;
+  private final StatusSignal<Double> pivotPos;
   private double pivotTargetAngle;
 
   /** Creates a new PivotSubsystem. */
   public PivotSubsystem() {
     leaderPivotMotor = new TalonFX(PivotConstants.LEADER_PIVOT_MOTOR_ID);
     followerPivotMotor = new TalonFX(PivotConstants.FOLLOWER_PIVOT_MOTOR_ID);
-    // pivotEncoder = new CANcoder(PivotConstants.PIVOT_ENCODER_ID);
+    pivotEncoder = new CANcoder(PivotConstants.PIVOT_ENCODER_ID);
 
     mmRequest = new MotionMagicVoltage(0);
 
     speakerAngleLookupValues = new SingleLinearInterpolator(PivotConstants.SPEAKER_PIVOT_POSITION);
 
-    // CANcoderConfiguration pivotEncoderConfig = new CANcoderConfiguration();
-    // pivotEncoderConfig.MagnetSensor.MagnetOffset = -PivotConstants.ANGLE_ZERO;
-    // pivotEncoderConfig.MagnetSensor.SensorDirection = PivotConstants.ENCODER_REVERSED;
-    // pivotEncoder.getConfigurator().apply(pivotEncoderConfig, HardwareConstants.TIMEOUT_S);
+    CANcoderConfiguration pivotEncoderConfig = new CANcoderConfiguration();
+    pivotEncoderConfig.MagnetSensor.MagnetOffset = -PivotConstants.ANGLE_ZERO;
+    pivotEncoderConfig.MagnetSensor.SensorDirection = PivotConstants.ENCODER_REVERSED;
+    // pivotEncoderConfig.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Unsigned_0To1;
+    pivotEncoder.getConfigurator().apply(pivotEncoderConfig, HardwareConstants.TIMEOUT_S);
 
     TalonFXConfiguration pivotConfig = new TalonFXConfiguration();
     pivotConfig.Slot0.kP = PivotConstants.PIVOT_P;
     pivotConfig.Slot0.kI = PivotConstants.PIVOT_I;
     pivotConfig.Slot0.kD = PivotConstants.PIVOT_D;
     pivotConfig.Slot0.kG = PivotConstants.PIVOT_G;
+
+    pivotConfig.Slot0.GravityType = GravityTypeValue.Arm_Cosine;
 
     pivotConfig.MotionMagic.MotionMagicAcceleration = PivotConstants.MAX_VELOCITY_ROTATIONS_PER_SECOND;
     pivotConfig.MotionMagic.MotionMagicCruiseVelocity = PivotConstants.MAX_ACCELERATION_ROTATIONS_PER_SECOND_SQUARED;
@@ -59,21 +64,23 @@ public class PivotSubsystem extends SubsystemBase {
     pivotConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive; 
     pivotConfig.MotorOutput.DutyCycleNeutralDeadband = HardwareConstants.MIN_FALCON_DEADBAND;
 
+    pivotConfig.ClosedLoopGeneral.ContinuousWrap = true;
+
     pivotConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
-    // pivotConfig.Feedback.FeedbackRemoteSensorID = pivotEncoder.getDeviceID();
+    pivotConfig.Feedback.FeedbackRemoteSensorID = pivotEncoder.getDeviceID();
     
     pivotConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold = PivotConstants.MAX_ANGLE;
     pivotConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = PivotConstants.MIN_ANGLE;
-    pivotConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
-    pivotConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
+    pivotConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = false;
+    pivotConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = false;
     leaderPivotMotor.getConfigurator().apply(pivotConfig, HardwareConstants.TIMEOUT_S);
     pivotConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     followerPivotMotor.getConfigurator().apply(pivotConfig, HardwareConstants.TIMEOUT_S);
 
-    // pivotPos = pivotEncoder.getAbsolutePosition();
+    pivotPos = pivotEncoder.getAbsolutePosition();
 
-    // BaseStatusSignal.setUpdateFrequencyForAll(HardwareConstants.SIGNAL_FREQUENCY, pivotPos);
-    ParentDevice.optimizeBusUtilizationForAll(leaderPivotMotor, followerPivotMotor);//, pivotEncoder);
+    BaseStatusSignal.setUpdateFrequencyForAll(HardwareConstants.SIGNAL_FREQUENCY, pivotPos);
+    ParentDevice.optimizeBusUtilizationForAll(leaderPivotMotor, followerPivotMotor, pivotEncoder);
   }
 
   /**
@@ -81,9 +88,8 @@ public class PivotSubsystem extends SubsystemBase {
    * @return angle of pivot in degrees
    */
   public double getAngle() {
-    return 0;
-    // pivotPos.refresh();
-    // return pivotPos.getValueAsDouble();
+    pivotPos.refresh();
+    return pivotPos.getValueAsDouble();
   }
 
   /**
@@ -137,6 +143,6 @@ public class PivotSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // SmartDashboard.putNumber("pivot pos", pivotPos.refresh().getValueAsDouble());
+    SmartDashboard.putNumber("pivot pos", pivotPos.refresh().getValueAsDouble());
   }
 }

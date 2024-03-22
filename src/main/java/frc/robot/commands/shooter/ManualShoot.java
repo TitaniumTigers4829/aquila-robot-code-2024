@@ -39,16 +39,16 @@ public class ManualShoot extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    // pivotSubsytem.setPivotSpeed(speed.getAsDouble() / 4.0);
-    shooterSubsystem.setSpeed(spinFlywheels.getAsBoolean() ? 1 : 0);
-    // shooterSubsystem.setRPM(spinFlywheels.getAsBoolean() ? ShooterConstants.SHOOT_SPEAKER_RPM : 0);
+    pivotSubsytem.setPivotSpeed(speed.getAsDouble());
+    // shooterSubsystem.setSpeed(spinFlywheels.getAsBoolean() ? 1 : 0);
+    shooterSubsystem.setRPM(spinFlywheels.getAsBoolean() ? ShooterConstants.SHOOT_SPEAKER_RPM : 0);
     shooterSubsystem.setRollerSpeed(spinRollers.getAsBoolean() ? ShooterConstants.ROLLER_SHOOT_SPEED : 0);
   }
 
   // Called once the command ends or is interrupted.
   @Override 
   public void end(boolean interrupted) {
-    // pivotSubsytem.setPivotSpeed(PivotConstants.PIVOT_NEUTRAL_SPEED);
+    pivotSubsytem.setPivotSpeed(PivotConstants.PIVOT_NEUTRAL_SPEED);
     shooterSubsystem.setFlywheelNeutral();
     shooterSubsystem.setRollerSpeed(0);
   }

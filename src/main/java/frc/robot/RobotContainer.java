@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.JoystickConstants;
+import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.LEDConstants.LEDProcess;
 import frc.robot.commands.auto.BlueNoteEight;
 import frc.robot.commands.auto.BlueNoteThree;
@@ -36,6 +37,9 @@ import frc.robot.commands.shooter.ShootAmp;
 import frc.robot.commands.shooter.ShootSpeaker;
 import frc.robot.commands.shooter.ShootWhileMove;
 import frc.robot.commands.shooter.SubwooferShot;
+import frc.robot.commands.testing.FeedForwardCharacterization;
+import frc.robot.commands.testing.SetPivotAngle;
+import frc.robot.commands.testing.SetShooterVolts;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.leds.LEDSubsystem;
 import frc.robot.subsystems.pivot.PivotSubsystem;
@@ -47,10 +51,10 @@ public class RobotContainer {
 
   private final VisionSubsystem visionSubsystem;
   private final ShooterSubsystem shooterSubsystem;
-  // private final DriveSubsystem driveSubsystem;
+  private final DriveSubsystem driveSubsystem;
   private final Joystick driverJoystick = new Joystick(JoystickConstants.DRIVER_JOYSTICK_ID);
   private final Joystick operatorJoystick = new Joystick(JoystickConstants.OPERATOR_JOYSTICK_ID);
-  // private final IntakeSubsystem intakeSubsystem;
+  private final IntakeSubsystem intakeSubsystem;
   private final PivotSubsystem pivotSubsystem;
   private final LEDSubsystem ledSubsystem;
 
@@ -59,9 +63,9 @@ public class RobotContainer {
   public RobotContainer() {
     SmarterDashboardRegistry.initialize();
     visionSubsystem = new VisionSubsystem();
-    // driveSubsystem = new DriveSubsystem(); 
+    driveSubsystem = new DriveSubsystem(); 
     shooterSubsystem = new ShooterSubsystem();
-    // intakeSubsystem = new IntakeSubsystem();
+    intakeSubsystem = new IntakeSubsystem();
     pivotSubsystem = new PivotSubsystem();
     ledSubsystem = new LEDSubsystem();
 
@@ -169,25 +173,27 @@ public class RobotContainer {
     POVButton operatorDpadUp = new POVButton(operatorJoystick, 0);
     POVButton operatorDpadDown = new POVButton(operatorJoystick, 180);
 
-    shooterSubsystem.setDefaultCommand(new ManualShoot(shooterSubsystem, pivotSubsystem, operatorRightStickY, operatorRightTrigger, operatorLeftTrigger));
+    operatorDpadDown.toggleOnTrue(new ManualShoot(shooterSubsystem, pivotSubsystem, () -> modifyAxisCubed(operatorRightStickY), operatorRightTrigger, operatorLeftTrigger));
 
     //DRIVER BUTTONS
 
-    //driving
-    // Command driveCommand = new Drive(driveSubsystem, visionSubsystem,
-    //   driverLeftStick[1],
-    //   driverLeftStick[0],
-    //   () -> modifyAxisCubed(driverRightStickX),
-    //   () -> !driverRightBumper.getAsBoolean()
-    // );
+    // driving
+    Command driveCommand = new Drive(driveSubsystem, visionSubsystem,
+      driverLeftStick[1],
+      driverLeftStick[0],
+      () -> modifyAxisCubed(driverRightStickX),
+      () -> !driverRightBumper.getAsBoolean()
+    );
 
-    // driveSubsystem.setDefaultCommand(driveCommand);
+    driveSubsystem.setDefaultCommand(driveCommand);
 
     // // DRIVER BUTTONS
-    // // Driver Intake 
+    // // Driver Intake
     // driverLeftTrigger.whileTrue(new ShootSpeaker(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, driverLeftStickX, driverLeftStickY, operatorDpadDown, ledSubsystem));
-    // // driverLeftTrigger.whileTrue(new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem, false, ledSubsystem));
-    // driverLeftBumper.whileTrue(new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem, false, ledSubsystem));
+    driverLeftTrigger.whileTrue(new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem, false, ledSubsystem));
+    operatorLeftBumper.whileTrue(new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem, false, ledSubsystem));
+    operatorRightBumper.whileTrue(new ShootSpeaker(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, driverLeftStickX, driverLeftStickY, operatorDpadDown, ledSubsystem));
+    // driverLeftBumper.whileTrue(new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem, true, ledSubsystem));
     // // driverYButton.whileTrue(new AutoBuilderDriveToPos(driveSubsystem, visionSubsystem, 1, 0, Rotation2d.fromDegrees(0)));
     // driverYButton.whileTrue(new AutoAlignWithAmp(driveSubsystem, visionSubsystem));
     // driverRightTrigger.whileTrue(new ShootWhileMove(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, driverLeftStick, driverRightBumper, ledSubsystem));
@@ -200,7 +206,7 @@ public class RobotContainer {
     // driverRightDirectionPad.onTrue(new InstantCommand(() -> driveSubsystem.resetOdometry(new Pose2d(driveSubsystem.getPose().getX(), driveSubsystem.getPose().getY(), 
     //       Rotation2d.fromDegrees(driveSubsystem.getAllianceAngleOffset())))));
     // driverLeftDirectionPad.onTrue(new InstantCommand(() -> driveSubsystem.resetOdometry(visionSubsystem.getPoseFromAprilTags())));
-    // // driverLeftDirectionPad.onTrue(new InstantCommand(() -> driveSubsystem.resetOdometry(new Pose2d(15.198075294494629, 5.555154800415039, Rotation2d.fromRadians(3.14159265358979)))));
+    operatorDpadUp.onTrue(new InstantCommand(() -> driveSubsystem.resetOdometry(new Pose2d(1.3421869277954102, 5.55, Rotation2d.fromRadians(0)))));
 
     // // OPERATOR BUTTONS
     // // operatorYButton.whileTrue(new WheelRadiusCharacterization(driveSubsystem, Direction.CLOCKWISE));
@@ -213,8 +219,9 @@ public class RobotContainer {
     // operatorLeftBumper.whileTrue(new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem, true, ledSubsystem));
 
     // // Manual pivot just incase something goes wrong and also for climb (possibly)
-    operatorAButton.whileTrue(new ManualPivot(pivotSubsystem, () -> modifyAxisCubed(operatorRightStickY)));
-
+    // operatorAButton.whileTrue(new ManualPivot(pivotSubsystem, () -> modifyAxisCubed(operatorRightStickY)));
+    // operatorBButton.whileTrue(new SetShooterVolts(shooterSubsystem));
+    // operatorBButton.whileTrue(new SetPivotAngle(pivotSubsystem, PivotConstants.MAX_ANGLE / 2.0));
   }
 
   public Command getAutonomousCommand() {

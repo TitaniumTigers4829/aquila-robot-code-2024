@@ -106,12 +106,14 @@ public class ShootSpeaker extends DriveCommandBase {
     driveSubsystem.drive(
       deadband(leftY.getAsDouble()) * 0.5, 
       deadband(leftX.getAsDouble()) * 0.5, 
-      turnOutput, 
+      0, // turnoutput 
       !isFieldRelative.getAsBoolean()
     );
 
     shooterSubsystem.setRPM(ShooterConstants.SHOOT_SPEAKER_RPM);
-    pivotSubsystem.setPivotFromDistance(distance);
+    // TODO: pivot
+    pivotSubsystem.setPivotAngle(0.085623046875);
+    // pivotSubsystem.setPivotFromDistance(distance);
     // if we are ready to shoot:
     if (isReadyToShoot()) {
       leds.setProcess(LEDProcess.SHOOT);
@@ -137,7 +139,8 @@ public class ShootSpeaker extends DriveCommandBase {
     return false;
   }
   public boolean isReadyToShoot() {
-    return shooterSubsystem.isShooterWithinAcceptableError() && pivotSubsystem.isPivotWithinAcceptableError() && (Math.abs(headingError) < DriveConstants.HEADING_ACCEPTABLE_ERROR_RADIANS);
+    // TODO: heading
+    return shooterSubsystem.isShooterWithinAcceptableError() && pivotSubsystem.isPivotWithinAcceptableError();// && (Math.abs(headingError) < DriveConstants.HEADING_ACCEPTABLE_ERROR_RADIANS);
   }
 
   private double deadband(double val) {

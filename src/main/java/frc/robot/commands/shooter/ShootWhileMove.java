@@ -84,7 +84,7 @@ public class ShootWhileMove extends DriveCommandBase {
     // update odometry and useful things like that
     super.execute();
     
-    // TODO: someone check my logic here
+      // TODO: someone check my logic here
     // current pose
     Translation2d robotPose2d = driveSubsystem.getPose().getTranslation();
     Translation3d robotPos3d = new Translation3d(robotPose2d.getX(), robotPose2d.getY(), ShooterConstants.SHOOTER_HEIGHT);
@@ -119,9 +119,7 @@ public class ShootWhileMove extends DriveCommandBase {
 
     // spin up the shooter
     shooterSubsystem.setRPM(ShooterConstants.SHOOT_SPEAKER_RPM);
-    // TODO: set the pivot
-    // pivotSubsystem.setPivotFromDistance(distance);
-    pivotSubsystem.setPivotAngle(0.14306640625);
+    pivotSubsystem.setPivotFromDistance(distance);
     // if we are ready to shoot:
     if (isReadyToShoot()) {
       leds.setProcess(LEDProcess.SHOOT);

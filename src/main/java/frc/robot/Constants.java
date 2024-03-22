@@ -216,21 +216,21 @@ public final class Constants {
     public static final int PIVOT_ENCODER_ID = 33;
 
     public static final double MIN_ANGLE = 0;
-    public static final double MAX_ANGLE = 0.358642578125;
+    public static final double MAX_ANGLE = 0.5537109375;
 
-    public static final double PIVOT_INTAKE_ANGLE = 0.01220703125;
+    public static final double PIVOT_INTAKE_ANGLE = -0.001220703125;
 
-    public static final double PIVOT_P = 180.0;
+    public static final double PIVOT_P = 160.0;
     public static final double PIVOT_I = 0.0; //60.0 
     public static final double PIVOT_D = 0.0;
-    public static final double PIVOT_G = 1.7320;
+    public static final double PIVOT_G = 0.1;//1.7320;
 
     public static final double MAX_VELOCITY_ROTATIONS_PER_SECOND = 4;
     public static final double MAX_ACCELERATION_ROTATIONS_PER_SECOND_SQUARED = 10;
 
     public static final double PIVOT_NEUTRAL_SPEED = 0;
 
-    public static final double ANGLE_ZERO = -0.006103515625;
+    public static final double ANGLE_ZERO = 0.540283203125;
     public static final SensorDirectionValue ENCODER_REVERSED = SensorDirectionValue.Clockwise_Positive;
 
     public static final double SHOOT_AMP_ANGLE = 0.182392578125;
@@ -238,19 +238,18 @@ public final class Constants {
 
     public static double[][] SPEAKER_PIVOT_POSITION = {
       // Distance, Angle (rotations)
-      {1.37, 0.021494140625},
-      {1.5, 0.02862109375},
-      {1.6, 0.03515625},
-      // {1.8, 0.028},
-      // {2.0, 0.04},
-      // {2.2, 0.042},
-      // {2.4, 0.045},
-      // {2.6, 0.0485},
-      // {2.7, 0.0515},
-      // {2.8, 0.056},
-      // {3.0, 0.061},
-      // {3.2, 0.063},
-      // {3.4, 0.0666},
+      {1.37, 0.029},
+      {1.5, 0.0322265625},
+      {1.7, 0.0390625},
+      {1.9, 0.0454296875},
+      {2.1, 0.05287109375},
+      {2.3, 0.066580078125}, 
+      {2.5, 0.0671484375},
+      {2.7, 0.073974609375},
+      {2.9, 0.07480078125},
+      {3.1, 0.082134765625},
+      {3.3, 0.084134765625},
+      {3.5, 0.085623046875},
       // {3.6, 0.0697},
       // {3.8, 0.074},
       // {4.0, 0.077},
@@ -276,12 +275,12 @@ public final class Constants {
 
     public static final int SHOOTER_ACCEPTABLE_RPM_ERROR = 50;
 
-    public static final double SHOOT_P = 80.0;
+    public static final double SHOOT_P = 0.6;
     public static final double SHOOT_I = 0.0;
     public static final double SHOOT_D = 0.0;
-    public static final double SHOOT_S = 0.36;
-    public static final double SHOOT_V = 0.12287;
-    public static final double SHOOT_A = 0.00520;
+    public static final double SHOOT_S = 0.45227;
+    public static final double SHOOT_V = 0.12126;
+    public static final double SHOOT_A = 0.00333;
 
     public static final double ROLLER_SHOOT_SPEED = 1;
     public static final double ROLLER_INTAKE_SPEED = 0.2;
