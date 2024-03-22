@@ -10,11 +10,11 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
-import au.grapplerobotics.ConfigurationFailedException;
-import au.grapplerobotics.LaserCan;
-import au.grapplerobotics.LaserCan.Measurement;
-import au.grapplerobotics.LaserCan.RangingMode;
-import au.grapplerobotics.LaserCan.TimingBudget;
+// import au.grapplerobotics.ConfigurationFailedException;
+// import au.grapplerobotics.LaserCan;
+// import au.grapplerobotics.LaserCan.Measurement;
+// import au.grapplerobotics.LaserCan.RangingMode;
+// import au.grapplerobotics.LaserCan.TimingBudget;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -27,7 +27,7 @@ public class ShooterSubsystem extends SubsystemBase {
   private final TalonFX followerFlywheel;
   private final TalonFX rollerMotor;
   
-  private final LaserCan noteSensor;
+  // private final LaserCan noteSensor;
 
   private final StatusSignal<Double> leaderVelocity;
   private final StatusSignal<Double> followerVelocity;
@@ -41,16 +41,16 @@ public class ShooterSubsystem extends SubsystemBase {
     followerFlywheel = new TalonFX(ShooterConstants.FOLLOWER_FLYWHEEL_ID);
     rollerMotor = new TalonFX(ShooterConstants.ROLLER_MOTOR_ID);
 
-    noteSensor = new LaserCan(40);
-    SmartDashboard.putBoolean("lasercan bad", false);
-    try {
-      noteSensor.setRangingMode(LaserCan.RangingMode.SHORT);
-      noteSensor.setRegionOfInterest(new LaserCan.RegionOfInterest(8, 1, 16, 2));
-      noteSensor.setTimingBudget(LaserCan.TimingBudget.TIMING_BUDGET_33MS);
-    } catch (ConfigurationFailedException e) {
-      SmartDashboard.putBoolean("lasercan bad", true);
-      SmartDashboard.putString("msg", e.getMessage());
-    }
+    // noteSensor = new LaserCan(40);
+    // SmartDashboard.putBoolean("lasercan bad", false);
+    // try {
+    //   noteSensor.setRangingMode(LaserCan.RangingMode.SHORT);
+    //   noteSensor.setRegionOfInterest(new LaserCan.RegionOfInterest(8, 1, 16, 2));
+    //   noteSensor.setTimingBudget(LaserCan.TimingBudget.TIMING_BUDGET_33MS);
+    // } catch (ConfigurationFailedException e) {
+    //   SmartDashboard.putBoolean("lasercan bad", true);
+    //   SmartDashboard.putString("msg", e.getMessage());
+    // }
     velocityRequest = new VelocityVoltage(0);
 
     TalonFXConfiguration shooterConfig = new TalonFXConfiguration();
@@ -98,17 +98,17 @@ public class ShooterSubsystem extends SubsystemBase {
    * @return true if there is a note
    */
   public boolean hasNote() {
-    Measurement tmp = noteSensor.getMeasurement();
-    if (tmp != null && tmp.status == LaserCan.LASERCAN_STATUS_VALID_MEASUREMENT) {
-      SmartDashboard.putBoolean("valid", true);
-      SmartDashboard.putNumber("measurement", tmp.distance_mm);
-      return tmp.distance_mm < ShooterConstants.NOTE_DETECTED_THRESHOLD;
-    } else {
-      SmartDashboard.putBoolean("valid", false);
-      return false;
-    }
+    // Measurement tmp = noteSensor.getMeasurement();
+    // if (tmp != null && tmp.status == LaserCan.LASERCAN_STATUS_VALID_MEASUREMENT) {
+    //   SmartDashboard.putBoolean("valid", true);
+    //   SmartDashboard.putNumber("measurement", tmp.distance_mm);
+    //   return tmp.distance_mm < ShooterConstants.NOTE_DETECTED_THRESHOLD;
+    // } else {
+    //   SmartDashboard.putBoolean("valid", false);
+    //   return false;
+    // }
     // return !noteSensor.get();
-    // return false;
+    return false;
   }
 
   public void setVolts(double volts) {
