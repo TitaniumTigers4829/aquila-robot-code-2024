@@ -6,6 +6,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import au.grapplerobotics.LaserCan;
 // import au.grapplerobotics.LaserCan;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.HardwareConstants;
@@ -15,14 +16,14 @@ public class IntakeSubsystem extends SubsystemBase {
   private final TalonFX leftIntakeMotor;
   private final TalonFX rightIntakeMotor;
   private final TalonFX flapperMotor;
-  // private final LaserCan intakeLc;
+  private final LaserCan intakeLc;
 
   /** Creates a new IntakeSubsystem. */
   public IntakeSubsystem() {
     leftIntakeMotor = new TalonFX(IntakeConstants.LEFT_INTAKE_MOTOR_ID);
     rightIntakeMotor = new TalonFX(IntakeConstants.RIGHT_INTAKE_MOTOR_ID);
     flapperMotor = new TalonFX(IntakeConstants.FLAPPER_MOTOR_ID);
-    // intakeLc = new LaserCan(IntakeConstants.INTAKE_LC_ID);
+    intakeLc = new LaserCan(IntakeConstants.INTAKE_LC_ID);
     
     TalonFXConfiguration intakeConfig = new TalonFXConfiguration();
     intakeConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
@@ -58,8 +59,8 @@ public class IntakeSubsystem extends SubsystemBase {
 
 
   public boolean hasNote() {
-    return false;
-    // return intakeLc.getMeasurement().distance_mm < IntakeConstants.NOTE_DETECTION_THRESHOLD;
+    // return false;
+    return intakeLc.getMeasurement().distance_mm < IntakeConstants.NOTE_DETECTION_THRESHOLD;
   }
 
   @Override

@@ -20,12 +20,12 @@ import frc.robot.Constants.JoystickConstants;
 import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.LEDConstants.LEDProcess;
 import frc.robot.commands.auto.BlueNoteEight;
-import frc.robot.commands.auto.BlueNoteThree;
+import frc.robot.commands.auto.BlueFourNote;
 import frc.robot.commands.auto.BlueShootTaxi;
 import frc.robot.commands.auto.FiveNotePath;
 import frc.robot.commands.auto.FollowChoreoTrajectory;
 import frc.robot.commands.auto.RedAmpSideFourNote;
-import frc.robot.commands.auto.RedNoteThree;
+import frc.robot.commands.auto.RedFourNote;
 import frc.robot.commands.auto.RedShootTaxi;
 import frc.robot.commands.autodrive.AutoAlignWithAmp;
 import frc.robot.commands.auto.RedNoteEight;
@@ -72,8 +72,8 @@ public class RobotContainer {
     ledSubsystem = new LEDSubsystem();
 
     autoChooser = new SendableChooser<Command>();
-    autoChooser.setDefaultOption("red 4note", new RedNoteThree(driveSubsystem, visionSubsystem, intakeSubsystem, shooterSubsystem, pivotSubsystem, ledSubsystem));
-    autoChooser.addOption("blue 4note", new BlueNoteThree(driveSubsystem, visionSubsystem, intakeSubsystem, shooterSubsystem, pivotSubsystem, ledSubsystem));
+    autoChooser.setDefaultOption("red 4note", new RedFourNote(driveSubsystem, visionSubsystem, intakeSubsystem, shooterSubsystem, pivotSubsystem, ledSubsystem));
+    autoChooser.addOption("blue 4note", new BlueFourNote(driveSubsystem, visionSubsystem, intakeSubsystem, shooterSubsystem, pivotSubsystem, ledSubsystem));
     autoChooser.addOption("red shoot+taxi", new RedShootTaxi(driveSubsystem, visionSubsystem, intakeSubsystem, shooterSubsystem, pivotSubsystem, ledSubsystem));
     autoChooser.addOption("blue shoot+taxi", new BlueShootTaxi(driveSubsystem, visionSubsystem, intakeSubsystem, shooterSubsystem, pivotSubsystem, ledSubsystem));
     autoChooser.addOption("fendershot", new SubwooferShot(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, ()->0, ()->0, ()->0, ()->false, ledSubsystem));

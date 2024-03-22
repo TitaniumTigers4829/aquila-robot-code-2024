@@ -23,9 +23,9 @@ import frc.robot.subsystems.vision.VisionSubsystem;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class RedNoteThree extends SequentialCommandGroup {
+public class RedFourNote extends SequentialCommandGroup {
   /** Creates a new BlueSimpleTwoNote. */
-  public RedNoteThree(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, IntakeSubsystem intakeSubsystem, ShooterSubsystem shooterSubsystem, PivotSubsystem pivotSubsystem, LEDSubsystem leds) {
+  public RedFourNote(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, IntakeSubsystem intakeSubsystem, ShooterSubsystem shooterSubsystem, PivotSubsystem pivotSubsystem, LEDSubsystem leds) {
     addCommands(
       new InstantCommand(()->driveSubsystem.resetOdometry(new Pose2d(15.198075294494629, 5.555154800415039, Rotation2d.fromRadians(3.14159265358979)))),
       new SubwooferShot(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, ()->0, ()->0, ()->0, ()->false, leds).withTimeout(1.5),
