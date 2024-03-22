@@ -182,11 +182,14 @@ public final class Constants {
     public static final double RED_AMP_X = 14.613;
     public static final double RED_AMP_Y = 8.197;
 
+    //TODO: tune
     public static final double RED_AMP_SHOOT_X = 14.663867950439453;
     public static final double RED_AMP_SHOOT_Y = 8.198349952697754;
 
     public static final double BLUE_AMP_X = 1.9;
     public static final double BLUE_AMP_Y = 8.161;
+
+    //TODO: tune
     public static final double BLUE_AMP_SHOOT_X = 1.9;
     public static final double BLUE_AMP_SHOOT_Y = 7.767;
 
