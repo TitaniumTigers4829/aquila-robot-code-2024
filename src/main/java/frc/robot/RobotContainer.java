@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Constants.HardwareConstants;
 import frc.robot.Constants.JoystickConstants;
 import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.LEDConstants.LEDProcess;
@@ -68,6 +69,7 @@ public class RobotContainer {
     intakeSubsystem = new IntakeSubsystem();
     pivotSubsystem = new PivotSubsystem();
     ledSubsystem = new LEDSubsystem();
+    intakeSubsystem = new IntakeSubsystem();
 
     autoChooser = new SendableChooser<Command>();
     // autoChooser.setDefaultOption("red 4note", new RedNoteThree(driveSubsystem, visionSubsystem, intakeSubsystem, shooterSubsystem, pivotSubsystem, ledSubsystem));
@@ -88,7 +90,6 @@ public class RobotContainer {
     ledSubsystem.setProcess(LEDProcess.DEFAULT);
 
     DataLogManager.start();
-    SignalLogger.start();
   }
   
   private static double deadband(double value, double deadband) {
@@ -107,7 +108,7 @@ public class RobotContainer {
     double value = supplierValue.getAsDouble();
 
     // Deadband
-    value = deadband(value, 0.1);
+    value = deadband(value, HardwareConstants.DEADBAND_VALUE);
 
     // Cube the axis
     value = Math.copySign(value * value * value, value);
@@ -116,8 +117,8 @@ public class RobotContainer {
   }
 
   private static double[] modifyAxisCubedPolar(DoubleSupplier xJoystick, DoubleSupplier yJoystick) {
-    double xInput = deadband(xJoystick.getAsDouble(), 0.1);
-    double yInput = deadband(yJoystick.getAsDouble(), 0.1);
+    double xInput = deadband(xJoystick.getAsDouble(), HardwareConstants.DEADBAND_VALUE);
+    double yInput = deadband(yJoystick.getAsDouble(), HardwareConstants.DEADBAND_VALUE);
     if (Math.abs(xInput) > 0 && Math.abs(yInput) > 0) {
       double theta = Math.atan(xInput / yInput);
       double hypotenuse = Math.sqrt(xInput * xInput + yInput * yInput);
@@ -175,6 +176,7 @@ public class RobotContainer {
 
     operatorDpadDown.toggleOnTrue(new ManualShoot(shooterSubsystem, pivotSubsystem, () -> modifyAxisCubed(operatorRightStickY), operatorRightTrigger, operatorLeftTrigger));
 
+    driverAButton.whileTrue(new TestIntake(intakeSubsystem, shooterSubsystem));
     //DRIVER BUTTONS
 
     // driving
@@ -201,8 +203,6 @@ public class RobotContainer {
     // // driverRightTrigger.whileTrue(new SpinUpForSpeaker(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, driverLeftStick[0], driverLeftStick[1], driverRightBumper, ledSubsystem));
     
     // // Resets the robot angle in the odometry, factors in which alliance the robot is on
-    // // driverRightDirectionPad.onTrue(new InstantCommand(() -> driveSubsystem.resetOdometry(new Pose2d(driveSubsystem.getPose().getX(), driveSubsystem.getPose().getY(), 
-    // //       Rotation2d.fromDegrees(driveSubsystem.getAllianceAngleOffset())))));
     // driverRightDirectionPad.onTrue(new InstantCommand(() -> driveSubsystem.resetOdometry(new Pose2d(driveSubsystem.getPose().getX(), driveSubsystem.getPose().getY(), 
     //       Rotation2d.fromDegrees(driveSubsystem.getAllianceAngleOffset())))));
     // driverLeftDirectionPad.onTrue(new InstantCommand(() -> driveSubsystem.resetOdometry(visionSubsystem.getPoseFromAprilTags())));
