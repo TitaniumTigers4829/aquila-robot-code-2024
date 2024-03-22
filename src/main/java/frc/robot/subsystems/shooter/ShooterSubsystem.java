@@ -10,6 +10,8 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import au.grapplerobotics.ConfigurationFailedException;
+import au.grapplerobotics.LaserCan;
 // import au.grapplerobotics.ConfigurationFailedException;
 // import au.grapplerobotics.LaserCan;
 // import au.grapplerobotics.LaserCan.Measurement;
@@ -27,7 +29,7 @@ public class ShooterSubsystem extends SubsystemBase {
   private final TalonFX followerFlywheel;
   private final TalonFX rollerMotor;
   
-  // private final LaserCan noteSensor;
+  private final LaserCan noteSensor;
 
   private final StatusSignal<Double> leaderVelocity;
   private final StatusSignal<Double> followerVelocity;
