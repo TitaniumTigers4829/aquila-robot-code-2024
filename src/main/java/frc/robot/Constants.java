@@ -279,7 +279,8 @@ public final class Constants {
     public static final double ROLLER_NEUTRAL_SPEED = 0;
     public static final double SHOOTER_NEUTRAL_SPEED = 0;
 
-    public static final int SHOOTER_NOTE_SENSOR_ID = 0;
+    public static final int TOP_LASERCAN_ID = 0;
+    public static final double NOTE_DETECTED_THRESHOLD = 0.0;
 
     public static final double SHOOT_SPEAKER_RPM = 4000;
 

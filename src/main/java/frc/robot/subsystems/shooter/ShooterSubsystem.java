@@ -9,6 +9,8 @@ import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+
+import au.grapplerobotics.LaserCan;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -21,7 +23,7 @@ public class ShooterSubsystem extends SubsystemBase {
   private final TalonFX followerFlywheel;
   private final TalonFX rollerMotor;
   
-  private final DigitalInput noteSensor;
+  // private final LaserCan noteSensor;
 
   private final StatusSignal<Double> leaderVelocity;
   private final StatusSignal<Double> followerVelocity;
@@ -34,7 +36,7 @@ public class ShooterSubsystem extends SubsystemBase {
     leaderFlywheel = new TalonFX(ShooterConstants.LEADER_FLYWHEEL_ID);
     followerFlywheel = new TalonFX(ShooterConstants.FOLLOWER_FLYWHEEL_ID);
     rollerMotor = new TalonFX(ShooterConstants.ROLLER_MOTOR_ID);
-    noteSensor = new DigitalInput(ShooterConstants.SHOOTER_NOTE_SENSOR_ID);
+    // noteSensor = new LaserCan(ShooterConstants.TOP_LASERCAN_ID);
 
     velocityRequest = new VelocityVoltage(0);
 
@@ -83,6 +85,7 @@ public class ShooterSubsystem extends SubsystemBase {
    * @return true if there is a note
    */
   public boolean hasNote() {
+    // return noteSensor.getMeasurement().distance_mm < ShooterConstants.NOTE_DETECTED_THRESHOLD;
     // return !noteSensor.get();
     return false;
   }
@@ -151,6 +154,7 @@ public class ShooterSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     SmartDashboard.putBoolean("has note", hasNote());
+    // SmartDashboard.putNumber("measurement", noteSensor.getMeasurement().distance_mm);
     SmartDashboard.putNumber("velocity", leaderVelocity.refresh().getValueAsDouble() * 60.0);
     // SmartDashboard.putNumber("current velocity", (leaderVelocity.refresh().getValueAsDouble() * 60));
   }
