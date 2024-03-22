@@ -12,14 +12,12 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.HardwareConstants;
 import frc.robot.Constants.LEDConstants.LEDProcess;
 import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.ShooterConstants;
-import frc.robot.Constants.LEDConstants.LEDProcess;
 import frc.robot.commands.drive.DriveCommandBase;
 import frc.robot.subsystems.leds.LEDSubsystem;
 import frc.robot.subsystems.pivot.PivotSubsystem;
@@ -107,9 +105,7 @@ public class ShootSpeaker extends DriveCommandBase {
     );
 
     shooterSubsystem.setRPM(ShooterConstants.SHOOT_SPEAKER_RPM);
-    // TODO: pivot
-    pivotSubsystem.setPivotAngle(0.085623046875);
-    // pivotSubsystem.setPivotFromDistance(distance);
+    pivotSubsystem.setPivotFromDistance(distance);
     // if we are ready to shoot:
     if (isReadyToShoot()) {
       leds.setProcess(LEDProcess.SHOOT);
@@ -136,7 +132,7 @@ public class ShootSpeaker extends DriveCommandBase {
   }
   public boolean isReadyToShoot() {
     // TODO: heading
-    return shooterSubsystem.isShooterWithinAcceptableError() && pivotSubsystem.isPivotWithinAcceptableError();// && (Math.abs(headingError) < DriveConstants.HEADING_ACCEPTABLE_ERROR_RADIANS);
+    return shooterSubsystem.isShooterWithinAcceptableError() && pivotSubsystem.isPivotWithinAcceptableError() && (Math.abs(headingError) < DriveConstants.HEADING_ACCEPTABLE_ERROR_RADIANS);
   }
 
   private double deadband(double val) {
