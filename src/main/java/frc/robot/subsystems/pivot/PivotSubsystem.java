@@ -9,6 +9,7 @@ import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
+import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
@@ -44,6 +45,7 @@ public class PivotSubsystem extends SubsystemBase {
     CANcoderConfiguration pivotEncoderConfig = new CANcoderConfiguration();
     pivotEncoderConfig.MagnetSensor.MagnetOffset = -PivotConstants.ANGLE_ZERO;
     pivotEncoderConfig.MagnetSensor.SensorDirection = PivotConstants.ENCODER_REVERSED;
+    // pivotEncoderConfig.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Unsigned_0To1;
     pivotEncoder.getConfigurator().apply(pivotEncoderConfig, HardwareConstants.TIMEOUT_S);
 
     TalonFXConfiguration pivotConfig = new TalonFXConfiguration();
@@ -52,6 +54,8 @@ public class PivotSubsystem extends SubsystemBase {
     pivotConfig.Slot0.kD = PivotConstants.PIVOT_D;
     pivotConfig.Slot0.kG = PivotConstants.PIVOT_G;
 
+    pivotConfig.Slot0.GravityType = GravityTypeValue.Arm_Cosine;
+
     pivotConfig.MotionMagic.MotionMagicAcceleration = PivotConstants.MAX_VELOCITY_ROTATIONS_PER_SECOND;
     pivotConfig.MotionMagic.MotionMagicCruiseVelocity = PivotConstants.MAX_ACCELERATION_ROTATIONS_PER_SECOND_SQUARED;
 
@@ -59,13 +63,15 @@ public class PivotSubsystem extends SubsystemBase {
     pivotConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive; 
     pivotConfig.MotorOutput.DutyCycleNeutralDeadband = HardwareConstants.MIN_FALCON_DEADBAND;
 
+    pivotConfig.ClosedLoopGeneral.ContinuousWrap = true;
+
     pivotConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
     pivotConfig.Feedback.FeedbackRemoteSensorID = pivotEncoder.getDeviceID();
     
     pivotConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold = PivotConstants.MAX_ANGLE;
     pivotConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = PivotConstants.MIN_ANGLE;
-    pivotConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
-    pivotConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
+    pivotConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = false;
+    pivotConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = false;
     leaderPivotMotor.getConfigurator().apply(pivotConfig, HardwareConstants.TIMEOUT_S);
     pivotConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     followerPivotMotor.getConfigurator().apply(pivotConfig, HardwareConstants.TIMEOUT_S);

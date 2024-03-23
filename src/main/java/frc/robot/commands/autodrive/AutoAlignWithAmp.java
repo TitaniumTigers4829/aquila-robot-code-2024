@@ -7,7 +7,9 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.FieldConstants;
+import frc.robot.Constants.HardwareConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.commands.drive.DriveCommandBase;
 import frc.robot.subsystems.swerve.DriveSubsystem;
@@ -16,30 +18,35 @@ import frc.robot.subsystems.vision.VisionSubsystem;
 public class AutoAlignWithAmp extends DriveCommandBase {
 
   private final DriveSubsystem driveSubsystem;
-  private final VisionSubsystem visionSubsystem;
 
   private boolean isRed;
   private Pose2d ampPose;
 
   private final ProfiledPIDController turnController = new ProfiledPIDController(
-    ShooterConstants.AUTO_SHOOT_P,
-    ShooterConstants.AUTO_SHOOT_I, 
-    ShooterConstants.AUTO_SHOOT_D, 
-    ShooterConstants.AUTO_SHOOT_CONSTRAINTS
+    ShooterConstants.AUTO_LINEUP_ROTATION_P,
+    ShooterConstants.AUTO_LINEUP_ROTATION_I, 
+    ShooterConstants.AUTO_LINEUP_ROTATION_D, 
+    ShooterConstants.AUTO_LINEUP_ROTATION_CONSTRAINTS
   );
 
-  private final ProfiledPIDController translationController = new ProfiledPIDController(
-    ShooterConstants.AUTO_LINEUP_P,
-    ShooterConstants.AUTO_LINEUP_I, 
-    ShooterConstants.AUTO_LINEUP_D, 
-    ShooterConstants.AUTO_LINEUP_CONSTRAINTS
+  private final ProfiledPIDController xTranslationController = new ProfiledPIDController(
+    ShooterConstants.AUTO_LINEUP_TRANSLATION_P,
+    ShooterConstants.AUTO_LINEUP_TRANSLATION_I, 
+    ShooterConstants.AUTO_LINEUP_TRANSLATION_D, 
+    ShooterConstants.AUTO_LINEUP_TRANSLATION_CONSTRAINTS
+  );
+
+  private final ProfiledPIDController yTranslationController = new ProfiledPIDController(
+    ShooterConstants.AUTO_LINEUP_TRANSLATION_P,
+    ShooterConstants.AUTO_LINEUP_TRANSLATION_I, 
+    ShooterConstants.AUTO_LINEUP_TRANSLATION_D, 
+    ShooterConstants.AUTO_LINEUP_TRANSLATION_CONSTRAINTS
   );
 
   /** Creates a new AutoAlignWithAmp. */
   public AutoAlignWithAmp(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem) {
     super(driveSubsystem, visionSubsystem);
     this.driveSubsystem = driveSubsystem;
-    this.visionSubsystem = visionSubsystem;
     addRequirements(driveSubsystem, visionSubsystem);
   }
 
@@ -50,6 +57,7 @@ public class AutoAlignWithAmp extends DriveCommandBase {
     isRed = alliance.isPresent() && alliance.get() == Alliance.Red;
     ampPose = isRed ? new Pose2d(FieldConstants.RED_AMP_SHOOT_X, FieldConstants.RED_AMP_SHOOT_Y, FieldConstants.RED_AMP_ROTATION) 
       : new Pose2d(FieldConstants.BLUE_AMP_SHOOT_X, FieldConstants.BLUE_AMP_SHOOT_Y, FieldConstants.BLUE_AMP_ROTATION);
+    turnController.enableContinuousInput(-Math.PI, Math.PI);
   }
 
   @Override
@@ -63,10 +71,12 @@ public class AutoAlignWithAmp extends DriveCommandBase {
     double thetaPoseError = ampPose.getRotation().getRadians() - drivePose.getRotation().getRadians();
 
     // Uses the PID controllers to calculate the drive output
-    double xOutput = deadband(translationController.calculate(xPoseError, 0));
-    double yOutput = deadband(translationController.calculate(yPoseError, 0));
-    turnController.enableContinuousInput(-Math.PI, Math.PI);
+    double xOutput = deadband(xTranslationController.calculate(xPoseError, 0));
+    double yOutput = deadband(yTranslationController.calculate(yPoseError, 0));
     double turnOutput = deadband(turnController.calculate(thetaPoseError, 0)); 
+    SmartDashboard.putNumber("xOut", xOutput);
+    SmartDashboard.putNumber("yOut", yOutput);
+    SmartDashboard.putNumber("turnOut", turnOutput);
 
     // Gets the chassis speeds for the robot using the odometry rotation (not alliance relative)
     ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xOutput, yOutput, turnOutput, driveSubsystem.getOdometryRotation2d());
@@ -91,7 +101,7 @@ public class AutoAlignWithAmp extends DriveCommandBase {
   }
   
   private double deadband(double val) {
-    if (Math.abs(val) < 0.1) {
+    if (Math.abs(val) < HardwareConstants.DEADBAND_VALUE) {
       return 0.0;
     } else {
       return val;

@@ -18,6 +18,9 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.util.datalog.DataLog;
+import edu.wpi.first.util.datalog.StringLogEntry;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Timer;
@@ -44,6 +47,8 @@ public class DriveSubsystem extends SubsystemBase {
 
   private final AHRS gyro;
   private final SwerveDrivePoseEstimator odometry;
+
+  private StringLogEntry odometryLogger;
 
   private Optional<DriverStation.Alliance> alliance;
 
@@ -117,6 +122,9 @@ public class DriveSubsystem extends SubsystemBase {
       ()->false,
       this
     );
+    
+    DataLog log = DataLogManager.getLog();
+    odometryLogger = new StringLogEntry(log, "odometry");
   }
 
   /**gets the chassis speeds*/
@@ -208,7 +216,6 @@ public class DriveSubsystem extends SubsystemBase {
   public double getAllianceAngleOffset() {
     alliance = DriverStation.getAlliance();
     double offset = alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red ? 180.0 : 0.0;
-    SmartDashboard.putNumber("offset", offset);
     return offset;
   }
 
@@ -322,9 +329,10 @@ public class DriveSubsystem extends SubsystemBase {
   public void periodic() {
     Pose2d pose = getPose();
     SmarterDashboardRegistry.setPose(pose);
+    odometryLogger.append(pose.toString());
     SmartDashboard.putBoolean("screwed", Math.abs(pose.getX()) > 20);
-    SmartDashboard.putNumber("heading", getHeading());
     SmartDashboard.putString("odometry", pose.toString());
     // SmartDashboard.putNumber("offset", rearLeftSwerveModule.getState().angle.getRotations());
+    SmartDashboard.putNumber("speakerDistance", pose.getTranslation().getDistance(SmarterDashboardRegistry.getSpeakerPos()));
   }
 }

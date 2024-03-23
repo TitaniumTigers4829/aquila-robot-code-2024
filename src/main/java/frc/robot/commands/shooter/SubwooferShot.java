@@ -8,6 +8,7 @@ import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 import frc.robot.Constants.LEDConstants.LEDProcess;
+import frc.robot.Constants.HardwareConstants;
 import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.commands.drive.DriveCommandBase;
@@ -21,7 +22,6 @@ public class SubwooferShot extends DriveCommandBase {
   private final DriveSubsystem driveSubsystem;
   private final ShooterSubsystem shooterSubsystem;
   private final PivotSubsystem pivotSubsystem;
-  private final VisionSubsystem visionSubsystem;
   private final LEDSubsystem leds;
 
   private final DoubleSupplier leftX, leftY, rightX;
@@ -33,7 +33,6 @@ public class SubwooferShot extends DriveCommandBase {
     this.driveSubsystem = driveSubsystem;
     this.shooterSubsystem = shooterSubsystem;
     this.pivotSubsystem = pivotSubsystem;
-    this.visionSubsystem = visionSubsystem;
     this.leftX = leftX;
     this.leftY = leftY;
     this.rightX = rightX;
@@ -61,11 +60,11 @@ public class SubwooferShot extends DriveCommandBase {
     );
 
     shooterSubsystem.setRPM(ShooterConstants.SHOOT_SPEAKER_RPM);
-    pivotSubsystem.setPivotAngle(0.0);
+    pivotSubsystem.setPivotAngle(PivotConstants.SUBWOOFER_ANGLE);
     // if we are ready to shoot:
     if (isReadyToShoot()) {
       leds.setProcess(LEDProcess.SHOOT);
-      shooterSubsystem.setTowerSpeed(ShooterConstants.ROLLER_SHOOT_SPEED);
+      shooterSubsystem.setRollerSpeed(ShooterConstants.ROLLER_SHOOT_SPEED);
     } else {
       leds.setProcess(LEDProcess.FINISH_LINE_UP);
     }
@@ -75,7 +74,7 @@ public class SubwooferShot extends DriveCommandBase {
   @Override
   public void end(boolean interrupted) {
     shooterSubsystem.setFlywheelNeutral();
-    shooterSubsystem.setTowerSpeed(0);
+    shooterSubsystem.setRollerSpeed(0);
     pivotSubsystem.setPivotAngle(PivotConstants.PIVOT_INTAKE_ANGLE);
     leds.setProcess(LEDProcess.DEFAULT);
   }
@@ -90,7 +89,7 @@ public class SubwooferShot extends DriveCommandBase {
   }
 
   private double deadband(double val) {
-    if (Math.abs(val) < 0.1) {
+    if (Math.abs(val) < HardwareConstants.DEADBAND_VALUE) {
       return 0.0;
     } else {
       return val;

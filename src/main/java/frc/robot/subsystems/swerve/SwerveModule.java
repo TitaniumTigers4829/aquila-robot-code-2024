@@ -18,7 +18,6 @@ import com.ctre.phoenix6.signals.SensorDirectionValue;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.Constants.HardwareConstants;
 import frc.robot.Constants.ModuleConstants;
@@ -146,7 +145,6 @@ public class SwerveModule {
     driveMotorPosition.refresh();
     double position = ModuleConstants.DRIVE_TO_METERS * -driveMotorPosition.getValue();
     Rotation2d rotation = Rotation2d.fromRotations(getModuleHeading());
-    SmartDashboard.putString(name, new SwerveModulePosition(position, rotation).toString());
     return new SwerveModulePosition(position, rotation);
   }
 
@@ -172,7 +170,6 @@ public class SwerveModule {
      
     driveMotor.setControl(driveOutput.withVelocity(desiredDriveRPS));
     turnMotor.setControl(turnOutput.withPosition(optimizedDesiredState.angle.getRotations()));
-
   }
 
   /**

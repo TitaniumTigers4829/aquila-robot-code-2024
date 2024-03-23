@@ -14,10 +14,10 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.FieldConstants;
+import frc.robot.Constants.HardwareConstants;
 import frc.robot.Constants.LEDConstants.LEDProcess;
 import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.ShooterConstants;
-import frc.robot.Constants.LEDConstants.LEDProcess;
 import frc.robot.commands.drive.DriveCommandBase;
 import frc.robot.subsystems.leds.LEDSubsystem;
 import frc.robot.subsystems.pivot.PivotSubsystem;
@@ -29,7 +29,6 @@ public class ShootSpeaker extends DriveCommandBase {
   private final DriveSubsystem driveSubsystem;
   private final ShooterSubsystem shooterSubsystem;
   private final PivotSubsystem pivotSubsystem;
-  private final VisionSubsystem visionSubsystem;
   private final LEDSubsystem leds;
 
   private final DoubleSupplier leftX, leftY;
@@ -54,7 +53,6 @@ public class ShootSpeaker extends DriveCommandBase {
     this.driveSubsystem = driveSubsystem;
     this.shooterSubsystem = shooterSubsystem;
     this.pivotSubsystem = pivotSubsystem;
-    this.visionSubsystem = visionSubsystem;
     this.leftX = leftX;
     this.leftY = leftY;
     this.isFieldRelative = isFieldRelative;
@@ -66,17 +64,11 @@ public class ShootSpeaker extends DriveCommandBase {
   @Override
   public void initialize() {
     Optional<Alliance> alliance = DriverStation.getAlliance();
-    //if alliance is detected
-    if (alliance.isPresent()) {
-      //and if it's red, we're red
-      isRed = alliance.get() == Alliance.Red;
-    } else {
-      //otherwise default to red alliance
-      isRed = true;
-    }
+    //sets alliance to red
+    isRed = alliance.isPresent() && alliance.get() == Alliance.Red;  
+
     // SmartDashboard.putBoolean("red", isRed);
     speakerPos = isRed ? new Translation2d(FieldConstants.RED_SPEAKER_X, FieldConstants.RED_SPEAKER_Y) : new Translation2d(FieldConstants.BLUE_SPEAKER_X, FieldConstants.BLUE_SPEAKER_Y);
-    // SmartDashboard.putString("speakerPos", speakerPos.toString());
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -94,19 +86,13 @@ public class ShootSpeaker extends DriveCommandBase {
       headingError = desiredHeading - driveSubsystem.getOdometryRotation2d().getRadians();
   
       turnController.enableContinuousInput(-Math.PI, Math.PI);
-      double turnOutput = deadband(turnController.calculate(headingError, 0)); 
-    // get PID output
-    //SmartDashboard.putNumber("desired Heading", desiredHeading);
-    // SmartDashboard.putNumber("drivetrain error", headingError);
-    // SmartDashboard.putNumber("current heading", driveSubsystem.getRotation2d().getRadians());
-    // SmartDashboard.putNumber("turnOutput", turnOutput);
-    //SmartDashboard.putNumber("speakerDistance", distance);
+      double turnOutput = deadband(turnController.calculate(headingError, 0));
 
     // allow the driver to drive slowly (NOT full speed - will mess up shooter)
     driveSubsystem.drive(
       deadband(leftY.getAsDouble()) * 0.5, 
       deadband(leftX.getAsDouble()) * 0.5, 
-      turnOutput, 
+      turnOutput,
       !isFieldRelative.getAsBoolean()
     );
 
@@ -115,7 +101,7 @@ public class ShootSpeaker extends DriveCommandBase {
     // if we are ready to shoot:
     if (isReadyToShoot()) {
       leds.setProcess(LEDProcess.SHOOT);
-      shooterSubsystem.setTowerSpeed(ShooterConstants.ROLLER_SHOOT_SPEED);
+      shooterSubsystem.setRollerSpeed(ShooterConstants.ROLLER_SHOOT_SPEED);
     } else {
       leds.setProcess(LEDProcess.FINISH_LINE_UP);
     }
@@ -126,7 +112,7 @@ public class ShootSpeaker extends DriveCommandBase {
   public void end(boolean interrupted) {
     leds.setProcess(LEDProcess.DEFAULT);
     shooterSubsystem.setFlywheelNeutral();
-    shooterSubsystem.setTowerSpeed(0);
+    shooterSubsystem.setRollerSpeed(0);
     pivotSubsystem.setPivotAngle(PivotConstants.PIVOT_INTAKE_ANGLE);
     leds.setProcess(LEDProcess.DEFAULT);
   }
@@ -137,11 +123,12 @@ public class ShootSpeaker extends DriveCommandBase {
     return false;
   }
   public boolean isReadyToShoot() {
+    // TODO: heading
     return shooterSubsystem.isShooterWithinAcceptableError() && pivotSubsystem.isPivotWithinAcceptableError() && (Math.abs(headingError) < DriveConstants.HEADING_ACCEPTABLE_ERROR_RADIANS);
   }
 
   private double deadband(double val) {
-    if (Math.abs(val) < 0.1) {
+    if (Math.abs(val) < HardwareConstants.DEADBAND_VALUE) {
       return 0.0;
     } else {
       return val;
