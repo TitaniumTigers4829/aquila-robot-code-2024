@@ -41,11 +41,11 @@ public class TowerIntake extends Command {
         leds.setProcess(LEDProcess.REVERSE_INTAKE);
         shooterSubsystem.setRollerSpeed(-ShooterConstants.ROLLER_INTAKE_SPEED); 
         intakeSubsystem.setIntakeSpeed(-IntakeConstants.INTAKE_SPEED);
-        intakeSubsystem.setFlapperSpeed(-IntakeConstants.FLAPPER_SPEED);
+        // intakeSubsystem.setFlapperSpeed(-IntakeConstants.FLAPPER_SPEED);
       } else {
         if (shooterSubsystem.hasNote()) {
           intakeSubsystem.setIntakeSpeed(0);
-          intakeSubsystem.setFlapperSpeed(0);
+          // intakeSubsystem.setFlapperSpeed(0);
           shooterSubsystem.setRollerSpeed(0);
           leds.setProcess(LEDProcess.NOTE_IN);
           SmarterDashboardRegistry.noteIn();
@@ -56,7 +56,7 @@ public class TowerIntake extends Command {
           leds.setProcess(LEDProcess.INTAKE);
           shooterSubsystem.setRollerSpeed(ShooterConstants.ROLLER_INTAKE_SPEED);
           intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_SPEED);
-          intakeSubsystem.setFlapperSpeed(IntakeConstants.FLAPPER_SPEED);
+          // intakeSubsystem.setFlapperSpeed(IntakeConstants.FLAPPER_SPEED);
         }
       }
     }
