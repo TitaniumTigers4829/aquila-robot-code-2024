@@ -4,14 +4,12 @@
 
 package frc.robot.commands.intake;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.LEDConstants.LEDProcess;
 import frc.robot.extras.SmarterDashboardRegistry;
 import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.ShooterConstants;
-import frc.robot.Constants.LEDConstants.LEDProcess;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.leds.LEDSubsystem;
 import frc.robot.subsystems.pivot.PivotSubsystem;

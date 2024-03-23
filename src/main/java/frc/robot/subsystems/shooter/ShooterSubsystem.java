@@ -12,12 +12,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import au.grapplerobotics.ConfigurationFailedException;
 import au.grapplerobotics.LaserCan;
-import au.grapplerobotics.ConfigurationFailedException;
-import au.grapplerobotics.LaserCan;
 import au.grapplerobotics.LaserCan.Measurement;
-import au.grapplerobotics.LaserCan.RangingMode;
-import au.grapplerobotics.LaserCan.TimingBudget;
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;

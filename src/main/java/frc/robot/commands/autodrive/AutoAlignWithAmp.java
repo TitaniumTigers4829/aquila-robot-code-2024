@@ -18,7 +18,6 @@ import frc.robot.subsystems.vision.VisionSubsystem;
 public class AutoAlignWithAmp extends DriveCommandBase {
 
   private final DriveSubsystem driveSubsystem;
-  private final VisionSubsystem visionSubsystem;
 
   private boolean isRed;
   private Pose2d ampPose;
@@ -48,7 +47,6 @@ public class AutoAlignWithAmp extends DriveCommandBase {
   public AutoAlignWithAmp(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem) {
     super(driveSubsystem, visionSubsystem);
     this.driveSubsystem = driveSubsystem;
-    this.visionSubsystem = visionSubsystem;
     addRequirements(driveSubsystem, visionSubsystem);
   }
 

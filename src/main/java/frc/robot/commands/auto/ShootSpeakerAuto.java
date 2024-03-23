@@ -27,7 +27,6 @@ public class ShootSpeakerAuto extends DriveCommandBase {
   private final DriveSubsystem driveSubsystem;
   private final ShooterSubsystem shooterSubsystem;
   private final PivotSubsystem pivotSubsystem;
-  private final VisionSubsystem visionSubsystem;
   private final LEDSubsystem leds;
   private final Timer timer;
 
@@ -50,7 +49,6 @@ public class ShootSpeakerAuto extends DriveCommandBase {
     this.driveSubsystem = driveSubsystem;
     this.shooterSubsystem = shooterSubsystem;
     this.pivotSubsystem = pivotSubsystem;
-    this.visionSubsystem = visionSubsystem;
     this.leds = leds;
     timer = new Timer();
     addRequirements(shooterSubsystem, driveSubsystem, pivotSubsystem);

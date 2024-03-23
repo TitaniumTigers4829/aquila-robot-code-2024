@@ -14,7 +14,6 @@ import frc.robot.subsystems.vision.VisionSubsystem;
 public class AutoBuilderDriveToPos extends DriveCommandBase {
 
   private final DriveSubsystem driveSubsystem;
-  private final VisionSubsystem visionSubsystem;
 
   private final double finalX, finalY;
   private final Rotation2d finalRot;
@@ -25,7 +24,6 @@ public class AutoBuilderDriveToPos extends DriveCommandBase {
   public AutoBuilderDriveToPos(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, double finalX, double finalY, Rotation2d finalRot) {
     super(driveSubsystem, visionSubsystem);
     this.driveSubsystem = driveSubsystem;
-    this.visionSubsystem = visionSubsystem;
     this.finalX = finalX;
     this.finalY = finalY;
     this.finalRot = finalRot;

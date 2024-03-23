@@ -29,7 +29,6 @@ public class SpinUpForSpeaker extends DriveCommandBase {
   private final DriveSubsystem driveSubsystem;
   private final ShooterSubsystem shooterSubsystem;
   private final PivotSubsystem pivotSubsystem;
-  private final VisionSubsystem visionSubsystem;
   private final LEDSubsystem leds;
 
   private final DoubleSupplier leftX, leftY;
@@ -54,7 +53,6 @@ public class SpinUpForSpeaker extends DriveCommandBase {
     this.driveSubsystem = driveSubsystem;
     this.shooterSubsystem = shooterSubsystem;
     this.pivotSubsystem = pivotSubsystem;
-    this.visionSubsystem = visionSubsystem;
     this.leftX = leftX;
     this.leftY = leftY;
     this.isFieldRelative = isFieldRelative;
@@ -69,9 +67,7 @@ public class SpinUpForSpeaker extends DriveCommandBase {
     //sets alliance to red if alliance is red
     isRed = alliance.isPresent() && alliance.get() == Alliance.Red;  
 
-    // SmartDashboard.putBoolean("red", isRed);
     speakerPos = isRed ? new Translation2d(FieldConstants.RED_SPEAKER_X, FieldConstants.RED_SPEAKER_Y) : new Translation2d(FieldConstants.BLUE_SPEAKER_X, FieldConstants.BLUE_SPEAKER_Y);
-    // SmartDashboard.putString("speakerPos", speakerPos.toString());
   }
 
   // Called every time the scheduler runs while the command is scheduled.

@@ -12,7 +12,6 @@ import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.subsystems.pivot.PivotSubsystem;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
-import frc.robot.subsystems.swerve.DriveSubsystem;
 
 public class ManualShoot extends Command {
   private final ShooterSubsystem shooterSubsystem;

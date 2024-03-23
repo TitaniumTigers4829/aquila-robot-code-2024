@@ -17,11 +17,11 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.TrajectoryConstants;
 import frc.robot.commands.drive.DriveCommandBase;
-import frc.robot.extras.SmarterDashboardRegistry;
 import frc.robot.subsystems.pivot.PivotSubsystem;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.swerve.DriveSubsystem;
@@ -29,17 +29,14 @@ import frc.robot.subsystems.vision.VisionSubsystem;
 
 public class FollowPathAndShoot extends DriveCommandBase {
   private DriveSubsystem driveSubsystem;
-  private VisionSubsystem visionSubsystem;
   private PivotSubsystem pivotSubsystem;
   private ShooterSubsystem shooterSubsystem;
   private Command controllerCommand;
   private Translation3d speakerPos;
   private boolean isRed;
-  private boolean resetOdometry;
   private double rotationControl;
   private double desiredHeading;
   private double headingError = 0;
-  private double headingOffset = 0;
 
   private final ProfiledPIDController thetaController = new ProfiledPIDController(
     ShooterConstants.AUTO_SHOOT_P,
@@ -52,10 +49,8 @@ public class FollowPathAndShoot extends DriveCommandBase {
   public FollowPathAndShoot(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, PivotSubsystem pivotSubsystem, ShooterSubsystem shooterSubsystem, String path, boolean resetOdometry) {
     super(driveSubsystem, visionSubsystem);
     this.driveSubsystem = driveSubsystem;
-    this.visionSubsystem = visionSubsystem;
     this.pivotSubsystem = pivotSubsystem;
     this.shooterSubsystem = shooterSubsystem;
-    this.resetOdometry = resetOdometry;
     ChoreoTrajectory traj = Choreo.getTrajectory(path);
     if (resetOdometry) {
       driveSubsystem.resetOdometry(traj.getInitialPose());
@@ -68,7 +63,6 @@ public class FollowPathAndShoot extends DriveCommandBase {
       new PIDController(TrajectoryConstants.AUTO_THETA_P, 0, 0), 
       (ChassisSpeeds speeds) -> mergeDrive(speeds),
         ()->false,
-      // TODO: scuffed
       driveSubsystem);
     addRequirements(visionSubsystem, pivotSubsystem, shooterSubsystem);
   }
@@ -118,7 +112,7 @@ public class FollowPathAndShoot extends DriveCommandBase {
     pivotSubsystem.setPivotFromDistance(distance);
 
     // if we are ready to shoot:
-    if (shooterSubsystem.isReadyToShoot(headingError) && pivotSubsystem.isPivotWithinAcceptableError()) {
+    if (shooterSubsystem.isReadyToShoot(headingError) && pivotSubsystem.isPivotWithinAcceptableError() && Math.abs(headingError) < DriveConstants.HEADING_ACCEPTABLE_ERROR_MOVING_RADIANS) {
       shooterSubsystem.setRollerSpeed(ShooterConstants.ROLLER_SHOOT_SPEED);
     }
   }
@@ -126,6 +120,9 @@ public class FollowPathAndShoot extends DriveCommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    shooterSubsystem.setRollerSpeed(0);
+    shooterSubsystem.setSpeed(0);
+    pivotSubsystem.setPivotSpeed(0);
     controllerCommand.end(interrupted);
     driveSubsystem.drive(0, 0, 0, false);
   }

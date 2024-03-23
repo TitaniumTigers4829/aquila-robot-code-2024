@@ -29,7 +29,6 @@ public class ShootSpeaker extends DriveCommandBase {
   private final DriveSubsystem driveSubsystem;
   private final ShooterSubsystem shooterSubsystem;
   private final PivotSubsystem pivotSubsystem;
-  private final VisionSubsystem visionSubsystem;
   private final LEDSubsystem leds;
 
   private final DoubleSupplier leftX, leftY;
@@ -54,7 +53,6 @@ public class ShootSpeaker extends DriveCommandBase {
     this.driveSubsystem = driveSubsystem;
     this.shooterSubsystem = shooterSubsystem;
     this.pivotSubsystem = pivotSubsystem;
-    this.visionSubsystem = visionSubsystem;
     this.leftX = leftX;
     this.leftY = leftY;
     this.isFieldRelative = isFieldRelative;
@@ -88,13 +86,7 @@ public class ShootSpeaker extends DriveCommandBase {
       headingError = desiredHeading - driveSubsystem.getOdometryRotation2d().getRadians();
   
       turnController.enableContinuousInput(-Math.PI, Math.PI);
-      double turnOutput = deadband(turnController.calculate(headingError, 0)); 
-    // get PID output
-    //SmartDashboard.putNumber("desired Heading", desiredHeading);
-    // SmartDashboard.putNumber("drivetrain error", headingError);
-    // SmartDashboard.putNumber("current heading", driveSubsystem.getRotation2d().getRadians());
-    // SmartDashboard.putNumber("turnOutput", turnOutput);
-    //SmartDashboard.putNumber("speakerDistance", distance);
+      double turnOutput = deadband(turnController.calculate(headingError, 0));
 
     // allow the driver to drive slowly (NOT full speed - will mess up shooter)
     driveSubsystem.drive(
