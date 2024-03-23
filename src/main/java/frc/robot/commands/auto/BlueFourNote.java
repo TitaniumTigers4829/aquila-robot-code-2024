@@ -40,7 +40,7 @@ public class BlueFourNote extends SequentialCommandGroup {
             new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "blue note 2 to 3", false),
             new IntakeAuto(intakeSubsystem, pivotSubsystem, shooterSubsystem, leds).withTimeout(2.5)
         ),
-        new IntakeAuto(intakeSubsystem, pivotSubsystem, shooterSubsystem, leds).withTimeout(1.5),
+        new IntakeAuto(intakeSubsystem, pivotSubsystem, shooterSubsystem, leds).withTimeout(0.5),
         new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, leds).withTimeout(1.7),
         new StopShooterAndIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem)
     );

@@ -45,7 +45,7 @@ public class IntakeAuto extends Command {
         intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_SPEED);
         intakeSubsystem.setFlapperSpeed(IntakeConstants.FLAPPER_SPEED);
       }
-      shooterSubsystem.setRPM(ShooterConstants.SHOOT_SPEAKER_RPM);
+      // shooterSubsystem.setRPM(ShooterConstants.SHOOT_SPEAKER_RPM);
     }
   }
   

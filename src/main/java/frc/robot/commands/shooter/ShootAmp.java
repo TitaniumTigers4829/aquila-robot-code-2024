@@ -4,6 +4,9 @@
 
 package frc.robot.commands.shooter;
 
+import java.util.function.BooleanSupplier;
+
+import edu.wpi.first.networktables.BooleanSubscriber;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.ShooterConstants;
@@ -16,12 +19,14 @@ public class ShootAmp extends Command {
   private final ShooterSubsystem shooterSubsystem;
   private final PivotSubsystem pivotSubsystem;
   private final LEDSubsystem leds;
+  private final BooleanSupplier shoot;
   
   /** Creates a new ShootSpeaker. */
-  public ShootAmp(ShooterSubsystem shooterSubsystem, PivotSubsystem pivotSubsystem, LEDSubsystem leds) {
+  public ShootAmp(ShooterSubsystem shooterSubsystem, PivotSubsystem pivotSubsystem, LEDSubsystem leds, BooleanSupplier shoot) {
     this.shooterSubsystem = shooterSubsystem;
     this.pivotSubsystem = pivotSubsystem;
     this.leds = leds;
+    this.shoot = shoot;
     addRequirements(shooterSubsystem);
   }
 
@@ -37,8 +42,10 @@ public class ShootAmp extends Command {
     shooterSubsystem.setRPM(ShooterConstants.SHOOT_AMP_RPM);
 
     if (pivotSubsystem.isPivotWithinAcceptableError() && shooterSubsystem.isShooterWithinAcceptableError()) {
-      shooterSubsystem.setRollerSpeed(ShooterConstants.ROLLER_SHOOT_SPEED);
-      leds.setProcess(LEDProcess.SHOOT);
+      if (shoot.getAsBoolean()) {
+        shooterSubsystem.setRollerSpeed(ShooterConstants.ROLLER_SHOOT_SPEED);
+        leds.setProcess(LEDProcess.SHOOT);
+      }
     } else {
       leds.setProcess(LEDProcess.FINISH_LINE_UP);
       // shooterSubsystem.setRollerSpeed(0);

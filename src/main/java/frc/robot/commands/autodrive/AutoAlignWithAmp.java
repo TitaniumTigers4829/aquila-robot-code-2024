@@ -10,14 +10,18 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.HardwareConstants;
+import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.commands.drive.DriveCommandBase;
+import frc.robot.subsystems.pivot.PivotSubsystem;
+import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.swerve.DriveSubsystem;
 import frc.robot.subsystems.vision.VisionSubsystem;
 
 public class AutoAlignWithAmp extends DriveCommandBase {
-
   private final DriveSubsystem driveSubsystem;
+  private final ShooterSubsystem shooterSubsystem;
+  private final PivotSubsystem pivotSubsystem;
 
   private boolean isRed;
   private Pose2d ampPose;
@@ -44,9 +48,11 @@ public class AutoAlignWithAmp extends DriveCommandBase {
   );
 
   /** Creates a new AutoAlignWithAmp. */
-  public AutoAlignWithAmp(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem) {
+  public AutoAlignWithAmp(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, PivotSubsystem pivotSubsystem, ShooterSubsystem shooterSubsystem) {
     super(driveSubsystem, visionSubsystem);
     this.driveSubsystem = driveSubsystem;
+    this.pivotSubsystem = pivotSubsystem;
+    this.shooterSubsystem = shooterSubsystem;
     addRequirements(driveSubsystem, visionSubsystem);
   }
 
@@ -88,6 +94,9 @@ public class AutoAlignWithAmp extends DriveCommandBase {
       chassisSpeeds.omegaRadiansPerSecond,
       false
     );
+
+    pivotSubsystem.setPivotAngle(PivotConstants.SHOOT_AMP_ANGLE);
+    shooterSubsystem.setRPM(ShooterConstants.SHOOT_AMP_RPM);
   }
 
   @Override

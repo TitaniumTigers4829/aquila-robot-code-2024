@@ -250,7 +250,7 @@ public final class Constants {
     public static final SensorDirectionValue ENCODER_REVERSED = SensorDirectionValue.Clockwise_Positive;
 
     public static final double SHOOT_AMP_ANGLE = 0.35205078125;
-    public static final double PIVOT_ACCEPTABLE_ERROR = 0.015;
+    public static final double PIVOT_ACCEPTABLE_ERROR = 0.01; // 0.015
 
     public static double[][] SPEAKER_PIVOT_POSITION = {
       // Distance, Angle (rotations)
@@ -299,7 +299,7 @@ public final class Constants {
     public static final double SHOOT_A = 0.00333;
 
     public static final double ROLLER_SHOOT_SPEED = 1;
-    public static final double ROLLER_INTAKE_SPEED = 0.2;
+    public static final double ROLLER_INTAKE_SPEED = 0.17;
     public static final double SHOOT_AMP_RPM = 2000;
     
     public static final double AUTO_SHOOT_P = 4.5;

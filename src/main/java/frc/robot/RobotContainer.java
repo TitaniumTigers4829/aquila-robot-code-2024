@@ -25,17 +25,15 @@ import frc.robot.commands.auto.RedAmpSideFourNote;
 import frc.robot.commands.auto.RedFourNote;
 import frc.robot.commands.auto.RedShootTaxi;
 import frc.robot.commands.autodrive.AutoAlignWithAmp;
-import frc.robot.commands.characterization.WheelRadiusCharacterization;
-import frc.robot.commands.characterization.WheelRadiusCharacterization.Direction;
 import frc.robot.commands.auto.RedNoteEight;
 import frc.robot.commands.drive.Drive;
 import frc.robot.commands.intake.TowerIntake;
 import frc.robot.extras.SmarterDashboardRegistry;
 import frc.robot.commands.shooter.ManualPivot;
-import frc.robot.commands.shooter.ManualShoot;
 import frc.robot.commands.shooter.ShootAmp;
 import frc.robot.commands.shooter.ShootSpeaker;
 import frc.robot.commands.shooter.ShootWhileMove;
+import frc.robot.commands.shooter.SpinUpForSpeaker;
 import frc.robot.commands.shooter.SubwooferShot;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.leds.LEDSubsystem;
@@ -126,8 +124,8 @@ public class RobotContainer {
   }
 
   public void teleopInit() {
-    SmarterDashboardRegistry.initialize();
     configureButtonBindings();
+    SmarterDashboardRegistry.initialize();
   }
 
   private void configureButtonBindings() {
@@ -184,18 +182,10 @@ public class RobotContainer {
     driveSubsystem.setDefaultCommand(driveCommand);
 
     // DRIVER BUTTONS
-    // succ
-    driverLeftTrigger.whileTrue(new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem, false, ledSubsystem));
-    // unsucc
-    driverLeftBumper.whileTrue(new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem, true, ledSubsystem));
-    // pew pew
-    driverRightTrigger.whileTrue(new ShootSpeaker(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, driverLeftStickX, operatorLeftStickY, driverRightBumper, ledSubsystem));
-    // fancy pew pew
-    driverBButton.whileTrue(new ShootWhileMove(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, driverLeftStick, driverRightBumper, ledSubsystem));
-    // amp lineup
-    driverAButton.whileTrue(new AutoAlignWithAmp(driveSubsystem, visionSubsystem));
-    //shoot amp
-    driverLeftBumper.whileTrue(new ShootAmp(shooterSubsystem, pivotSubsystem, ledSubsystem));
+    // amp lineup for pew pew
+    driverAButton.whileTrue(new AutoAlignWithAmp(driveSubsystem, visionSubsystem, pivotSubsystem, shooterSubsystem));
+    // spin up for pew pew
+    driverRightTrigger.whileTrue(new SpinUpForSpeaker(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, driverLeftStickX, operatorLeftStickY, driverRightBumper, ledSubsystem));
 
     // Resets the robot angle in the odometry, factors in which alliance the robot is on
     driverRightDirectionPad.onTrue(new InstantCommand(() -> driveSubsystem.resetOdometry(new Pose2d(driveSubsystem.getPose().getX(), driveSubsystem.getPose().getY(), 
@@ -206,7 +196,7 @@ public class RobotContainer {
     // speaker
     operatorRightTrigger.whileTrue(new ShootSpeaker(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, driverLeftStickX, operatorLeftStickY, driverRightBumper, ledSubsystem));
     // amp
-    operatorRightBumper.whileTrue(new ShootAmp(shooterSubsystem, pivotSubsystem, ledSubsystem));
+    operatorRightBumper.whileTrue(new ShootAmp(shooterSubsystem, pivotSubsystem, ledSubsystem, operatorAButton));
     // fender shot
     operatorDpadUp.whileTrue(new SubwooferShot(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, driverLeftStickX, operatorLeftStickY, driverRightStickX, driverRightBumper, ledSubsystem));
     // intake (aka SUCC_BUTTON)

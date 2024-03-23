@@ -119,8 +119,6 @@ public class ShooterSubsystem extends SubsystemBase {
    */
   public void setRPM(double desiredRPM) {
     shooterTargetRPM = desiredRPM;
-    SmartDashboard.putNumber("target RPM", shooterTargetRPM );
-    SmartDashboard.putNumber("error", (shooterTargetRPM) - leaderVelocity.refresh().getValueAsDouble() * 60.0);
     leaderFlywheel.setControl(velocityRequest.withVelocity(desiredRPM / 60.0));
     followerFlywheel.setControl(velocityRequest.withVelocity(desiredRPM / 60.0));
   }
