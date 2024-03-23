@@ -61,38 +61,32 @@ public class ShootSpeakerAuto extends DriveCommandBase {
     Optional<Alliance> alliance = DriverStation.getAlliance();
     //sets alliance to red
     isRed = alliance.isPresent() && alliance.get() == Alliance.Red;  
-
-    // SmartDashboard.putBoolean("red", isRed);
     speakerPos = isRed ? new Translation2d(FieldConstants.RED_SPEAKER_X, FieldConstants.RED_SPEAKER_Y) : new Translation2d(FieldConstants.BLUE_SPEAKER_X, FieldConstants.BLUE_SPEAKER_Y);
-    // SmartDashboard.putString("speakerPos", speakerPos.toString());
+    turnController.enableContinuousInput(-Math.PI, Math.PI);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     super.execute();
-  
-    // get positions of various things
+
     Translation2d robotPos = driveSubsystem.getPose().getTranslation();
-    // distance (for speaker lookups)
+    // distance (for pivot lookups)
     double distance = robotPos.getDistance(speakerPos);
-    SmartDashboard.putNumber("dist", distance);
     // arctangent for desired heading
     desiredHeading = Math.atan2((robotPos.getY() - speakerPos.getY()), (robotPos.getX() - speakerPos.getX()));
-    // }
 
     headingError = desiredHeading - driveSubsystem.getOdometryRotation2d().getRadians();
 
-    turnController.enableContinuousInput(-Math.PI, Math.PI);
     double turnOutput = deadband(turnController.calculate(headingError, 0)); 
-    // SmartDashboard.putNumber("turnOutput", turnOutput);
-    // SmartDashboard.putNumber("speakerDistance", distance);
+
     driveSubsystem.drive(
       0, 
       0, 
       turnOutput, 
       false
     );
+
     shooterSubsystem.setRPM(ShooterConstants.SHOOT_SPEAKER_RPM);
     pivotSubsystem.setPivotFromDistance(distance);
     // if we are ready to shoot:
@@ -101,10 +95,10 @@ public class ShootSpeakerAuto extends DriveCommandBase {
       shooterSubsystem.setRollerSpeed(ShooterConstants.ROLLER_SHOOT_SPEED);
     } else {
       leds.setProcess(LEDProcess.FINISH_LINE_UP);
-      shooterSubsystem.setRollerSpeed(0);
     }
 
-    if (shooterSubsystem.hasNote() && !timer.hasElapsed(0.001)) {
+    // If it has shot the note and the timer hasn't started
+    if (!shooterSubsystem.hasNote() && !timer.hasElapsed(0.001)) {
       timer.start();
     }
   }
@@ -122,9 +116,9 @@ public class ShootSpeakerAuto extends DriveCommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    // return timer.hasElapsed(0.3);
-    return false;
+    return timer.hasElapsed(0.1);
   }
+  
   public boolean isReadyToShoot() {
     return shooterSubsystem.isShooterWithinAcceptableError() && pivotSubsystem.isPivotWithinAcceptableError() && Math.abs(headingError) < DriveConstants.HEADING_ACCEPTABLE_ERROR_RADIANS;
   }
