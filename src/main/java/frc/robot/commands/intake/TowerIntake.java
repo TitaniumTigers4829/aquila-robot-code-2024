@@ -49,9 +49,6 @@ public class TowerIntake extends Command {
           shooterSubsystem.setRollerSpeed(0);
           leds.setProcess(LEDProcess.NOTE_IN);
           SmarterDashboardRegistry.noteIn();
-        // } else if (intakeSubsystem.hasNote()){
-        //   SmarterDashboardRegistry.noteHalfwayIn();
-        //   leds.setProcess(LEDProcess.NOTE_HALFWAY_IN);
         } else {
           leds.setProcess(LEDProcess.INTAKE);
           shooterSubsystem.setRollerSpeed(ShooterConstants.ROLLER_INTAKE_SPEED);
