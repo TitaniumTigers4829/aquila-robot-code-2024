@@ -285,7 +285,7 @@ public final class Constants {
     public static final double ROLLER_NEUTRAL_SPEED = 0;
     public static final double SHOOTER_NEUTRAL_SPEED = 0;
 
-    public static final int NOTE_SENSOR_ID = 0;
+    public static final int NOTE_SENSOR_ID = 9;
 
     public static final double SHOOT_SPEAKER_RPM = 4000;
 
@@ -299,7 +299,7 @@ public final class Constants {
     public static final double SHOOT_A = 0.00333;
 
     public static final double ROLLER_SHOOT_SPEED = 1;
-    public static final double ROLLER_INTAKE_SPEED = 0.1;
+    public static final double ROLLER_INTAKE_SPEED = 0.2;
     public static final double SHOOT_AMP_RPM = 2000;
     
     public static final double AUTO_SHOOT_P = 4.5;
