@@ -87,10 +87,15 @@ public class ShooterSubsystem extends SubsystemBase {
     return !noteSensor.get();
   }
 
+  /**
+   * sets the voltage to the shooter flywheels
+   * @param volts the volts
+   */
   public void setVolts(double volts) {
     leaderFlywheel.setControl(new VoltageOut(volts));
     followerFlywheel.setControl(new VoltageOut(volts));
   }
+
   /**
    * The error between the target rpm and actual rpm of the shooter
    * @return True if we are within an acceptable range (of rpm) to shoot
@@ -129,6 +134,10 @@ public class ShooterSubsystem extends SubsystemBase {
     followerFlywheel.set(0);
   }
 
+  /**
+   * sets the flywheel speed
+   * @param speed the speed from [-1, 1]
+   */
   public void setSpeed(double speed) {
     leaderFlywheel.set(speed);
     followerFlywheel.set(speed);
@@ -148,6 +157,9 @@ public class ShooterSubsystem extends SubsystemBase {
     return leaderVelocity.getValueAsDouble();
   }
   
+  /**
+   * the period method
+   */
   @Override
   public void periodic() {
     SmartDashboard.putBoolean("has note", hasNote());
