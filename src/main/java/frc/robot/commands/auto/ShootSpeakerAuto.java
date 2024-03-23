@@ -14,10 +14,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.HardwareConstants;
+import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.LEDConstants.LEDProcess;
 import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.commands.drive.DriveCommandBase;
+import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.leds.LEDSubsystem;
 import frc.robot.subsystems.pivot.PivotSubsystem;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
@@ -28,6 +30,7 @@ public class ShootSpeakerAuto extends DriveCommandBase {
   private final DriveSubsystem driveSubsystem;
   private final ShooterSubsystem shooterSubsystem;
   private final PivotSubsystem pivotSubsystem;
+  private final IntakeSubsystem intakeSubsystem;
   private final LEDSubsystem leds;
   private final Timer timer;
 
@@ -45,14 +48,15 @@ public class ShootSpeakerAuto extends DriveCommandBase {
   private Translation2d speakerPos;
   
   /** Creates a new ShootSpeaker. */
-  public ShootSpeakerAuto(DriveSubsystem driveSubsystem, ShooterSubsystem shooterSubsystem, PivotSubsystem pivotSubsystem, VisionSubsystem visionSubsystem, LEDSubsystem leds) {
+  public ShootSpeakerAuto(DriveSubsystem driveSubsystem, ShooterSubsystem shooterSubsystem, PivotSubsystem pivotSubsystem, IntakeSubsystem intakeSubsystem, VisionSubsystem visionSubsystem, LEDSubsystem leds) {
     super(driveSubsystem, visionSubsystem);
     this.driveSubsystem = driveSubsystem;
     this.shooterSubsystem = shooterSubsystem;
     this.pivotSubsystem = pivotSubsystem;
+    this.intakeSubsystem = intakeSubsystem;
     this.leds = leds;
     timer = new Timer();
-    addRequirements(shooterSubsystem, driveSubsystem, pivotSubsystem);
+    addRequirements(shooterSubsystem, driveSubsystem, pivotSubsystem, intakeSubsystem);
   }
 
   // Called when the command is initially scheduled.
@@ -70,6 +74,8 @@ public class ShootSpeakerAuto extends DriveCommandBase {
   @Override
   public void execute() {
     super.execute();
+
+    // intakeSubsystem.setIntakeSpeed(-0.2);
 
     // get positions of various things
     Translation2d robotPos = driveSubsystem.getPose().getTranslation();
@@ -111,6 +117,7 @@ public class ShootSpeakerAuto extends DriveCommandBase {
   public void end(boolean interrupted) {
     shooterSubsystem.setFlywheelNeutral();
     shooterSubsystem.setRollerSpeed(0);
+    // intakeSubsystem.setIntakeSpeed(0);
     pivotSubsystem.setPivotAngle(PivotConstants.PIVOT_INTAKE_ANGLE);
     leds.setProcess(LEDProcess.DEFAULT);
     driveSubsystem.drive(0, 0, 0, false);
@@ -119,8 +126,8 @@ public class ShootSpeakerAuto extends DriveCommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    // return timer.hasElapsed(0.3);
-    return false;
+    return timer.hasElapsed(0.3);
+    // return false;
   }
   
   public boolean isReadyToShoot() {

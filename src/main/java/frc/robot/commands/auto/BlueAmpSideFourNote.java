@@ -33,18 +33,18 @@ public class BlueAmpSideFourNote extends SequentialCommandGroup {
         new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "blue amp side four note 1", false).withTimeout(2),
         new IntakeAuto(intakeSubsystem, pivotSubsystem, shooterSubsystem, ledSubsystem).withTimeout(1.9)
       ),
-      new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, ledSubsystem).withTimeout(1.7),
+      new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, pivotSubsystem, intakeSubsystem, visionSubsystem, ledSubsystem).withTimeout(1.7),
       new ParallelCommandGroup(
         new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "blue amp side four note 2", false),
         new IntakeAuto(intakeSubsystem, pivotSubsystem, shooterSubsystem, ledSubsystem).withTimeout(2.6)
       ),
       new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "blue amp side four note 3", false),
-      new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, ledSubsystem).withTimeout(1.7),
+      new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, pivotSubsystem, intakeSubsystem, visionSubsystem, ledSubsystem).withTimeout(1.7),
       new ParallelCommandGroup(
         new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "blue amp side four note 4", false),
         new IntakeAuto(intakeSubsystem, pivotSubsystem, shooterSubsystem, ledSubsystem).withTimeout(1.8)
       ),
-      new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, ledSubsystem).withTimeout(2),
+      new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, pivotSubsystem, intakeSubsystem, visionSubsystem, ledSubsystem).withTimeout(2),
       new StopShooterAndIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem)
     );
   }

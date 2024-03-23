@@ -19,6 +19,7 @@ import frc.robot.Constants.LEDConstants.LEDProcess;
 import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.commands.drive.DriveCommandBase;
+import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.leds.LEDSubsystem;
 import frc.robot.subsystems.pivot.PivotSubsystem;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
@@ -29,6 +30,7 @@ public class ShootSpeaker extends DriveCommandBase {
   private final DriveSubsystem driveSubsystem;
   private final ShooterSubsystem shooterSubsystem;
   private final PivotSubsystem pivotSubsystem;
+  private final IntakeSubsystem intakeSubsystem;
   private final LEDSubsystem leds;
 
   private final DoubleSupplier leftX, leftY;
@@ -48,16 +50,17 @@ public class ShootSpeaker extends DriveCommandBase {
   private Translation2d speakerPos;
   
   /** Creates a new ShootSpeaker. */
-  public ShootSpeaker(DriveSubsystem driveSubsystem, ShooterSubsystem shooterSubsystem, PivotSubsystem pivotSubsystem, VisionSubsystem visionSubsystem, DoubleSupplier leftX, DoubleSupplier leftY, BooleanSupplier isFieldRelative, LEDSubsystem leds) {
+  public ShootSpeaker(DriveSubsystem driveSubsystem, ShooterSubsystem shooterSubsystem, PivotSubsystem pivotSubsystem, IntakeSubsystem intakeSubsystem, VisionSubsystem visionSubsystem, DoubleSupplier leftX, DoubleSupplier leftY, BooleanSupplier isFieldRelative, LEDSubsystem leds) {
     super(driveSubsystem, visionSubsystem);
     this.driveSubsystem = driveSubsystem;
     this.shooterSubsystem = shooterSubsystem;
     this.pivotSubsystem = pivotSubsystem;
+    this.intakeSubsystem = intakeSubsystem;
     this.leftX = leftX;
     this.leftY = leftY;
     this.isFieldRelative = isFieldRelative;
     this.leds = leds;
-    addRequirements(shooterSubsystem, driveSubsystem, pivotSubsystem, visionSubsystem);
+    addRequirements(shooterSubsystem, driveSubsystem, pivotSubsystem, intakeSubsystem, visionSubsystem);
   }
 
   // Called when the command is initially scheduled.
@@ -75,6 +78,8 @@ public class ShootSpeaker extends DriveCommandBase {
   @Override
   public void execute() {
     super.execute();
+
+    // intakeSubsystem.setIntakeSpeed(-0.2);
     
     // get positions of various things
     Translation2d robotPos = driveSubsystem.getPose().getTranslation();
@@ -114,6 +119,7 @@ public class ShootSpeaker extends DriveCommandBase {
     shooterSubsystem.setFlywheelNeutral();
     shooterSubsystem.setRollerSpeed(0);
     pivotSubsystem.setPivotAngle(PivotConstants.PIVOT_INTAKE_ANGLE);
+    // intakeSubsystem.setIntakeSpeed(0);
     leds.setProcess(LEDProcess.DEFAULT);
   }
 
