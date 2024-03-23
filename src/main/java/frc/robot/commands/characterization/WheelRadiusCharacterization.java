@@ -1,5 +1,5 @@
 
-package frc.robot.commands.testing;
+package frc.robot.commands.characterization;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.util.Units;
