@@ -17,6 +17,7 @@ import frc.robot.Constants.HardwareConstants;
 import frc.robot.Constants.JoystickConstants;
 import frc.robot.Constants.LEDConstants.LEDProcess;
 import frc.robot.commands.auto.BlueNoteEight;
+import frc.robot.commands.auto.BlueAmpSideFourNote;
 import frc.robot.commands.auto.BlueFiveNote;
 import frc.robot.commands.auto.BlueFourNote;
 import frc.robot.commands.auto.BlueShootTaxi;
@@ -76,6 +77,7 @@ public class RobotContainer {
     autoChooser.addOption("fendershot", new SubwooferShot(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, ()->0, ()->0, ()->0, ()->false, ledSubsystem));
     autoChooser.addOption("Red far note 8", new RedNoteEight(driveSubsystem, visionSubsystem, intakeSubsystem, shooterSubsystem, pivotSubsystem, ledSubsystem));
     autoChooser.addOption("blue far note 8", new BlueNoteEight(driveSubsystem, visionSubsystem, intakeSubsystem, shooterSubsystem, pivotSubsystem, ledSubsystem));
+    autoChooser.addOption("blue amp side 4 note", new BlueAmpSideFourNote(driveSubsystem, visionSubsystem, shooterSubsystem, pivotSubsystem, intakeSubsystem, ledSubsystem));
     autoChooser.addOption("red amp side 4 note", new RedAmpSideFourNote(driveSubsystem, visionSubsystem, shooterSubsystem, pivotSubsystem, intakeSubsystem, ledSubsystem));
     autoChooser.addOption("simple fwdback", new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "simple fwdback", true));
     autoChooser.addOption("1mtrrot", new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "1mtrrot", true));
@@ -189,7 +191,7 @@ public class RobotContainer {
 
     // DRIVER BUTTONS
     // amp lineup for pew pew
-    driverAButton.whileTrue(new AutoAlignWithAmp(driveSubsystem, visionSubsystem, pivotSubsystem, shooterSubsystem));
+    driverAButton.whileTrue(new AutoAlignWithAmp(driveSubsystem, visionSubsystem, pivotSubsystem, shooterSubsystem, driverLeftStick));
     // spin up for pew pew
     driverRightTrigger.whileTrue(new SpinUpForSpeaker(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, driverLeftStickX, operatorLeftStickY, driverRightBumper, ledSubsystem));
 
@@ -198,9 +200,9 @@ public class RobotContainer {
           Rotation2d.fromDegrees(driveSubsystem.getAllianceAngleOffset())))));
     driverLeftDirectionPad.onTrue(new InstantCommand(() -> driveSubsystem.resetOdometry(visionSubsystem.getPoseFromAprilTags())));
 
-    driverBButton.onTrue(new InstantCommand(() -> driveSubsystem.resetOdometry(new Pose2d(1.2, driveSubsystem.getPose().getY(), Rotation2d.fromDegrees(driveSubsystem.getAllianceAngleOffset())))));
+    // driverBButton.onTrue(new InstantCommand(() -> driveSubsystem.resetOdometry(new Pose2d(1.2, driveSubsystem.getPose().getY(), Rotation2d.fromDegrees(driveSubsystem.getAllianceAngleOffset())))));
 
-    // driverBButton.whileTrue(new WheelRadiusCharacterization(driveSubsystem, Direction.CLOCKWISE));
+    driverBButton.whileTrue(new WheelRadiusCharacterization(driveSubsystem, Direction.CLOCKWISE));
     // 3
     // OPERATOR BUTTONS
     // speaker

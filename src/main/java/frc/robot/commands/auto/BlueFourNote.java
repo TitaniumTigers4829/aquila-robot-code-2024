@@ -41,7 +41,7 @@ public class BlueFourNote extends SequentialCommandGroup {
             new IntakeAuto(intakeSubsystem, pivotSubsystem, shooterSubsystem, leds).withTimeout(3)
         ),
         new IntakeAuto(intakeSubsystem, pivotSubsystem, shooterSubsystem, leds).withTimeout(1),
-        new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, pivotSubsystem, intakeSubsystem, visionSubsystem, leds).withTimeout(1.7),
+        new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, pivotSubsystem, intakeSubsystem, visionSubsystem, leds).withTimeout(2.2),
         new StopShooterAndIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem)
     );
   }

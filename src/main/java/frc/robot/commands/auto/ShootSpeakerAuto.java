@@ -126,8 +126,8 @@ public class ShootSpeakerAuto extends DriveCommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return timer.hasElapsed(0.3);
-    // return false;
+    // return timer.hasElapsed(0.3);
+    return false;
   }
   
   public boolean isReadyToShoot() {

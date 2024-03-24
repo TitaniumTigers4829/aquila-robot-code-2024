@@ -97,7 +97,7 @@ public final class Constants {
   
   public static final class ModuleConstants { 
     public static final double DRIVE_GEAR_RATIO = 4.59;
-    public static final double WHEEL_DIAMETER_METERS = Units.inchesToMeters(3.841915943582475);
+    public static final double WHEEL_DIAMETER_METERS = Units.inchesToMeters(3.86);
 
     public static final double WHEEL_CIRCUMFERENCE_METERS = WHEEL_DIAMETER_METERS * Math.PI;
     public static final double DRIVE_TO_METERS =  WHEEL_CIRCUMFERENCE_METERS / DRIVE_GEAR_RATIO;

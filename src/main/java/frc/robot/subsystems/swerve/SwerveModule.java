@@ -18,6 +18,7 @@ import com.ctre.phoenix6.signals.SensorDirectionValue;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.Constants.HardwareConstants;
 import frc.robot.Constants.ModuleConstants;
@@ -80,7 +81,7 @@ public class SwerveModule {
     driveConfig.Slot0.kS = ModuleConstants.DRIVE_S;
     driveConfig.Slot0.kV = ModuleConstants.DRIVE_V;
     driveConfig.Slot0.kA = ModuleConstants.DRIVE_A;
-    driveConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    driveConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
     driveConfig.MotorOutput.Inverted = driveReversed;
     driveConfig.MotorOutput.DutyCycleNeutralDeadband = HardwareConstants.MIN_FALCON_DEADBAND;
     driveConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
