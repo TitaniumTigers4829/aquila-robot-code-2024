@@ -95,8 +95,8 @@ public class AutoAlignWithAmp extends DriveCommandBase {
       false
     );
 
-    pivotSubsystem.setPivotAngle(PivotConstants.SHOOT_AMP_ANGLE);
-    shooterSubsystem.setRPM(ShooterConstants.SHOOT_AMP_RPM);
+    // pivotSubsystem.setPivotAngle(PivotConstants.SHOOT_AMP_ANGLE);
+    // shooterSubsystem.setRPM(ShooterConstants.SHOOT_AMP_RPM);
   }
 
   @Override

@@ -5,18 +5,18 @@
 package frc.robot.commands.shooter;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants.ShooterConstants;
-import frc.robot.subsystems.shooter.ShooterSubsystem;
+import frc.robot.Constants.IntakeConstants;
+import frc.robot.subsystems.intake.IntakeSubsystem;
 
 public class ManualRollers extends Command {
-  private ShooterSubsystem shooterSubsystem;
+  private IntakeSubsystem intakeSubsystem;
   private boolean direction;
 
   /** Creates a new ManualRollers. */
-  public ManualRollers(ShooterSubsystem shooterSubsystem, boolean direction) {
-    this.shooterSubsystem = shooterSubsystem;
+  public ManualRollers(IntakeSubsystem intakeSubsystem, boolean direction) {
+    this.intakeSubsystem = intakeSubsystem;
     this.direction = direction;
-    addRequirements(shooterSubsystem);
+    addRequirements(intakeSubsystem);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -27,13 +27,13 @@ public class ManualRollers extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    shooterSubsystem.setRollerSpeed(direction ? ShooterConstants.ROLLER_INTAKE_SPEED : -ShooterConstants.ROLLER_SHOOT_SPEED);
+    intakeSubsystem.setIntakeSpeed(direction ? IntakeConstants.INTAKE_SPEED : -IntakeConstants.INTAKE_SPEED);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    shooterSubsystem.setRollerSpeed(0);
+    intakeSubsystem.setIntakeSpeed(0);
   }
 
   // Returns true when the command should end.

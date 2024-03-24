@@ -26,6 +26,8 @@ import frc.robot.commands.auto.RedAmpSideFourNote;
 import frc.robot.commands.auto.RedFourNote;
 import frc.robot.commands.auto.RedShootTaxi;
 import frc.robot.commands.autodrive.AutoAlignWithAmp;
+import frc.robot.commands.characterization.WheelRadiusCharacterization;
+import frc.robot.commands.characterization.WheelRadiusCharacterization.Direction;
 import frc.robot.commands.auto.RedNoteEight;
 import frc.robot.commands.drive.Drive;
 import frc.robot.commands.intake.TowerIntake;
@@ -168,6 +170,7 @@ public class RobotContainer {
     DoubleSupplier operatorRightStickY = () -> operatorJoystick.getRawAxis(JoystickConstants.RIGHT_STICK_Y_ID);
 
     POVButton operatorDpadUp = new POVButton(operatorJoystick, 0);
+    POVButton operatorDpadLeft = new POVButton(operatorJoystick, 270);
     POVButton operatorDpadDown = new POVButton(operatorJoystick, 180);
 
 
@@ -195,11 +198,15 @@ public class RobotContainer {
           Rotation2d.fromDegrees(driveSubsystem.getAllianceAngleOffset())))));
     driverLeftDirectionPad.onTrue(new InstantCommand(() -> driveSubsystem.resetOdometry(visionSubsystem.getPoseFromAprilTags())));
 
+    driverBButton.onTrue(new InstantCommand(() -> driveSubsystem.resetOdometry(new Pose2d(1.2, driveSubsystem.getPose().getY(), Rotation2d.fromDegrees(driveSubsystem.getAllianceAngleOffset())))));
+
+    // driverBButton.whileTrue(new WheelRadiusCharacterization(driveSubsystem, Direction.CLOCKWISE));
+    // 3
     // OPERATOR BUTTONS
     // speaker
     operatorRightTrigger.whileTrue(new ShootSpeaker(driveSubsystem, shooterSubsystem, pivotSubsystem, intakeSubsystem, visionSubsystem, driverLeftStickX, operatorLeftStickY, driverRightBumper, ledSubsystem));
     // amp
-    operatorRightBumper.whileTrue(new ShootAmp(shooterSubsystem, pivotSubsystem, ledSubsystem, operatorAButton));
+    operatorRightBumper.whileTrue(new ShootAmp(shooterSubsystem, pivotSubsystem, ledSubsystem, operatorBButton));
     // fender shot
     operatorDpadUp.whileTrue(new SubwooferShot(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, driverLeftStickX, operatorLeftStickY, driverRightStickX, driverRightBumper, ledSubsystem));
     // intake (aka SUCC_BUTTON)
@@ -209,8 +216,8 @@ public class RobotContainer {
     // manual pivot (possible climb, unlikely)
     operatorAButton.whileTrue(new ManualPivot(pivotSubsystem, ()->modifyAxisCubed(operatorRightStickY)));
 
-    operatorYButton.whileTrue(new ManualRollers(shooterSubsystem, true));
-    operatorXButton.whileTrue(new ManualRollers(shooterSubsystem, false));
+    operatorYButton.whileTrue(new ManualRollers(intakeSubsystem, true));
+    operatorXButton.whileTrue(new ManualRollers(intakeSubsystem, false));
   }
 
   public Command getAutonomousCommand() {
