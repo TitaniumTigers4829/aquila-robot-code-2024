@@ -315,7 +315,7 @@ public final class Constants {
     public static final double AUTO_SHOOT_MOVE_D = 0.0;
     public static Constraints AUTO_SHOOT_MOVE_CONSTRAINTS = new Constraints(7, 3);
     
-    public static final double AUTO_LINEUP_ROTATION_P = 3.5;
+    public static final double AUTO_LINEUP_ROTATION_P = 3;
     public static final double AUTO_LINEUP_ROTATION_I = 0.0;
     public static final double AUTO_LINEUP_ROTATION_D = 0.0;
     public static Constraints AUTO_LINEUP_ROTATION_CONSTRAINTS = new Constraints(DriveConstants.MAX_ANGULAR_SPEED_RADIANS_PER_SECOND, 2);

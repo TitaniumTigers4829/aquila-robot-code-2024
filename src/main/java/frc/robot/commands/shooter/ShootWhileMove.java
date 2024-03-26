@@ -87,6 +87,8 @@ public class ShootWhileMove extends DriveCommandBase {
     // speeds
     ChassisSpeeds speeds = driveSubsystem.getRobotRelativeSpeeds();
     // this gets the time that the note will be in the air between the robot and the speaker
+    // x = v * t
+    // t = x / v
     double tmpDist = robotPos3d.getDistance(speakerPos);
     double dt = tmpDist / ShooterConstants.NOTE_LAUNCH_VELOCITY;
     // For shooting while moving, we can pretend that our robot is stationary, but has traveled

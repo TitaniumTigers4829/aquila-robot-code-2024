@@ -81,7 +81,7 @@ public class SwerveModule {
     driveConfig.Slot0.kS = ModuleConstants.DRIVE_S;
     driveConfig.Slot0.kV = ModuleConstants.DRIVE_V;
     driveConfig.Slot0.kA = ModuleConstants.DRIVE_A;
-    driveConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+    driveConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     driveConfig.MotorOutput.Inverted = driveReversed;
     driveConfig.MotorOutput.DutyCycleNeutralDeadband = HardwareConstants.MIN_FALCON_DEADBAND;
     driveConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
