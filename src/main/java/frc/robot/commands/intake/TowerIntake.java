@@ -28,7 +28,7 @@ public class TowerIntake extends Command {
     this.shooterSubsystem = shooterSubsystem;
     this.intakeReverse = intakeReverse;
     this.leds = leds;
-    addRequirements(intakeSubsystem);
+    addRequirements(intakeSubsystem, pivotSubsystem, shooterSubsystem, leds);
   }
   
   /** Creates a new TowerIntake. */
@@ -49,9 +49,6 @@ public class TowerIntake extends Command {
           shooterSubsystem.setRollerSpeed(0);
           leds.setProcess(LEDProcess.NOTE_IN);
           SmarterDashboardRegistry.noteIn();
-        // } else if (intakeSubsystem.hasNote()){
-        //   SmarterDashboardRegistry.noteHalfwayIn();
-        //   leds.setProcess(LEDProcess.NOTE_HALFWAY_IN);
         } else {
           leds.setProcess(LEDProcess.INTAKE);
           shooterSubsystem.setRollerSpeed(ShooterConstants.ROLLER_INTAKE_SPEED);
@@ -59,6 +56,13 @@ public class TowerIntake extends Command {
           intakeSubsystem.setFlapperSpeed(IntakeConstants.FLAPPER_SPEED);
         }
       }
+    }
+
+    if (intakeReverse) {
+      leds.setProcess(LEDProcess.REVERSE_INTAKE);
+      shooterSubsystem.setRollerSpeed(-ShooterConstants.ROLLER_INTAKE_SPEED); 
+      intakeSubsystem.setIntakeSpeed(-IntakeConstants.INTAKE_SPEED);
+      intakeSubsystem.setFlapperSpeed(-IntakeConstants.FLAPPER_SPEED);
     }
   }
   

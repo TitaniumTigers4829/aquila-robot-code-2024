@@ -21,7 +21,7 @@ public class RedShootTaxi extends SequentialCommandGroup {
 
     addCommands(
       new InstantCommand(()->driveSubsystem.resetOdometry(new Pose2d(15.7587890625, 4.4402618408203125, Rotation2d.fromRadians(-2.096547608393006)))),
-      new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, leds).withTimeout(5.0),
+      new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, pivotSubsystem, intakeSubsystem, visionSubsystem, leds).withTimeout(5.0),
       new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "redsimple", false)
     );
   }

@@ -99,8 +99,8 @@ public final class Constants {
   
   public static final class ModuleConstants { 
     public static final double DRIVE_GEAR_RATIO = 4.59;
-    public static final double WHEEL_DIAMETER_METERS = Units.inchesToMeters(3.963198642673388
-    );
+    public static final double WHEEL_DIAMETER_METERS = Units.inchesToMeters(3.86);
+
     public static final double WHEEL_CIRCUMFERENCE_METERS = WHEEL_DIAMETER_METERS * Math.PI;
     public static final double DRIVE_TO_METERS =  WHEEL_CIRCUMFERENCE_METERS / DRIVE_GEAR_RATIO;
     public static final double DRIVE_TO_METERS_PER_SECOND = WHEEL_CIRCUMFERENCE_METERS / DRIVE_GEAR_RATIO;
@@ -185,8 +185,8 @@ public final class Constants {
     public static final double RED_AMP_Y = 8.197;
 
     //TODO: tune
-    public static final double RED_AMP_SHOOT_X = 14.663867950439453;
-    public static final double RED_AMP_SHOOT_Y = 8.198349952697754;
+    public static final double RED_AMP_SHOOT_X = 14.72; // 14.77
+    public static final double RED_AMP_SHOOT_Y = 7.82;
 
     public static final double BLUE_AMP_X = 1.9;
     public static final double BLUE_AMP_Y = 8.161;
@@ -212,11 +212,9 @@ public final class Constants {
   }
   
   public static final class IntakeConstants {
-    public static final int LEFT_INTAKE_MOTOR_ID = 19;
-    public static final int RIGHT_INTAKE_MOTOR_ID = 18;
+    public static final int LEFT_INTAKE_MOTOR_ID = 18;
+    public static final int RIGHT_INTAKE_MOTOR_ID = 19;
     public static final int FLAPPER_MOTOR_ID = 1;
-    public static final int INTAKE_LC_ID = 0;
-    public static final double NOTE_DETECTION_THRESHOLD = 0.0;
 
     public static final double INTAKE_SPEED = 1.0; // TODO: 1.0
     public static final double INTAKE_NEUTRAL_SPEED = 0.0;
@@ -258,21 +256,24 @@ public final class Constants {
 
     public static double[][] SPEAKER_PIVOT_POSITION = {
       // Distance, Angle (rotations)
-      {1.37, 0.029},
-      {1.5, 0.0322265625},
-      {1.7, 0.0390625},
-      {1.9, 0.0454296875},
-      {2.1, 0.05287109375},
-      {2.3, 0.066580078125}, 
-      {2.5, 0.0671484375},
-      {2.7, 0.073974609375},
-      {2.9, 0.07480078125},
-      {3.1, 0.083134765625},
-      {3.3, 0.084134765625},
-      {3.5, 0.085623046875},
+      {1.3, 0.029},
+      {1.5, 0.0412265625},
+      // {1.7, 0.0390625},
+      {1.9, 0.0554296875},
+      {2.1, 0.05987109375},
+      // {2.3, 0.066580078125}, 
+      // {2.5, 0.0671484375},
+      {2.7, 0.078974609375},
+      {2.9, 0.08280078125},
+      // {3.1, 0.083134765625},
+      {3.3, 0.087134765625},
+      {3.5, 0.091623046875},
       // {3.6, 0.0697},
       // {3.8, 0.074},
-      // {4.0, 0.077},
+      {4.0, 0.097},
+      {4.2, 0.099},
+      // {4.7, 0.099},
+      // {4.9, 0.13}
     };
   }
 
@@ -289,8 +290,7 @@ public final class Constants {
     public static final double ROLLER_NEUTRAL_SPEED = 0;
     public static final double SHOOTER_NEUTRAL_SPEED = 0;
 
-    public static final int TOP_LASERCAN_ID = 40;
-    public static final double NOTE_DETECTED_THRESHOLD = 30;
+    public static final int NOTE_SENSOR_ID = 9;
 
     public static final double SHOOT_SPEAKER_RPM = 4000;
 
@@ -304,7 +304,7 @@ public final class Constants {
     public static final double SHOOT_A = 0.00333;
 
     public static final double ROLLER_SHOOT_SPEED = 1;
-    public static final double ROLLER_INTAKE_SPEED = 0.1;
+    public static final double ROLLER_INTAKE_SPEED = 0.17;
     public static final double SHOOT_AMP_RPM = 2000;
     
     public static final double AUTO_SHOOT_P = 4.5;
