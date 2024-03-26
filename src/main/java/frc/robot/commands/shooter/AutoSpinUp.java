@@ -107,7 +107,7 @@ public class AutoSpinUp extends DriveCommandBase {
   @Override
   public void end(boolean interrupted) {
     shooterSubsystem.setFlywheelNeutral();
-    shooterSubsystem.setTowerSpeed(0);
+    shooterSubsystem.setRollerSpeed(0);
     pivotSubsystem.setPivotAngle(PivotConstants.PIVOT_INTAKE_ANGLE);
     leds.setProcess(LEDProcess.DEFAULT);
     }
