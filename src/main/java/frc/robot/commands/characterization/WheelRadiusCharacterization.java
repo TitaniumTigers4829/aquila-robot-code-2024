@@ -1,9 +1,7 @@
 
-package frc.robot.commands.testing;
+package frc.robot.commands.characterization;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.SlewRateLimiter;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -16,7 +14,6 @@ public class WheelRadiusCharacterization extends Command {
   private DriveSubsystem driveSubsystem;
   private static final double characterizationSpeed = 0.1;
   private static final double driveRadius = TrajectoryConstants.DRIVE_BASE_DIAMETER;
-  private static DoubleSupplier gyroYawRadsSupplier;
 
   public enum Direction {
     CLOCKWISE(-1),

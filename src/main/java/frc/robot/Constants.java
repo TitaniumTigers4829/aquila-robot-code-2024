@@ -13,7 +13,6 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.units.Unit;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 
 
@@ -29,6 +28,8 @@ public final class Constants {
     public static final double MIN_FALCON_DEADBAND = 0.0001;
 
     public static final PneumaticsModuleType PNEUMATICS_MODULE_TYPE = PneumaticsModuleType.CTREPCM;
+
+    public static final double DEADBAND_VALUE = 0.05;
 
   }
 
@@ -98,7 +99,8 @@ public final class Constants {
   
   public static final class ModuleConstants { 
     public static final double DRIVE_GEAR_RATIO = 4.59;
-    public static final double WHEEL_DIAMETER_METERS = Units.inchesToMeters(3.825135354232951);
+    public static final double WHEEL_DIAMETER_METERS = Units.inchesToMeters(3.963198642673388
+    );
     public static final double WHEEL_CIRCUMFERENCE_METERS = WHEEL_DIAMETER_METERS * Math.PI;
     public static final double DRIVE_TO_METERS =  WHEEL_CIRCUMFERENCE_METERS / DRIVE_GEAR_RATIO;
     public static final double DRIVE_TO_METERS_PER_SECOND = WHEEL_CIRCUMFERENCE_METERS / DRIVE_GEAR_RATIO;
@@ -182,11 +184,14 @@ public final class Constants {
     public static final double RED_AMP_X = 14.613;
     public static final double RED_AMP_Y = 8.197;
 
-    public static final double RED_AMP_SHOOT_X = 14.81;
-    public static final double RED_AMP_SHOOT_Y = 7.793;
+    //TODO: tune
+    public static final double RED_AMP_SHOOT_X = 14.663867950439453;
+    public static final double RED_AMP_SHOOT_Y = 8.198349952697754;
 
     public static final double BLUE_AMP_X = 1.9;
     public static final double BLUE_AMP_Y = 8.161;
+
+    //TODO: tune
     public static final double BLUE_AMP_SHOOT_X = 1.9;
     public static final double BLUE_AMP_SHOOT_Y = 7.767;
 
@@ -209,7 +214,18 @@ public final class Constants {
   public static final class IntakeConstants {
     public static final int LEFT_INTAKE_MOTOR_ID = 19;
     public static final int RIGHT_INTAKE_MOTOR_ID = 18;
-    public static final double INTAKE_SPEED = 1.0;
+    public static final int FLAPPER_MOTOR_ID = 1;
+    public static final int INTAKE_LC_ID = 0;
+    public static final double NOTE_DETECTION_THRESHOLD = 0.0;
+
+    public static final double INTAKE_SPEED = 1.0; // TODO: 1.0
+    public static final double INTAKE_NEUTRAL_SPEED = 0.0;
+    public static final double FLAPPER_SPEED = 1.0;
+
+    public static final double INTAKE_STATOR_LIMIT = 60;
+    public static final double INTAKE_SUPPLY_LIMIT = 40;
+    public static final boolean INTAKE_STATOR_ENABLE = false;
+    public static final boolean INTAKE_SUPPLY_ENABLE = false;
   }
 
   public static final class PivotConstants {
@@ -217,42 +233,43 @@ public final class Constants {
     public static final int FOLLOWER_PIVOT_MOTOR_ID = 10;
     public static final int PIVOT_ENCODER_ID = 33;
 
-    public static final double MIN_ANGLE = 0;
-    public static final double MAX_ANGLE = 0.358642578125;
+    public static final double SUBWOOFER_ANGLE = 0.029;
 
-    public static final double PIVOT_INTAKE_ANGLE = 0.01220703125;
+    public static final double MIN_ANGLE = -0.001220703125;
+    public static final double MAX_ANGLE = 0.5537109375;
 
-    public static final double PIVOT_P = 180.0;
+    public static final double PIVOT_INTAKE_ANGLE = -0.001220703125;
+
+    public static final double PIVOT_P = 160.0;
     public static final double PIVOT_I = 0.0; //60.0 
     public static final double PIVOT_D = 0.0;
-    public static final double PIVOT_G = 1.7320;
+    public static final double PIVOT_G = 0.1;//1.7320;
 
     public static final double MAX_VELOCITY_ROTATIONS_PER_SECOND = 4;
     public static final double MAX_ACCELERATION_ROTATIONS_PER_SECOND_SQUARED = 10;
 
     public static final double PIVOT_NEUTRAL_SPEED = 0;
 
-    public static final double ANGLE_ZERO = -0.006103515625;
+    public static final double ANGLE_ZERO = -0.461669921875;
     public static final SensorDirectionValue ENCODER_REVERSED = SensorDirectionValue.Clockwise_Positive;
 
-    public static final double SHOOT_AMP_ANGLE = 0.182392578125;
+    public static final double SHOOT_AMP_ANGLE = 0.35205078125;
     public static final double PIVOT_ACCEPTABLE_ERROR = 0.015;
 
     public static double[][] SPEAKER_PIVOT_POSITION = {
       // Distance, Angle (rotations)
-      {1.37, 0.021494140625},
-      {1.5, 0.02862109375},
-      {1.6, 0.03515625},
-      // {1.8, 0.028},
-      // {2.0, 0.04},
-      // {2.2, 0.042},
-      // {2.4, 0.045},
-      // {2.6, 0.0485},
-      // {2.7, 0.0515},
-      // {2.8, 0.056},
-      // {3.0, 0.061},
-      // {3.2, 0.063},
-      // {3.4, 0.0666},
+      {1.37, 0.029},
+      {1.5, 0.0322265625},
+      {1.7, 0.0390625},
+      {1.9, 0.0454296875},
+      {2.1, 0.05287109375},
+      {2.3, 0.066580078125}, 
+      {2.5, 0.0671484375},
+      {2.7, 0.073974609375},
+      {2.9, 0.07480078125},
+      {3.1, 0.083134765625},
+      {3.3, 0.084134765625},
+      {3.5, 0.085623046875},
       // {3.6, 0.0697},
       // {3.8, 0.074},
       // {4.0, 0.077},
@@ -272,21 +289,22 @@ public final class Constants {
     public static final double ROLLER_NEUTRAL_SPEED = 0;
     public static final double SHOOTER_NEUTRAL_SPEED = 0;
 
-    public static final int SHOOTER_NOTE_SENSOR_ID = 0;
+    public static final int TOP_LASERCAN_ID = 40;
+    public static final double NOTE_DETECTED_THRESHOLD = 30;
 
     public static final double SHOOT_SPEAKER_RPM = 4000;
 
     public static final int SHOOTER_ACCEPTABLE_RPM_ERROR = 50;
 
-    public static final double SHOOT_P = 80.0;
+    public static final double SHOOT_P = 0.6;
     public static final double SHOOT_I = 0.0;
     public static final double SHOOT_D = 0.0;
-    public static final double SHOOT_S = 0.36;
-    public static final double SHOOT_V = 0.12287;
-    public static final double SHOOT_A = 0.00520;
+    public static final double SHOOT_S = 0.45227;
+    public static final double SHOOT_V = 0.12126;
+    public static final double SHOOT_A = 0.00333;
 
     public static final double ROLLER_SHOOT_SPEED = 1;
-    public static final double ROLLER_INTAKE_SPEED = 0.2;
+    public static final double ROLLER_INTAKE_SPEED = 0.1;
     public static final double SHOOT_AMP_RPM = 2000;
     
     public static final double AUTO_SHOOT_P = 4.5;
@@ -312,7 +330,7 @@ public final class Constants {
     // TODO: calc
     public static final double NOTE_LAUNCH_VELOCITY = 10.1;
 
-    public static final double SHOOTER_HEIGHT = Units.inchesToMeters(30);
+    public static final double SHOOTER_HEIGHT = Units.inchesToMeters(28.25);
     public static final double SPEAKER_HEIGHT = Units.inchesToMeters(80);
   }
 
@@ -434,7 +452,8 @@ public final class Constants {
       GREEN (SparkConstants.GREEN, 0, 255, 0),
       RED (SparkConstants.RED, 255, 0, 0),
       INTAKE (SparkConstants.RED, 255, 0, 0),
-      NOTE_IN (SparkConstants.GREEN, 0, 255, 0);
+      NOTE_IN (SparkConstants.GREEN, 0, 255, 0),
+      NOTE_HALFWAY_IN (SparkConstants.YELLOW, 255, 255, 0);
 
       public final double sparkValue;
       private final int red, green, blue;

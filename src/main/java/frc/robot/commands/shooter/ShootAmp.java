@@ -37,7 +37,7 @@ public class ShootAmp extends Command {
     shooterSubsystem.setRPM(ShooterConstants.SHOOT_AMP_RPM);
 
     if (pivotSubsystem.isPivotWithinAcceptableError() && shooterSubsystem.isShooterWithinAcceptableError()) {
-      shooterSubsystem.setTowerSpeed(ShooterConstants.ROLLER_SHOOT_SPEED);
+      shooterSubsystem.setRollerSpeed(ShooterConstants.ROLLER_SHOOT_SPEED);
       leds.setProcess(LEDProcess.SHOOT);
     } else {
       leds.setProcess(LEDProcess.FINISH_LINE_UP);
@@ -51,7 +51,7 @@ public class ShootAmp extends Command {
     leds.setProcess(LEDProcess.DEFAULT);
     shooterSubsystem.setFlywheelNeutral();
     pivotSubsystem.setPivotAngle(PivotConstants.PIVOT_INTAKE_ANGLE);
-    shooterSubsystem.setTowerSpeed(ShooterConstants.ROLLER_NEUTRAL_SPEED);
+    shooterSubsystem.setRollerSpeed(ShooterConstants.ROLLER_NEUTRAL_SPEED);
   }
 
   // Returns true when the command should end.

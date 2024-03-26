@@ -25,6 +25,7 @@ public class BlueShootTaxi extends SequentialCommandGroup {
     addCommands(
       new InstantCommand(()->driveSubsystem.resetOdometry(new Pose2d(0.7696159482002258, 4.439030170440674, Rotation2d.fromRadians(-1.048231168606524)))),
       new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, leds).withTimeout(5.0),
+      new StopShooterAndIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem),
       new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "bluesimple", false)
     );
   }

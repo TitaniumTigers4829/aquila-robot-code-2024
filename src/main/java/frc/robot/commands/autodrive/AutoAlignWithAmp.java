@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.FieldConstants;
+import frc.robot.Constants.HardwareConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.commands.drive.DriveCommandBase;
 import frc.robot.subsystems.swerve.DriveSubsystem;
@@ -17,7 +18,6 @@ import frc.robot.subsystems.vision.VisionSubsystem;
 public class AutoAlignWithAmp extends DriveCommandBase {
 
   private final DriveSubsystem driveSubsystem;
-  private final VisionSubsystem visionSubsystem;
 
   private boolean isRed;
   private Pose2d ampPose;
@@ -47,7 +47,6 @@ public class AutoAlignWithAmp extends DriveCommandBase {
   public AutoAlignWithAmp(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem) {
     super(driveSubsystem, visionSubsystem);
     this.driveSubsystem = driveSubsystem;
-    this.visionSubsystem = visionSubsystem;
     addRequirements(driveSubsystem, visionSubsystem);
   }
 
@@ -102,7 +101,7 @@ public class AutoAlignWithAmp extends DriveCommandBase {
   }
   
   private double deadband(double val) {
-    if (Math.abs(val) < 0.05) {
+    if (Math.abs(val) < HardwareConstants.DEADBAND_VALUE) {
       return 0.0;
     } else {
       return val;

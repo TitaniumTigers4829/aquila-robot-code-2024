@@ -12,6 +12,7 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.FieldConstants;
 
@@ -27,6 +28,10 @@ public class SmarterDashboardRegistry {
   private static Pose2d ampPos;
   private static Translation2d speakerPos;
   private static Translation2d loadingStationPos;
+
+  private static double amplifiedTimeLeft = 10.0;
+  private static boolean isAmplified;
+  private static Timer timer;
 
   public static void initialize() {
     Optional<Alliance> alliance = DriverStation.getAlliance();
@@ -55,7 +60,7 @@ public class SmarterDashboardRegistry {
   public static void setLimelightPose(Pose2d limelightPose) {
     limelight_pose[0] = limelightPose.getX();
     limelight_pose[1] = limelightPose.getY();
-    limelight_pose[2] = limelightPose.getRotation().getRadians();
+    limelight_pose[2] = limelightPose.getRotation().getDegrees();
     SmartDashboard.putNumberArray("limelightPose", limelight_pose);
   }
 
@@ -95,5 +100,35 @@ public class SmarterDashboardRegistry {
 
   public static Translation2d getLoadingStationPos() {
     return loadingStationPos;
+  }
+
+  public static void noNote() {
+    SmartDashboard.putNumber("notePos", 0);
+  }
+
+  public static void noteHalfwayIn() {
+    SmartDashboard.putNumber("notePos", 1);
+  }
+
+  public static void noteIn() {
+    SmartDashboard.putNumber("notePos", 2);
+  }
+
+  public static void amplifiedStart() {
+    isAmplified = true;
+    amplifiedTimeLeft = 10.0;
+    timer.reset();
+    timer.start();
+  }
+
+  public void periodic() {
+    if (isAmplified) {
+      amplifiedTimeLeft = 10.0 - timer.get();
+      SmartDashboard.putNumber("ampTimeLeft", amplifiedTimeLeft);
+      if (amplifiedTimeLeft < 0.0) {
+        isAmplified = false;
+        timer.stop();
+      }
+    }
   }
 }

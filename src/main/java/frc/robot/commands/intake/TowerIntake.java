@@ -4,13 +4,12 @@
 
 package frc.robot.commands.intake;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.LEDConstants.LEDProcess;
+import frc.robot.extras.SmarterDashboardRegistry;
 import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.ShooterConstants;
-import frc.robot.Constants.LEDConstants.LEDProcess;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.leds.LEDSubsystem;
 import frc.robot.subsystems.pivot.PivotSubsystem;
@@ -40,17 +39,24 @@ public class TowerIntake extends Command {
     if (pivotSubsystem.isPivotWithinAcceptableError()) {
       if (intakeReverse) {
         leds.setProcess(LEDProcess.REVERSE_INTAKE);
-        shooterSubsystem.setTowerSpeed(-ShooterConstants.ROLLER_INTAKE_SPEED); 
+        shooterSubsystem.setRollerSpeed(-ShooterConstants.ROLLER_INTAKE_SPEED); 
         intakeSubsystem.setIntakeSpeed(-IntakeConstants.INTAKE_SPEED);
+        intakeSubsystem.setFlapperSpeed(-IntakeConstants.FLAPPER_SPEED);
       } else {
         if (shooterSubsystem.hasNote()) {
-          leds.setProcess(LEDProcess.NOTE_IN);
           intakeSubsystem.setIntakeSpeed(0);
-          shooterSubsystem.setTowerSpeed(0);
+          intakeSubsystem.setFlapperSpeed(0);
+          shooterSubsystem.setRollerSpeed(0);
+          leds.setProcess(LEDProcess.NOTE_IN);
+          SmarterDashboardRegistry.noteIn();
+        // } else if (intakeSubsystem.hasNote()){
+        //   SmarterDashboardRegistry.noteHalfwayIn();
+        //   leds.setProcess(LEDProcess.NOTE_HALFWAY_IN);
         } else {
           leds.setProcess(LEDProcess.INTAKE);
-          shooterSubsystem.setTowerSpeed(ShooterConstants.ROLLER_INTAKE_SPEED);
+          shooterSubsystem.setRollerSpeed(ShooterConstants.ROLLER_INTAKE_SPEED);
           intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_SPEED);
+          intakeSubsystem.setFlapperSpeed(IntakeConstants.FLAPPER_SPEED);
         }
       }
     }
@@ -61,8 +67,9 @@ public class TowerIntake extends Command {
   public void end(boolean interrupted) {
     leds.setProcess(LEDProcess.DEFAULT);
     intakeSubsystem.setIntakeSpeed(0);
-    shooterSubsystem.setTowerSpeed(0);
+    shooterSubsystem.setRollerSpeed(0);
     pivotSubsystem.setPivotSpeed(0);
+    intakeSubsystem.setFlapperSpeed(0);
   }
 
   // Returns true when the command should end.

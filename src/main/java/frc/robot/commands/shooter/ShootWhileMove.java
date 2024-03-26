@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.FieldConstants;
+import frc.robot.Constants.HardwareConstants;
 import frc.robot.Constants.LEDConstants.LEDProcess;
 import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.ShooterConstants;
@@ -66,14 +67,9 @@ public class ShootWhileMove extends DriveCommandBase {
   @Override
   public void initialize() {
     Optional<Alliance> alliance = DriverStation.getAlliance();
-    // if alliance is detected
-    if (alliance.isPresent()) {
-      // and if it's red, we're red
-      isRed = alliance.get() == Alliance.Red;
-    } else {
-      // otherwise default to red alliance
-      isRed = true;
-    }
+    // Sets isRed to true if alliance is red
+    isRed = alliance.isPresent() && alliance.get() == Alliance.Red;  
+
     speakerPos = isRed ? new Translation3d(FieldConstants.RED_SPEAKER_X, FieldConstants.RED_SPEAKER_Y, ShooterConstants.SPEAKER_HEIGHT) 
       : new Translation3d(FieldConstants.BLUE_SPEAKER_X, FieldConstants.BLUE_SPEAKER_Y, ShooterConstants.SPEAKER_HEIGHT);
   }
@@ -84,7 +80,7 @@ public class ShootWhileMove extends DriveCommandBase {
     // update odometry and useful things like that
     super.execute();
     
-    // TODO: someone check my logic here
+      // TODO: someone check my logic here
     // current pose
     Translation2d robotPose2d = driveSubsystem.getPose().getTranslation();
     Translation3d robotPos3d = new Translation3d(robotPose2d.getX(), robotPose2d.getY(), ShooterConstants.SHOOTER_HEIGHT);
@@ -119,13 +115,11 @@ public class ShootWhileMove extends DriveCommandBase {
 
     // spin up the shooter
     shooterSubsystem.setRPM(ShooterConstants.SHOOT_SPEAKER_RPM);
-    // TODO: set the pivot
-    // pivotSubsystem.setPivotFromDistance(distance);
-    pivotSubsystem.setPivotAngle(0.14306640625);
+    pivotSubsystem.setPivotFromDistance(distance);
     // if we are ready to shoot:
     if (isReadyToShoot()) {
       leds.setProcess(LEDProcess.SHOOT);
-      shooterSubsystem.setTowerSpeed(ShooterConstants.ROLLER_SHOOT_SPEED);
+      shooterSubsystem.setRollerSpeed(ShooterConstants.ROLLER_SHOOT_SPEED);
     } else {
       leds.setProcess(LEDProcess.FINISH_LINE_UP);
     }
@@ -135,7 +129,7 @@ public class ShootWhileMove extends DriveCommandBase {
   @Override
   public void end(boolean interrupted) {
     shooterSubsystem.setFlywheelNeutral();
-    shooterSubsystem.setTowerSpeed(0);
+    shooterSubsystem.setRollerSpeed(0);
     pivotSubsystem.setPivotAngle(PivotConstants.PIVOT_INTAKE_ANGLE);
     leds.setProcess(LEDProcess.DEFAULT);
   }
@@ -153,7 +147,7 @@ public class ShootWhileMove extends DriveCommandBase {
   }
 
   private double deadband(double val) {
-    if (Math.abs(val) < 0.05) {
+    if (Math.abs(val) < HardwareConstants.DEADBAND_VALUE) {
       return 0.0;
     } else {
       return val;
