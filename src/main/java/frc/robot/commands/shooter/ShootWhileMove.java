@@ -93,8 +93,8 @@ public class ShootWhileMove extends DriveCommandBase {
     double dt = tmpDist / ShooterConstants.NOTE_LAUNCH_VELOCITY;
     // For shooting while moving, we can pretend that our robot is stationary, but has traveled
     // the distance that was how long the note was in the air for times the robots current velocity
-    double dx = speeds.vxMetersPerSecond * dt * ((tmpDist * 0.05) + 1);
-    double dy = speeds.vyMetersPerSecond * dt * ((tmpDist * 0.05) + 1);
+    double dx = speeds.vxMetersPerSecond * dt * (tmpDist * 1.1);
+    double dy = speeds.vyMetersPerSecond * dt * (tmpDist * 1.1);
     // account for the current velocity:
     robotPose2d.plus(new Translation2d(dx, dy).rotateBy(driveSubsystem.getOdometryRotation2d()));
     // continue the command as normal

@@ -86,13 +86,13 @@ public final class Constants {
     public static final InvertedValue REAR_LEFT_DRIVE_ENCODER_REVERSED = InvertedValue.Clockwise_Positive;
     public static final InvertedValue REAR_RIGHT_DRIVE_ENCODER_REVERSED = InvertedValue.CounterClockwise_Positive;
     
-    public static final double MAX_ANGULAR_SPEED_RADIANS_PER_SECOND = 5;
+    public static final double MAX_ANGULAR_SPEED_RADIANS_PER_SECOND = 10;
 
     public static final double MAX_SPEED_METERS_PER_SECOND = 6.95;
     public static final double MAX_SHOOT_SPEED_METERS_PER_SECOND = 3;
 
     public static final double HEADING_ACCEPTABLE_ERROR_RADIANS = Units.degreesToRadians(2);
-    public static final double HEADING_ACCEPTABLE_ERROR_MOVING_RADIANS = Units.degreesToRadians(2.5);
+    public static final double HEADING_ACCEPTABLE_ERROR_MOVING_RADIANS = Units.degreesToRadians(4);
   }
   
   public static final class ModuleConstants { 
@@ -310,10 +310,10 @@ public final class Constants {
     public static final double AUTO_SHOOT_D = 0.0;
     public static Constraints AUTO_SHOOT_CONSTRAINTS = new Constraints(DriveConstants.MAX_ANGULAR_SPEED_RADIANS_PER_SECOND, 2);
     
-    public static final double AUTO_SHOOT_MOVE_P = 8.0;
+    public static final double AUTO_SHOOT_MOVE_P = 10.0;
     public static final double AUTO_SHOOT_MOVE_I = 0.0;
     public static final double AUTO_SHOOT_MOVE_D = 0.0;
-    public static Constraints AUTO_SHOOT_MOVE_CONSTRAINTS = new Constraints(7, 3);
+    public static Constraints AUTO_SHOOT_MOVE_CONSTRAINTS = new Constraints(10, 5);
     
     public static final double AUTO_LINEUP_ROTATION_P = 3;
     public static final double AUTO_LINEUP_ROTATION_I = 0.0;
@@ -326,9 +326,9 @@ public final class Constants {
     public static Constraints AUTO_LINEUP_TRANSLATION_CONSTRAINTS = new Constraints(5, 2);
 
     // TODO: calc
-    public static final double NOTE_LAUNCH_VELOCITY = 10.1;
+    public static final double NOTE_LAUNCH_VELOCITY = 10.8;
 
-    public static final double SHOOTER_HEIGHT = Units.inchesToMeters(28.25);
+    public static final double SHOOTER_HEIGHT = Units.inchesToMeters(28.5);
     public static final double SPEAKER_HEIGHT = Units.inchesToMeters(80);
   }
 
