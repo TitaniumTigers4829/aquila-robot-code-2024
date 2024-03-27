@@ -90,7 +90,7 @@ public class ShootWhileMove extends DriveCommandBase {
     // x = v * t
     // t = x / v
     double tmpDist = robotPos3d.getDistance(speakerPos);
-    double dt = tmpDist / ShooterConstants.NOTE_LAUNCH_VELOCITY;
+    double dt = tmpDist / ShooterConstants.NOTE_LAUNCH_VELOCITY_METERS_PER_SECOND;
     // For shooting while moving, we can pretend that our robot is stationary, but has traveled
     // the distance that was how long the note was in the air for times the robots current velocity
     double dx = speeds.vxMetersPerSecond * dt * (tmpDist * 1.1);

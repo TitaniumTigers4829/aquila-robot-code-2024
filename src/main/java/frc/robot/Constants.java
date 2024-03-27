@@ -231,15 +231,15 @@ public final class Constants {
 
     public static final double SUBWOOFER_ANGLE = 0.029;
 
-    public static final double MIN_ANGLE = -0.001220703125;
+    public static final double MIN_ANGLE = 0;
     public static final double MAX_ANGLE = 0.5537109375;
 
     public static final double PIVOT_INTAKE_ANGLE = -0.001220703125;
 
     public static final double PIVOT_P = 160.0;
-    public static final double PIVOT_I = 0.0; //60.0 
-    public static final double PIVOT_D = 0.0;
-    public static final double PIVOT_G = 0.1;//1.7320;
+    public static final double PIVOT_I = 6.0; 
+    public static final double PIVOT_D = 0.06;
+    public static final double PIVOT_G = 0.2;
 
     public static final double MAX_VELOCITY_ROTATIONS_PER_SECOND = 4;
     public static final double MAX_ACCELERATION_ROTATIONS_PER_SECOND_SQUARED = 10;
@@ -328,7 +328,7 @@ public final class Constants {
     public static Constraints AUTO_LINEUP_TRANSLATION_CONSTRAINTS = new Constraints(5, 2);
 
     // TODO: calc
-    public static final double NOTE_LAUNCH_VELOCITY = 10.8;
+    public static final double NOTE_LAUNCH_VELOCITY_METERS_PER_SECOND = 10.8;
 
     public static final double SHOOTER_HEIGHT = Units.inchesToMeters(28.5);
     public static final double SPEAKER_HEIGHT = Units.inchesToMeters(80);

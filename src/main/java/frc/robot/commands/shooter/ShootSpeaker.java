@@ -1,7 +1,3 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot.commands.shooter;
 
 import java.util.Optional;
@@ -27,10 +23,10 @@ import frc.robot.subsystems.swerve.DriveSubsystem;
 import frc.robot.subsystems.vision.VisionSubsystem;
 
 public class ShootSpeaker extends DriveCommandBase {
+
   private final DriveSubsystem driveSubsystem;
   private final ShooterSubsystem shooterSubsystem;
   private final PivotSubsystem pivotSubsystem;
-  private final IntakeSubsystem intakeSubsystem;
   private final LEDSubsystem leds;
 
   private final DoubleSupplier leftX, leftY;
@@ -50,17 +46,16 @@ public class ShootSpeaker extends DriveCommandBase {
   private Translation2d speakerPos;
   
   /** Creates a new ShootSpeaker. */
-  public ShootSpeaker(DriveSubsystem driveSubsystem, ShooterSubsystem shooterSubsystem, PivotSubsystem pivotSubsystem, IntakeSubsystem intakeSubsystem, VisionSubsystem visionSubsystem, DoubleSupplier leftX, DoubleSupplier leftY, BooleanSupplier isFieldRelative, LEDSubsystem leds) {
+  public ShootSpeaker(DriveSubsystem driveSubsystem, ShooterSubsystem shooterSubsystem, PivotSubsystem pivotSubsystem, VisionSubsystem visionSubsystem, DoubleSupplier leftX, DoubleSupplier leftY, BooleanSupplier isFieldRelative, LEDSubsystem leds) {
     super(driveSubsystem, visionSubsystem);
     this.driveSubsystem = driveSubsystem;
     this.shooterSubsystem = shooterSubsystem;
     this.pivotSubsystem = pivotSubsystem;
-    this.intakeSubsystem = intakeSubsystem;
     this.leftX = leftX;
     this.leftY = leftY;
     this.isFieldRelative = isFieldRelative;
     this.leds = leds;
-    addRequirements(shooterSubsystem, driveSubsystem, pivotSubsystem, intakeSubsystem, visionSubsystem);
+    addRequirements(shooterSubsystem, driveSubsystem, pivotSubsystem, visionSubsystem);
   }
 
   // Called when the command is initially scheduled.
@@ -70,7 +65,6 @@ public class ShootSpeaker extends DriveCommandBase {
     //sets alliance to red
     isRed = alliance.isPresent() && alliance.get() == Alliance.Red;  
 
-    // SmartDashboard.putBoolean("red", isRed);
     speakerPos = isRed ? new Translation2d(FieldConstants.RED_SPEAKER_X, FieldConstants.RED_SPEAKER_Y) : new Translation2d(FieldConstants.BLUE_SPEAKER_X, FieldConstants.BLUE_SPEAKER_Y);
   }
 
@@ -78,8 +72,6 @@ public class ShootSpeaker extends DriveCommandBase {
   @Override
   public void execute() {
     super.execute();
-
-    // intakeSubsystem.setIntakeSpeed(-0.2);
     
     // get positions of various things
     Translation2d robotPos = driveSubsystem.getPose().getTranslation();
