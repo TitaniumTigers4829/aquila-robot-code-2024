@@ -97,7 +97,7 @@ public class ShootSpeaker extends DriveCommandBase {
     driveSubsystem.drive(
       deadband(leftY.getAsDouble()) * 0.5, 
       deadband(leftX.getAsDouble()) * 0.5, 
-      turnOutput,
+      0, //turnoutput
       !isFieldRelative.getAsBoolean()
     );
 
@@ -130,7 +130,7 @@ public class ShootSpeaker extends DriveCommandBase {
   }
   public boolean isReadyToShoot() {
     // TODO: heading
-    return shooterSubsystem.isShooterWithinAcceptableError() && pivotSubsystem.isPivotWithinAcceptableError() && (Math.abs(headingError) < DriveConstants.HEADING_ACCEPTABLE_ERROR_RADIANS);
+     return shooterSubsystem.isShooterWithinAcceptableError() && pivotSubsystem.isPivotWithinAcceptableError() && (Math.abs(headingError) < DriveConstants.HEADING_ACCEPTABLE_ERROR_RADIANS);
   }
 
   private double deadband(double val) {
