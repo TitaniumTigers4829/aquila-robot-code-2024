@@ -326,7 +326,7 @@ public final class Constants {
     public static Constraints AUTO_LINEUP_TRANSLATION_CONSTRAINTS = new Constraints(5, 2);
 
     // TODO: calc
-    public static final double NOTE_LAUNCH_VELOCITY = 10.8;
+    public static final double NOTE_LAUNCH_VELOCITY_METERS_PER_SECOND = 10.8;
 
     public static final double SHOOTER_HEIGHT = Units.inchesToMeters(28.5);
     public static final double SPEAKER_HEIGHT = Units.inchesToMeters(80);
