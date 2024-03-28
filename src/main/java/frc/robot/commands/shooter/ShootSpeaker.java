@@ -78,12 +78,12 @@ public class ShootSpeaker extends DriveCommandBase {
     // distance (for speaker lookups)
     double distance = robotPos.getDistance(speakerPos);
     // arctangent for desired heading
-      desiredHeading = Math.atan2((robotPos.getY() - speakerPos.getY()), (robotPos.getX() - speakerPos.getX()));
+    desiredHeading = Math.atan2((robotPos.getY() - speakerPos.getY()), (robotPos.getX() - speakerPos.getX()));
   
-      headingError = desiredHeading - driveSubsystem.getOdometryRotation2d().getRadians();
+    headingError = desiredHeading - driveSubsystem.getOdometryRotation2d().getRadians();
   
-      turnController.enableContinuousInput(-Math.PI, Math.PI);
-      double turnOutput = deadband(turnController.calculate(headingError, 0));
+    turnController.enableContinuousInput(-Math.PI, Math.PI);
+    double turnOutput = deadband(turnController.calculate(headingError, 0));
 
     // allow the driver to drive slowly (NOT full speed - will mess up shooter)
     driveSubsystem.drive(
@@ -111,7 +111,6 @@ public class ShootSpeaker extends DriveCommandBase {
     shooterSubsystem.setFlywheelNeutral();
     shooterSubsystem.setRollerSpeed(0);
     pivotSubsystem.setPivotAngle(PivotConstants.PIVOT_INTAKE_ANGLE);
-    // intakeSubsystem.setIntakeSpeed(0);
     leds.setProcess(LEDProcess.DEFAULT);
   }
 
