@@ -182,6 +182,10 @@ public class SwerveModule {
     return Rotation2d.fromRotations(turnEncoderPos.getValue()).getRadians();
   }
 
+  /**
+   * Gets the drive position using the internal encoder
+   * @return the drive position in radians
+   */
   public double getDrivePositionRadians() {
     driveMotorPosition.refresh();
     return 2.0 * Math.PI * (driveMotorPosition.getValue() / Constants.ModuleConstants.DRIVE_GEAR_RATIO);

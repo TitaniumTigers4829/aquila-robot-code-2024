@@ -1,6 +1,7 @@
 plugins {
     id "java"
     id "edu.wpi.first.GradleRIO" version "2024.3.2"
+    id "io.freefair.lombok" version "8.4"
 }
 
 java {
@@ -39,6 +40,10 @@ deploy {
     }
 }
 
+// repositories {
+// 	mavenCentral()
+// }
+
 def deployArtifact = deploy.targets.roborio.artifacts.frcJava
 
 // Set to true to use debug for JNI.
@@ -70,6 +75,12 @@ dependencies {
 
     testImplementation 'org.junit.jupiter:junit-jupiter:5.10.1'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.10.1'
+    
+	// compileOnly 'org.projectlombok:lombok:1.18.32'
+	// annotationProcessor 'org.projectlombok:lombok:1.18.32'
+	
+	// testCompileOnly 'org.projectlombok:lombok:1.18.32'
+	// testAnnotationProcessor 'org.projectlombok:lombok:1.18.32'
 }
 
 test {

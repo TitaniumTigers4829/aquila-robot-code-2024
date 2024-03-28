@@ -17,6 +17,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.util.datalog.DataLog;
 import edu.wpi.first.util.datalog.StringLogEntry;
@@ -31,6 +32,7 @@ import frc.robot.Constants.HardwareConstants;
 import frc.robot.Constants.ModuleConstants;
 import frc.robot.Constants.TrajectoryConstants;
 import frc.robot.Constants.VisionConstants;
+import frc.robot.commands.drive.Drive;
 import frc.robot.extras.SmarterDashboardRegistry;
 import frc.robot.extras.swerve.ModuleLimits;
 import frc.robot.extras.swerve.SwerveSetpoint;
@@ -56,7 +58,7 @@ public class DriveSubsystem extends SubsystemBase {
 
   private SwerveSetpointGenerator setpointGenerator;
   private SwerveSetpoint currentSetpoint;
-  private ModuleLimits currentModuleLimits;
+  // private ModuleLimits currentModuleLimits;
 
   private StringLogEntry odometryLogger;
 
@@ -128,9 +130,13 @@ public class DriveSubsystem extends SubsystemBase {
     DataLog log = DataLogManager.getLog();
     odometryLogger = new StringLogEntry(log, "odometry");
 
-    setpointGenerator = new SwerveSetpointGenerator(DriveConstants.DRIVE_KINEMATICS, DriveConstants.MODULE_TRANSLATIONS);
-    currentSetpoint = new SwerveSetpoint(getRobotRelativeSpeeds(), getModuleStates());
-    currentModuleLimits = new ModuleLimits(DriveConstants.MAX_SPEED_METERS_PER_SECOND, 2, DriveConstants.MAX_ANGULAR_SPEED_RADIANS_PER_SECOND);
+    setpointGenerator =
+    SwerveSetpointGenerator.builder()
+        .kinematics(DriveConstants.DRIVE_KINEMATICS)
+        .moduleLocations(DriveConstants.MODULE_TRANSLATIONS)
+        .build();
+    currentSetpoint = new SwerveSetpoint(new ChassisSpeeds(), getModuleStates());
+
   }
 
   /**gets the chassis speeds*/
@@ -158,14 +164,16 @@ public class DriveSubsystem extends SubsystemBase {
     // SmartDashboard.putBoolean("isFieldRelative", fieldRelative);
     SwerveModuleState[] swerveModuleStates = DriveConstants.DRIVE_KINEMATICS.toSwerveModuleStates(
       fieldRelative
-      ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rotationSpeed, getOdometryAllianceRelativeRotation2d())
-      : new ChassisSpeeds(xSpeed, ySpeed, rotationSpeed));
+      ? desiredSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rotationSpeed, getOdometryAllianceRelativeRotation2d()) 
+      : desiredSpeeds.plus(new ChassisSpeeds(xSpeed, ySpeed, rotationSpeed))); // there is no fucking way this works
+
     SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, DriveConstants.MAX_SPEED_METERS_PER_SECOND);
-    
+  
     frontLeftSwerveModule.setDesiredState(swerveModuleStates[0]);
     frontRightSwerveModule.setDesiredState(swerveModuleStates[1]);
     rearLeftSwerveModule.setDesiredState(swerveModuleStates[2]);
     rearRightSwerveModule.setDesiredState(swerveModuleStates[3]);
+
   }
 
   public void drive(ChassisSpeeds speeds) {
@@ -346,6 +354,16 @@ public class DriveSubsystem extends SubsystemBase {
     return states;
   }
 
+  public double[] getModuleAngles() {
+    double[] angles = {
+      frontLeftSwerveModule.getState().angle.getRadians(),
+      frontRightSwerveModule.getState().angle.getRadians(),
+      rearLeftSwerveModule.getState().angle.getRadians(),
+      rearRightSwerveModule.getState().angle.getRadians()
+    };
+    return angles;
+  }
+
   public void periodic() {
     Pose2d pose = getPose();
     SmarterDashboardRegistry.setPose(pose);
@@ -354,9 +372,12 @@ public class DriveSubsystem extends SubsystemBase {
     SmartDashboard.putString("odometry", pose.toString());
     // SmartDashboard.putNumber("offset", rearLeftSwerveModule.getState().angle.getRotations());
     SmartDashboard.putNumber("speakerDistance", pose.getTranslation().getDistance(SmarterDashboardRegistry.getSpeakerPos()));
+    ModuleLimits currentModuleLimits = new ModuleLimits(DriveConstants.MAX_SPEED_METERS_PER_SECOND, 4, DriveConstants.MAX_ANGULAR_SPEED_RADIANS_PER_SECOND);
     currentSetpoint =
-        setpointGenerator.generateSetpoint(
-            currentModuleLimits, currentSetpoint, desiredSpeeds, HardwareConstants.TIMEOUT_S);
+    setpointGenerator.generateSetpoint(
+        currentModuleLimits, currentSetpoint, desiredSpeeds, HardwareConstants.TIMEOUT_S);
+    SwerveModuleState[]  optimizedSetpointStates[] =
+        SwerveModuleState.optimize(currentSetpoint.moduleStates(), getModuleAngles());
 
   }
 }

@@ -1,22 +1,24 @@
 package frc.robot.extras.swerve;
 
+import static frc.robot.extras.utils.EqualsUtil.*;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-
-import static frc.robot.extras.utils.EqualsUtil.*;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
+import lombok.Builder;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.ExtensionMethod;
 import frc.robot.extras.utils.EqualsUtil;
 import frc.robot.extras.utils.GeomUtil;
 
 /**
+ * "Inspired" by FRC team 254. See the license file in the root directory of this project.
  *
  * <p>Takes a prior setpoint (ChassisSpeeds), a desired setpoint (from a driver, or from a path
  * follower), and outputs a new setpoint that respects all of the kinematic constraints on module
@@ -24,17 +26,13 @@ import frc.robot.extras.utils.GeomUtil;
  * robot will converge to the desired setpoint quickly while avoiding any intermediate state that is
  * kinematically infeasible (and can result in wheel slip or robot heading drift as a result).
  */
-// @Builder
-// @RequiredArgsConstructor
-// @ExtensionMethod({GeomUtil.class, EqualsUtil.GeomExtensions.class})
-public class SwerveSetpointGenerator extends GeomUtil {
+@Builder
+@RequiredArgsConstructor
+@ExtensionMethod({GeomUtil.class, EqualsUtil.GeomExtensions.class})
+public class SwerveSetpointGenerator {
   private final SwerveDriveKinematics kinematics;
   private final Translation2d[] moduleLocations;
 
-  public SwerveSetpointGenerator (SwerveDriveKinematics kinematics, Translation2d[] moduleLocations) {
-      this.kinematics = kinematics;
-      this.moduleLocations = moduleLocations;
-  }
   /**
    * Check if it would be faster to go to the opposite of the goal heading (and reverse drive
    * direction).
@@ -94,10 +92,10 @@ public class SwerveSetpointGenerator extends GeomUtil {
     if (iterations_left < 0 || epsilonEquals(f_0, f_1)) {
       return 1.0;
     }
-    double s_guess = Math.max(0.0, Math.min(1.0, -f_0 / (f_1 - f_0)));
-    double x_guess = (x_1 - x_0) * s_guess + x_0;
-    double y_guess = (y_1 - y_0) * s_guess + y_0;
-    double f_guess = func.f(x_guess, y_guess);
+    var s_guess = Math.max(0.0, Math.min(1.0, -f_0 / (f_1 - f_0)));
+    var x_guess = (x_1 - x_0) * s_guess + x_0;
+    var y_guess = (y_1 - y_0) * s_guess + y_0;
+    var f_guess = func.f(x_guess, y_guess);
     if (Math.signum(f_0) == Math.signum(f_guess)) {
       // 0 and guess on same side of root, so use upper bracket.
       return s_guess
@@ -155,6 +153,28 @@ public class SwerveSetpointGenerator extends GeomUtil {
     return findRoot(func, x_0, y_0, f_0 - offset, x_1, y_1, f_1 - offset, max_iterations);
   }
 
+  // protected double findDriveMaxS(
+  //     double x_0, double y_0, double x_1, double y_1, double max_vel_step) {
+  //   // Our drive velocity between s=0 and s=1 is quadratic in s:
+  //   // v^2 = ((x_1 - x_0) * s + x_0)^2 + ((y_1 - y_0) * s + y_0)^2
+  //   //     = a * s^2 + b * s + c
+  //   // Where:
+  //   //   a = (x_1 - x_0)^2 + (y_1 - y_0)^2
+  //   //   b = 2 * x_0 * (x_1 - x_0) + 2 * y_0 * (y_1 - y_0)
+  //   //   c = x_0^2 + y_0^2
+  //   // We want to find where this quadratic results in a velocity that is > max_vel_step from our
+  //   // velocity at s=0:
+  //   // sqrt(x_0^2 + y_0^2) +/- max_vel_step = ...quadratic...
+  //   final double dx = x_1 - x_0;
+  //   final double dy = y_1 - y_0;
+  //   final double a = dx * dx + dy * dy;
+  //   final double b = 2.0 * x_0 * dx + 2.0 * y_0 * dy;
+  //   final double c = x_0 * x_0 + y_0 * y_0;
+  //   final double v_limit_upper_2 = Math.pow(Math.hypot(x_0, y_0) + max_vel_step, 2.0);
+  //   final double v_limit_lower_2 = Math.pow(Math.hypot(x_0, y_0) - max_vel_step, 2.0);
+  //   return 0.0;
+  // }
+
   /**
    * Generate a new setpoint.
    *
@@ -184,7 +204,7 @@ public class SwerveSetpointGenerator extends GeomUtil {
     // Special case: desiredState is a complete stop. In this case, module angle is arbitrary, so
     // just use the previous angle.
     boolean need_to_steer = true;
-    if (toTwist2d(desiredState).equals(new Twist2d())) {
+    if (desiredState.toTwist2d().epsilonEquals(new Twist2d())) {
       need_to_steer = false;
       for (int i = 0; i < modules.length; ++i) {
         desiredModuleState[i].angle = prevSetpoint.moduleStates()[i].angle;
@@ -228,8 +248,8 @@ public class SwerveSetpointGenerator extends GeomUtil {
       }
     }
     if (all_modules_should_flip
-        && !toTwist2d(prevSetpoint.chassisSpeeds()).equals(new Twist2d())
-        && !toTwist2d(desiredState).equals(new Twist2d())) {
+        && !prevSetpoint.chassisSpeeds().toTwist2d().epsilonEquals(new Twist2d())
+        && !desiredState.toTwist2d().epsilonEquals(new Twist2d())) {
       // It will (likely) be faster to stop the robot, rotate the modules in place to the complement
       // of the desired
       // angle, and accelerate again.
