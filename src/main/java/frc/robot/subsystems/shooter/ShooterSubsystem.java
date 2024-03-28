@@ -88,8 +88,8 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   /**
-   * sets the voltage to the shooter flywheels
-   * @param volts the volts
+   * Directly sets the voltage to the shooter flywheels
+   * @param volts Voltage to set
    */
   public void setVolts(double volts) {
     leaderFlywheel.setControl(new VoltageOut(volts));
@@ -133,8 +133,8 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   /**
-   * sets the flywheel speed
-   * @param speed the speed from [-1, 1]
+   * Sets the flywheel speed
+   * @param speed 1.0 being the max speed, -1.0 being the min speed
    */
   public void setSpeed(double speed) {
     leaderFlywheel.set(speed);
@@ -150,14 +150,15 @@ public class ShooterSubsystem extends SubsystemBase {
     return leaderVelocity.getValueAsDouble() * 60.0;
   }
 
+ /**
+ * Gets the velocity of the flywheel motors 
+ * @return velocity (rot/s) of the flywheel motors
+ */
   public double getFlywheelVelocity() {
     leaderVelocity.refresh();
     return leaderVelocity.getValueAsDouble();
   }
   
-  /**
-   * the period method
-   */
   @Override
   public void periodic() {
     SmartDashboard.putBoolean("has note", hasNote());
