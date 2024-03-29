@@ -8,8 +8,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.TrajectoryConstants;
 import frc.robot.subsystems.swerve.DriveSubsystem;
 
-import java.util.function.DoubleSupplier;
-
 public class WheelRadiusCharacterization extends Command {
   private DriveSubsystem driveSubsystem;
   private static final double characterizationSpeed = 0.1;

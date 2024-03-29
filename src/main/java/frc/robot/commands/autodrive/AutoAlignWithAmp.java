@@ -8,23 +8,16 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.HardwareConstants;
-import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.commands.drive.DriveCommandBase;
-import frc.robot.subsystems.pivot.PivotSubsystem;
-import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.swerve.DriveSubsystem;
 import frc.robot.subsystems.vision.VisionSubsystem;
 
 public class AutoAlignWithAmp extends DriveCommandBase {
   private final DriveSubsystem driveSubsystem;
-  private final ShooterSubsystem shooterSubsystem;
-  private final PivotSubsystem pivotSubsystem;
-
   private final DoubleSupplier[] leftStick;
 
   private boolean isRed;
@@ -52,11 +45,9 @@ public class AutoAlignWithAmp extends DriveCommandBase {
   // );
 
   /** Creates a new AutoAlignWithAmp. */
-  public AutoAlignWithAmp(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, PivotSubsystem pivotSubsystem, ShooterSubsystem shooterSubsystem, DoubleSupplier[] leftStick) {
+  public AutoAlignWithAmp(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, DoubleSupplier[] leftStick) {
     super(driveSubsystem, visionSubsystem);
     this.driveSubsystem = driveSubsystem;
-    this.pivotSubsystem = pivotSubsystem;
-    this.shooterSubsystem = shooterSubsystem;
     this.leftStick = leftStick;
     addRequirements(driveSubsystem, visionSubsystem);
   }

@@ -293,6 +293,7 @@ public final class Constants {
     public static final int NOTE_SENSOR_ID = 9;
 
     public static final double SHOOT_SPEAKER_RPM = 4000;
+    public static final double SHOOT_SPEAKER_FAR_RPM = 5000;
 
     public static final int SHOOTER_ACCEPTABLE_RPM_ERROR = 50;
 
