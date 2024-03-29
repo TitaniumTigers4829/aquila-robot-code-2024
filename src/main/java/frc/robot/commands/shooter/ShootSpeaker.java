@@ -8,6 +8,7 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.HardwareConstants;
@@ -75,6 +76,7 @@ public class ShootSpeaker extends DriveCommandBase {
     
     // get positions of various things
     Translation2d robotPos = driveSubsystem.getPose().getTranslation();
+    //pose.getTranslation().getDistance(SmarterDashboardRegistry.getSpeakerPos())
     // distance (for speaker lookups)
     double distance = robotPos.getDistance(speakerPos);
     // arctangent for desired heading
@@ -93,7 +95,13 @@ public class ShootSpeaker extends DriveCommandBase {
       !isFieldRelative.getAsBoolean()
     );
 
-    shooterSubsystem.setRPM(ShooterConstants.SHOOT_SPEAKER_RPM);
+    if (distance > 4.2) {
+      shooterSubsystem.setRPM(5000);
+      SmartDashboard.putBoolean("greater than value", true);
+    } else {
+      shooterSubsystem.setRPM(ShooterConstants.SHOOT_SPEAKER_RPM);
+    }
+
     pivotSubsystem.setPivotFromDistance(distance);
     // if we are ready to shoot:
     if (isReadyToShoot()) {
