@@ -30,6 +30,16 @@ public class IntakeAuto extends Command {
   }
 
   @Override
+  public void initialize() {
+    // the reason for doing the ledprocess for the intake here is a little complicated:
+    // when a note passes by the sensor, it will briefly be tripped, causing intakeSubsystem.sensorDetectsNote()
+    // to briefly return true. By doing it this way, the LEDs will be red (LEDProcess.INTAKE) until the
+    // intake sensor detects the note, causing the LEDs to turn yellow (LEDProcess.NOTE_HALFWAY_IN)
+    // If it were done the way it was before this, they would briefly flash yellow before going back to red
+    leds.setProcess(LEDProcess.INTAKE);
+  }
+
+  @Override
   public void execute() {
     pivotSubsystem.setPivotAngle(PivotConstants.PIVOT_INTAKE_ANGLE);
 
@@ -39,13 +49,13 @@ public class IntakeAuto extends Command {
         intakeSubsystem.setIntakeSpeed(0);
         shooterSubsystem.setRollerSpeed(0);
         intakeSubsystem.setFlapperSpeed(0);
+      } else if (intakeSubsystem.sensorDetectsNote()) {
+        leds.setProcess(LEDProcess.NOTE_HALFWAY_IN);
       } else {
-        leds.setProcess(LEDProcess.INTAKE);
         shooterSubsystem.setRollerSpeed(ShooterConstants.ROLLER_INTAKE_SPEED); 
         intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_SPEED);
         intakeSubsystem.setFlapperSpeed(IntakeConstants.FLAPPER_SPEED);
       }
-      // shooterSubsystem.setRPM(ShooterConstants.SHOOT_SPEAKER_RPM);
     }
   }
   
