@@ -133,8 +133,9 @@ public final class Constants {
     public static final int FRAMES_BEFORE_ADDING_VISION_MEASUREMENT = 2;
     public static final double FOV_MARGIN_OF_ERROR = 27;
   
-    public static final String FRONT_LIMELIGHT_NAME = "limelight-front";
-    public static final String BACK_LIMELIGHT_NAME = "limelight-back";
+    public static final String SHOOTER_LIMELIGHT_NAME = "limelight-shooter";
+    public static final String FRONT_LEFT_LIMELIGHT_NAME = "limelight-front-left";
+    public static final String FRONT_RIGHT_LIMELIGHT_NAME = "limelight-front-right";
 
     public static final double[][] APRIL_TAG_POSITIONS = {
       // {x, y, z, rotation (degrees)}
