@@ -8,7 +8,6 @@ import frc.robot.Constants.VisionConstants;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.extras.LimelightHelpers;
 import frc.robot.extras.LimelightHelpers.LimelightResults;
-import frc.robot.extras.LimelightHelpers.LimelightTarget_Fiducial;
 
 public class VisionSubsystem extends SubsystemBase {
 
@@ -121,6 +120,7 @@ public class VisionSubsystem extends SubsystemBase {
       currentlyUsedLimelight = VisionConstants.SHOOTER_LIMELIGHT_NAME;
     }
 
+    // Gets the JSON dump from the currently used limelight
     currentlyUsedLimelightResults = LimelightHelpers.getLatestResults(currentlyUsedLimelight);
 
     // Turns the limelight LEDs on if they can't see an april tag
