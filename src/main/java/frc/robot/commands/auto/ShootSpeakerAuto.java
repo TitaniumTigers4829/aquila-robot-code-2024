@@ -10,9 +10,9 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.FieldConstants;
+import frc.robot.Constants.HardwareConstants;
 import frc.robot.Constants.LEDConstants.LEDProcess;
 import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.ShooterConstants;
@@ -70,15 +70,19 @@ public class ShootSpeakerAuto extends DriveCommandBase {
   public void execute() {
     super.execute();
 
+    // intakeSubsystem.setIntakeSpeed(-0.2);
+
+    // get positions of various things
     Translation2d robotPos = driveSubsystem.getPose().getTranslation();
-    // distance (for pivot lookups)
+    // distance (for speaker lookups)
     double distance = robotPos.getDistance(speakerPos);
     // arctangent for desired heading
-    desiredHeading = Math.atan2((robotPos.getY() - speakerPos.getY()), (robotPos.getX() - speakerPos.getX()));
-
-    headingError = desiredHeading - driveSubsystem.getOdometryRotation2d().getRadians();
-
-    double turnOutput = deadband(turnController.calculate(headingError, 0)); 
+      desiredHeading = Math.atan2((robotPos.getY() - speakerPos.getY()), (robotPos.getX() - speakerPos.getX()));
+  
+      headingError = desiredHeading - driveSubsystem.getOdometryRotation2d().getRadians();
+  
+      turnController.enableContinuousInput(-Math.PI, Math.PI);
+      double turnOutput = deadband(turnController.calculate(headingError, 0));
 
     driveSubsystem.drive(
       0, 
@@ -108,6 +112,7 @@ public class ShootSpeakerAuto extends DriveCommandBase {
   public void end(boolean interrupted) {
     shooterSubsystem.setFlywheelNeutral();
     shooterSubsystem.setRollerSpeed(0);
+    // intakeSubsystem.setIntakeSpeed(0);
     pivotSubsystem.setPivotAngle(PivotConstants.PIVOT_INTAKE_ANGLE);
     leds.setProcess(LEDProcess.DEFAULT);
     driveSubsystem.drive(0, 0, 0, false);
@@ -116,7 +121,8 @@ public class ShootSpeakerAuto extends DriveCommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return timer.hasElapsed(0.1);
+    // return timer.hasElapsed(0.3);
+    return false;
   }
   
   public boolean isReadyToShoot() {
@@ -124,7 +130,7 @@ public class ShootSpeakerAuto extends DriveCommandBase {
   }
 
   private double deadband(double val) {
-    if (Math.abs(val) < 0.1) {
+    if (Math.abs(val) < HardwareConstants.DEADBAND_VALUE) {
       return 0.0;
     } else {
       return val;

@@ -28,7 +28,17 @@ public class TowerIntake extends Command {
     this.shooterSubsystem = shooterSubsystem;
     this.intakeReverse = intakeReverse;
     this.leds = leds;
-    addRequirements(intakeSubsystem);
+    addRequirements(intakeSubsystem, pivotSubsystem, shooterSubsystem, leds);
+  }
+
+  @Override
+  public void initialize() {
+    // the reason for doing the ledprocess for the intake here is a little complicated:
+    // when a note passes by the sensor, it will briefly be tripped, causing intakeSubsystem.sensorDetectsNote()
+    // to briefly return true. By doing it this way, the LEDs will be red (LEDProcess.INTAKE) until the
+    // intake sensor detects the note, causing the LEDs to turn yellow (LEDProcess.NOTE_HALFWAY_IN)
+    // If it were done the way it was before this, they would briefly flash yellow before going back to red
+    leds.setProcess(LEDProcess.INTAKE);
   }
   
   /** Creates a new TowerIntake. */
@@ -49,11 +59,9 @@ public class TowerIntake extends Command {
           shooterSubsystem.setRollerSpeed(0);
           leds.setProcess(LEDProcess.NOTE_IN);
           SmarterDashboardRegistry.noteIn();
-        // } else if (intakeSubsystem.hasNote()){
-        //   SmarterDashboardRegistry.noteHalfwayIn();
-        //   leds.setProcess(LEDProcess.NOTE_HALFWAY_IN);
+        } else if (intakeSubsystem.sensorDetectsNote()) {
+          leds.setProcess(LEDProcess.NOTE_HALFWAY_IN);
         } else {
-          leds.setProcess(LEDProcess.INTAKE);
           shooterSubsystem.setRollerSpeed(ShooterConstants.ROLLER_INTAKE_SPEED);
           intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_SPEED);
           intakeSubsystem.setFlapperSpeed(IntakeConstants.FLAPPER_SPEED);

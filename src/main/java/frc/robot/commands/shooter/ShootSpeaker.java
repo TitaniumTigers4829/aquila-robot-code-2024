@@ -1,7 +1,3 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot.commands.shooter;
 
 import java.util.Optional;
@@ -26,6 +22,7 @@ import frc.robot.subsystems.swerve.DriveSubsystem;
 import frc.robot.subsystems.vision.VisionSubsystem;
 
 public class ShootSpeaker extends DriveCommandBase {
+
   private final DriveSubsystem driveSubsystem;
   private final ShooterSubsystem shooterSubsystem;
   private final PivotSubsystem pivotSubsystem;
@@ -67,7 +64,6 @@ public class ShootSpeaker extends DriveCommandBase {
     //sets alliance to red
     isRed = alliance.isPresent() && alliance.get() == Alliance.Red;  
 
-    // SmartDashboard.putBoolean("red", isRed);
     speakerPos = isRed ? new Translation2d(FieldConstants.RED_SPEAKER_X, FieldConstants.RED_SPEAKER_Y) : new Translation2d(FieldConstants.BLUE_SPEAKER_X, FieldConstants.BLUE_SPEAKER_Y);
   }
 
@@ -78,25 +74,31 @@ public class ShootSpeaker extends DriveCommandBase {
     
     // get positions of various things
     Translation2d robotPos = driveSubsystem.getPose().getTranslation();
+    //pose.getTranslation().getDistance(SmarterDashboardRegistry.getSpeakerPos())
     // distance (for speaker lookups)
     double distance = robotPos.getDistance(speakerPos);
     // arctangent for desired heading
-      desiredHeading = Math.atan2((robotPos.getY() - speakerPos.getY()), (robotPos.getX() - speakerPos.getX()));
+    desiredHeading = Math.atan2((robotPos.getY() - speakerPos.getY()), (robotPos.getX() - speakerPos.getX()));
   
-      headingError = desiredHeading - driveSubsystem.getOdometryRotation2d().getRadians();
+    headingError = desiredHeading - driveSubsystem.getOdometryRotation2d().getRadians();
   
-      turnController.enableContinuousInput(-Math.PI, Math.PI);
-      double turnOutput = deadband(turnController.calculate(headingError, 0));
+    turnController.enableContinuousInput(-Math.PI, Math.PI);
+    double turnOutput = deadband(turnController.calculate(headingError, 0));
 
     // allow the driver to drive slowly (NOT full speed - will mess up shooter)
     driveSubsystem.drive(
       deadband(leftY.getAsDouble()) * 0.5, 
       deadband(leftX.getAsDouble()) * 0.5, 
-      turnOutput,
+      turnOutput, //turnoutput
       !isFieldRelative.getAsBoolean()
     );
 
-    shooterSubsystem.setRPM(ShooterConstants.SHOOT_SPEAKER_RPM);
+    if (distance > 4.2) {
+      shooterSubsystem.setRPM(ShooterConstants.SHOOT_SPEAKER_FAR_RPM);
+    } else {
+      shooterSubsystem.setRPM(ShooterConstants.SHOOT_SPEAKER_RPM);
+    }
+
     pivotSubsystem.setPivotFromDistance(distance);
     // if we are ready to shoot:
     if (isReadyToShoot()) {
@@ -124,7 +126,7 @@ public class ShootSpeaker extends DriveCommandBase {
   }
   public boolean isReadyToShoot() {
     // TODO: heading
-    return shooterSubsystem.isShooterWithinAcceptableError() && pivotSubsystem.isPivotWithinAcceptableError() && (Math.abs(headingError) < DriveConstants.HEADING_ACCEPTABLE_ERROR_RADIANS);
+     return shooterSubsystem.isShooterWithinAcceptableError() && pivotSubsystem.isPivotWithinAcceptableError() && (Math.abs(headingError) < DriveConstants.HEADING_ACCEPTABLE_ERROR_RADIANS);
   }
 
   private double deadband(double val) {

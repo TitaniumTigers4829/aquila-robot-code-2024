@@ -4,6 +4,9 @@
 
 package frc.robot.commands.shooter;
 
+import java.util.function.BooleanSupplier;
+
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.ShooterConstants;
@@ -16,13 +19,15 @@ public class ShootAmp extends Command {
   private final ShooterSubsystem shooterSubsystem;
   private final PivotSubsystem pivotSubsystem;
   private final LEDSubsystem leds;
+  private final BooleanSupplier shoot;
   
   /** Creates a new ShootSpeaker. */
-  public ShootAmp(ShooterSubsystem shooterSubsystem, PivotSubsystem pivotSubsystem, LEDSubsystem leds) {
+  public ShootAmp(ShooterSubsystem shooterSubsystem, PivotSubsystem pivotSubsystem, LEDSubsystem leds, BooleanSupplier shoot) {
     this.shooterSubsystem = shooterSubsystem;
     this.pivotSubsystem = pivotSubsystem;
     this.leds = leds;
-    addRequirements(shooterSubsystem);
+    this.shoot = shoot;
+    addRequirements(shooterSubsystem, pivotSubsystem, leds);
   }
 
   // Called when the command is initially scheduled.
@@ -36,21 +41,25 @@ public class ShootAmp extends Command {
     pivotSubsystem.setPivotAngle(PivotConstants.SHOOT_AMP_ANGLE);
     shooterSubsystem.setRPM(ShooterConstants.SHOOT_AMP_RPM);
 
-    if (pivotSubsystem.isPivotWithinAcceptableError() && shooterSubsystem.isShooterWithinAcceptableError()) {
-      shooterSubsystem.setRollerSpeed(ShooterConstants.ROLLER_SHOOT_SPEED);
-      leds.setProcess(LEDProcess.SHOOT);
-    } else {
-      leds.setProcess(LEDProcess.FINISH_LINE_UP);
+    // if (pivotSubsystem.isPivotWithinAcceptableError() && shooterSubsystem.isShooterWithinAcceptableError()) {
+      if (shoot.getAsBoolean()) {
+        shooterSubsystem.setRollerSpeed(ShooterConstants.ROLLER_SHOOT_SPEED);
+        // leds.setProcess(LEDProcess.SHOOT);
+      }
+    // } else {
+      // leds.setProcess(LEDProcess.FINISH_LINE_UP);
       // shooterSubsystem.setRollerSpeed(0);
-    }
+    // }
+        SmartDashboard.putBoolean("end", false);
   }
-
+  // stick it in - jack
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    SmartDashboard.putBoolean("end", true);
+    pivotSubsystem.setPivotAngle(PivotConstants.PIVOT_INTAKE_ANGLE);
     leds.setProcess(LEDProcess.DEFAULT);
     shooterSubsystem.setFlywheelNeutral();
-    pivotSubsystem.setPivotAngle(PivotConstants.PIVOT_INTAKE_ANGLE);
     shooterSubsystem.setRollerSpeed(ShooterConstants.ROLLER_NEUTRAL_SPEED);
   }
 

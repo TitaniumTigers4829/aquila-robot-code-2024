@@ -14,6 +14,7 @@
 package frc.robot.commands.characterization;
 
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.extras.PolynomialRegression;
@@ -133,6 +134,10 @@ public class FeedForwardCharacterization extends Command {
       System.out.println(String.format("\tkS=%.5f", ks));
       System.out.println(String.format("\tkV=%.5f", kv));
       System.out.println(String.format("\tkA=%.5f", ka));
+
+      SmartDashboard.putNumber("ks", ks);
+      SmartDashboard.putNumber("kv", kv);
+      SmartDashboard.putNumber("ka", ka);
     }
   }
 }
