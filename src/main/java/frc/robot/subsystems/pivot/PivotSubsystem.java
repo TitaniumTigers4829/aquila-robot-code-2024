@@ -28,6 +28,8 @@ public class PivotSubsystem extends SubsystemBase {
   private final MotionMagicVoltage mmRequest;
 
   private final SingleLinearInterpolator speakerAngleLookupValues;
+  
+  private final SingleLinearInterpolator passAngleLookupValues;
 
   private final StatusSignal<Double> pivotPos;
   private double pivotTargetAngle;
@@ -41,6 +43,8 @@ public class PivotSubsystem extends SubsystemBase {
     mmRequest = new MotionMagicVoltage(0);
 
     speakerAngleLookupValues = new SingleLinearInterpolator(PivotConstants.SPEAKER_PIVOT_POSITION);
+
+    passAngleLookupValues = new SingleLinearInterpolator(PivotConstants.PASS_PIVOT_POSITION);
 
     CANcoderConfiguration pivotEncoderConfig = new CANcoderConfiguration();
     pivotEncoderConfig.MagnetSensor.MagnetOffset = -PivotConstants.ANGLE_ZERO;
