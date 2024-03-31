@@ -128,7 +128,14 @@ public class PivotSubsystem extends SubsystemBase {
     pivotTargetAngle = angle;
     setPivotAngle(angle);
   }
-
+  //distance for ShootPassing
+  public void setPivotFromPassDistance(double passDistance) {
+    SmartDashboard.putNumber("passing distance", passDistance);
+    double passAngle = speakerAngleLookupValues.getLookupValue(passDistance);
+    pivotTargetAngle = passAngle;
+    setPivotAngle(passAngle);
+  }
+  
   /**
    * Sets the pivot using the leader/follower motors
    * @param angle the angle (degrees) to set
