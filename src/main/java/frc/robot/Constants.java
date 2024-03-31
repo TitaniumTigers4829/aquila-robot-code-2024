@@ -284,6 +284,13 @@ public final class Constants {
       // {4.7, 0.099},
       // {4.9, 0.13}
     };
+    public static double[][] PASS_PIVOT_POSITION = {
+      // Distance, Angle (rotations)
+      {0-9, 0-9},
+      {0-9, 0-9},
+      {0-9, 0-9},
+      {0-9, 0-9},
+    };
   }
 
   public static final class ShooterConstants {
