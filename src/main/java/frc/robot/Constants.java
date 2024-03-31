@@ -208,6 +208,13 @@ public final class Constants {
 
     public static final double BLUE_LOADING_STATION_X = 15.41;
     public static final double BLUE_LOADING_STATION_Y = 1.13;
+
+    //ShootPassing constants
+    public static final double RED_PASSING_X = 0-9;
+    public static final double RED_PASSING_Y = 0-9;
+    
+    public static final double BLUE_PASSING_X = 0-9;
+    public static final double BLUE_PASSING_Y = 0-9;
   }
   
   public static final class IntakeConstants {
