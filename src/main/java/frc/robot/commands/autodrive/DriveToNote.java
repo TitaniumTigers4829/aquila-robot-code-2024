@@ -53,7 +53,7 @@ public class DriveToNote extends DriveCommandBase {
   @Override
   public void initialize() {
     // Gets the note position relative to the robot
-    noteRobotRelativeOffset = noteDetector.applyCameraOffset(noteDetector.findNotePose());
+    noteRobotRelativeOffset = noteDetector.applyCameraOffset(noteDetector.getNoteRobotRelativeOffset());
 
     Pose2d robotPos = driveSubsystem.getPose();
 
