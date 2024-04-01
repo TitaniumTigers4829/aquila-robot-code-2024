@@ -45,7 +45,7 @@ public class shooterPassing extends DriveCommandBase {
   private double desiredHeading = 0;
   private Translation2d speakerPos;
   
-  public ShootSpeaker(DriveSubsystem driveSubsystem, ShooterSubsystem shooterSubsystem, PivotSubsystem pivotSubsystem, VisionSubsystem visionSubsystem, DoubleSupplier leftX, DoubleSupplier leftY, BooleanSupplier isFieldRelative, LEDSubsystem leds) {
+  public ShootPass (DriveSubsystem driveSubsystem, ShooterSubsystem shooterSubsystem, PivotSubsystem pivotSubsystem, VisionSubsystem visionSubsystem, DoubleSupplier leftX, DoubleSupplier leftY, BooleanSupplier isFieldRelative, LEDSubsystem leds) {
     super(driveSubsystem, visionSubsystem);
     this.driveSubsystem = driveSubsystem;
     this.shooterSubsystem = shooterSubsystem;
@@ -86,8 +86,6 @@ public class shooterPassing extends DriveCommandBase {
     
     if (distance > 4.2) {
       shooterSubsystem.setRPM(ShooterConstants.SHOOT_SPEAKER_FAR_RPM);
-    } else {
-      shooterSubsystem.setRPM(ShooterConstants.SHOOT_SPEAKER_RPM);
     }
     
     pivotSubsystem.setPivotFromPassDistance(distance);
