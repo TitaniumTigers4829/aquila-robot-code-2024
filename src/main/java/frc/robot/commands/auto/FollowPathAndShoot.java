@@ -109,7 +109,7 @@ public class FollowPathAndShoot extends DriveCommandBase {
     rotationControl = thetaController.calculate(headingError, 0);
 
     shooterSubsystem.setRPM(ShooterConstants.SHOOT_SPEAKER_RPM);
-    pivotSubsystem.setPivotFromDistance(distance);
+    pivotSubsystem.setPivotFromSpeakerDistance(distance);
 
     // if we are ready to shoot:
     if (shooterSubsystem.isReadyToShoot(headingError) && pivotSubsystem.isPivotWithinAcceptableError() && Math.abs(headingError) < DriveConstants.HEADING_ACCEPTABLE_ERROR_MOVING_RADIANS) {

@@ -21,8 +21,9 @@ import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.swerve.DriveSubsystem;
 import frc.robot.subsystems.vision.VisionSubsystem;
 
-public class ShootSpeaker extends DriveCommandBase {
+public class ShootPass extends DriveCommandBase {
 
+//initiates the variables
   private final DriveSubsystem driveSubsystem;
   private final ShooterSubsystem shooterSubsystem;
   private final PivotSubsystem pivotSubsystem;
@@ -44,8 +45,7 @@ public class ShootSpeaker extends DriveCommandBase {
   private double desiredHeading = 0;
   private Translation2d speakerPos;
   
-  /** Creates a new ShootSpeaker. */
-  public ShootSpeaker(DriveSubsystem driveSubsystem, ShooterSubsystem shooterSubsystem, PivotSubsystem pivotSubsystem, VisionSubsystem visionSubsystem, DoubleSupplier leftX, DoubleSupplier leftY, BooleanSupplier isFieldRelative, LEDSubsystem leds) {
+  public ShootPass(DriveSubsystem driveSubsystem, ShooterSubsystem shooterSubsystem, PivotSubsystem pivotSubsystem, VisionSubsystem visionSubsystem, DoubleSupplier leftX, DoubleSupplier leftY, BooleanSupplier isFieldRelative, LEDSubsystem leds) {
     super(driveSubsystem, visionSubsystem);
     this.driveSubsystem = driveSubsystem;
     this.shooterSubsystem = shooterSubsystem;
@@ -56,51 +56,37 @@ public class ShootSpeaker extends DriveCommandBase {
     this.leds = leds;
     addRequirements(shooterSubsystem, driveSubsystem, pivotSubsystem, visionSubsystem);
   }
-
-  // Called when the command is initially scheduled.
-  @Override
+  
+@Override
   public void initialize() {
     Optional<Alliance> alliance = DriverStation.getAlliance();
     //sets alliance to red
     isRed = alliance.isPresent() && alliance.get() == Alliance.Red;  
 
-    speakerPos = isRed ? new Translation2d(FieldConstants.RED_SPEAKER_X, FieldConstants.RED_SPEAKER_Y) : new Translation2d(FieldConstants.BLUE_SPEAKER_X, FieldConstants.BLUE_SPEAKER_Y);
+    speakerPos = isRed ? new Translation2d(FieldConstants.RED_PASSING_X, FieldConstants.RED_PASSING_Y) : new Translation2d(FieldConstants.BLUE_PASSING_X, FieldConstants.BLUE_PASSING_Y);
   }
 
-  // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     super.execute();
     
-    // get positions of various things
+    //positions + distance
     Translation2d robotPos = driveSubsystem.getPose().getTranslation();
-    //pose.getTranslation().getDistance(SmarterDashboardRegistry.getSpeakerPos())
-    // distance (for speaker lookups)
     double distance = robotPos.getDistance(speakerPos);
-    // arctangent for desired heading
+    
     desiredHeading = Math.atan2((robotPos.getY() - speakerPos.getY()), (robotPos.getX() - speakerPos.getX()));
-  
     headingError = desiredHeading - driveSubsystem.getOdometryRotation2d().getRadians();
   
     turnController.enableContinuousInput(-Math.PI, Math.PI);
     double turnOutput = deadband(turnController.calculate(headingError, 0));
-
-    // allow the driver to drive slowly (NOT full speed - will mess up shooter)
+    
     driveSubsystem.drive(
-      deadband(leftY.getAsDouble()) * 0.5, 
-      deadband(leftX.getAsDouble()) * 0.5, 
-      turnOutput, //turnoutput
-      !isFieldRelative.getAsBoolean()
+      deadband(leftY.getAsDouble()) * 0.5, deadband(leftX.getAsDouble()) * 0.5, turnOutput,!isFieldRelative.getAsBoolean()
     );
-
-    if (distance > 4.2) {
-      shooterSubsystem.setRPM(ShooterConstants.SHOOT_SPEAKER_FAR_RPM);
-    } else {
-      shooterSubsystem.setRPM(ShooterConstants.SHOOT_SPEAKER_RPM);
-    }
-
-    pivotSubsystem.setPivotFromSpeakerDistance(distance);
-    // if we are ready to shoot:
+    
+    shooterSubsystem.setRPM(ShooterConstants.SHOOT_SPEAKER_FAR_RPM);
+    pivotSubsystem.setPivotFromPassDistance(distance);
+    
     if (isReadyToShoot()) {
       leds.setProcess(LEDProcess.SHOOT);
       shooterSubsystem.setRollerSpeed(ShooterConstants.ROLLER_SHOOT_SPEED);
@@ -109,7 +95,6 @@ public class ShootSpeaker extends DriveCommandBase {
     }
   }
 
-  // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
     leds.setProcess(LEDProcess.DEFAULT);
@@ -119,7 +104,6 @@ public class ShootSpeaker extends DriveCommandBase {
     leds.setProcess(LEDProcess.DEFAULT);
   }
 
-  // Returns true when the command should end.
   @Override
   public boolean isFinished() {
     return false;
@@ -136,4 +120,5 @@ public class ShootSpeaker extends DriveCommandBase {
       return val;
     }
   } 
-}
+  
+  }

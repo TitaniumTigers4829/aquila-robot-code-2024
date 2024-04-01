@@ -208,6 +208,13 @@ public final class Constants {
 
     public static final double BLUE_LOADING_STATION_X = 15.41;
     public static final double BLUE_LOADING_STATION_Y = 1.13;
+
+    //ShootPassing constants
+    public static final double RED_PASSING_X = 16.397357940673828;
+    public static final double RED_PASSING_Y = 7.1840314865112305;
+    
+    public static final double BLUE_PASSING_X = 0.036992281675338745;
+    public static final double BLUE_PASSING_Y = 7.201931476593018;
   }
   
   public static final class IntakeConstants {
@@ -276,6 +283,13 @@ public final class Constants {
       {4.6, 0.090}
       // {4.7, 0.099},
       // {4.9, 0.13}
+    };
+    public static double[][] PASS_PIVOT_POSITION = {
+      // Distance, Angle (rotations)
+      {0-9, 0-9},
+      {0-9, 0-9},
+      {0-9, 0-9},
+      {0-9, 0-9},
     };
   }
 
