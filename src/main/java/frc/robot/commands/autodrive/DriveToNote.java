@@ -1,4 +1,4 @@
-package frc.robot.commands.notedetection;
+package frc.robot.commands.autodrive;
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -7,10 +7,10 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.TrajectoryConstants;
-import frc.robot.extras.NoteDetector;
 import frc.robot.subsystems.swerve.DriveSubsystem;
 import frc.robot.subsystems.vision.VisionSubsystem;
 import frc.robot.commands.drive.DriveCommandBase;
+import frc.robot.extras.NoteDetector;
 
 public class DriveToNote extends DriveCommandBase {
 
