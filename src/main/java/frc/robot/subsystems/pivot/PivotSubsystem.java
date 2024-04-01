@@ -135,7 +135,7 @@ public class PivotSubsystem extends SubsystemBase {
   //distance for ShootPassing
   public void setPivotFromPassDistance(double passDistance) {
     SmartDashboard.putNumber("passing distance", passDistance);
-    double passAngle = speakerAngleLookupValues.getLookupValue(passDistance);
+    double passAngle = passAngleLookupValues.getLookupValue(passDistance);
     pivotTargetAngle = passAngle;
     setPivotAngle(passAngle);
   }
