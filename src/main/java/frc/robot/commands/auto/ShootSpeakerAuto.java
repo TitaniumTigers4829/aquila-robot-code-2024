@@ -92,7 +92,7 @@ public class ShootSpeakerAuto extends DriveCommandBase {
     );
 
     shooterSubsystem.setRPM(ShooterConstants.SHOOT_SPEAKER_RPM);
-    pivotSubsystem.setPivotFromDistance(distance);
+    pivotSubsystem.setPivotFromSpeakerDistance(distance);
     // if we are ready to shoot:
     if (isReadyToShoot()) {
       leds.setProcess(LEDProcess.SHOOT);

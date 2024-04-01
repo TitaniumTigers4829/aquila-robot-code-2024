@@ -21,7 +21,7 @@ import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.swerve.DriveSubsystem;
 import frc.robot.subsystems.vision.VisionSubsystem;
 
-public class shooterPassing extends DriveCommandBase {
+public class ShootPass extends DriveCommandBase {
 
 //initiates the variables
   private final DriveSubsystem driveSubsystem;
@@ -45,7 +45,7 @@ public class shooterPassing extends DriveCommandBase {
   private double desiredHeading = 0;
   private Translation2d speakerPos;
   
-  public ShootPass (DriveSubsystem driveSubsystem, ShooterSubsystem shooterSubsystem, PivotSubsystem pivotSubsystem, VisionSubsystem visionSubsystem, DoubleSupplier leftX, DoubleSupplier leftY, BooleanSupplier isFieldRelative, LEDSubsystem leds) {
+  public ShootPass(DriveSubsystem driveSubsystem, ShooterSubsystem shooterSubsystem, PivotSubsystem pivotSubsystem, VisionSubsystem visionSubsystem, DoubleSupplier leftX, DoubleSupplier leftY, BooleanSupplier isFieldRelative, LEDSubsystem leds) {
     super(driveSubsystem, visionSubsystem);
     this.driveSubsystem = driveSubsystem;
     this.shooterSubsystem = shooterSubsystem;
@@ -84,11 +84,9 @@ public class shooterPassing extends DriveCommandBase {
       deadband(leftY.getAsDouble()) * 0.5, deadband(leftX.getAsDouble()) * 0.5, turnOutput,!isFieldRelative.getAsBoolean()
     );
     
-    if (distance > 4.2) {
-      shooterSubsystem.setRPM(ShooterConstants.SHOOT_SPEAKER_FAR_RPM);
-    }
-    
+    shooterSubsystem.setRPM(ShooterConstants.SHOOT_SPEAKER_FAR_RPM);
     pivotSubsystem.setPivotFromPassDistance(distance);
+    
     if (isReadyToShoot()) {
       leds.setProcess(LEDProcess.SHOOT);
       shooterSubsystem.setRollerSpeed(ShooterConstants.ROLLER_SHOOT_SPEED);

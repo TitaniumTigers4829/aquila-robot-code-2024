@@ -210,11 +210,11 @@ public final class Constants {
     public static final double BLUE_LOADING_STATION_Y = 1.13;
 
     //ShootPassing constants
-    public static final double RED_PASSING_X = 0-9;
-    public static final double RED_PASSING_Y = 0-9;
+    public static final double RED_PASSING_X = 16.397357940673828;
+    public static final double RED_PASSING_Y = 7.1840314865112305;
     
-    public static final double BLUE_PASSING_X = 0-9;
-    public static final double BLUE_PASSING_Y = 0-9;
+    public static final double BLUE_PASSING_X = 0.036992281675338745;
+    public static final double BLUE_PASSING_Y = 7.201931476593018;
   }
   
   public static final class IntakeConstants {

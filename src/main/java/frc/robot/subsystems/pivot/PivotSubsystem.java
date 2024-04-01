@@ -28,7 +28,6 @@ public class PivotSubsystem extends SubsystemBase {
   private final MotionMagicVoltage mmRequest;
 
   private final SingleLinearInterpolator speakerAngleLookupValues;
-  
   private final SingleLinearInterpolator passAngleLookupValues;
 
   private final StatusSignal<Double> pivotPos;
@@ -43,13 +42,11 @@ public class PivotSubsystem extends SubsystemBase {
     mmRequest = new MotionMagicVoltage(0);
 
     speakerAngleLookupValues = new SingleLinearInterpolator(PivotConstants.SPEAKER_PIVOT_POSITION);
-
     passAngleLookupValues = new SingleLinearInterpolator(PivotConstants.PASS_PIVOT_POSITION);
 
     CANcoderConfiguration pivotEncoderConfig = new CANcoderConfiguration();
     pivotEncoderConfig.MagnetSensor.MagnetOffset = -PivotConstants.ANGLE_ZERO;
     pivotEncoderConfig.MagnetSensor.SensorDirection = PivotConstants.ENCODER_REVERSED;
-    // pivotEncoderConfig.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Unsigned_0To1;
     pivotEncoder.getConfigurator().apply(pivotEncoderConfig, HardwareConstants.TIMEOUT_S);
 
     TalonFXConfiguration pivotConfig = new TalonFXConfiguration();
@@ -124,15 +121,19 @@ public class PivotSubsystem extends SubsystemBase {
 
   /**
    * Uses distance in meters from the speaker to set the pivot angle (degrees) of the shooter
-   * @param distance the distance in meters from the speaker
+   * @param speakerDistance the distance in meters from the speaker
    */
-  public void setPivotFromDistance(double distance) {
-    SmartDashboard.putNumber("distance", distance);
-    double angle = speakerAngleLookupValues.getLookupValue(distance);
-    pivotTargetAngle = angle;
-    setPivotAngle(angle);
+  public void setPivotFromSpeakerDistance(double speakerDistance) {
+    SmartDashboard.putNumber("speaker distance", speakerDistance);
+    double speakerAngle = speakerAngleLookupValues.getLookupValue(speakerDistance);
+    pivotTargetAngle = speakerAngle;
+    setPivotAngle(speakerAngle);
   }
-  //distance for ShootPassing
+
+  /**
+   * Uses distance in meters from the passing position to set the pivot angle (degrees) of the shooter
+   * @param passDistance the distance in meters from the passing position
+   */
   public void setPivotFromPassDistance(double passDistance) {
     SmartDashboard.putNumber("passing distance", passDistance);
     double passAngle = passAngleLookupValues.getLookupValue(passDistance);
