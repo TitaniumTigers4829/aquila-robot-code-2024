@@ -28,15 +28,15 @@ import frc.robot.commands.auto.RedAmpSideFourNote;
 import frc.robot.commands.auto.RedFourNote;
 import frc.robot.commands.auto.RedShootTaxi;
 import frc.robot.commands.autodrive.AutoAlignWithAmp;
-import frc.robot.commands.characterization.FeedForwardCharacterization;
-import frc.robot.commands.characterization.WheelRadiusCharacterization;
-import frc.robot.commands.characterization.WheelRadiusCharacterization.Direction;
 import frc.robot.commands.auto.RedNoteEight;
 import frc.robot.commands.drive.Drive;
+import frc.robot.commands.intake.ManualIntake;
 import frc.robot.commands.intake.TowerIntake;
 import frc.robot.extras.SmarterDashboardRegistry;
+import frc.robot.extras.characterization.FeedForwardCharacterization;
+import frc.robot.extras.characterization.WheelRadiusCharacterization;
+import frc.robot.extras.characterization.WheelRadiusCharacterization.Direction;
 import frc.robot.commands.shooter.ManualPivot;
-import frc.robot.commands.shooter.ManualRollers;
 import frc.robot.commands.shooter.ShootAmp;
 import frc.robot.commands.shooter.ShootSpeaker;
 import frc.robot.commands.shooter.ShootWhileMove;
@@ -222,8 +222,8 @@ public class RobotContainer {
     // manual pivot (possible climb, unlikely)
     operatorAButton.whileTrue(new ManualPivot(pivotSubsystem, ()->modifyAxisCubed(operatorRightStickY)));
     // manual rollers
-    operatorYButton.whileTrue(new ManualRollers(intakeSubsystem, true));
-    operatorXButton.whileTrue(new ManualRollers(intakeSubsystem, false));
+    operatorYButton.whileTrue(new ManualIntake(intakeSubsystem, true));
+    operatorXButton.whileTrue(new ManualIntake(intakeSubsystem, false));
   }
 
   public Command getAutonomousCommand() {

@@ -1,6 +1,6 @@
 // Copyright (c) LukeLib
 
-package frc.robot.extras;
+package frc.robot.extras.interpolators;
 
 public class BilinearInterpolator {
 

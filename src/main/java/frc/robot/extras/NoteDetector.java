@@ -8,6 +8,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.VisionConstants;
+import frc.robot.extras.interpolators.BilinearInterpolator;
 
 /** Add your docs here. */
 public class NoteDetector {

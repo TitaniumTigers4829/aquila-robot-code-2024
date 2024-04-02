@@ -17,7 +17,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.HardwareConstants;
 import frc.robot.Constants.PivotConstants;
-import frc.robot.extras.SingleLinearInterpolator;
+import frc.robot.extras.interpolators.SingleLinearInterpolator;
 
 public class PivotSubsystem extends SubsystemBase {
 
