@@ -22,7 +22,7 @@ public class VisionSubsystem extends SubsystemBase {
   public boolean canSeeAprilTags() {
     // First checks if it can see an april tag, then checks if it is fully in frame
     return LimelightHelpers.getFiducialID(currentlyUsedLimelight) != -1
-      && Math.abs(LimelightHelpers.getTX(currentlyUsedLimelight)) <= VisionConstants.FOV_MARGIN_OF_ERROR;
+      && (Math.abs(LimelightHelpers.getTX(currentlyUsedLimelight)) <= VisionConstants.LL3_FOV_MARGIN_OF_ERROR);
   }
 
 
@@ -32,6 +32,7 @@ public class VisionSubsystem extends SubsystemBase {
    * that is closest to an april tag. 
    */
   public Pose2d getPoseFromAprilTags() {
+    // currentlyUsedLimelightResults.targetingResults.botpose
     if (canSeeAprilTags()) {
       Pose2d botPose = LimelightHelpers.getBotPose2d(currentlyUsedLimelight);
       // The origin of botpose is at the center of the field
@@ -124,13 +125,13 @@ public class VisionSubsystem extends SubsystemBase {
     currentlyUsedLimelightResults = LimelightHelpers.getLatestResults(currentlyUsedLimelight);
 
     // Turns the limelight LEDs on if they can't see an april tag
-    if (!canSeeAprilTags()) {
-      LimelightHelpers.setLEDMode_ForceOn(VisionConstants.FRONT_LEFT_LIMELIGHT_NAME);
-      LimelightHelpers.setLEDMode_ForceOn(VisionConstants.FRONT_RIGHT_LIMELIGHT_NAME);
-    } else {
-      LimelightHelpers.setLEDMode_ForceOff(VisionConstants.FRONT_LEFT_LIMELIGHT_NAME);
-      LimelightHelpers.setLEDMode_ForceOff(VisionConstants.FRONT_RIGHT_LIMELIGHT_NAME);
-    }
+    // if (!canSeeAprilTags()) {
+    //   LimelightHelpers.setLEDMode_ForceOn(VisionConstants.FRONT_LEFT_LIMELIGHT_NAME);
+    //   LimelightHelpers.setLEDMode_ForceOn(VisionConstants.FRONT_RIGHT_LIMELIGHT_NAME);
+    // } else {
+    //   LimelightHelpers.setLEDMode_ForceOff(VisionConstants.FRONT_LEFT_LIMELIGHT_NAME);
+    //   LimelightHelpers.setLEDMode_ForceOff(VisionConstants.FRONT_RIGHT_LIMELIGHT_NAME);
+    // }
   }
 
 }

@@ -208,8 +208,7 @@ public class RobotContainer {
     driverRightDirectionPad.onTrue(new InstantCommand(() -> driveSubsystem.resetOdometry(new Pose2d(driveSubsystem.getPose().getX(), driveSubsystem.getPose().getY(), 
           Rotation2d.fromDegrees(driveSubsystem.getAllianceAngleOffset())))));
     // Reset robot odometry based on vision pose measurement from april tags
-    // driverLeftDirectionPad.onTrue(new InstantCommand(() -> driveSubsystem.resetOdometry(visionSubsystem.getPoseFromAprilTags())));
-    driverLeftDirectionPad.onTrue(new InstantCommand(()->driveSubsystem.resetOdometry(new Pose2d(15.209610939025879, 5.46963357925415, Rotation2d.fromRadians(Math.PI)))));
+    driverLeftDirectionPad.onTrue(new InstantCommand(() -> driveSubsystem.resetOdometry(visionSubsystem.getPoseFromAprilTags())));
     driverBButton.whileTrue(new WheelRadiusCharacterization(driveSubsystem, Direction.CLOCKWISE));
 
     // OPERATOR BUTTONS

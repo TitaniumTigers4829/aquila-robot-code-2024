@@ -60,7 +60,7 @@ public class SubwooferShot extends DriveCommandBase {
     );
 
     shooterSubsystem.setRPM(ShooterConstants.SHOOT_SPEAKER_RPM);
-    pivotSubsystem.setPivotAngle(PivotConstants.SUBWOOFER_ANGLE);
+    // pivotSubsystem.setPivotAngle(PivotConstants.SUBWOOFER_ANGLE);
     // if we are ready to shoot:
     if (isReadyToShoot()) {
       leds.setProcess(LEDProcess.SHOOT);
@@ -85,7 +85,7 @@ public class SubwooferShot extends DriveCommandBase {
     return false;
   }
   public boolean isReadyToShoot() {
-    return shooterSubsystem.isShooterWithinAcceptableError() && pivotSubsystem.isPivotWithinAcceptableError();
+    return shooterSubsystem.isShooterWithinAcceptableError();// && pivotSubsystem.isPivotWithinAcceptableError();
   }
 
   private double deadband(double val) {

@@ -71,8 +71,8 @@ public class PivotSubsystem extends SubsystemBase {
     
     pivotConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold = PivotConstants.MAX_ANGLE;
     pivotConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = PivotConstants.MIN_ANGLE;
-    pivotConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = false;
-    pivotConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = false;
+    pivotConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
+    pivotConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
     leaderPivotMotor.getConfigurator().apply(pivotConfig, HardwareConstants.TIMEOUT_S);
     pivotConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     followerPivotMotor.getConfigurator().apply(pivotConfig, HardwareConstants.TIMEOUT_S);

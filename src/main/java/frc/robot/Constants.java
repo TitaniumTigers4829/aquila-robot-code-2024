@@ -97,7 +97,7 @@ public final class Constants {
   
   public static final class ModuleConstants { 
     public static final double DRIVE_GEAR_RATIO = 4.59;
-    public static final double WHEEL_DIAMETER_METERS = Units.inchesToMeters(3.781551886860979);
+    public static final double WHEEL_DIAMETER_METERS = Units.inchesToMeters(3.887129070622615);
 
     public static final double WHEEL_CIRCUMFERENCE_METERS = WHEEL_DIAMETER_METERS * Math.PI;
     public static final double DRIVE_TO_METERS =  WHEEL_CIRCUMFERENCE_METERS / DRIVE_GEAR_RATIO;
@@ -131,7 +131,8 @@ public final class Constants {
     public static final double VISION_ANGLE_TRUST = Units.degreesToRadians(50); // radians
   
     public static final int FRAMES_BEFORE_ADDING_VISION_MEASUREMENT = 2;
-    public static final double FOV_MARGIN_OF_ERROR = 27;
+    public static final double LL3_FOV_MARGIN_OF_ERROR = 27;
+    public static final double LL3G_FOV_MARGIN_OF_ERROR = 38;
   
     public static final String SHOOTER_LIMELIGHT_NAME = "limelight-shooter";
     public static final String FRONT_LEFT_LIMELIGHT_NAME = "limelight-front-left";
@@ -304,7 +305,7 @@ public final class Constants {
     public static final int LEFT_INTAKE_MOTOR_ID = 18;
     public static final int RIGHT_INTAKE_MOTOR_ID = 19;
     public static final int FLAPPER_MOTOR_ID = 1;
-    public static final int NOTE_SENSOR_ID = 0;
+    public static final int NOTE_SENSOR_ID = 6;
 
     public static final double INTAKE_SPEED = 1.0;
     public static final double INTAKE_NEUTRAL_SPEED = 0.0;
@@ -404,7 +405,7 @@ public final class Constants {
     public static final double SHOOT_A = 0.004358865417933;
 
     public static final double ROLLER_SHOOT_SPEED = 1;
-    public static final double ROLLER_INTAKE_SPEED = 0.17;
+    public static final double ROLLER_INTAKE_BEFORE_LATCH_SPEED = .2;
     public static final double SHOOT_AMP_RPM = 2000;
     
     public static final double AUTO_SHOOT_P = 4.5;
