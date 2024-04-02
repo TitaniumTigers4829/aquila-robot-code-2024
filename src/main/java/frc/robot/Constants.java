@@ -97,7 +97,7 @@ public final class Constants {
   
   public static final class ModuleConstants { 
     public static final double DRIVE_GEAR_RATIO = 4.59;
-    public static final double WHEEL_DIAMETER_METERS = Units.inchesToMeters(3.86);
+    public static final double WHEEL_DIAMETER_METERS = Units.inchesToMeters(3.846406815030392);
 
     public static final double WHEEL_CIRCUMFERENCE_METERS = WHEEL_DIAMETER_METERS * Math.PI;
     public static final double DRIVE_TO_METERS =  WHEEL_CIRCUMFERENCE_METERS / DRIVE_GEAR_RATIO;
@@ -304,7 +304,7 @@ public final class Constants {
     public static final int LEFT_INTAKE_MOTOR_ID = 18;
     public static final int RIGHT_INTAKE_MOTOR_ID = 19;
     public static final int FLAPPER_MOTOR_ID = 1;
-    public static final int NOTE_SENSOR_ID = 1; // TODO
+    public static final int NOTE_SENSOR_ID = 0;
 
     public static final double INTAKE_SPEED = 1.0;
     public static final double INTAKE_NEUTRAL_SPEED = 0.0;
@@ -396,12 +396,12 @@ public final class Constants {
 
     public static final int SHOOTER_ACCEPTABLE_RPM_ERROR = 50;
 
-    public static final double SHOOT_P = 0.521; // .6
+    public static final double SHOOT_P = 0.522; // .6
     public static final double SHOOT_I = 0.00;
-    public static final double SHOOT_D = 0.00;
-    public static final double SHOOT_S = 0.406340806687601;
-    public static final double SHOOT_V = 0.120139272064833;
-    public static final double SHOOT_A = 0.002543365101303;
+    public static final double SHOOT_D = 0.001;
+    public static final double SHOOT_S = 0.319692618511411;
+    public static final double SHOOT_V = 0.125930273774783;
+    public static final double SHOOT_A = 0.004358865417933;
 
     public static final double ROLLER_SHOOT_SPEED = 1;
     public static final double ROLLER_INTAKE_SPEED = 0.17;

@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -28,6 +29,8 @@ import frc.robot.commands.auto.RedFourNote;
 import frc.robot.commands.auto.RedShootTaxi;
 import frc.robot.commands.autodrive.AutoAlignWithAmp;
 import frc.robot.commands.characterization.FeedForwardCharacterization;
+import frc.robot.commands.characterization.WheelRadiusCharacterization;
+import frc.robot.commands.characterization.WheelRadiusCharacterization.Direction;
 import frc.robot.commands.auto.RedNoteEight;
 import frc.robot.commands.drive.Drive;
 import frc.robot.commands.intake.TowerIntake;
@@ -202,7 +205,7 @@ public class RobotContainer {
     // Reset robot odometry based on vision pose measurement from april tags
     driverLeftDirectionPad.onTrue(new InstantCommand(() -> driveSubsystem.resetOdometry(visionSubsystem.getPoseFromAprilTags())));
 
-    driverBButton.whileTrue(new FeedForwardCharacterization(shooterSubsystem, shooterSubsystem::setVolts, shooterSubsystem::getFlywheelVelocity));
+    driverBButton.whileTrue(new WheelRadiusCharacterization(driveSubsystem, Direction.CLOCKWISE));
 
     // OPERATOR BUTTONS
 
