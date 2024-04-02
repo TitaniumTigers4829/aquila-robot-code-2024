@@ -1,4 +1,4 @@
-package frc.robot.extras;
+package frc.robot.extras.regression;
 
 import Jama.Matrix;
 import Jama.QRDecomposition;

@@ -1,10 +1,12 @@
-package frc.robot.commands.auto;
+package frc.robot.commands.shooter;
 
 import java.util.Optional;
+import java.util.function.BooleanSupplier;
+import java.util.function.DoubleSupplier;
+
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.FieldConstants;
@@ -19,12 +21,16 @@ import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.swerve.DriveSubsystem;
 import frc.robot.subsystems.vision.VisionSubsystem;
 
-public class ShootSpeakerAuto extends DriveCommandBase {
+public class ShootPass extends DriveCommandBase {
+
+//initiates the variables
   private final DriveSubsystem driveSubsystem;
   private final ShooterSubsystem shooterSubsystem;
   private final PivotSubsystem pivotSubsystem;
   private final LEDSubsystem leds;
-  private final Timer timer;
+
+  private final DoubleSupplier leftX, leftY;
+  private final BooleanSupplier isFieldRelative;
 
   private double headingError = 0;
 
@@ -39,90 +45,72 @@ public class ShootSpeakerAuto extends DriveCommandBase {
   private double desiredHeading = 0;
   private Translation2d speakerPos;
   
-  /** Creates a new ShootSpeaker. */
-  public ShootSpeakerAuto(DriveSubsystem driveSubsystem, ShooterSubsystem shooterSubsystem, PivotSubsystem pivotSubsystem, VisionSubsystem visionSubsystem, LEDSubsystem leds) {
+  public ShootPass(DriveSubsystem driveSubsystem, ShooterSubsystem shooterSubsystem, PivotSubsystem pivotSubsystem, VisionSubsystem visionSubsystem, DoubleSupplier leftX, DoubleSupplier leftY, BooleanSupplier isFieldRelative, LEDSubsystem leds) {
     super(driveSubsystem, visionSubsystem);
     this.driveSubsystem = driveSubsystem;
     this.shooterSubsystem = shooterSubsystem;
     this.pivotSubsystem = pivotSubsystem;
+    this.leftX = leftX;
+    this.leftY = leftY;
+    this.isFieldRelative = isFieldRelative;
     this.leds = leds;
-    timer = new Timer();
-    addRequirements(shooterSubsystem, driveSubsystem, pivotSubsystem);
+    addRequirements(shooterSubsystem, driveSubsystem, pivotSubsystem, visionSubsystem);
   }
-
-  // Called when the command is initially scheduled.
-  @Override
+  
+@Override
   public void initialize() {
-    timer.reset();
     Optional<Alliance> alliance = DriverStation.getAlliance();
     //sets alliance to red
     isRed = alliance.isPresent() && alliance.get() == Alliance.Red;  
-    speakerPos = isRed ? new Translation2d(FieldConstants.RED_SPEAKER_X, FieldConstants.RED_SPEAKER_Y) : new Translation2d(FieldConstants.BLUE_SPEAKER_X, FieldConstants.BLUE_SPEAKER_Y);
-    turnController.enableContinuousInput(-Math.PI, Math.PI);
+
+    speakerPos = isRed ? new Translation2d(FieldConstants.RED_PASSING_X, FieldConstants.RED_PASSING_Y) : new Translation2d(FieldConstants.BLUE_PASSING_X, FieldConstants.BLUE_PASSING_Y);
   }
 
-  // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     super.execute();
-
-    // intakeSubsystem.setIntakeSpeed(-0.2);
-
-    // get positions of various things
+    
+    //positions + distance
     Translation2d robotPos = driveSubsystem.getPose().getTranslation();
-    // distance (for speaker lookups)
     double distance = robotPos.getDistance(speakerPos);
-    // arctangent for desired heading
-      desiredHeading = Math.atan2((robotPos.getY() - speakerPos.getY()), (robotPos.getX() - speakerPos.getX()));
+    
+    desiredHeading = Math.atan2((robotPos.getY() - speakerPos.getY()), (robotPos.getX() - speakerPos.getX()));
+    headingError = desiredHeading - driveSubsystem.getOdometryRotation2d().getRadians();
   
-      headingError = desiredHeading - driveSubsystem.getOdometryRotation2d().getRadians();
-  
-      turnController.enableContinuousInput(-Math.PI, Math.PI);
-      double turnOutput = deadband(turnController.calculate(headingError, 0));
-
+    turnController.enableContinuousInput(-Math.PI, Math.PI);
+    double turnOutput = deadband(turnController.calculate(headingError, 0));
+    
     driveSubsystem.drive(
-      0, 
-      0, 
-      turnOutput, 
-      false
+      deadband(leftY.getAsDouble()) * 0.5, deadband(leftX.getAsDouble()) * 0.5, turnOutput,!isFieldRelative.getAsBoolean()
     );
-
-    shooterSubsystem.setRPM(ShooterConstants.SHOOT_SPEAKER_RPM);
-    pivotSubsystem.setPivotFromSpeakerDistance(distance);
-    // if we are ready to shoot:
+    
+    shooterSubsystem.setRPM(ShooterConstants.SHOOT_SPEAKER_FAR_RPM);
+    pivotSubsystem.setPivotFromPassDistance(distance);
+    
     if (isReadyToShoot()) {
       leds.setProcess(LEDProcess.SHOOT);
       shooterSubsystem.setRollerSpeed(ShooterConstants.ROLLER_SHOOT_SPEED);
     } else {
       leds.setProcess(LEDProcess.FINISH_LINE_UP);
     }
-
-    // If it has shot the note and the timer hasn't started
-    if (!shooterSubsystem.hasNote() && !timer.hasElapsed(0.001)) {
-      timer.start();
-    }
   }
 
-  // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    leds.setProcess(LEDProcess.DEFAULT);
     shooterSubsystem.setFlywheelNeutral();
     shooterSubsystem.setRollerSpeed(0);
-    // intakeSubsystem.setIntakeSpeed(0);
     pivotSubsystem.setPivotAngle(PivotConstants.PIVOT_INTAKE_ANGLE);
     leds.setProcess(LEDProcess.DEFAULT);
-    driveSubsystem.drive(0, 0, 0, false);
   }
 
-  // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    // return timer.hasElapsed(0.3);
     return false;
   }
-  
   public boolean isReadyToShoot() {
-    return shooterSubsystem.isShooterWithinAcceptableError() && pivotSubsystem.isPivotWithinAcceptableError() && Math.abs(headingError) < DriveConstants.HEADING_ACCEPTABLE_ERROR_RADIANS;
+    // TODO: heading
+     return shooterSubsystem.isShooterWithinAcceptableError() && pivotSubsystem.isPivotWithinAcceptableError() && (Math.abs(headingError) < DriveConstants.HEADING_ACCEPTABLE_ERROR_RADIANS);
   }
 
   private double deadband(double val) {
@@ -132,4 +120,5 @@ public class ShootSpeakerAuto extends DriveCommandBase {
       return val;
     }
   } 
-}
+  
+  }

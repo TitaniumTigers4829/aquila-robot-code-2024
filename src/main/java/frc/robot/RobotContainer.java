@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -29,10 +30,13 @@ import frc.robot.commands.auto.RedShootTaxi;
 import frc.robot.commands.autodrive.AutoAlignWithAmp;
 import frc.robot.commands.auto.RedNoteEight;
 import frc.robot.commands.drive.Drive;
+import frc.robot.commands.intake.ManualIntake;
 import frc.robot.commands.intake.TowerIntake;
 import frc.robot.extras.SmarterDashboardRegistry;
+import frc.robot.extras.characterization.FeedForwardCharacterization;
+import frc.robot.extras.characterization.WheelRadiusCharacterization;
+import frc.robot.extras.characterization.WheelRadiusCharacterization.Direction;
 import frc.robot.commands.shooter.ManualPivot;
-import frc.robot.commands.shooter.ManualRollers;
 import frc.robot.commands.shooter.ShootAmp;
 import frc.robot.commands.shooter.ShootSpeaker;
 import frc.robot.commands.shooter.ShootWhileMove;
@@ -201,6 +205,8 @@ public class RobotContainer {
     // Reset robot odometry based on vision pose measurement from april tags
     driverLeftDirectionPad.onTrue(new InstantCommand(() -> driveSubsystem.resetOdometry(visionSubsystem.getPoseFromAprilTags())));
 
+    driverBButton.whileTrue(new WheelRadiusCharacterization(driveSubsystem, Direction.CLOCKWISE));
+
     // OPERATOR BUTTONS
 
     // speaker
@@ -216,8 +222,8 @@ public class RobotContainer {
     // manual pivot (possible climb, unlikely)
     operatorAButton.whileTrue(new ManualPivot(pivotSubsystem, ()->modifyAxisCubed(operatorRightStickY)));
     // manual rollers
-    operatorYButton.whileTrue(new ManualRollers(intakeSubsystem, true));
-    operatorXButton.whileTrue(new ManualRollers(intakeSubsystem, false));
+    operatorYButton.whileTrue(new ManualIntake(intakeSubsystem, true));
+    operatorXButton.whileTrue(new ManualIntake(intakeSubsystem, false));
   }
 
   public Command getAutonomousCommand() {

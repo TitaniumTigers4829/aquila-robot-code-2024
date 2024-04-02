@@ -37,6 +37,7 @@ public class ShooterSubsystem extends SubsystemBase {
     rollerMotor = new TalonFX(ShooterConstants.ROLLER_MOTOR_ID);
 
     noteSensor = new DigitalInput(ShooterConstants.NOTE_SENSOR_ID);
+    
     velocityRequest = new VelocityVoltage(0);
 
     TalonFXConfiguration shooterConfig = new TalonFXConfiguration();
