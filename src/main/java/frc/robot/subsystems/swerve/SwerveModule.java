@@ -102,6 +102,8 @@ public class SwerveModule {
     turnConfig.MotionMagic.MotionMagicCruiseVelocity = ModuleConstants.MAX_ANGULAR_SPEED_ROTATIONS_PER_SECOND;
     turnConfig.MotionMagic.MotionMagicAcceleration = ModuleConstants.MAX_ANGULAR_ACCELERATION_ROTATIONS_PER_SECOND_SQUARED;
     turnConfig.ClosedLoopGeneral.ContinuousWrap = true;
+    turnConfig.CurrentLimits.SupplyCurrentLimit = 20;
+    turnConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
     turnMotor.getConfigurator().apply(turnConfig, HardwareConstants.TIMEOUT_S);
 
     turnEncoderPos = turnEncoder.getAbsolutePosition();

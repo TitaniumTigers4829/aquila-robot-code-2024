@@ -27,6 +27,7 @@ import frc.robot.commands.auto.RedAmpSideFourNote;
 import frc.robot.commands.auto.RedFourNote;
 import frc.robot.commands.auto.RedShootTaxi;
 import frc.robot.commands.autodrive.AutoAlignWithAmp;
+import frc.robot.commands.characterization.FeedForwardCharacterization;
 import frc.robot.commands.auto.RedNoteEight;
 import frc.robot.commands.drive.Drive;
 import frc.robot.commands.intake.TowerIntake;
@@ -200,6 +201,8 @@ public class RobotContainer {
           Rotation2d.fromDegrees(driveSubsystem.getAllianceAngleOffset())))));
     // Reset robot odometry based on vision pose measurement from april tags
     driverLeftDirectionPad.onTrue(new InstantCommand(() -> driveSubsystem.resetOdometry(visionSubsystem.getPoseFromAprilTags())));
+
+    driverBButton.whileTrue(new FeedForwardCharacterization(shooterSubsystem, shooterSubsystem::setVolts, shooterSubsystem::getFlywheelVelocity));
 
     // OPERATOR BUTTONS
 

@@ -61,9 +61,9 @@ public final class Constants {
     public static final int REAR_LEFT_TURN_MOTOR_ID = 8;
     public static final int REAR_RIGHT_TURN_MOTOR_ID = 7;
 
-    public static final int FRONT_LEFT_CANCODER_ID = 11;
+    public static final int FRONT_LEFT_CANCODER_ID = 14;
     public static final int FRONT_RIGHT_CANCODER_ID = 12;
-    public static final int REAR_LEFT_CANCODER_ID = 14;
+    public static final int REAR_LEFT_CANCODER_ID = 11;
     public static final int REAR_RIGHT_CANCODER_ID = 13;
 
     public static final double FRONT_LEFT_ZERO_ANGLE = 0.137939453125;
@@ -106,7 +106,7 @@ public final class Constants {
     public static final double DRIVE_SUPPLY_LIMIT = 40.0;
     public static final double DRIVE_STATOR_LIMIT = 50.0;  
 
-    public static final double TURN_P = 116.0; 
+    public static final double TURN_P = 116;  
     public static final double TURN_I = 0.0;
     public static final double TURN_D = 0.64; 
 
