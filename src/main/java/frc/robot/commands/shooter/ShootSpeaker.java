@@ -100,6 +100,7 @@ public class ShootSpeaker extends DriveCommandBase {
     }
 
     pivotSubsystem.setPivotFromSpeakerDistance(distance);
+    // pivotSubsystem.setPivotAngle(0.031);
     // if we are ready to shoot:
     if (isReadyToShoot()) {
       leds.setProcess(LEDProcess.SHOOT);
