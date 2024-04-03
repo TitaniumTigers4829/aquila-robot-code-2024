@@ -58,8 +58,10 @@ public abstract class DriveCommandBase extends Command {
       }
 
       // Only updates the pose estimator if the limelight pose is new and reliable
+      Pose2d limelightVisionMeasurement = visionSubsystem.getPoseFromAprilTags();
+      SmartDashboard.putString("llodometry", limelightVisionMeasurement.toString());
       if (currentTimeStampSeconds > lastTimeStampSeconds && ticksAfterSeeing > VisionConstants.FRAMES_BEFORE_ADDING_VISION_MEASUREMENT) {
-        Pose2d limelightVisionMeasurement = visionSubsystem.getPoseFromAprilTags();
+        // Pose2d limelightVisionMeasurement = visionSubsystem.getPoseFromAprilTags();
         driveSubsystem.addPoseEstimatorVisionMeasurement(limelightVisionMeasurement, Timer.getFPGATimestamp() - visionSubsystem.getLatencySeconds());
         SmartDashboard.putString("llodometyr", limelightVisionMeasurement.toString());
       }

@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.HardwareConstants;
 import frc.robot.Constants.ShooterConstants;
+import frc.robot.extras.SmarterDashboardRegistry;
 
 public class ShooterSubsystem extends SubsystemBase {
   private final TalonFX leaderFlywheel;
@@ -166,5 +167,10 @@ public class ShooterSubsystem extends SubsystemBase {
     SmartDashboard.putBoolean("has note", hasNote());
     SmartDashboard.putNumber("current RPM", leaderVelocity.refresh().getValueAsDouble() * 60.0);
     SmartDashboard.putNumber("error", shooterTargetRPM - (leaderVelocity.refresh().getValueAsDouble() * 60.0));
+    if (hasNote()) {
+      SmarterDashboardRegistry.noteIn();
+    } else {
+      SmarterDashboardRegistry.noNote();
+    }
   }
 }

@@ -2,13 +2,20 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.shooter;
+package frc.robot.commands.auto;
 
+import java.util.Optional;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
-import frc.robot.Constants.LEDConstants.LEDProcess;
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.HardwareConstants;
+import frc.robot.Constants.LEDConstants.LEDProcess;
 import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.commands.drive.DriveCommandBase;
@@ -18,53 +25,39 @@ import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.swerve.DriveSubsystem;
 import frc.robot.subsystems.vision.VisionSubsystem;
 
-public class SubwooferShot extends DriveCommandBase {
+public class SpinUpForSpeakerAuto extends DriveCommandBase {
   private final DriveSubsystem driveSubsystem;
   private final ShooterSubsystem shooterSubsystem;
   private final PivotSubsystem pivotSubsystem;
   private final LEDSubsystem leds;
 
-  private final DoubleSupplier leftX, leftY, rightX;
-  private final BooleanSupplier isFieldRelative;
-  
-  /** Creates a new ShootSpeaker. */
-  public SubwooferShot(DriveSubsystem driveSubsystem, ShooterSubsystem shooterSubsystem, PivotSubsystem pivotSubsystem, VisionSubsystem visionSubsystem, DoubleSupplier leftX, DoubleSupplier leftY, DoubleSupplier rightX, BooleanSupplier isFieldRelative, LEDSubsystem leds) {
+
+  /** Creates a new SpinUpForSpeaker. */
+  public SpinUpForSpeakerAuto(DriveSubsystem driveSubsystem, ShooterSubsystem shooterSubsystem, PivotSubsystem pivotSubsystem, VisionSubsystem visionSubsystem, DoubleSupplier leftX, DoubleSupplier leftY, BooleanSupplier isFieldRelative, LEDSubsystem leds) {
     super(driveSubsystem, visionSubsystem);
     this.driveSubsystem = driveSubsystem;
     this.shooterSubsystem = shooterSubsystem;
     this.pivotSubsystem = pivotSubsystem;
-    this.leftX = leftX;
-    this.leftY = leftY;
-    this.rightX = rightX;
-    this.isFieldRelative = isFieldRelative;
     this.leds = leds;
-    addRequirements(shooterSubsystem, driveSubsystem, pivotSubsystem, visionSubsystem);
+    addRequirements(driveSubsystem, visionSubsystem, shooterSubsystem, pivotSubsystem);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    Optional<Alliance> alliance = DriverStation.getAlliance();
+   
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     super.execute();
-
-    // allow the driver to drive slowly (NOT full speed - will mess up shooter)
-    driveSubsystem.drive(
-      deadband(leftY.getAsDouble()) * 0.5, 
-      deadband(leftX.getAsDouble()) * 0.5, 
-      deadband(rightX.getAsDouble()) * 0.5, 
-      !isFieldRelative.getAsBoolean()
-    );
-
-    shooterSubsystem.setRPM(ShooterConstants.SHOOT_SPEAKER_RPM);
-    pivotSubsystem.setPivotAngle(PivotConstants.SUBWOOFER_ANGLE);
+    
+    shooterSubsystem.setRPM(ShooterConstants.SHOOT_SPEAKER_RPM * 0.75);
     // if we are ready to shoot:
     if (isReadyToShoot()) {
       leds.setProcess(LEDProcess.SHOOT);
-      shooterSubsystem.setRollerSpeed(ShooterConstants.ROLLER_SHOOT_SPEED);
     } else {
       leds.setProcess(LEDProcess.FINISH_LINE_UP);
     }
@@ -73,11 +66,10 @@ public class SubwooferShot extends DriveCommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    shooterSubsystem.setFlywheelNeutral();
-    shooterSubsystem.setRollerSpeed(0);
-    pivotSubsystem.setPivotAngle(PivotConstants.PIVOT_INTAKE_ANGLE);
     leds.setProcess(LEDProcess.DEFAULT);
-  }
+    shooterSubsystem.setRPM(ShooterConstants.SHOOT_SPEAKER_RPM * 0.75);
+
+    }
 
   // Returns true when the command should end.
   @Override

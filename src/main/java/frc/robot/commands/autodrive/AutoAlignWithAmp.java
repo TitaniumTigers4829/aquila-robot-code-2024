@@ -8,6 +8,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.HardwareConstants;
@@ -30,19 +31,19 @@ public class AutoAlignWithAmp extends DriveCommandBase {
     ShooterConstants.AUTO_LINEUP_ROTATION_CONSTRAINTS
   );
 
-  // private final ProfiledPIDController xTranslationController = new ProfiledPIDController(
-  //   ShooterConstants.AUTO_LINEUP_TRANSLATION_P,
-  //   ShooterConstants.AUTO_LINEUP_TRANSLATION_I, 
-  //   ShooterConstants.AUTO_LINEUP_TRANSLATION_D, 
-  //   ShooterConstants.AUTO_LINEUP_TRANSLATION_CONSTRAINTS
-  // );
+  private final ProfiledPIDController xTranslationController = new ProfiledPIDController(
+    ShooterConstants.AUTO_LINEUP_TRANSLATION_P,
+    ShooterConstants.AUTO_LINEUP_TRANSLATION_I, 
+    ShooterConstants.AUTO_LINEUP_TRANSLATION_D, 
+    ShooterConstants.AUTO_LINEUP_TRANSLATION_CONSTRAINTS
+  );
 
-  // private final ProfiledPIDController yTranslationController = new ProfiledPIDController(
-  //   ShooterConstants.AUTO_LINEUP_TRANSLATION_P,
-  //   ShooterConstants.AUTO_LINEUP_TRANSLATION_I, 
-  //   ShooterConstants.AUTO_LINEUP_TRANSLATION_D, 
-  //   ShooterConstants.AUTO_LINEUP_TRANSLATION_CONSTRAINTS
-  // );
+  private final ProfiledPIDController yTranslationController = new ProfiledPIDController(
+    ShooterConstants.AUTO_LINEUP_TRANSLATION_P,
+    ShooterConstants.AUTO_LINEUP_TRANSLATION_I, 
+    ShooterConstants.AUTO_LINEUP_TRANSLATION_D, 
+    ShooterConstants.AUTO_LINEUP_TRANSLATION_CONSTRAINTS
+  );
 
   /** Creates a new AutoAlignWithAmp. */
   public AutoAlignWithAmp(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, DoubleSupplier[] leftStick) {
@@ -68,17 +69,17 @@ public class AutoAlignWithAmp extends DriveCommandBase {
 
     // Gets the error between the desired pos (the amp) and the current pos of the robot
     Pose2d drivePose = driveSubsystem.getPose();
-    // double xPoseError = ampPose.getX() - drivePose.getX();
-    // double yPoseError = ampPose.getY() - drivePose.getY();
+    double xPoseError = ampPose.getX() - drivePose.getX();
+    double yPoseError = ampPose.getY() - drivePose.getY();
     double thetaPoseError = ampPose.getRotation().getRadians() - drivePose.getRotation().getRadians();
 
     // Uses the PID controllers to calculate the drive output
-    // double xOutput = deadband(xTranslationController.calculate(xPoseError, 0));
-    // double yOutput = deadband(yTranslationController.calculate(yPoseError, 0));
+    double xOutput = deadband(xTranslationController.calculate(xPoseError, 0));
+    double yOutput = deadband(yTranslationController.calculate(yPoseError, 0));
     double turnOutput = deadband(turnController.calculate(thetaPoseError, 0)); 
-    // SmartDashboard.putNumber("xOut", xOutput);
-    // SmartDashboard.putNumber("yOut", yOutput);
-    // SmartDashboard.putNumber("turnOut", turnOutput);
+    SmartDashboard.putNumber("xOut", xOutput);
+    SmartDashboard.putNumber("yOut", yOutput);
+    SmartDashboard.putNumber("turnOut", turnOutput);
 
     // Gets the chassis speeds for the robot using the odometry rotation (not alliance relative)
     ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(

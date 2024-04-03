@@ -97,7 +97,7 @@ public final class Constants {
   
   public static final class ModuleConstants { 
     public static final double DRIVE_GEAR_RATIO = 4.59;
-    public static final double WHEEL_DIAMETER_METERS = Units.inchesToMeters(3.887129070622615);
+    public static final double WHEEL_DIAMETER_METERS = Units.inchesToMeters(3.900450631870026);
 
     public static final double WHEEL_CIRCUMFERENCE_METERS = WHEEL_DIAMETER_METERS * Math.PI;
     public static final double DRIVE_TO_METERS =  WHEEL_CIRCUMFERENCE_METERS / DRIVE_GEAR_RATIO;
@@ -294,11 +294,11 @@ public final class Constants {
     public static final double BLUE_LOADING_STATION_Y = 1.13;
 
     //ShootPassing constants
-    public static final double RED_PASSING_X = 16.397357940673828;
-    public static final double RED_PASSING_Y = 7.1840314865112305;
+    public static final double RED_PASSING_X = 15.43077278137207;
+    public static final double RED_PASSING_Y = 7.0229339599609375;
     
-    public static final double BLUE_PASSING_X = 0.036992281675338745;
-    public static final double BLUE_PASSING_Y = 7.201931476593018;
+    public static final double BLUE_PASSING_X = 1.343673825263977;
+    public static final double BLUE_PASSING_Y = 6.969234943389893;
   }
   
   public static final class IntakeConstants {
@@ -343,7 +343,7 @@ public final class Constants {
     public static final SensorDirectionValue ENCODER_REVERSED = SensorDirectionValue.Clockwise_Positive;
 
     public static final double SHOOT_AMP_ANGLE = 0.35205078125;
-    public static final double PIVOT_ACCEPTABLE_ERROR = 0.015;
+    public static final double PIVOT_ACCEPTABLE_ERROR = 0.016;
 
     public static double[][] SPEAKER_PIVOT_POSITION = {
       // Distance, Angle (rotations)
@@ -357,21 +357,26 @@ public final class Constants {
       {2.7, 0.078974609375},
       {2.9, 0.08280078125},
       {3.1, 0.083},
-      {3.3, 0.087134765625},
+      {3.2, 0.085},
+      {3.3, 0.086134765625},
+      {3.4, 0.087},
       {3.5, 0.091623046875},
-      {3.7, 0.09},
-      {3.9, 0.0922},
+      {3.7, 0.091},
+      {3.9, 0.093},
       {4.0, 0.097},
       {4.2, 0.099},
       {4.4, 0.0935},
-      {4.6, 0.090}
-      // {4.7, 0.099},
-      // {4.9, 0.13}
+      {4.6, 0.094},
+      {4.7, 0.095},
+      {4.8, 0.095},
+      {4.9, 0.094},
+      {5.1, 0.095}
     };
+
     public static double[][] PASS_PIVOT_POSITION = {
       // Distance, Angle (rotations)
-      {0-9, 0-9},
-      {0-9, 0-9},
+      {10.680643009839416, 0.037400390625},
+      {9.11398136590441, 0.038},
       {0-9, 0-9},
       {0-9, 0-9},
     };
@@ -393,9 +398,9 @@ public final class Constants {
     public static final int NOTE_SENSOR_ID = 9;
 
     public static final double SHOOT_SPEAKER_RPM = 4000;
-    public static final double SHOOT_SPEAKER_FAR_RPM = 5000;
+    public static final double SHOOT_SPEAKER_FAR_RPM = 4300;
 
-    public static final int SHOOTER_ACCEPTABLE_RPM_ERROR = 50;
+    public static final int SHOOTER_ACCEPTABLE_RPM_ERROR = 25;
 
     public static final double SHOOT_P = 0.522; // .6
     public static final double SHOOT_I = 0.00;
@@ -408,7 +413,7 @@ public final class Constants {
     public static final double ROLLER_INTAKE_BEFORE_LATCH_SPEED = .2;
     public static final double SHOOT_AMP_RPM = 2000;
     
-    public static final double AUTO_SHOOT_P = 4.5;
+    public static final double AUTO_SHOOT_P = 7;
     public static final double AUTO_SHOOT_I = 0.0;
     public static final double AUTO_SHOOT_D = 0.0;
     public static Constraints AUTO_SHOOT_CONSTRAINTS = new Constraints(DriveConstants.MAX_ANGULAR_SPEED_RADIANS_PER_SECOND, 2);

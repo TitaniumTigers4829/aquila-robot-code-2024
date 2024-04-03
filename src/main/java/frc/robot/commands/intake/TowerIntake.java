@@ -57,6 +57,7 @@ public class TowerIntake extends Command {
         shooterSubsystem.setRollerSpeed(-ShooterConstants.ROLLER_INTAKE_BEFORE_LATCH_SPEED); 
         intakeSubsystem.setIntakeSpeed(-IntakeConstants.INTAKE_SPEED);
         intakeSubsystem.setFlapperSpeed(-IntakeConstants.FLAPPER_SPEED);
+        SmarterDashboardRegistry.noNote();
       } else {
         if (shooterSubsystem.hasNote()) {
           intakeSubsystem.setIntakeSpeed(0);
@@ -67,13 +68,16 @@ public class TowerIntake extends Command {
         } else if (intakeSubsystem.sensorDetectsNote()) {
           intakeSensorLatch = true;
           leds.setProcess(LEDProcess.NOTE_HALFWAY_IN);
+          SmarterDashboardRegistry.noteHalfwayIn();
         } else {
           if (!intakeSensorLatch) {
             shooterSubsystem.setRollerSpeed(0.3);
             intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_SPEED);
+            SmarterDashboardRegistry.noteIn();
           } else {
             shooterSubsystem.setRollerSpeed(ShooterConstants.ROLLER_INTAKE_BEFORE_LATCH_SPEED);
             intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_SPEED);
+            SmarterDashboardRegistry.noteHalfwayIn();
           }
           intakeSubsystem.setFlapperSpeed(IntakeConstants.FLAPPER_SPEED);
         }

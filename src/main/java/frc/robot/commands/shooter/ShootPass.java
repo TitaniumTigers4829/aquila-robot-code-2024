@@ -43,7 +43,7 @@ public class ShootPass extends DriveCommandBase {
 
   private boolean isRed = false;
   private double desiredHeading = 0;
-  private Translation2d speakerPos;
+  private Translation2d passingPos;
   
   public ShootPass(DriveSubsystem driveSubsystem, ShooterSubsystem shooterSubsystem, PivotSubsystem pivotSubsystem, VisionSubsystem visionSubsystem, DoubleSupplier leftX, DoubleSupplier leftY, BooleanSupplier isFieldRelative, LEDSubsystem leds) {
     super(driveSubsystem, visionSubsystem);
@@ -63,7 +63,7 @@ public class ShootPass extends DriveCommandBase {
     //sets alliance to red
     isRed = alliance.isPresent() && alliance.get() == Alliance.Red;  
 
-    speakerPos = isRed ? new Translation2d(FieldConstants.RED_PASSING_X, FieldConstants.RED_PASSING_Y) : new Translation2d(FieldConstants.BLUE_PASSING_X, FieldConstants.BLUE_PASSING_Y);
+    passingPos = isRed ? new Translation2d(FieldConstants.RED_PASSING_X, FieldConstants.RED_PASSING_Y) : new Translation2d(FieldConstants.BLUE_PASSING_X, FieldConstants.BLUE_PASSING_Y);
   }
 
   @Override
@@ -72,9 +72,9 @@ public class ShootPass extends DriveCommandBase {
     
     //positions + distance
     Translation2d robotPos = driveSubsystem.getPose().getTranslation();
-    double distance = robotPos.getDistance(speakerPos);
+    double distance = robotPos.getDistance(passingPos);
     
-    desiredHeading = Math.atan2((robotPos.getY() - speakerPos.getY()), (robotPos.getX() - speakerPos.getX()));
+    desiredHeading = Math.atan2((robotPos.getY() - passingPos.getY()), (robotPos.getX() - passingPos.getX()));
     headingError = desiredHeading - driveSubsystem.getOdometryRotation2d().getRadians();
   
     turnController.enableContinuousInput(-Math.PI, Math.PI);
@@ -84,9 +84,9 @@ public class ShootPass extends DriveCommandBase {
       deadband(leftY.getAsDouble()) * 0.5, deadband(leftX.getAsDouble()) * 0.5, turnOutput,!isFieldRelative.getAsBoolean()
     );
     
-    shooterSubsystem.setRPM(ShooterConstants.SHOOT_SPEAKER_FAR_RPM);
+    shooterSubsystem.setRPM(ShooterConstants.SHOOT_SPEAKER_RPM - 100);
     pivotSubsystem.setPivotFromPassDistance(distance);
-    
+
     if (isReadyToShoot()) {
       leds.setProcess(LEDProcess.SHOOT);
       shooterSubsystem.setRollerSpeed(ShooterConstants.ROLLER_SHOOT_SPEED);
