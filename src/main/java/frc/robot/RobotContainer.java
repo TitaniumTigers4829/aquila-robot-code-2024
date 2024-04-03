@@ -30,12 +30,14 @@ import frc.robot.commands.auto.RedShootTaxi;
 import frc.robot.commands.autodrive.AutoAlignWithAmp;
 import frc.robot.commands.auto.RedNoteEight;
 import frc.robot.commands.drive.Drive;
+import frc.robot.commands.intake.IntakeFromShooter;
 import frc.robot.commands.intake.ManualIntake;
 import frc.robot.commands.intake.TowerIntake;
 import frc.robot.extras.SmarterDashboardRegistry;
 import frc.robot.extras.characterization.FeedForwardCharacterization;
 import frc.robot.extras.characterization.WheelRadiusCharacterization;
 import frc.robot.extras.characterization.WheelRadiusCharacterization.Direction;
+import frc.robot.commands.shooter.FlywheelSpinUpAuto;
 import frc.robot.commands.shooter.ManualPivot;
 import frc.robot.commands.shooter.ShootAmp;
 import frc.robot.commands.shooter.ShootSpeaker;
@@ -172,8 +174,8 @@ public class RobotContainer {
     POVButton operatorDownDirectionPad = new POVButton(operatorJoystick, 180);
     Trigger driverLeftTrigger = new Trigger(() -> (driverJoystick.getRawAxis(JoystickConstants.LEFT_TRIGGER_ID) > 0.2));
     JoystickButton driverLeftBumper = new JoystickButton(driverJoystick, 5);
-    JoystickButton driverBButton = new JoystickButton(driverJoystick, JoystickConstants.B_BUTTON_ID);
-    JoystickButton driverYButton = new JoystickButton(driverJoystick, JoystickConstants.Y_BUTTON_ID);
+    JoystickButton driverBButton = new JoystickButton(driverJoystick, JoystickConstants.B_BUTTON_ID);//used for wheelcharacterisation
+    JoystickButton driverYButton = new JoystickButton(driverJoystick, JoystickConstants.Y_BUTTON_ID);//used for intakefromshooter
     DoubleSupplier operatorLeftStickY = () -> operatorJoystick.getRawAxis(JoystickConstants.LEFT_STICK_Y_ID);
 
 
@@ -189,6 +191,7 @@ public class RobotContainer {
     );
 
     driveSubsystem.setDefaultCommand(driveCommand);
+    shooterSubsystem.setDefaultCommand(new FlywheelSpinUpAuto(shooterSubsystem, visionSubsystem));
 
     driverLeftTrigger.whileTrue(new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem, false, ledSubsystem));
     // Amp Lineup
@@ -206,6 +209,8 @@ public class RobotContainer {
     driverLeftDirectionPad.onTrue(new InstantCommand(() -> driveSubsystem.resetOdometry(visionSubsystem.getPoseFromAprilTags())));
 
     driverBButton.whileTrue(new WheelRadiusCharacterization(driveSubsystem, Direction.CLOCKWISE));
+
+    driverYButton.whileTrue(new IntakeFromShooter(shooterSubsystem, intakeSubsystem));
 
     // OPERATOR BUTTONS
 
