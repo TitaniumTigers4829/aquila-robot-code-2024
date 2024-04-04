@@ -17,6 +17,7 @@ import frc.robot.Constants.HardwareConstants;
 import frc.robot.Constants.JoystickConstants;
 import frc.robot.Constants.LEDConstants.LEDProcess;
 import frc.robot.commands.auto.BlueNoteEight;
+import frc.robot.commands.GetNotePos;
 import frc.robot.commands.auto.BlueAmpSideFourNote;
 import frc.robot.commands.auto.BlueFiveNote;
 import frc.robot.commands.auto.BlueFourNote;
@@ -30,6 +31,7 @@ import frc.robot.commands.autodrive.AutoAlignWithAmp;
 import frc.robot.commands.auto.RedNoteEight;
 import frc.robot.commands.drive.Drive;
 import frc.robot.commands.intake.TowerIntake;
+import frc.robot.extras.NoteDetector;
 import frc.robot.extras.SmarterDashboardRegistry;
 import frc.robot.commands.shooter.ManualPivot;
 import frc.robot.commands.shooter.ManualRollers;
@@ -54,6 +56,7 @@ public class RobotContainer {
   private final IntakeSubsystem intakeSubsystem;
   private final PivotSubsystem pivotSubsystem;
   private final LEDSubsystem ledSubsystem;
+  private final NoteDetector noteDetector;
 
   private final SendableChooser<Command> autoChooser;
   
@@ -65,6 +68,7 @@ public class RobotContainer {
     intakeSubsystem = new IntakeSubsystem();
     pivotSubsystem = new PivotSubsystem();
     ledSubsystem = new LEDSubsystem();
+    noteDetector = new NoteDetector();
 
     autoChooser = new SendableChooser<Command>();
     autoChooser.setDefaultOption("red 4note", new RedFourNote(driveSubsystem, visionSubsystem, intakeSubsystem, shooterSubsystem, pivotSubsystem, ledSubsystem));
@@ -176,56 +180,59 @@ public class RobotContainer {
 
     //DRIVER BUTTONS
 
-    // driving
-    Command driveCommand = new Drive(driveSubsystem, visionSubsystem,
-      driverLeftStick[1],
-      driverLeftStick[0],
-      () -> modifyAxisCubed(driverRightStickX),
-      () -> !driverRightBumper.getAsBoolean()
-    );
+    // // driving
+    // Command driveCommand = new Drive(driveSubsystem, visionSubsystem,
+    //   driverLeftStick[1],
+    //   driverLeftStick[0],
+    //   () -> modifyAxisCubed(driverRightStickX),
+    //   () -> !driverRightBumper.getAsBoolean()
+    // );
 
-    driveSubsystem.setDefaultCommand(driveCommand);
+    // driveSubsystem.setDefaultCommand(driveCommand);
 
-    driverLeftTrigger.whileTrue(new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem, false, ledSubsystem));
-    // Amp Lineup
-    driverAButton.whileTrue(new AutoAlignWithAmp(driveSubsystem, visionSubsystem, driverLeftStick));
-    // Spinup for shoot
-    // driverRightTrigger.whileTrue(new SpinUpForSpeaker(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, driverLeftStickX, driverLeftStickY, driverRightBumper, ledSubsystem));
+    // driverLeftTrigger.whileTrue(new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem, false, ledSubsystem));
+    // // Amp Lineup
+    // driverAButton.whileTrue(new AutoAlignWithAmp(driveSubsystem, visionSubsystem, driverLeftStick));
+    // // Spinup for shoot
+    // // driverRightTrigger.whileTrue(new SpinUpForSpeaker(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, driverLeftStickX, driverLeftStickY, driverRightBumper, ledSubsystem));
     
-    driverLeftBumper.whileTrue(new ShootSpeaker(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, driverLeftStickX, operatorLeftStickY, driverRightBumper, ledSubsystem));
-    driverRightTrigger.whileTrue(new ShootWhileMove(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, driverLeftStick, driverYButton, ledSubsystem));
+    // driverLeftBumper.whileTrue(new ShootSpeaker(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, driverLeftStickX, operatorLeftStickY, driverRightBumper, ledSubsystem));
+    // driverRightTrigger.whileTrue(new ShootWhileMove(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, driverLeftStick, driverYButton, ledSubsystem));
 
-    // Resets the robot angle in the odometry, factors in which alliance the robot is on
-    driverRightDirectionPad.onTrue(new InstantCommand(() -> driveSubsystem.resetOdometry(new Pose2d(driveSubsystem.getPose().getX(), driveSubsystem.getPose().getY(), 
-          Rotation2d.fromDegrees(driveSubsystem.getAllianceAngleOffset())))));
-    // Reset robot odometry based on vision pose measurement from april tags
-    driverLeftDirectionPad.onTrue(new InstantCommand(() -> driveSubsystem.resetOdometry(visionSubsystem.getPoseFromAprilTags())));
+    // // Resets the robot angle in the odometry, factors in which alliance the robot is on
+    // driverRightDirectionPad.onTrue(new InstantCommand(() -> driveSubsystem.resetOdometry(new Pose2d(driveSubsystem.getPose().getX(), driveSubsystem.getPose().getY(), 
+    //       Rotation2d.fromDegrees(driveSubsystem.getAllianceAngleOffset())))));
+    // // Reset robot odometry based on vision pose measurement from april tags
+    // driverLeftDirectionPad.onTrue(new InstantCommand(() -> driveSubsystem.resetOdometry(visionSubsystem.getPoseFromAprilTags())));
 
+
+    driverBButton.whileTrue(new GetNotePos(noteDetector));
     // OPERATOR BUTTONS
 
-    // speaker
-    operatorRightTrigger.whileTrue(new ShootSpeaker(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, driverLeftStickX, driverLeftStickY, driverRightBumper, ledSubsystem));
-    // amp
-    operatorRightBumper.whileTrue(new ShootAmp(shooterSubsystem, pivotSubsystem, ledSubsystem, operatorBButton));
-    // fender shot
-    operatorUpDirectionPad.whileTrue(new SubwooferShot(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, driverLeftStickX, driverLeftStickY, driverRightStickX, driverRightBumper, ledSubsystem));
-    // intake (aka SUCC_BUTTON)
-    operatorLeftTrigger.whileTrue(new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem, false, ledSubsystem));
-    // outtake (aka UNSUCC_BUTTON)
-    operatorLeftBumper.whileTrue(new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem, true, ledSubsystem));
-    // manual pivot (possible climb, unlikely)
-    operatorAButton.whileTrue(new ManualPivot(pivotSubsystem, ()->modifyAxisCubed(operatorRightStickY)));
-    // manual rollers
-    operatorYButton.whileTrue(new ManualRollers(intakeSubsystem, true));
-    operatorXButton.whileTrue(new ManualRollers(intakeSubsystem, false));
+    // // speaker
+    // operatorRightTrigger.whileTrue(new ShootSpeaker(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, driverLeftStickX, driverLeftStickY, driverRightBumper, ledSubsystem));
+    // // amp
+    // operatorRightBumper.whileTrue(new ShootAmp(shooterSubsystem, pivotSubsystem, ledSubsystem, operatorBButton));
+    // // fender shot
+    // operatorUpDirectionPad.whileTrue(new SubwooferShot(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, driverLeftStickX, driverLeftStickY, driverRightStickX, driverRightBumper, ledSubsystem));
+    // // intake (aka SUCC_BUTTON)
+    // operatorLeftTrigger.whileTrue(new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem, false, ledSubsystem));
+    // // outtake (aka UNSUCC_BUTTON)
+    // operatorLeftBumper.whileTrue(new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem, true, ledSubsystem));
+    // // manual pivot (possible climb, unlikely)
+    // operatorAButton.whileTrue(new ManualPivot(pivotSubsystem, ()->modifyAxisCubed(operatorRightStickY)));
+    // // manual rollers
+    // operatorYButton.whileTrue(new ManualRollers(intakeSubsystem, true));
+    // operatorXButton.whileTrue(new ManualRollers(intakeSubsystem, false));
   }
 
   public Command getAutonomousCommand() {
     SmarterDashboardRegistry.initialize();
-    // Resets the pose factoring in the robot side
-    // This is just a failsafe, pose should be reset at the beginning of auto
-    driveSubsystem.resetOdometry(new Pose2d(driveSubsystem.getPose().getX(), driveSubsystem.getPose().getY(), 
-      Rotation2d.fromDegrees(driveSubsystem.getAllianceAngleOffset())));
-    return autoChooser.getSelected();
+    // // Resets the pose factoring in the robot side
+    // // This is just a failsafe, pose should be reset at the beginning of auto
+    // driveSubsystem.resetOdometry(new Pose2d(driveSubsystem.getPose().getX(), driveSubsystem.getPose().getY(), 
+    //   Rotation2d.fromDegrees(driveSubsystem.getAllianceAngleOffset())));
+    // return autoChooser.getSelected();
+    return null;
   }
 }
