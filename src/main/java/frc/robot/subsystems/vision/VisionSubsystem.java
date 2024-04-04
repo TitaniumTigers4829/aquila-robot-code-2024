@@ -113,13 +113,13 @@ public class VisionSubsystem extends SubsystemBase {
     // This code has the limelights alternating in updating their results every other loop.
     // It makes sense because they run at ~12hz, where the roborio runs at 50hz.
     // TODO: ZUNTUE: THIS IS THE CODE THAT CYCLES BETWEEN THE LIMELIGHTS
-    if (currentlyUsedLimelight.equals(VisionConstants.SHOOTER_LIMELIGHT_NAME)) {
-      currentlyUsedLimelight = VisionConstants.FRONT_LEFT_LIMELIGHT_NAME;
-    } else if (currentlyUsedLimelight.equals(VisionConstants.FRONT_LEFT_LIMELIGHT_NAME)) {
-      currentlyUsedLimelight = VisionConstants.FRONT_RIGHT_LIMELIGHT_NAME;
-    } else if (currentlyUsedLimelight.equals(VisionConstants.FRONT_RIGHT_LIMELIGHT_NAME)) {
-      currentlyUsedLimelight = VisionConstants.SHOOTER_LIMELIGHT_NAME;
-    }
+    // if (currentlyUsedLimelight.equals(VisionConstants.SHOOTER_LIMELIGHT_NAME)) {
+    //   currentlyUsedLimelight = VisionConstants.FRONT_LEFT_LIMELIGHT_NAME;
+    // } else if (currentlyUsedLimelight.equals(VisionConstants.FRONT_LEFT_LIMELIGHT_NAME)) {
+    //   currentlyUsedLimelight = VisionConstants.FRONT_RIGHT_LIMELIGHT_NAME;
+    // } else if (currentlyUsedLimelight.equals(VisionConstants.FRONT_RIGHT_LIMELIGHT_NAME)) {
+    //   currentlyUsedLimelight = VisionConstants.SHOOTER_LIMELIGHT_NAME;
+    // }
 
     // Gets the JSON dump from the currently used limelight
     currentlyUsedLimelightResults = LimelightHelpers.getLatestResults(currentlyUsedLimelight);
