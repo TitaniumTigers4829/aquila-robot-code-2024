@@ -27,7 +27,7 @@ public abstract class DriveCommandBase extends Command {
   private final DriveSubsystem driveSubsystem;
 
   private double lastTimeStampSeconds = 0;
-  private int ticksAfterSeeing = 0;
+  // private int ticksAfterSeeing = 0;
 
   /**
    * An abstract class that handles pose estimation while driving.
@@ -49,7 +49,7 @@ public abstract class DriveCommandBase extends Command {
     double currentTimeStampSeconds = lastTimeStampSeconds;
 
     if (visionSubsystem.canSeeAprilTags()) {
-      ticksAfterSeeing++;
+      // ticksAfterSeeing++;
       currentTimeStampSeconds = visionSubsystem.getTimeStampSeconds();
 
       double distanceFromClosestAprilTag = visionSubsystem.getDistanceFromClosestAprilTag();
@@ -68,14 +68,15 @@ public abstract class DriveCommandBase extends Command {
       // if () {
       Pose2d limelightVisionMeasurement = visionSubsystem.getPoseFromAprilTags();
       // TODO: ZUNTUE: THIS IS THE CODE THAT CHECKS IF THE MEASUREMENT IS VALID
-      if (ticksAfterSeeing > 2) {
+    //   if (ticksAfterSeeing > 2) {
         driveSubsystem.addPoseEstimatorVisionMeasurement(limelightVisionMeasurement, Timer.getFPGATimestamp());
         SmartDashboard.putString("llodometry", limelightVisionMeasurement.toString());
-      }
-      // }
-    } else {
-      ticksAfterSeeing = 0;
+    //   }
+    //   // }
     }
+    //  else {
+    //   // ticksAfterSeeing = 0;
+    // }
 
     lastTimeStampSeconds = currentTimeStampSeconds;
   }
