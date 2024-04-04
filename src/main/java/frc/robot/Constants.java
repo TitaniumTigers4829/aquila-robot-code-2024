@@ -296,8 +296,8 @@ public final class Constants {
     public static final double BLUE_LOADING_STATION_Y = 1.13;
 
     //ShootPassing constants
-    public static final double RED_PASSING_X = 15.43077278137207;
-    public static final double RED_PASSING_Y = 7.0229339599609375;
+    public static final double RED_PASSING_X = 16.039363861083984;
+    public static final double RED_PASSING_Y = 7.130331993103027;
     
     public static final double BLUE_PASSING_X = 1.343673825263977;
     public static final double BLUE_PASSING_Y = 6.969234943389893;
@@ -341,10 +341,11 @@ public final class Constants {
 
     public static final double PIVOT_NEUTRAL_SPEED = 0;
 
-    public static final double ANGLE_ZERO = -0.461669921875;
+    public static final double ANGLE_ZERO = -0.461669921875 - 0.0078125;
     public static final SensorDirectionValue ENCODER_REVERSED = SensorDirectionValue.Clockwise_Positive;
 
     public static final double SHOOT_AMP_ANGLE = 0.35205078125;
+    public static final double SHOOT_TRAP_ANGLE = 0;
     public static final double PIVOT_ACCEPTABLE_ERROR = 0.012;
 
     public static double[][] SPEAKER_PIVOT_POSITION = {
@@ -414,7 +415,7 @@ public final class Constants {
     public static final double ROLLER_INTAKE_BEFORE_LATCH_SPEED = .2;
     public static final double SHOOT_AMP_RPM = 2000;
     
-    public static final double AUTO_SHOOT_P = 7;
+    public static final double AUTO_SHOOT_P = 5; // 7 --> 4.5 --> 5
     public static final double AUTO_SHOOT_I = 0.0;
     public static final double AUTO_SHOOT_D = 0.0;
     public static Constraints AUTO_SHOOT_CONSTRAINTS = new Constraints(DriveConstants.MAX_ANGULAR_SPEED_RADIANS_PER_SECOND, 2);

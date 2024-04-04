@@ -6,6 +6,7 @@ import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.Constants.DriveConstants;
@@ -78,13 +79,13 @@ public class ShootPass extends DriveCommandBase {
     headingError = desiredHeading - driveSubsystem.getOdometryRotation2d().getRadians();
   
     turnController.enableContinuousInput(-Math.PI, Math.PI);
-    double turnOutput = deadband(turnController.calculate(headingError, 0));
+    double turnOutput = turnController.calculate(headingError, 0);
     
     driveSubsystem.drive(
       deadband(leftY.getAsDouble()) * 0.5, deadband(leftX.getAsDouble()) * 0.5, turnOutput,!isFieldRelative.getAsBoolean()
     );
     
-    shooterSubsystem.setRPM(ShooterConstants.SHOOT_SPEAKER_RPM - 100);
+    shooterSubsystem.setRPM(3700);
     pivotSubsystem.setPivotFromPassDistance(distance);
 
     if (isReadyToShoot()) {
@@ -109,8 +110,7 @@ public class ShootPass extends DriveCommandBase {
     return false;
   }
   public boolean isReadyToShoot() {
-    // TODO: heading
-     return shooterSubsystem.isShooterWithinAcceptableError() && pivotSubsystem.isPivotWithinAcceptableError() && (Math.abs(headingError) < DriveConstants.HEADING_ACCEPTABLE_ERROR_RADIANS);
+     return shooterSubsystem.isShooterWithinAcceptableError() && pivotSubsystem.isPivotWithinAcceptableError() && (Math.abs(headingError) < Units.degreesToRadians(1));
   }
 
   private double deadband(double val) {

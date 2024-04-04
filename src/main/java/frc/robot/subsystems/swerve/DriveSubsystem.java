@@ -330,7 +330,7 @@ public class DriveSubsystem extends SubsystemBase {
     Pose2d pose = getPose();
     SmarterDashboardRegistry.setPose(pose);
     odometryLogger.append(pose.toString(), (long)Timer.getFPGATimestamp());
-    SmartDashboard.putBoolean("screwed", Math.abs(pose.getX()) > 20);
+    // SmartDashboard.putBoolean("screwed", Math.abs(pose.getX()) > 20);
     SmartDashboard.putString("odometry", pose.toString());
     SmartDashboard.putNumber("speakerDistance", pose.getTranslation().getDistance(SmarterDashboardRegistry.getSpeakerPos()));
     SmartDashboard.putNumber("passingPos", pose.getTranslation().getDistance(SmarterDashboardRegistry.getPassingPos()));

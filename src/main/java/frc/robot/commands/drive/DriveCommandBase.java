@@ -21,7 +21,7 @@ public abstract class DriveCommandBase extends Command {
   private final MultiLinearInterpolator twoAprilTagLookupTable = 
     new MultiLinearInterpolator(VisionConstants.TWO_APRIL_TAG_LOOKUP_TABLE);
 
-  Translation2d middleField = new Translation2d(8.29, 4.13);
+  Pose2d middleField = new Pose2d(FieldConstants.FIELD_LENGTH_METERS / 2.0, FieldConstants.FIELD_WIDTH_METERS / 2.0, new Rotation2d());
 
   private final VisionSubsystem visionSubsystem;
   private final DriveSubsystem driveSubsystem;
@@ -48,7 +48,9 @@ public abstract class DriveCommandBase extends Command {
     // Updates the robot's odometry with april tags
     double currentTimeStampSeconds = lastTimeStampSeconds;
 
+    SmartDashboard.putBoolean("yes", false);
     if (visionSubsystem.canSeeAprilTags()) {
+      SmartDashboard.putBoolean("yes", true);
       // ticksAfterSeeing++;
       currentTimeStampSeconds = visionSubsystem.getTimeStampSeconds();
 
@@ -69,10 +71,12 @@ public abstract class DriveCommandBase extends Command {
         SmartDashboard.putNumber("cuurent Timp Stamp", currentTimeStampSeconds);
         SmartDashboard.putNumber("last time stamp", lastTimeStampSeconds);
       Pose2d limelightVisionMeasurement = visionSubsystem.getPoseFromAprilTags();
+        SmartDashboard.putString("llodometry", limelightVisionMeasurement.toString());
       // TODO: ZUNTUE: THIS IS THE CODE THAT CHECKS IF THE MEASUREMENT IS VALID
       // if (currentTimeStampSeconds > lastTimeStampSeconds) {
-      //   driveSubsystem.addPoseEstimatorVisionMeasurement(limelightVisionMeasurement, Timer.getFPGATimestamp() - visionSubsystem.getLatencySeconds());
-      //   SmartDashboard.putString("llodometry", limelightVisionMeasurement.toString());
+      if (!limelightVisionMeasurement.equals(middleField)) {
+        driveSubsystem.addPoseEstimatorVisionMeasurement(limelightVisionMeasurement, Timer.getFPGATimestamp() - visionSubsystem.getLatencySeconds());
+      }
       // }
     //   // }
     }
