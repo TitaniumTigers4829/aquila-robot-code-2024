@@ -54,7 +54,7 @@ public class SpinUpForSpeakerAuto extends DriveCommandBase {
   public void execute() {
     super.execute();
     
-    shooterSubsystem.setRPM(ShooterConstants.SHOOT_SPEAKER_RPM * 0.75);
+    shooterSubsystem.setRPM(ShooterConstants.SHOOT_SPEAKER_RPM * 0.5);
     // if we are ready to shoot:
     if (isReadyToShoot()) {
       leds.setProcess(LEDProcess.SHOOT);
@@ -67,9 +67,8 @@ public class SpinUpForSpeakerAuto extends DriveCommandBase {
   @Override
   public void end(boolean interrupted) {
     leds.setProcess(LEDProcess.DEFAULT);
-    shooterSubsystem.setRPM(ShooterConstants.SHOOT_SPEAKER_RPM * 0.75);
-
-    }
+    shooterSubsystem.setRPM(ShooterConstants.SHOOT_SPEAKER_RPM * 0.5);
+  }
 
   // Returns true when the command should end.
   @Override

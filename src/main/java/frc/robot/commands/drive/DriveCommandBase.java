@@ -21,7 +21,7 @@ public abstract class DriveCommandBase extends Command {
   private final MultiLinearInterpolator twoAprilTagLookupTable = 
     new MultiLinearInterpolator(VisionConstants.TWO_APRIL_TAG_LOOKUP_TABLE);
 
-  Translation2d middleField = new Translation2d(8.23, 4.13);
+  Translation2d middleField = new Translation2d(8.29, 4.13);
 
   private final VisionSubsystem visionSubsystem;
   private final DriveSubsystem driveSubsystem;
@@ -66,12 +66,14 @@ public abstract class DriveCommandBase extends Command {
       // Pose2d limelightVisionMeasurement = visionSubsystem.getPoseFromAprilTags();
       // SmartDashboard.putString("llodometry", limelightVisionMeasurement.toString());
       // if () {
+        SmartDashboard.putNumber("cuurent Timp Stamp", currentTimeStampSeconds);
+        SmartDashboard.putNumber("last time stamp", lastTimeStampSeconds);
       Pose2d limelightVisionMeasurement = visionSubsystem.getPoseFromAprilTags();
       // TODO: ZUNTUE: THIS IS THE CODE THAT CHECKS IF THE MEASUREMENT IS VALID
-    //   if (ticksAfterSeeing > 2) {
-        driveSubsystem.addPoseEstimatorVisionMeasurement(limelightVisionMeasurement, Timer.getFPGATimestamp());
-        SmartDashboard.putString("llodometry", limelightVisionMeasurement.toString());
-    //   }
+      // if (currentTimeStampSeconds > lastTimeStampSeconds) {
+      //   driveSubsystem.addPoseEstimatorVisionMeasurement(limelightVisionMeasurement, Timer.getFPGATimestamp() - visionSubsystem.getLatencySeconds());
+      //   SmartDashboard.putString("llodometry", limelightVisionMeasurement.toString());
+      // }
     //   // }
     }
     //  else {

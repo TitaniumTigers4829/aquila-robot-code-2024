@@ -97,7 +97,7 @@ public final class Constants {
   
   public static final class ModuleConstants { 
     public static final double DRIVE_GEAR_RATIO = 4.59;
-    public static final double WHEEL_DIAMETER_METERS = Units.inchesToMeters(3.900450631870026);
+    public static final double WHEEL_DIAMETER_METERS = Units.inchesToMeters(3.774788522800778);
 
     public static final double WHEEL_CIRCUMFERENCE_METERS = WHEEL_DIAMETER_METERS * Math.PI;
     public static final double DRIVE_TO_METERS =  WHEEL_CIRCUMFERENCE_METERS / DRIVE_GEAR_RATIO;
@@ -164,7 +164,8 @@ public final class Constants {
       {1.5, 0.02, 0.02, Units.degreesToRadians(180)}, // 5
       {3, 1.2, 1.2, Units.degreesToRadians(180)}, // 25
       {4.5, 5.5, 5.5, Units.degreesToRadians(180)}, // 90
-      {8, 10.0, 10.0, Units.degreesToRadians(180)} // 180
+      {8, 10.0, 10.0, Units.degreesToRadians(180)}, // 180
+      {100, 1000, 10000, Units.degreesToRadians(360)}
     };
 
     public static final double[][] TWO_APRIL_TAG_LOOKUP_TABLE = {
@@ -173,7 +174,8 @@ public final class Constants {
       {1.5, 0.01, 0.01, Units.degreesToRadians(180)}, // 0.7
       {3, 0.05, 0.05, Units.degreesToRadians(180)}, // 4
       {4.5, 0.15, 0.15, Units.degreesToRadians(180)}, // 30
-      {8, 1.0, 1.0, Units.degreesToRadians(180)} // 90
+      {8, 1.0, 1.0, Units.degreesToRadians(180)}, // 90
+      {100, 1000, 10000, Units.degreesToRadians(360)}
     };
 
 
@@ -401,7 +403,7 @@ public final class Constants {
 
     public static final int SHOOTER_ACCEPTABLE_RPM_ERROR = 25;
 
-    public static final double SHOOT_P = 0.522; // .6
+    public static final double SHOOT_P = 0.522;
     public static final double SHOOT_I = 0.00;
     public static final double SHOOT_D = 0.001;
     public static final double SHOOT_S = 0.319692618511411;

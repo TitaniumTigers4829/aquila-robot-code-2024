@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.Constants.FieldConstants;
+import frc.robot.Constants.ShooterConstants;
 import frc.robot.extras.LimelightHelpers;
 import frc.robot.extras.LimelightHelpers.LimelightResults;
 
@@ -21,8 +22,15 @@ public class VisionSubsystem extends SubsystemBase {
    */
   public boolean canSeeAprilTags() {
     // First checks if it can see an april tag, then checks if it is fully in frame
-    return LimelightHelpers.getFiducialID(currentlyUsedLimelight) != -1
-      && (Math.abs(LimelightHelpers.getTX(currentlyUsedLimelight)) <= VisionConstants.LL3G_FOV_MARGIN_OF_ERROR);
+    boolean isInFrame = true;
+    if (currentlyUsedLimelight.equals(VisionConstants.SHOOTER_LIMELIGHT_NAME)) {
+      isInFrame = LimelightHelpers.getTX(currentlyUsedLimelight) < VisionConstants.LL3G_FOV_MARGIN_OF_ERROR;
+    } else {
+      isInFrame = LimelightHelpers.getTX(currentlyUsedLimelight) < VisionConstants.LL3_FOV_MARGIN_OF_ERROR;
+    }
+    SmartDashboard.putBoolean("id", LimelightHelpers.getFiducialID(currentlyUsedLimelight) >= 1);
+    SmartDashboard.putBoolean("frame", isInFrame);
+    return LimelightHelpers.getFiducialID(currentlyUsedLimelight) <= 0 && isInFrame;
   }
 
 
@@ -113,16 +121,18 @@ public class VisionSubsystem extends SubsystemBase {
     // This code has the limelights alternating in updating their results every other loop.
     // It makes sense because they run at ~12hz, where the roborio runs at 50hz.
     // TODO: ZUNTUE: THIS IS THE CODE THAT CYCLES BETWEEN THE LIMELIGHTS
-    if (currentlyUsedLimelight.equals(VisionConstants.SHOOTER_LIMELIGHT_NAME)) {
-      currentlyUsedLimelight = VisionConstants.FRONT_LEFT_LIMELIGHT_NAME;
-    } else if (currentlyUsedLimelight.equals(VisionConstants.FRONT_LEFT_LIMELIGHT_NAME)) {
-      currentlyUsedLimelight = VisionConstants.FRONT_RIGHT_LIMELIGHT_NAME;
-    } else if (currentlyUsedLimelight.equals(VisionConstants.FRONT_RIGHT_LIMELIGHT_NAME)) {
-      currentlyUsedLimelight = VisionConstants.SHOOTER_LIMELIGHT_NAME;
-    }
+    // if (currentlyUsedLimelight.equals(VisionConstants.SHOOTER_LIMELIGHT_NAME)) {
+    //   currentlyUsedLimelight = VisionConstants.FRONT_LEFT_LIMELIGHT_NAME;
+    // } else if (currentlyUsedLimelight.equals(VisionConstants.FRONT_LEFT_LIMELIGHT_NAME)) {
+    //   currentlyUsedLimelight = VisionConstants.FRONT_RIGHT_LIMELIGHT_NAME;
+    // } else if (currentlyUsedLimelight.equals(VisionConstants.FRONT_RIGHT_LIMELIGHT_NAME)) {
+    //   currentlyUsedLimelight = VisionConstants.SHOOTER_LIMELIGHT_NAME;
+    // }
 
     // Gets the JSON dump from the currently used limelight
     currentlyUsedLimelightResults = LimelightHelpers.getLatestResults(currentlyUsedLimelight);
+    SmartDashboard.putNumber("latency", currentlyUsedLimelightResults.targetingResults.latency_capture);
+    SmartDashboard.putNumber("latency", currentlyUsedLimelightResults.targetingResults.timestamp_LIMELIGHT_publish / 1000.0);
 
     // Turns the limelight LEDs on if they can't see an april tag
     // if (!canSeeAprilTags()) {

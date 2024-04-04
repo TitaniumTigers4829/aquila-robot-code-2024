@@ -53,6 +53,7 @@ public class ShootSpeakerAuto extends DriveCommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    timer.stop();
     timer.reset();
     Optional<Alliance> alliance = DriverStation.getAlliance();
     //sets alliance to red
@@ -73,12 +74,12 @@ public class ShootSpeakerAuto extends DriveCommandBase {
     // distance (for speaker lookups)
     double distance = robotPos.getDistance(speakerPos);
     // arctangent for desired heading
-      desiredHeading = Math.atan2((robotPos.getY() - speakerPos.getY()), (robotPos.getX() - speakerPos.getX()));
-  
-      headingError = desiredHeading - driveSubsystem.getOdometryRotation2d().getRadians();
-  
-      turnController.enableContinuousInput(-Math.PI, Math.PI);
-      double turnOutput = deadband(turnController.calculate(headingError, 0));
+    desiredHeading = Math.atan2((robotPos.getY() - speakerPos.getY()), (robotPos.getX() - speakerPos.getX()));
+
+    headingError = desiredHeading - driveSubsystem.getOdometryRotation2d().getRadians();
+
+    turnController.enableContinuousInput(-Math.PI, Math.PI);
+    double turnOutput = deadband(turnController.calculate(headingError, 0));
 
     driveSubsystem.drive(
       0, 
@@ -87,7 +88,15 @@ public class ShootSpeakerAuto extends DriveCommandBase {
       false
     );
 
-    shooterSubsystem.setRPM(ShooterConstants.SHOOT_SPEAKER_RPM);
+     // TODO: 5500 rpm?
+    // if (distance > 4.5) {
+      // shooterSubsystem.setSpeed(1);
+      // shooterSubsystem.setRPM(ShooterConstants.SHOOT_SPEAKER_VERY_FAR_RPM);
+      if (distance > 3.2) {
+        shooterSubsystem.setRPM(ShooterConstants.SHOOT_SPEAKER_FAR_RPM);
+      } else {
+        shooterSubsystem.setRPM(ShooterConstants.SHOOT_SPEAKER_RPM);
+      }
     pivotSubsystem.setPivotFromSpeakerDistance(distance);
     // if we are ready to shoot:
     if (isReadyToShoot()) {
@@ -106,19 +115,19 @@ public class ShootSpeakerAuto extends DriveCommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    shooterSubsystem.setRPM(ShooterConstants.SHOOT_SPEAKER_RPM * 0.5);
+    shooterSubsystem.setFlywheelNeutral();
+    // shooterSubsystem.setRPM(ShooterConstants.SHOOT_SPEAKER_RPM * 0.5);
     shooterSubsystem.setRollerSpeed(0);
     // intakeSubsystem.setIntakeSpeed(0);
     pivotSubsystem.setPivotAngle(PivotConstants.PIVOT_INTAKE_ANGLE);
     leds.setProcess(LEDProcess.DEFAULT);
-    driveSubsystem.drive(0, 0, 0, false);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return timer.hasElapsed(0.3);
-    // return false;
+    return timer.hasElapsed(0.2);
+    // return !shooterSubsystem.hasNote();
   }
   
   public boolean isReadyToShoot() {
