@@ -4,6 +4,7 @@ import java.util.Optional;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -20,6 +21,8 @@ import frc.robot.subsystems.vision.VisionSubsystem;
 public class AutoAlignWithAmp extends DriveCommandBase {
   private final DriveSubsystem driveSubsystem;
   private final DoubleSupplier[] leftStick;
+  private final SlewRateLimiter xLimiter = new SlewRateLimiter(0.2);
+  private final SlewRateLimiter yLimiter = new SlewRateLimiter(0.2);
 
   private boolean isRed;
   private Pose2d ampPose;
@@ -77,14 +80,18 @@ public class AutoAlignWithAmp extends DriveCommandBase {
     double xOutput = deadband(xTranslationController.calculate(xPoseError, 0));
     double yOutput = deadband(yTranslationController.calculate(yPoseError, 0));
     double turnOutput = deadband(turnController.calculate(thetaPoseError, 0)); 
+    xOutput = xLimiter.calculate(xOutput);
+    yOutput = yLimiter.calculate(yOutput);
     SmartDashboard.putNumber("xOut", xOutput);
     SmartDashboard.putNumber("yOut", yOutput);
     SmartDashboard.putNumber("turnOut", turnOutput);
 
     // Gets the chassis speeds for the robot using the odometry rotation (not alliance relative)
     ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
-      leftStick[1].getAsDouble() * DriveConstants.MAX_SPEED_METERS_PER_SECOND,
-      leftStick[0].getAsDouble() * DriveConstants.MAX_SPEED_METERS_PER_SECOND,
+      xOutput,
+      yOutput,
+      // leftStick[1].getAsDouble() * DriveConstants.MAX_SPEED_METERS_PER_SECOND,
+      // leftStick[0].getAsDouble() * DriveConstants.MAX_SPEED_METERS_PER_SECOND,
       turnOutput,
       driveSubsystem.getOdometryRotation2d()
     );

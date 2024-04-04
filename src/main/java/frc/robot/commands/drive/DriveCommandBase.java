@@ -3,9 +3,12 @@
 package frc.robot.commands.drive;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.extras.interpolators.MultiLinearInterpolator;
 import frc.robot.subsystems.swerve.DriveSubsystem;
@@ -17,6 +20,8 @@ public abstract class DriveCommandBase extends Command {
     new MultiLinearInterpolator(VisionConstants.ONE_APRIL_TAG_LOOKUP_TABLE);
   private final MultiLinearInterpolator twoAprilTagLookupTable = 
     new MultiLinearInterpolator(VisionConstants.TWO_APRIL_TAG_LOOKUP_TABLE);
+
+  Translation2d middleField = new Translation2d(8.23, 4.13);
 
   private final VisionSubsystem visionSubsystem;
   private final DriveSubsystem driveSubsystem;
@@ -60,11 +65,14 @@ public abstract class DriveCommandBase extends Command {
       // Only updates the pose estimator if the limelight pose is new and reliable
       // Pose2d limelightVisionMeasurement = visionSubsystem.getPoseFromAprilTags();
       // SmartDashboard.putString("llodometry", limelightVisionMeasurement.toString());
-      if (ticksAfterSeeing > VisionConstants.FRAMES_BEFORE_ADDING_VISION_MEASUREMENT) {
-        Pose2d limelightVisionMeasurement = visionSubsystem.getPoseFromAprilTags();
-        driveSubsystem.addPoseEstimatorVisionMeasurement(limelightVisionMeasurement, Timer.getFPGATimestamp() - visionSubsystem.getLatencySeconds());
+      // if () {
+      Pose2d limelightVisionMeasurement = visionSubsystem.getPoseFromAprilTags();
+      // TODO: ZUNTUE: THIS IS THE CODE THAT CHECKS IF THE MEASUREMENT IS VALID
+      if (ticksAfterSeeing > 2) {
+        driveSubsystem.addPoseEstimatorVisionMeasurement(limelightVisionMeasurement, Timer.getFPGATimestamp());
         SmartDashboard.putString("llodometry", limelightVisionMeasurement.toString());
       }
+      // }
     } else {
       ticksAfterSeeing = 0;
     }

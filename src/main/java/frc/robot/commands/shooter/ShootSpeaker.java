@@ -93,14 +93,18 @@ public class ShootSpeaker extends DriveCommandBase {
       !isFieldRelative.getAsBoolean()
     );
 
-    if (distance > 4.2) {
+    // TODO: 5500 rpm?
+    // if (distance > 4.5) {
+      // shooterSubsystem.setSpeed(1);
+      // shooterSubsystem.setRPM(ShooterConstants.SHOOT_SPEAKER_VERY_FAR_RPM);
+    if (distance > 3.2) {
       shooterSubsystem.setRPM(ShooterConstants.SHOOT_SPEAKER_FAR_RPM);
     } else {
       shooterSubsystem.setRPM(ShooterConstants.SHOOT_SPEAKER_RPM);
     }
 
     pivotSubsystem.setPivotFromSpeakerDistance(distance);
-    // pivotSubsystem.setPivotAngle(0.031);
+    // pivotSubsystem.setPivotAngle(0.097);
     // if we are ready to shoot:
     if (isReadyToShoot()) {
       leds.setProcess(LEDProcess.SHOOT);

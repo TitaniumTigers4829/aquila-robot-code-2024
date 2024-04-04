@@ -4,6 +4,8 @@
 
 package frc.robot.commands.intake;
 
+import java.util.function.Consumer;
+
 import javax.swing.text.StyleContext.SmallAttributeSet;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -24,14 +26,16 @@ public class TowerIntake extends Command {
   private final ShooterSubsystem shooterSubsystem;
   private final LEDSubsystem leds;
   private final boolean intakeReverse;
+  private final Consumer<Boolean> hasNoteCallback;
   private boolean intakeSensorLatch;
   
-  public TowerIntake(IntakeSubsystem intakeSubsystem, PivotSubsystem pivotSubsystem, ShooterSubsystem shooterSubsystem, boolean intakeReverse, LEDSubsystem leds) {
+  public TowerIntake(IntakeSubsystem intakeSubsystem, PivotSubsystem pivotSubsystem, ShooterSubsystem shooterSubsystem, boolean intakeReverse, LEDSubsystem leds, Consumer<Boolean> hasNoteCallback) {
     this.intakeSubsystem = intakeSubsystem;
     this.pivotSubsystem = pivotSubsystem;
     this.shooterSubsystem = shooterSubsystem;
     this.intakeReverse = intakeReverse;
     this.leds = leds;
+    this.hasNoteCallback = hasNoteCallback;
     addRequirements(intakeSubsystem, pivotSubsystem, shooterSubsystem, leds);
   }
 
@@ -83,12 +87,14 @@ public class TowerIntake extends Command {
         }
       }
     }
+    hasNoteCallback.accept((Boolean)intakeSensorLatch);
   }
   
 
   @Override
   public void end(boolean interrupted) {
     leds.setProcess(LEDProcess.DEFAULT);
+    hasNoteCallback.accept(false);
     intakeSubsystem.setIntakeSpeed(0);
     shooterSubsystem.setRollerSpeed(0);
     pivotSubsystem.setPivotSpeed(0);

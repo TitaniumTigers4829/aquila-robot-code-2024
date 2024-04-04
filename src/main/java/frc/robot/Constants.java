@@ -276,7 +276,7 @@ public final class Constants {
 
     //TODO: tune
     public static final double BLUE_AMP_SHOOT_X = 1.9;
-    public static final double BLUE_AMP_SHOOT_Y = 7.767;
+    public static final double BLUE_AMP_SHOOT_Y = 7.42;
 
     public static final Rotation2d RED_AMP_ROTATION = Rotation2d.fromDegrees(-90);
     public static final Rotation2d BLUE_AMP_ROTATION = Rotation2d.fromDegrees(-90);
@@ -343,34 +343,32 @@ public final class Constants {
     public static final SensorDirectionValue ENCODER_REVERSED = SensorDirectionValue.Clockwise_Positive;
 
     public static final double SHOOT_AMP_ANGLE = 0.35205078125;
-    public static final double PIVOT_ACCEPTABLE_ERROR = 0.016;
+    public static final double PIVOT_ACCEPTABLE_ERROR = 0.012;
 
     public static double[][] SPEAKER_PIVOT_POSITION = {
       // Distance, Angle (rotations)
       {1.3, 0.029},
-      {1.5, 0.0412265625},
-      {1.7, 0.046},
-      {1.9, 0.0554296875},
-      {2.1, 0.05987109375},
-      {2.3, 0.066}, 
-      {2.5, 0.071},
-      {2.7, 0.078974609375},
-      {2.9, 0.08280078125},
-      {3.1, 0.083},
-      {3.2, 0.085},
-      {3.3, 0.086134765625},
-      {3.4, 0.087},
-      {3.5, 0.091623046875},
-      {3.7, 0.091},
-      {3.9, 0.093},
-      {4.0, 0.097},
-      {4.2, 0.099},
-      {4.4, 0.0935},
-      {4.6, 0.094},
-      {4.7, 0.095},
-      {4.8, 0.095},
-      {4.9, 0.094},
-      {5.1, 0.095}
+      {1.5, 0.037265625},
+      {1.7, 0.042},
+      {1.9, 0.047},
+      {2.1, 0.05},
+      {2.3, 0.059}, 
+      {2.5, 0.068},
+      {2.7, 0.075},
+      {2.9, 0.081},
+      {3.1, 0.0835},
+      {3.3, 0.085},
+      {3.5, 0.087},
+      {3.7, 0.089},
+      {3.9, 0.0935},
+      {4.1, 0.095},
+      {4.3, 0.097},
+      {4.5, 0.098},
+      // {4.6, 0.094},
+      // {4.7, 0.095},
+      // {4.8, 0.095},
+      // {4.9, 0.094},
+      // {5.1, 0.095}
     };
 
     public static double[][] PASS_PIVOT_POSITION = {
@@ -398,7 +396,8 @@ public final class Constants {
     public static final int NOTE_SENSOR_ID = 9;
 
     public static final double SHOOT_SPEAKER_RPM = 4000;
-    public static final double SHOOT_SPEAKER_FAR_RPM = 4300;
+    public static final double SHOOT_SPEAKER_FAR_RPM = 4800;
+    public static final double SHOOT_SPEAKER_VERY_FAR_RPM = 5500;
 
     public static final int SHOOTER_ACCEPTABLE_RPM_ERROR = 25;
 
@@ -431,7 +430,7 @@ public final class Constants {
     public static final double AUTO_LINEUP_TRANSLATION_P = 5; // 4.5, 4.0
     public static final double AUTO_LINEUP_TRANSLATION_I = 0.0;
     public static final double AUTO_LINEUP_TRANSLATION_D = 0.0;
-    public static Constraints AUTO_LINEUP_TRANSLATION_CONSTRAINTS = new Constraints(5, 2);
+    public static Constraints AUTO_LINEUP_TRANSLATION_CONSTRAINTS = new Constraints(1, 1);
 
     // TODO: calc
     public static final double NOTE_LAUNCH_VELOCITY_METERS_PER_SECOND = 10.8;
