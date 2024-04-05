@@ -105,7 +105,7 @@ public final class Constants {
     public static final double DRIVE_TO_METERS_PER_SECOND = WHEEL_CIRCUMFERENCE_METERS / DRIVE_GEAR_RATIO;
 
     public static final double DRIVE_SUPPLY_LIMIT = 40.0;
-    public static final double DRIVE_STATOR_LIMIT = 50.0;  
+    public static final double DRIVE_STATOR_LIMIT = 50.0;
 
     public static final double TURN_P = 116;  
     public static final double TURN_I = 0.0;
