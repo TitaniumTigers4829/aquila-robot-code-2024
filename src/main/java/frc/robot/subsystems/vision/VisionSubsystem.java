@@ -14,6 +14,7 @@ public class VisionSubsystem extends SubsystemBase {
 
   private LimelightResults currentlyUsedLimelightResults = LimelightHelpers.getLatestResults(VisionConstants.SHOOTER_LIMELIGHT_NAME);
   private String currentlyUsedLimelight = VisionConstants.SHOOTER_LIMELIGHT_NAME;
+  private double currentRobotHeadingDegrees = 0;
 
   public VisionSubsystem() {}
 
@@ -33,7 +34,6 @@ public class VisionSubsystem extends SubsystemBase {
     return LimelightHelpers.getFiducialID(currentlyUsedLimelight) >= 1 && isInFrame;
   }
 
-
   /**
    * Returns the pose of the robot calculated by the limelight. If there
    * are multiple limelights that can see april tags, it uses the limelight
@@ -41,6 +41,9 @@ public class VisionSubsystem extends SubsystemBase {
    */
   public Pose2d getPoseFromAprilTags() {
     if (canSeeAprilTags()) {
+      LimelightHelpers.SetRobotOrientation(VisionConstants.SHOOTER_LIMELIGHT_NAME, currentRobotHeadingDegrees, 0, 0, 0, 0, 0);
+      return LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(currentlyUsedLimelight).pose;
+      /* This is the old detection code
       Pose2d botPose = LimelightHelpers.getBotPose2d(currentlyUsedLimelight);
       // Pose2d botPose = LimelightHelpers.toPose
       // The origin of botpose is at the center of the field
@@ -48,6 +51,7 @@ public class VisionSubsystem extends SubsystemBase {
       double robotY = botPose.getY() + FieldConstants.FIELD_WIDTH_METERS / 2.0;
       Rotation2d robotRotation = botPose.getRotation();
       return new Pose2d(robotX, robotY, robotRotation);
+      */
     } else {
       return new Pose2d();
     }
@@ -116,19 +120,27 @@ public class VisionSubsystem extends SubsystemBase {
     return Double.MAX_VALUE;
   }
 
+  public void setCurrentRobotHeadingDegrees(double robotHeadingDegrees) {
+    this.currentRobotHeadingDegrees = robotHeadingDegrees;
+  }
+
+  public String getCurrentlyUsedLimelightName() {
+    return currentlyUsedLimelight;
+  }
+
   @Override
   public void periodic() {
     // Every periodic chooses the limelight to use based off of their distance from april tags
     // This code has the limelights alternating in updating their results every other loop.
     // It makes sense because they run at ~12hz, where the roborio runs at 50hz.
-    // TODO: ZUNTUE: THIS IS THE CODE THAT CYCLES BETWEEN THE LIMELIGHTS
-    if (currentlyUsedLimelight.equals(VisionConstants.SHOOTER_LIMELIGHT_NAME)) {
-      currentlyUsedLimelight = VisionConstants.FRONT_LEFT_LIMELIGHT_NAME;
-    } else if (currentlyUsedLimelight.equals(VisionConstants.FRONT_LEFT_LIMELIGHT_NAME)) {
-      currentlyUsedLimelight = VisionConstants.FRONT_RIGHT_LIMELIGHT_NAME;
-    } else if (currentlyUsedLimelight.equals(VisionConstants.FRONT_RIGHT_LIMELIGHT_NAME)) {
-      currentlyUsedLimelight = VisionConstants.SHOOTER_LIMELIGHT_NAME;
-    }
+
+    // if (currentlyUsedLimelight.equals(VisionConstants.SHOOTER_LIMELIGHT_NAME)) {
+    //   currentlyUsedLimelight = VisionConstants.FRONT_LEFT_LIMELIGHT_NAME;
+    // } else if (currentlyUsedLimelight.equals(VisionConstants.FRONT_LEFT_LIMELIGHT_NAME)) {
+    //   currentlyUsedLimelight = VisionConstants.FRONT_RIGHT_LIMELIGHT_NAME;
+    // } else if (currentlyUsedLimelight.equals(VisionConstants.FRONT_RIGHT_LIMELIGHT_NAME)) {
+    //   currentlyUsedLimelight = VisionConstants.SHOOTER_LIMELIGHT_NAME;
+    // }
 
     // Gets the JSON dump from the currently used limelight
     currentlyUsedLimelightResults = LimelightHelpers.getLatestResults(currentlyUsedLimelight);

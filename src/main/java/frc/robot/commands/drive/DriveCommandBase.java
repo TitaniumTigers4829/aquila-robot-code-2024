@@ -14,6 +14,7 @@ import frc.robot.extras.interpolators.MultiLinearInterpolator;
 import frc.robot.subsystems.swerve.DriveSubsystem;
 import frc.robot.subsystems.vision.VisionSubsystem;
 
+
 public abstract class DriveCommandBase extends Command {
 
   private final MultiLinearInterpolator oneAprilTagLookupTable = 
@@ -45,6 +46,9 @@ public abstract class DriveCommandBase extends Command {
     // Updates the pose estimator using the swerve modules
     driveSubsystem.addPoseEstimatorSwerveMeasurement();
 
+    // Updates the rotation stored in the vision subystem (used for MegaTag2)
+    visionSubsystem.setCurrentRobotHeadingDegrees(driveSubsystem.getOdometryRotation2d().getDegrees());
+
     // Updates the robot's odometry with april tags
     double currentTimeStampSeconds = lastTimeStampSeconds;
 
@@ -65,16 +69,10 @@ public abstract class DriveCommandBase extends Command {
       }
 
       // Only updates the pose estimator if the limelight pose is new and reliable
-      // Pose2d limelightVisionMeasurement = visionSubsystem.getPoseFromAprilTags();
-      // SmartDashboard.putString("llodometry", limelightVisionMeasurement.toString());
-      // if () {
-        SmartDashboard.putNumber("cuurent Timp Stamp", currentTimeStampSeconds);
-        SmartDashboard.putNumber("last time stamp", lastTimeStampSeconds);
-      Pose2d limelightVisionMeasurement = visionSubsystem.getPoseFromAprilTags();
-        SmartDashboard.putString("llodometry", limelightVisionMeasurement.toString());
-      // TODO: ZUNTUE: THIS IS THE CODE THAT CHECKS IF THE MEASUREMENT IS VALID
-      // if (currentTimeStampSeconds > lastTimeStampSeconds) {
-      if (!limelightVisionMeasurement.equals(middleField)) {
+
+      if (currentTimeStampSeconds > lastTimeStampSeconds) {
+        Pose2d limelightVisionMeasurement = visionSubsystem.getPoseFromAprilTags();
+
         driveSubsystem.addPoseEstimatorVisionMeasurement(limelightVisionMeasurement, Timer.getFPGATimestamp() - visionSubsystem.getLatencySeconds());
       }
       // }
