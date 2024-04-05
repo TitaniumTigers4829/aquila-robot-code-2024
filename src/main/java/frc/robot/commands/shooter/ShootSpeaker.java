@@ -65,6 +65,8 @@ public class ShootSpeaker extends DriveCommandBase {
     isRed = alliance.isPresent() && alliance.get() == Alliance.Red;  
 
     speakerPos = isRed ? new Translation2d(FieldConstants.RED_SPEAKER_X, FieldConstants.RED_SPEAKER_Y) : new Translation2d(FieldConstants.BLUE_SPEAKER_X, FieldConstants.BLUE_SPEAKER_Y);
+    turnController.enableContinuousInput(-Math.PI, Math.PI);
+
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -74,7 +76,6 @@ public class ShootSpeaker extends DriveCommandBase {
     
     // get positions of various things
     Translation2d robotPos = driveSubsystem.getPose().getTranslation();
-    //pose.getTranslation().getDistance(SmarterDashboardRegistry.getSpeakerPos())
     // distance (for speaker lookups)
     double distance = robotPos.getDistance(speakerPos);
     // arctangent for desired heading
@@ -82,24 +83,28 @@ public class ShootSpeaker extends DriveCommandBase {
   
     headingError = desiredHeading - driveSubsystem.getOdometryRotation2d().getRadians();
   
-    turnController.enableContinuousInput(-Math.PI, Math.PI);
     double turnOutput = deadband(turnController.calculate(headingError, 0));
 
     // allow the driver to drive slowly (NOT full speed - will mess up shooter)
     driveSubsystem.drive(
       deadband(leftY.getAsDouble()) * 0.5, 
       deadband(leftX.getAsDouble()) * 0.5, 
-      turnOutput, //turnoutput
+      turnOutput, 
       !isFieldRelative.getAsBoolean()
     );
 
-    if (distance > 4.2) {
+    // TODO: 5500 rpm?
+    // if (distance > 4.5) {
+      // shooterSubsystem.setSpeed(1);
+      // shooterSubsystem.setRPM(ShooterConstants.SHOOT_SPEAKER_VERY_FAR_RPM);
+    if (distance > 3.2) {
       shooterSubsystem.setRPM(ShooterConstants.SHOOT_SPEAKER_FAR_RPM);
     } else {
       shooterSubsystem.setRPM(ShooterConstants.SHOOT_SPEAKER_RPM);
     }
 
     pivotSubsystem.setPivotFromSpeakerDistance(distance);
+    // pivotSubsystem.setPivotAngle(0.097);
     // if we are ready to shoot:
     if (isReadyToShoot()) {
       leds.setProcess(LEDProcess.SHOOT);

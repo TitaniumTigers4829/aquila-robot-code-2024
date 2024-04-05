@@ -1,5 +1,6 @@
 package frc.robot.subsystems.shooter;
 
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -16,11 +17,13 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.HardwareConstants;
 import frc.robot.Constants.ShooterConstants;
+import frc.robot.extras.SmarterDashboardRegistry;
 
 public class ShooterSubsystem extends SubsystemBase {
   private final TalonFX leaderFlywheel;
   private final TalonFX followerFlywheel;
   private final TalonFX rollerMotor;
+  private final WPI_TalonSRX trapBlower;
   
   private final DigitalInput noteSensor;
 
@@ -35,6 +38,7 @@ public class ShooterSubsystem extends SubsystemBase {
     leaderFlywheel = new TalonFX(ShooterConstants.LEADER_FLYWHEEL_ID);
     followerFlywheel = new TalonFX(ShooterConstants.FOLLOWER_FLYWHEEL_ID);
     rollerMotor = new TalonFX(ShooterConstants.ROLLER_MOTOR_ID);
+    trapBlower = new WPI_TalonSRX(0);
 
     noteSensor = new DigitalInput(ShooterConstants.NOTE_SENSOR_ID);
     
@@ -70,6 +74,14 @@ public class ShooterSubsystem extends SubsystemBase {
 
     BaseStatusSignal.setUpdateFrequencyForAll(HardwareConstants.SIGNAL_FREQUENCY, leaderVelocity, followerVelocity);
     ParentDevice.optimizeBusUtilizationForAll(leaderFlywheel, rollerMotor, followerFlywheel);
+  }
+
+  /**
+   * runs the blower motor
+   * @param speed
+   */
+  public void runBlower(double speed) {
+    trapBlower.set(speed);
   }
 
   /**
@@ -166,5 +178,10 @@ public class ShooterSubsystem extends SubsystemBase {
     SmartDashboard.putBoolean("has note", hasNote());
     SmartDashboard.putNumber("current RPM", leaderVelocity.refresh().getValueAsDouble() * 60.0);
     SmartDashboard.putNumber("error", shooterTargetRPM - (leaderVelocity.refresh().getValueAsDouble() * 60.0));
+    if (hasNote()) {
+      SmarterDashboardRegistry.noteIn();
+    } else {
+      SmarterDashboardRegistry.noNote();
+    }
   }
 }
