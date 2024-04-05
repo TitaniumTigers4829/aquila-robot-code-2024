@@ -86,7 +86,8 @@ public final class Constants {
     public static final InvertedValue REAR_LEFT_DRIVE_ENCODER_REVERSED = InvertedValue.Clockwise_Positive;
     public static final InvertedValue REAR_RIGHT_DRIVE_ENCODER_REVERSED = InvertedValue.CounterClockwise_Positive;
     
-    public static final double MAX_ANGULAR_SPEED_RADIANS_PER_SECOND = 10;
+    public static final double MAX_ANGULAR_SPEED_RADIANS_PER_SECOND = 20;
+    public static final double LOW_ANGULAR_SPEED_RADIANS_PER_SECOND = 5;
 
     public static final double MAX_SPEED_METERS_PER_SECOND = 6.95;
     public static final double MAX_SHOOT_SPEED_METERS_PER_SECOND = 3;
@@ -159,20 +160,20 @@ public final class Constants {
 
     public static final double[][] ONE_APRIL_TAG_LOOKUP_TABLE = {
       // {distance in meters, x std deviation, y std deviation, r (in degrees) std deviation}
-      {0, 0.01, 0.01, Units.degreesToRadians(180)}, // 2
-      {1.5, 0.02, 0.02, Units.degreesToRadians(180)}, // 5
-      {3, 1.2, 1.2, Units.degreesToRadians(180)}, // 25
-      {4.5, 5.5, 5.5, Units.degreesToRadians(180)}, // 90
-      {8, 10.0, 10.0, Units.degreesToRadians(180)} // 180
+      {0, 0.01, 0.01, Units.degreesToRadians(180000)}, // 2
+      {1.5, 0.02, 0.02, Units.degreesToRadians(180000)}, // 5
+      {3, 1.2, 1.2, Units.degreesToRadians(180000)}, // 25
+      {4.5, 5.5, 5.5, Units.degreesToRadians(180000)}, // 90
+      {8, 10.0, 10.0, Units.degreesToRadians(180000)} // 180
     };
 
     public static final double[][] TWO_APRIL_TAG_LOOKUP_TABLE = {
       // {distance in meters, x std deviation, y std deviation, r (in degrees) std deviation}
-      {0, 0.01, 0.01, Units.degreesToRadians(180)}, // 0.5
-      {1.5, 0.01, 0.01, Units.degreesToRadians(180)}, // 0.7
-      {3, 0.05, 0.05, Units.degreesToRadians(180)}, // 4
-      {4.5, 0.15, 0.15, Units.degreesToRadians(180)}, // 30
-      {8, 1.0, 1.0, Units.degreesToRadians(180)} // 90
+      {0, 0.01, 0.01, Units.degreesToRadians(180000)}, // 0.5
+      {1.5, 0.01, 0.01, Units.degreesToRadians(180000)}, // 0.7
+      {3, 0.03, 0.03, Units.degreesToRadians(180000)}, // 4
+      {4.5, 0.05, 0.05, Units.degreesToRadians(180000)}, // 30
+      {8, 0.5, 0.5, Units.degreesToRadians(180000)} // 90
     };
 
 

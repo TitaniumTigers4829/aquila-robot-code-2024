@@ -155,7 +155,7 @@ public class DriveSubsystem extends SubsystemBase {
       ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rotationSpeed, getOdometryAllianceRelativeRotation2d())
       : new ChassisSpeeds(xSpeed, ySpeed, rotationSpeed));
     SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, DriveConstants.MAX_SPEED_METERS_PER_SECOND);
-    
+   
     frontLeftSwerveModule.setDesiredState(swerveModuleStates[0]);
     frontRightSwerveModule.setDesiredState(swerveModuleStates[1]);
     rearLeftSwerveModule.setDesiredState(swerveModuleStates[2]);
@@ -190,10 +190,14 @@ public class DriveSubsystem extends SubsystemBase {
 
   /**
    * Returns the heading of the robot in degrees from 0 to 360. 
-   * Counter-clockwise is positive.
+   * Returned value is Counter-clockwise positive.
    */
   public double getHeading() {
     return -gyro.getAngle();
+  }
+
+  public double getGyroRate() {
+    return -gyro.getRate();
   }
 
   /**

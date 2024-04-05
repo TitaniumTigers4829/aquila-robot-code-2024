@@ -61,7 +61,7 @@ public abstract class DriveCommandBase extends Command {
         driveSubsystem.setPoseEstimatorVisionConfidence(standardDeviations[0], standardDeviations[1], standardDeviations[2]);
       }
 
-      // Only updates the pose estimator if the limelight pose is new and reliable
+      // Only updates the pose estimator if the limelight pose is new and reliable, and the robot isn't rotating too fast
       if (currentTimeStampSeconds > lastTimeStampSeconds) {
         Pose2d limelightVisionMeasurement = visionSubsystem.getPoseFromAprilTags();
         driveSubsystem.addPoseEstimatorVisionMeasurement(limelightVisionMeasurement, Timer.getFPGATimestamp() - visionSubsystem.getLatencySeconds());

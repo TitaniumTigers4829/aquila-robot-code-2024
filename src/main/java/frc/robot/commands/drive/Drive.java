@@ -12,7 +12,8 @@ public class Drive extends DriveCommandBase {
   private final DriveSubsystem driveSubsystem;
 
   private final DoubleSupplier leftJoystickY, leftJoystickX, rightJoystickX;
-  private final BooleanSupplier isFieldRelative;
+  private final BooleanSupplier isFieldRelative, isHighRotation;
+  private double angularSpeed;
 
   /**
    * The command for driving the robot using joystick inputs.
@@ -24,7 +25,7 @@ public class Drive extends DriveCommandBase {
    * @param isFieldRelative The boolean supplier if the robot should drive
    * field relative
    */
-  public Drive(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, DoubleSupplier leftJoystickY, DoubleSupplier leftJoystickX, DoubleSupplier rightJoystickX, BooleanSupplier isFieldRelative) {
+  public Drive(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, DoubleSupplier leftJoystickY, DoubleSupplier leftJoystickX, DoubleSupplier rightJoystickX, BooleanSupplier isFieldRelative, BooleanSupplier isHighRotation) {
     super(driveSubsystem, visionSubsystem);
     this.driveSubsystem = driveSubsystem;
     addRequirements(driveSubsystem, visionSubsystem);
@@ -32,6 +33,7 @@ public class Drive extends DriveCommandBase {
     this.leftJoystickX = leftJoystickX;
     this.rightJoystickX = rightJoystickX;
     this.isFieldRelative = isFieldRelative;
+    this.isHighRotation = isHighRotation;
   }
 
   @Override
@@ -41,10 +43,15 @@ public class Drive extends DriveCommandBase {
   @Override
   public void execute() {
     // Drives the robot
+    if (isHighRotation.getAsBoolean()) {
+      angularSpeed = DriveConstants.MAX_ANGULAR_SPEED_RADIANS_PER_SECOND;
+    } else {
+      angularSpeed = DriveConstants.LOW_ANGULAR_SPEED_RADIANS_PER_SECOND;
+    }
     driveSubsystem.drive(
       leftJoystickY.getAsDouble() * DriveConstants.MAX_SPEED_METERS_PER_SECOND,
       leftJoystickX.getAsDouble() * DriveConstants.MAX_SPEED_METERS_PER_SECOND,
-      rightJoystickX.getAsDouble() * DriveConstants.MAX_ANGULAR_SPEED_RADIANS_PER_SECOND,
+      rightJoystickX.getAsDouble() * angularSpeed,
       isFieldRelative.getAsBoolean()
     );
 
