@@ -13,6 +13,7 @@ public class VisionSubsystem extends SubsystemBase {
 
   private LimelightResults currentlyUsedLimelightResults = LimelightHelpers.getLatestResults(VisionConstants.SHOOTER_LIMELIGHT_NAME);
   private String currentlyUsedLimelight = VisionConstants.SHOOTER_LIMELIGHT_NAME;
+  private double currentRobotHeadingDegrees = 0;
 
   public VisionSubsystem() {}
 
@@ -25,7 +26,6 @@ public class VisionSubsystem extends SubsystemBase {
       && Math.abs(LimelightHelpers.getTX(currentlyUsedLimelight)) <= VisionConstants.FOV_MARGIN_OF_ERROR;
   }
 
-
   /**
    * Returns the pose of the robot calculated by the limelight. If there
    * are multiple limelights that can see april tags, it uses the limelight
@@ -33,12 +33,18 @@ public class VisionSubsystem extends SubsystemBase {
    */
   public Pose2d getPoseFromAprilTags() {
     if (canSeeAprilTags()) {
-      Pose2d botPose = LimelightHelpers.getBotPose2d(currentlyUsedLimelight);
-      // The origin of botpose is at the center of the field
-      double robotX = botPose.getX() + FieldConstants.FIELD_LENGTH_METERS / 2.0;
-      double robotY = botPose.getY() + FieldConstants.FIELD_WIDTH_METERS / 2.0;
-      Rotation2d robotRotation = botPose.getRotation();
-      return new Pose2d(robotX, robotY, robotRotation);
+      // This checks if its using the 3g, if so it uses the new type of pose estimation
+      if (currentlyUsedLimelight.equals(VisionConstants.SHOOTER_LIMELIGHT_NAME)) {
+        LimelightHelpers.SetRobotOrientation(VisionConstants.SHOOTER_LIMELIGHT_NAME, currentRobotHeadingDegrees, 0, 0, 0, 0, 0);
+        return LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(VisionConstants.SHOOTER_LIMELIGHT_NAME).pose;
+      } else {
+        Pose2d botPose = LimelightHelpers.getBotPose2d(currentlyUsedLimelight);
+        // The origin of botpose is at the center of the field
+        double robotX = botPose.getX() + FieldConstants.FIELD_LENGTH_METERS / 2.0;
+        double robotY = botPose.getY() + FieldConstants.FIELD_WIDTH_METERS / 2.0;
+        Rotation2d robotRotation = botPose.getRotation();
+        return new Pose2d(robotX, robotY, robotRotation);
+      }
     } else {
       return new Pose2d();
     }
@@ -105,6 +111,14 @@ public class VisionSubsystem extends SubsystemBase {
 
     // To be safe returns a big distance from the april tags if it can't see any
     return Double.MAX_VALUE;
+  }
+
+  public void setCurrentRobotHeadingDegrees(double robotHeadingDegrees) {
+    this.currentRobotHeadingDegrees = robotHeadingDegrees;
+  }
+
+  public String getCurrentlyUsedLimelightName() {
+    return currentlyUsedLimelight;
   }
 
   @Override

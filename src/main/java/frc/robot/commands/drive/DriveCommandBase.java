@@ -11,6 +11,7 @@ import frc.robot.extras.interpolators.MultiLinearInterpolator;
 import frc.robot.subsystems.swerve.DriveSubsystem;
 import frc.robot.subsystems.vision.VisionSubsystem;
 
+
 public abstract class DriveCommandBase extends Command {
 
   private final MultiLinearInterpolator oneAprilTagLookupTable = 
@@ -40,6 +41,9 @@ public abstract class DriveCommandBase extends Command {
     // Updates the pose estimator using the swerve modules
     driveSubsystem.addPoseEstimatorSwerveMeasurement();
 
+    // Updates the rotation stored in the vision subystem (used for MegaTag2)
+    visionSubsystem.setCurrentRobotHeadingDegrees(driveSubsystem.getOdometryRotation2d().getDegrees());
+
     // Updates the robot's odometry with april tags
     double currentTimeStampSeconds = lastTimeStampSeconds;
 
@@ -48,17 +52,19 @@ public abstract class DriveCommandBase extends Command {
       currentTimeStampSeconds = visionSubsystem.getTimeStampSeconds();
 
       double distanceFromClosestAprilTag = visionSubsystem.getDistanceFromClosestAprilTag();
+
       // Sets the pose estimator confidence in vision based off of number of april tags and distance
-      if (visionSubsystem.getNumberOfAprilTags() == 1) {
-        double[] standardDeviations = oneAprilTagLookupTable.getLookupValue(distanceFromClosestAprilTag);
-        driveSubsystem.setPoseEstimatorVisionConfidence(standardDeviations[0], standardDeviations[1], standardDeviations[2]);
-      } else if (visionSubsystem.getNumberOfAprilTags() > 1) {
+      // If it can see 2+ apriltags, or it's using the 3g it has lower std devs
+      if (visionSubsystem.getNumberOfAprilTags() > 1 || visionSubsystem.getCurrentlyUsedLimelightName().equals(VisionConstants.SHOOTER_LIMELIGHT_NAME)) {
         double[] standardDeviations = twoAprilTagLookupTable.getLookupValue(distanceFromClosestAprilTag);
+        driveSubsystem.setPoseEstimatorVisionConfidence(standardDeviations[0], standardDeviations[1], standardDeviations[2]);
+      } else {
+        double[] standardDeviations = oneAprilTagLookupTable.getLookupValue(distanceFromClosestAprilTag);
         driveSubsystem.setPoseEstimatorVisionConfidence(standardDeviations[0], standardDeviations[1], standardDeviations[2]);
       }
 
       // Only updates the pose estimator if the limelight pose is new and reliable
-      if (currentTimeStampSeconds > lastTimeStampSeconds && ticksAfterSeeing > VisionConstants.FRAMES_BEFORE_ADDING_VISION_MEASUREMENT) {
+      if (currentTimeStampSeconds > lastTimeStampSeconds) {
         Pose2d limelightVisionMeasurement = visionSubsystem.getPoseFromAprilTags();
         driveSubsystem.addPoseEstimatorVisionMeasurement(limelightVisionMeasurement, Timer.getFPGATimestamp() - visionSubsystem.getLatencySeconds());
         SmartDashboard.putString("llodometyr", limelightVisionMeasurement.toString());
