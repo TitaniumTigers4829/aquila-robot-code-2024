@@ -6,7 +6,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.Constants.FieldConstants;
-import frc.robot.Constants.ShooterConstants;
 import frc.robot.extras.LimelightHelpers;
 import frc.robot.extras.LimelightHelpers.LimelightResults;
 
@@ -14,7 +13,7 @@ public class VisionSubsystem extends SubsystemBase {
 
   private LimelightResults currentlyUsedLimelightResults = LimelightHelpers.getLatestResults(VisionConstants.SHOOTER_LIMELIGHT_NAME);
   private String currentlyUsedLimelight = VisionConstants.SHOOTER_LIMELIGHT_NAME;
-  private double currentRobotHeadingDegrees = 0;
+  private Pose2d lastSeenPose = new Pose2d();
 
   public VisionSubsystem() {}
 
@@ -23,15 +22,12 @@ public class VisionSubsystem extends SubsystemBase {
    */
   public boolean canSeeAprilTags() {
     // First checks if it can see an april tag, then checks if it is fully in frame
-    boolean isInFrame = false;
     if (currentlyUsedLimelight.equals(VisionConstants.SHOOTER_LIMELIGHT_NAME)) {
-      isInFrame = LimelightHelpers.getTX(currentlyUsedLimelight) < VisionConstants.LL3G_FOV_MARGIN_OF_ERROR;
-    } else {
-      isInFrame = LimelightHelpers.getTX(currentlyUsedLimelight) < VisionConstants.LL3_FOV_MARGIN_OF_ERROR;
+          return LimelightHelpers.getFiducialID(currentlyUsedLimelight) != -1
+      && Math.abs(LimelightHelpers.getTX(currentlyUsedLimelight)) <= VisionConstants.LL3G_FOV_MARGIN_OF_ERROR;
     }
-    SmartDashboard.putBoolean("id", LimelightHelpers.getFiducialID(currentlyUsedLimelight) >= 1);
-    SmartDashboard.putBoolean("frame", isInFrame);
-    return LimelightHelpers.getFiducialID(currentlyUsedLimelight) >= 1 && isInFrame;
+    return LimelightHelpers.getFiducialID(currentlyUsedLimelight) != -1
+      && Math.abs(LimelightHelpers.getTX(currentlyUsedLimelight)) <= VisionConstants.LL3_FOV_MARGIN_OF_ERROR;
   }
 
   /**
@@ -41,15 +37,15 @@ public class VisionSubsystem extends SubsystemBase {
    */
   public Pose2d getPoseFromAprilTags() {
     if (canSeeAprilTags()) {
-      // This is the MT2 Code, its not great tbh
+      // This is the MT2 Code, its not
       // LimelightHelpers.SetRobotOrientation(VisionConstants.SHOOTER_LIMELIGHT_NAME, currentRobotHeadingDegrees, 0, 0, 0, 0, 0);
       // return LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(currentlyUsedLimelight).pose;
       Pose2d botPose = LimelightHelpers.getBotPose2d(currentlyUsedLimelight);
-      // Pose2d botPose = LimelightHelpers.toPose
       // The origin of botpose is at the center of the field
       double robotX = botPose.getX() + FieldConstants.FIELD_LENGTH_METERS / 2.0;
       double robotY = botPose.getY() + FieldConstants.FIELD_WIDTH_METERS / 2.0;
       Rotation2d robotRotation = botPose.getRotation();
+      lastSeenPose = new Pose2d(robotX, robotY, robotRotation);
       return new Pose2d(robotX, robotY, robotRotation);
     } else {
       return new Pose2d();
@@ -119,8 +115,8 @@ public class VisionSubsystem extends SubsystemBase {
     return Double.MAX_VALUE;
   }
 
-  public void setCurrentRobotHeadingDegrees(double robotHeadingDegrees) {
-    this.currentRobotHeadingDegrees = robotHeadingDegrees;
+  public Pose2d getLastSeenPose() {
+    return lastSeenPose;
   }
 
   public String getCurrentlyUsedLimelightName() {
@@ -132,26 +128,25 @@ public class VisionSubsystem extends SubsystemBase {
     // Every periodic chooses the limelight to use based off of their distance from april tags
     // This code has the limelights alternating in updating their results every other loop.
     // It makes sense because they run at ~12hz, where the roborio runs at 50hz.
-
-    // if (currentlyUsedLimelight.equals(VisionConstants.SHOOTER_LIMELIGHT_NAME)) {
-    //   currentlyUsedLimelight = VisionConstants.FRONT_LEFT_LIMELIGHT_NAME;
-    // } else if (currentlyUsedLimelight.equals(VisionConstants.FRONT_LEFT_LIMELIGHT_NAME)) {
-    //   currentlyUsedLimelight = VisionConstants.FRONT_RIGHT_LIMELIGHT_NAME;
-    // } else if (currentlyUsedLimelight.equals(VisionConstants.FRONT_RIGHT_LIMELIGHT_NAME)) {
-    //   currentlyUsedLimelight = VisionConstants.SHOOTER_LIMELIGHT_NAME;
-    // }
+    if (currentlyUsedLimelight.equals(VisionConstants.SHOOTER_LIMELIGHT_NAME)) {
+      currentlyUsedLimelight = VisionConstants.FRONT_LEFT_LIMELIGHT_NAME;
+    } else if (currentlyUsedLimelight.equals(VisionConstants.FRONT_LEFT_LIMELIGHT_NAME)) {
+      currentlyUsedLimelight = VisionConstants.FRONT_RIGHT_LIMELIGHT_NAME;
+    } else if (currentlyUsedLimelight.equals(VisionConstants.FRONT_RIGHT_LIMELIGHT_NAME)) {
+      currentlyUsedLimelight = VisionConstants.SHOOTER_LIMELIGHT_NAME;
+    }
 
     // Gets the JSON dump from the currently used limelight
     currentlyUsedLimelightResults = LimelightHelpers.getLatestResults(currentlyUsedLimelight);
 
     // Turns the limelight LEDs on if they can't see an april tag
-    // if (!canSeeAprilTags()) {
-    //   LimelightHelpers.setLEDMode_ForceOn(VisionConstants.FRONT_LEFT_LIMELIGHT_NAME);
-    //   LimelightHelpers.setLEDMode_ForceOn(VisionConstants.FRONT_RIGHT_LIMELIGHT_NAME);
-    // } else {
-    //   LimelightHelpers.setLEDMode_ForceOff(VisionConstants.FRONT_LEFT_LIMELIGHT_NAME);
-    //   LimelightHelpers.setLEDMode_ForceOff(VisionConstants.FRONT_RIGHT_LIMELIGHT_NAME);
-    // }
+    if (!canSeeAprilTags()) {
+      LimelightHelpers.setLEDMode_ForceOn(VisionConstants.FRONT_LEFT_LIMELIGHT_NAME);
+      LimelightHelpers.setLEDMode_ForceOn(VisionConstants.FRONT_RIGHT_LIMELIGHT_NAME);
+    } else {
+      LimelightHelpers.setLEDMode_ForceOff(VisionConstants.FRONT_LEFT_LIMELIGHT_NAME);
+      LimelightHelpers.setLEDMode_ForceOff(VisionConstants.FRONT_RIGHT_LIMELIGHT_NAME);
+    }
   }
 
 }

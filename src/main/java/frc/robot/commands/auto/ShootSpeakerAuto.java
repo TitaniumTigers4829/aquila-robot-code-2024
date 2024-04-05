@@ -94,6 +94,8 @@ public class ShootSpeakerAuto extends DriveCommandBase {
       // shooterSubsystem.setRPM(ShooterConstants.SHOOT_SPEAKER_VERY_FAR_RPM);
       if (distance > 3.2) {
         shooterSubsystem.setRPM(ShooterConstants.SHOOT_SPEAKER_FAR_RPM);
+      } else if (distance > 1.8) {
+        shooterSubsystem.setRPM(4400);
       } else {
         shooterSubsystem.setRPM(ShooterConstants.SHOOT_SPEAKER_RPM);
       }
@@ -107,16 +109,16 @@ public class ShootSpeakerAuto extends DriveCommandBase {
     }
 
     // If it has shot the note and the timer hasn't started
-    if (!shooterSubsystem.hasNote() && !timer.hasElapsed(0.001)) {
-      timer.start();
-    }
+    // if (!shooterSubsystem.hasNote() && !timer.hasElapsed(0.001)) {
+    //   timer.start();
+    // }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    shooterSubsystem.setFlywheelNeutral();
-    // shooterSubsystem.setRPM(ShooterConstants.SHOOT_SPEAKER_RPM * 0.5);
+    // shooterSubsystem.setFlywheelNeutral();
+    shooterSubsystem.setRPM(ShooterConstants.SHOOT_SPEAKER_RPM * 0.5);
     shooterSubsystem.setRollerSpeed(0);
     // intakeSubsystem.setIntakeSpeed(0);
     pivotSubsystem.setPivotAngle(PivotConstants.PIVOT_INTAKE_ANGLE);
@@ -126,7 +128,7 @@ public class ShootSpeakerAuto extends DriveCommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return timer.hasElapsed(0.2);
+    return timer.hasElapsed(0.1);
     // return !shooterSubsystem.hasNote();
   }
   

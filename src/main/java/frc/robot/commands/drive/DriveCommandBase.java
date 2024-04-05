@@ -46,9 +46,6 @@ public abstract class DriveCommandBase extends Command {
     // Updates the pose estimator using the swerve modules
     driveSubsystem.addPoseEstimatorSwerveMeasurement();
 
-    // Updates the rotation stored in the vision subystem (used for MegaTag2)
-    visionSubsystem.setCurrentRobotHeadingDegrees(driveSubsystem.getOdometryRotation2d().getDegrees());
-
     // Updates the robot's odometry with april tags
     double currentTimeStampSeconds = lastTimeStampSeconds;
 
@@ -69,7 +66,7 @@ public abstract class DriveCommandBase extends Command {
       }
 
       // Only updates the pose estimator if the limelight pose is new and reliable, and the robot isn't rotating too fast
-      if (currentTimeStampSeconds > lastTimeStampSeconds) {
+      if (visionSubsystem.canSeeAprilTags()) {
         Pose2d limelightVisionMeasurement = visionSubsystem.getPoseFromAprilTags();
 
         driveSubsystem.addPoseEstimatorVisionMeasurement(limelightVisionMeasurement, Timer.getFPGATimestamp() - visionSubsystem.getLatencySeconds());

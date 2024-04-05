@@ -166,6 +166,7 @@ public final class Constants {
       {3, 1.2, 1.2, Units.degreesToRadians(180000)}, // 25
       {4.5, 5.5, 5.5, Units.degreesToRadians(180000)}, // 90
       {8, 10.0, 10.0, Units.degreesToRadians(180000)} // 180
+
     };
 
     public static final double[][] TWO_APRIL_TAG_LOOKUP_TABLE = {
@@ -173,7 +174,7 @@ public final class Constants {
       {0, 0.01, 0.01, Units.degreesToRadians(180000)}, // 0.5
       {1.5, 0.01, 0.01, Units.degreesToRadians(180000)}, // 0.7
       {3, 0.03, 0.03, Units.degreesToRadians(180000)}, // 4
-      {4.5, 0.05, 0.05, Units.degreesToRadians(180000)}, // 30
+      {4.5, 0.06, 0.06, Units.degreesToRadians(180000)}, // 30
       {8, 0.5, 0.5, Units.degreesToRadians(180000)} // 90
     };
 
@@ -265,12 +266,12 @@ public final class Constants {
     public static final double FIELD_LENGTH_METERS = Units.inchesToMeters(653);
     public static final double FIELD_WIDTH_METERS = Units.inchesToMeters(325);
 
-    public static final double RED_AMP_X = 14.613;
+    public static final double RED_AMP_X = 14.82218074798584;
     public static final double RED_AMP_Y = 8.197;
 
     //TODO: tune
-    public static final double RED_AMP_SHOOT_X = 14.72; // 14.77
-    public static final double RED_AMP_SHOOT_Y = 7.82;
+    public static final double RED_AMP_SHOOT_X = 14.82218074798584; // 14.77
+    public static final double RED_AMP_SHOOT_Y = 7.774723052978516;
 
     public static final double BLUE_AMP_X = 1.9;
     public static final double BLUE_AMP_Y = 8.161;
@@ -325,10 +326,10 @@ public final class Constants {
 
     public static final double SUBWOOFER_ANGLE = 0.029;
 
-    public static final double MIN_ANGLE = 0;
+    public static final double MIN_ANGLE = -0.009765625;
     public static final double MAX_ANGLE = 0.5537109375;
 
-    public static final double PIVOT_INTAKE_ANGLE = -0.001220703125;
+    public static final double PIVOT_INTAKE_ANGLE = -0.002597265625;
 
     public static final double PIVOT_P = 160.0;
     public static final double PIVOT_I = 6.0; 
@@ -351,26 +352,23 @@ public final class Constants {
       // Distance, Angle (rotations)
       {1.3, 0.029},
       {1.5, 0.037265625},
-      {1.7, 0.042},
-      {1.9, 0.047},
-      {2.1, 0.05},
-      {2.3, 0.059}, 
-      {2.5, 0.068},
-      {2.7, 0.075},
-      {2.9, 0.081},
-      {3.1, 0.0835},
-      {3.3, 0.085},
-      {3.5, 0.087},
-      {3.7, 0.089},
-      {3.9, 0.0935},
-      {4.1, 0.095},
-      {4.3, 0.097},
-      {4.5, 0.098},
-      // {4.6, 0.094},
-      // {4.7, 0.095},
-      // {4.8, 0.095},
-      // {4.9, 0.094},
-      // {5.1, 0.095}
+      {1.7, 0.0436},
+      {1.9, 0.054},
+      {2.1, 0.062},
+      {2.3, 0.07}, 
+      {2.5, 0.077},
+      {2.7, 0.081},
+      {2.9, 0.086},
+      {3.1, 0.0905},
+      {3.3, 0.094},
+      {3.5, 0.097},
+      {3.7, 0.1},
+      {3.9, 0.103},
+      {4.1, 0.1055},
+      {4.3, 0.1077},
+      {4.5, 0.10842},
+      {4.7, 0.111},
+      {4.9, 0.1135}
     };
 
     public static double[][] PASS_PIVOT_POSITION = {
@@ -429,7 +427,7 @@ public final class Constants {
     public static final double AUTO_LINEUP_ROTATION_D = 0.0;
     public static Constraints AUTO_LINEUP_ROTATION_CONSTRAINTS = new Constraints(DriveConstants.MAX_ANGULAR_SPEED_RADIANS_PER_SECOND, 2);
 
-    public static final double AUTO_LINEUP_TRANSLATION_P = 5; // 4.5, 4.0
+    public static final double AUTO_LINEUP_TRANSLATION_P = 10; // 4.5, 4.0
     public static final double AUTO_LINEUP_TRANSLATION_I = 0.0;
     public static final double AUTO_LINEUP_TRANSLATION_D = 0.0;
     public static Constraints AUTO_LINEUP_TRANSLATION_CONSTRAINTS = new Constraints(1, 1);

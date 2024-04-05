@@ -26,6 +26,7 @@ import frc.robot.commands.auto.RedFiveNote;
 import frc.robot.commands.auto.FollowChoreoTrajectory;
 import frc.robot.commands.auto.RedAmpSideFourNote;
 import frc.robot.commands.auto.RedFar3Note;
+import frc.robot.commands.auto.RedFarSideFourNote;
 import frc.robot.commands.auto.RedFourNote;
 import frc.robot.commands.auto.RedShootTaxi;
 import frc.robot.commands.auto.RedSixNote;
@@ -93,6 +94,7 @@ public class RobotContainer {
     autoChooser.addOption("red under stage 3 note", new RedUnderStage4note(driveSubsystem, visionSubsystem, pivotSubsystem, shooterSubsystem, intakeSubsystem));
     autoChooser.addOption("red far 3 note", new RedFar3Note(driveSubsystem, visionSubsystem, pivotSubsystem, shooterSubsystem, intakeSubsystem));
     autoChooser.addOption("red six", new RedSixNote(driveSubsystem, visionSubsystem, shooterSubsystem, intakeSubsystem, pivotSubsystem, ledSubsystem));
+    autoChooser.addOption("red far side four", new RedFarSideFourNote(driveSubsystem, visionSubsystem, shooterSubsystem, intakeSubsystem, pivotSubsystem, ledSubsystem));
     autoChooser.addOption("nothing", null);
 
     SmartDashboard.putData("autoChooser", autoChooser);
@@ -177,7 +179,7 @@ public class RobotContainer {
     JoystickButton operatorBButton = new JoystickButton(operatorController, JoystickConstants.B_BUTTON_ID);
     JoystickButton operatorRightBumper = new JoystickButton(operatorController, JoystickConstants.RIGHT_BUMPER_ID);
     Trigger operatorRightTrigger = new Trigger(() -> (operatorController.getRawAxis(JoystickConstants.RIGHT_TRIGGER_ID) > 0.2));
-    Trigger driverRightTrigger = new Trigger(() -> (operatorController.getRawAxis(JoystickConstants.RIGHT_TRIGGER_ID) > 0.2));
+    Trigger driverRightTrigger = new Trigger(() -> (driverController.getRawAxis(JoystickConstants.RIGHT_TRIGGER_ID) > 0.2));
 
 
     // manual pivot and intake rollers 
@@ -227,13 +229,14 @@ public class RobotContainer {
     driverRightDirectionPad.onTrue(new InstantCommand(() -> driveSubsystem.resetOdometry(new Pose2d(driveSubsystem.getPose().getX(), driveSubsystem.getPose().getY(), 
           Rotation2d.fromDegrees(driveSubsystem.getAllianceAngleOffset())))));
     // // Reset robot odometry based on vision pose measurement from april tags
-    driverLeftDirectionPad.onTrue(new InstantCommand(() -> driveSubsystem.resetOdometry(visionSubsystem.getPoseFromAprilTags())));
+    driverLeftDirectionPad.onTrue(new InstantCommand(() -> driveSubsystem.resetOdometry(visionSubsystem.getLastSeenPose())));
     // driverLeftDpad.onTrue(new InstantCommand(() -> driveSubsystem.resetOdometry(new Pose2d(15.251774787902832, 5.573054313659668, Rotation2d.fromRadians(3.14159265)))));
     // driverBButton.whileTrue(new ShootPass(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, driverLeftStickX, driverLeftStickY, driverRightBumper, ledSubsystem));
 
-
-    // driverYButton.whileTrue(new IntakeFromShooter(shooterSubsystem, intakeSubsystem));
-
+    // driverXButton.
+    driverBButton.whileTrue(new ShootPass(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, driverLeftStickY, operatorLeftStickY, driverYButton, ledSubsystem));
+    // driverDownDirectionPad.whileTrue(new IntakeFromShooter(shooterSubsystem, intakeSubsystem));
+    driverYButton.whileTrue(new ShootSpeaker(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, driverLeftStickX, operatorLeftStickY, driverRightBumper, ledSubsystem));
     // OPERATOR BUTTONS
 
     // speaker

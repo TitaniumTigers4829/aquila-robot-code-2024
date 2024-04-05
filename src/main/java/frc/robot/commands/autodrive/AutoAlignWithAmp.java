@@ -80,11 +80,6 @@ public class AutoAlignWithAmp extends DriveCommandBase {
     double xOutput = deadband(xTranslationController.calculate(xPoseError, 0));
     double yOutput = deadband(yTranslationController.calculate(yPoseError, 0));
     double turnOutput = deadband(turnController.calculate(thetaPoseError, 0)); 
-    xOutput = xLimiter.calculate(xOutput);
-    yOutput = yLimiter.calculate(yOutput);
-    SmartDashboard.putNumber("xOut", xOutput);
-    SmartDashboard.putNumber("yOut", yOutput);
-    SmartDashboard.putNumber("turnOut", turnOutput);
 
     // Gets the chassis speeds for the robot using the odometry rotation (not alliance relative)
     ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
@@ -95,6 +90,7 @@ public class AutoAlignWithAmp extends DriveCommandBase {
       turnOutput,
       driveSubsystem.getOdometryRotation2d()
     );
+
 
     // Drives the robot towards the amp
     driveSubsystem.drive(
