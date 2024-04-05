@@ -33,18 +33,16 @@ public class VisionSubsystem extends SubsystemBase {
    */
   public Pose2d getPoseFromAprilTags() {
     if (canSeeAprilTags()) {
-      // This checks if its using the 3g, if so it uses the new type of pose estimation
-      if (currentlyUsedLimelight.equals(VisionConstants.SHOOTER_LIMELIGHT_NAME)) {
-        LimelightHelpers.SetRobotOrientation(VisionConstants.SHOOTER_LIMELIGHT_NAME, currentRobotHeadingDegrees, 0, 0, 0, 0, 0);
-        return LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(VisionConstants.SHOOTER_LIMELIGHT_NAME).pose;
-      } else {
-        Pose2d botPose = LimelightHelpers.getBotPose2d(currentlyUsedLimelight);
-        // The origin of botpose is at the center of the field
-        double robotX = botPose.getX() + FieldConstants.FIELD_LENGTH_METERS / 2.0;
-        double robotY = botPose.getY() + FieldConstants.FIELD_WIDTH_METERS / 2.0;
-        Rotation2d robotRotation = botPose.getRotation();
-        return new Pose2d(robotX, robotY, robotRotation);
-      }
+      LimelightHelpers.SetRobotOrientation(VisionConstants.SHOOTER_LIMELIGHT_NAME, currentRobotHeadingDegrees, 0, 0, 0, 0, 0);
+      return LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(currentlyUsedLimelight).pose;
+      /* This is the old detection code
+      Pose2d botPose = LimelightHelpers.getBotPose2d(currentlyUsedLimelight);
+      // The origin of botpose is at the center of the field
+      double robotX = botPose.getX() + FieldConstants.FIELD_LENGTH_METERS / 2.0;
+      double robotY = botPose.getY() + FieldConstants.FIELD_WIDTH_METERS / 2.0;
+      Rotation2d robotRotation = botPose.getRotation();
+      return new Pose2d(robotX, robotY, robotRotation);
+      */
     } else {
       return new Pose2d();
     }

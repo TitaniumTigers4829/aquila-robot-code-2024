@@ -52,14 +52,12 @@ public abstract class DriveCommandBase extends Command {
       currentTimeStampSeconds = visionSubsystem.getTimeStampSeconds();
 
       double distanceFromClosestAprilTag = visionSubsystem.getDistanceFromClosestAprilTag();
-
       // Sets the pose estimator confidence in vision based off of number of april tags and distance
-      // If it can see 2+ apriltags, or it's using the 3g it has lower std devs
-      if (visionSubsystem.getNumberOfAprilTags() > 1 || visionSubsystem.getCurrentlyUsedLimelightName().equals(VisionConstants.SHOOTER_LIMELIGHT_NAME)) {
-        double[] standardDeviations = twoAprilTagLookupTable.getLookupValue(distanceFromClosestAprilTag);
-        driveSubsystem.setPoseEstimatorVisionConfidence(standardDeviations[0], standardDeviations[1], standardDeviations[2]);
-      } else {
+      if (visionSubsystem.getNumberOfAprilTags() == 1) {
         double[] standardDeviations = oneAprilTagLookupTable.getLookupValue(distanceFromClosestAprilTag);
+        driveSubsystem.setPoseEstimatorVisionConfidence(standardDeviations[0], standardDeviations[1], standardDeviations[2]);
+      } else if (visionSubsystem.getNumberOfAprilTags() > 1) {
+        double[] standardDeviations = twoAprilTagLookupTable.getLookupValue(distanceFromClosestAprilTag);
         driveSubsystem.setPoseEstimatorVisionConfidence(standardDeviations[0], standardDeviations[1], standardDeviations[2]);
       }
 
