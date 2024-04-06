@@ -63,10 +63,10 @@ public class SubwooferShot extends DriveCommandBase {
     pivotSubsystem.setPivotAngle(PivotConstants.SUBWOOFER_ANGLE);
     // if we are ready to shoot:
     if (isReadyToShoot()) {
-      leds.setProcess(LEDProcess.SHOOT);
+      //leds.setProcess(SparkConstants.WHITE);
       shooterSubsystem.setRollerSpeed(ShooterConstants.ROLLER_SHOOT_SPEED);
     } else {
-      leds.setProcess(LEDProcess.FINISH_LINE_UP);
+      //leds.setProcess(LEDProcess.FINISH_LINE_UP);
     }
   }
 
