@@ -1,6 +1,5 @@
 package frc.robot.subsystems.shooter;
 
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -23,7 +22,7 @@ public class ShooterSubsystem extends SubsystemBase {
   private final TalonFX leaderFlywheel;
   private final TalonFX followerFlywheel;
   private final TalonFX rollerMotor;
-  private final WPI_TalonSRX trapBlower;
+  // private final WPI_TalonSRX trapBlower;
   
   private final DigitalInput noteSensor;
 
@@ -38,7 +37,7 @@ public class ShooterSubsystem extends SubsystemBase {
     leaderFlywheel = new TalonFX(ShooterConstants.LEADER_FLYWHEEL_ID);
     followerFlywheel = new TalonFX(ShooterConstants.FOLLOWER_FLYWHEEL_ID);
     rollerMotor = new TalonFX(ShooterConstants.ROLLER_MOTOR_ID);
-    trapBlower = new WPI_TalonSRX(0);
+    // trapBlower = new WPI_TalonSRX(0);
 
     noteSensor = new DigitalInput(ShooterConstants.NOTE_SENSOR_ID);
     
@@ -81,7 +80,7 @@ public class ShooterSubsystem extends SubsystemBase {
    * @param speed
    */
   public void runBlower(double speed) {
-    trapBlower.set(speed);
+    // trapBlower.set(speed);
   }
 
   /**
