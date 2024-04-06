@@ -44,9 +44,7 @@ public class SpinUpForSpeakerAuto extends DriveCommandBase {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    Optional<Alliance> alliance = DriverStation.getAlliance();
-   
+  public void initialize() {   
   }
 
   // Called every time the scheduler runs while the command is scheduled.
