@@ -92,7 +92,7 @@ public final class Constants {
     public static final double MAX_SPEED_METERS_PER_SECOND = 6.95;
     public static final double MAX_SHOOT_SPEED_METERS_PER_SECOND = 3;
 
-    public static final double HEADING_ACCEPTABLE_ERROR_RADIANS = Units.degreesToRadians(2);
+    public static final double HEADING_ACCEPTABLE_ERROR_RADIANS = Units.degreesToRadians(3.5);
     public static final double HEADING_ACCEPTABLE_ERROR_MOVING_RADIANS = Units.degreesToRadians(4);
   }
   
@@ -104,10 +104,10 @@ public final class Constants {
     public static final double DRIVE_TO_METERS =  WHEEL_CIRCUMFERENCE_METERS / DRIVE_GEAR_RATIO;
     public static final double DRIVE_TO_METERS_PER_SECOND = WHEEL_CIRCUMFERENCE_METERS / DRIVE_GEAR_RATIO;
 
-    public static final double DRIVE_SUPPLY_LIMIT = 50.0;
-    public static final double DRIVE_STATOR_LIMIT = 60.0;  
+    public static final double DRIVE_SUPPLY_LIMIT = 45.0;
+    public static final double DRIVE_STATOR_LIMIT = 50.0;  
 
-    public static final double TURN_P = 116;  
+    public static final double TURN_P = 116;
     public static final double TURN_I = 0.0;
     public static final double TURN_D = 0.64; 
 
@@ -309,14 +309,14 @@ public final class Constants {
     public static final int FLAPPER_MOTOR_ID = 1;
     public static final int NOTE_SENSOR_ID = 6;
 
-    public static final double INTAKE_SPEED = 1.0;
+    public static final double INTAKE_SPEED = 0.8;
     public static final double INTAKE_NEUTRAL_SPEED = 0.0;
     public static final double FLAPPER_SPEED = 1.0;
 
     public static final double INTAKE_STATOR_LIMIT = 60;
     public static final double INTAKE_SUPPLY_LIMIT = 40;
-    public static final boolean INTAKE_STATOR_ENABLE = false;
-    public static final boolean INTAKE_SUPPLY_ENABLE = false;
+    public static final boolean INTAKE_STATOR_ENABLE = true;
+    public static final boolean INTAKE_SUPPLY_ENABLE = true;
   }
 
   public static final class PivotConstants {
@@ -326,7 +326,7 @@ public final class Constants {
 
     public static final double SUBWOOFER_ANGLE = 0.029;
 
-    public static final double MIN_ANGLE = -0.009765625;
+    public static final double MIN_ANGLE = -0.00341796875;
     public static final double MAX_ANGLE = 0.5537109375;
 
     public static final double PIVOT_INTAKE_ANGLE = -0.002597265625;
@@ -393,7 +393,7 @@ public final class Constants {
     public static final double ROLLER_NEUTRAL_SPEED = 0;
     public static final double SHOOTER_NEUTRAL_SPEED = 0;
 
-    public static final int NOTE_SENSOR_ID = 9;
+    public static final int NOTE_SENSOR_ID = 4;
 
     public static final double SHOOT_SPEAKER_RPM = 4000;
     public static final double SHOOT_SPEAKER_FAR_RPM = 4800;
@@ -409,7 +409,7 @@ public final class Constants {
     public static final double SHOOT_A = 0.004358865417933;
 
     public static final double ROLLER_SHOOT_SPEED = 1;
-    public static final double ROLLER_INTAKE_BEFORE_LATCH_SPEED = .2;
+    public static final double ROLLER_INTAKE_BEFORE_LATCH_SPEED = .1;
     public static final double SHOOT_AMP_RPM = 2000;
     
     public static final double AUTO_SHOOT_P = 5; // 7 --> 4.5 --> 5

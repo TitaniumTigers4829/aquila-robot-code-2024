@@ -27,7 +27,8 @@ public class BlueUnderStage4Note extends SequentialCommandGroup {
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
       new InstantCommand(()->driveSubsystem.resetOdometry(new Pose2d(1.338474238586425, 5.590954303741455, Rotation2d.fromDegrees(0)))),
-      new SubwooferShot(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, ()->0, ()->0, ()->0, ()->false, ledSubsystem).withTimeout(1.8),
+      // new SubwooferShot(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, ()->0, ()->0, ()->0, ()->false, ledSubsystem).withTimeout(1.8),
+      new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, ledSubsystem).withTimeout(1.4),
       new ParallelCommandGroup(
         new IntakeAuto(intakeSubsystem, pivotSubsystem, shooterSubsystem, ledSubsystem).withTimeout(1.4),
         new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "blueunderstage 1", false)

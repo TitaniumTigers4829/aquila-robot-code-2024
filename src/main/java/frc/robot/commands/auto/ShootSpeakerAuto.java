@@ -109,9 +109,9 @@ public class ShootSpeakerAuto extends DriveCommandBase {
     }
 
     // If it has shot the note and the timer hasn't started
-    // if (!shooterSubsystem.hasNote() && !timer.hasElapsed(0.001)) {
-    //   timer.start();
-    // }
+    if (!shooterSubsystem.hasNote() && !timer.hasElapsed(0.001)) {
+      timer.start();
+    }
   }
 
   // Called once the command ends or is interrupted.

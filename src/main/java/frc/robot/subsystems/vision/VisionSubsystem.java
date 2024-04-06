@@ -101,7 +101,7 @@ public class VisionSubsystem extends SubsystemBase {
    * the limelights can see april tags.
    */
   private double getLimelightAprilTagDistance(int aprilTagID) {
-    if (aprilTagID >= 1) {
+    if (aprilTagID >= 1 && aprilTagID <= 16) {
       double aprilTagX = VisionConstants.APRIL_TAG_POSITIONS[aprilTagID - 1][0]; // April tag id starts at 1
       double aprilTagY = VisionConstants.APRIL_TAG_POSITIONS[aprilTagID - 1][1];
       Pose2d pose = getPoseFromAprilTags();

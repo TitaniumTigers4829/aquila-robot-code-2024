@@ -49,6 +49,7 @@ public class DriveSubsystem extends SubsystemBase {
   private final SwerveDrivePoseEstimator odometry;
 
   private StringLogEntry odometryLogger;
+  private DataLog log; 
 
   private Optional<DriverStation.Alliance> alliance;
 
@@ -123,7 +124,7 @@ public class DriveSubsystem extends SubsystemBase {
       this
     );
     
-    DataLog log = DataLogManager.getLog();
+    log = DataLogManager.getLog();
     odometryLogger = new StringLogEntry(log, "odometry");
   }
 
@@ -334,6 +335,9 @@ public class DriveSubsystem extends SubsystemBase {
     Pose2d pose = getPose();
     SmarterDashboardRegistry.setPose(pose);
     odometryLogger.append(pose.toString(), (long)Timer.getFPGATimestamp());
+    DataLogManager.getLogDir();
+    SmartDashboard.putString("log", log.toString());
+    SmartDashboard.putString("log directory", DataLogManager.getLogDir());
     // SmartDashboard.putBoolean("screwed", Math.abs(pose.getX()) > 20);
     SmartDashboard.putString("odometry", pose.toString());
     double distance = pose.getTranslation().getDistance(SmarterDashboardRegistry.getSpeakerPos());

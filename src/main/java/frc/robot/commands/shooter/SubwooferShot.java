@@ -52,21 +52,21 @@ public class SubwooferShot extends DriveCommandBase {
     super.execute();
 
     // allow the driver to drive slowly (NOT full speed - will mess up shooter)
-    driveSubsystem.drive(
-      deadband(leftY.getAsDouble()) * 0.5, 
-      deadband(leftX.getAsDouble()) * 0.5, 
-      deadband(rightX.getAsDouble()) * 0.5, 
-      !isFieldRelative.getAsBoolean()
-    );
+    // driveSubsystem.drive(
+    //   deadband(leftY.getAsDouble()) * 0.5, 
+    //   deadband(leftX.getAsDouble()) * 0.5, 
+    //   deadband(rightX.getAsDouble()) * 0.5, 
+    //   !isFieldRelative.getAsBoolean()
+    // );
 
     shooterSubsystem.setRPM(ShooterConstants.SHOOT_SPEAKER_RPM);
     pivotSubsystem.setPivotAngle(PivotConstants.SUBWOOFER_ANGLE);
     // if we are ready to shoot:
     if (isReadyToShoot()) {
-      leds.setProcess(LEDProcess.SHOOT);
+      // leds.setProcess(LEDProcess.SHOOT);
       shooterSubsystem.setRollerSpeed(ShooterConstants.ROLLER_SHOOT_SPEED);
     } else {
-      leds.setProcess(LEDProcess.FINISH_LINE_UP);
+      // leds.setProcess(LEDProcess.FINISH_LINE_UP);
     }
   }
 
