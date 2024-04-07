@@ -52,7 +52,6 @@ public abstract class DriveCommandBase extends Command {
     SmartDashboard.putBoolean("yes", false);
     if (visionSubsystem.canSeeAprilTags()) {
       SmartDashboard.putBoolean("yes", true);
-      // ticksAfterSeeing++;
       currentTimeStampSeconds = visionSubsystem.getTimeStampSeconds();
 
       double distanceFromClosestAprilTag = visionSubsystem.getDistanceFromClosestAprilTag();
@@ -65,18 +64,12 @@ public abstract class DriveCommandBase extends Command {
         driveSubsystem.setPoseEstimatorVisionConfidence(standardDeviations[0], standardDeviations[1], standardDeviations[2]);
       }
 
-      // Only updates the pose estimator if the limelight pose is new and reliable, and the robot isn't rotating too fast
       if (visionSubsystem.canSeeAprilTags()) {
         Pose2d limelightVisionMeasurement = visionSubsystem.getPoseFromAprilTags();
 
         driveSubsystem.addPoseEstimatorVisionMeasurement(limelightVisionMeasurement, Timer.getFPGATimestamp() - visionSubsystem.getLatencySeconds());
       }
-      // }
-    //   // }
     }
-    //  else {
-    //   // ticksAfterSeeing = 0;
-    // }
 
     lastTimeStampSeconds = currentTimeStampSeconds;
   }

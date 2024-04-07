@@ -19,6 +19,8 @@ public class VisionSubsystem extends SubsystemBase {
   private LimelightResults currentlyUsedLimelightResults = LimelightHelpers.getLatestResults(VisionConstants.SHOOTER_LIMELIGHT_NAME);
   private String currentlyUsedLimelight = VisionConstants.SHOOTER_LIMELIGHT_NAME;
   private Pose2d lastSeenPose = new Pose2d();
+  private boolean isTeleop = false;
+
   private StringLogEntry poseLogger;
   private DataLog log; 
   private StringLogEntry frontLeftLogger;
@@ -38,6 +40,7 @@ public class VisionSubsystem extends SubsystemBase {
    */
   public boolean canSeeAprilTags() {
     // First checks if it can see an april tag, then checks if it is fully in frame
+    // Different Limelights have different FOVs
     if (currentlyUsedLimelight.equals(VisionConstants.SHOOTER_LIMELIGHT_NAME)) {
           return LimelightHelpers.getFiducialID(currentlyUsedLimelight) != -1
       && Math.abs(LimelightHelpers.getTX(currentlyUsedLimelight)) <= VisionConstants.LL3G_FOV_MARGIN_OF_ERROR;
@@ -169,6 +172,9 @@ public class VisionSubsystem extends SubsystemBase {
       return new Pose2d(robotX, robotY, robotRotation);  
   }
 
+  public void setTeleopStatus(boolean isTeleop) {
+    this.isTeleop = isTeleop;
+  }
 
   @Override
   public void periodic() {
@@ -181,15 +187,21 @@ public class VisionSubsystem extends SubsystemBase {
     frontRightLogger.append(frontRightPose.toString(), (long)Timer.getFPGATimestamp());
     Pose2d shooterPose = getPoseFromShooter();
     shooterLogger.append(shooterPose.toString(), (long)Timer.getFPGATimestamp());
-    // Every periodic chooses the limelight to use based off of their distance from april tags
-    // This code has the limelights alternating in updating their results every other loop.
-    // It makes sense because they run at ~12hz, where the roborio runs at 50hz.
-    if (currentlyUsedLimelight.equals(VisionConstants.SHOOTER_LIMELIGHT_NAME)) {
-      currentlyUsedLimelight = VisionConstants.FRONT_LEFT_LIMELIGHT_NAME;
-    } else if (currentlyUsedLimelight.equals(VisionConstants.FRONT_LEFT_LIMELIGHT_NAME)) {
-      currentlyUsedLimelight = VisionConstants.FRONT_RIGHT_LIMELIGHT_NAME;
-    } else if (currentlyUsedLimelight.equals(VisionConstants.FRONT_RIGHT_LIMELIGHT_NAME)) {
-      currentlyUsedLimelight = VisionConstants.SHOOTER_LIMELIGHT_NAME;
+
+    if (isTeleop) {
+      // Every periodic chooses the limelight to use based off of their distance from april tags
+      // This code has the limelights alternating in updating their results every other loop.
+      // It makes sense because they run at ~12hz, where the roborio runs at 50hz.
+      if (currentlyUsedLimelight.equals(VisionConstants.SHOOTER_LIMELIGHT_NAME)) {
+        currentlyUsedLimelight = VisionConstants.FRONT_LEFT_LIMELIGHT_NAME;
+      } else if (currentlyUsedLimelight.equals(VisionConstants.FRONT_LEFT_LIMELIGHT_NAME)) {
+        currentlyUsedLimelight = VisionConstants.FRONT_RIGHT_LIMELIGHT_NAME;
+      } else if (currentlyUsedLimelight.equals(VisionConstants.FRONT_RIGHT_LIMELIGHT_NAME)) {
+        currentlyUsedLimelight = VisionConstants.SHOOTER_LIMELIGHT_NAME;
+      }
+    } else {
+      // This is during auto
+        currentlyUsedLimelight = VisionConstants.SHOOTER_LIMELIGHT_NAME;
     }
 
     // Gets the JSON dump from the currently used limelight

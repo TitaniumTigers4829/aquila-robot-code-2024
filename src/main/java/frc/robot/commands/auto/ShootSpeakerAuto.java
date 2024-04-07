@@ -24,7 +24,9 @@ public class ShootSpeakerAuto extends DriveCommandBase {
   private final ShooterSubsystem shooterSubsystem;
   private final PivotSubsystem pivotSubsystem;
   private final LEDSubsystem leds;
-  private final Timer timer;
+  private final Timer pewPewCompleteTimer;
+
+  private final Timer pivotTimer;
 
   private double headingError = 0;
 
@@ -46,15 +48,18 @@ public class ShootSpeakerAuto extends DriveCommandBase {
     this.shooterSubsystem = shooterSubsystem;
     this.pivotSubsystem = pivotSubsystem;
     this.leds = leds;
-    timer = new Timer();
+    pewPewCompleteTimer = new Timer();
+    pivotTimer = new Timer();
     addRequirements(shooterSubsystem, driveSubsystem, pivotSubsystem);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    timer.stop();
-    timer.reset();
+    pewPewCompleteTimer.stop();
+    pewPewCompleteTimer.reset();
+    pivotTimer.stop();
+    pivotTimer.reset();
     Optional<Alliance> alliance = DriverStation.getAlliance();
     //sets alliance to red
     isRed = alliance.isPresent() && alliance.get() == Alliance.Red;  
@@ -88,17 +93,14 @@ public class ShootSpeakerAuto extends DriveCommandBase {
       false
     );
 
-     // TODO: 5500 rpm?
-    // if (distance > 4.5) {
-      // shooterSubsystem.setSpeed(1);
-      // shooterSubsystem.setRPM(ShooterConstants.SHOOT_SPEAKER_VERY_FAR_RPM);
-      if (distance > 3.2) {
-        shooterSubsystem.setRPM(ShooterConstants.SHOOT_SPEAKER_FAR_RPM);
-      } else if (distance > 1.8) {
-        shooterSubsystem.setRPM(4400);
-      } else {
-        shooterSubsystem.setRPM(ShooterConstants.SHOOT_SPEAKER_RPM);
-      }
+    if (distance > 3.2) {
+      shooterSubsystem.setRPM(ShooterConstants.SHOOT_SPEAKER_FAR_RPM);
+    } else if (distance > 1.8) {
+      shooterSubsystem.setRPM(4400);
+    } else {
+      shooterSubsystem.setRPM(ShooterConstants.SHOOT_SPEAKER_RPM);
+    }
+
     pivotSubsystem.setPivotFromSpeakerDistance(distance);
     // if we are ready to shoot:
     if (isReadyToShoot()) {
@@ -109,8 +111,12 @@ public class ShootSpeakerAuto extends DriveCommandBase {
     }
 
     // If it has shot the note and the timer hasn't started
-    if (!shooterSubsystem.hasNote() && !timer.hasElapsed(0.001)) {
-      timer.start();
+    if (!shooterSubsystem.hasNote() && !pewPewCompleteTimer.hasElapsed(0.001)) {
+      pewPewCompleteTimer.start();
+    }
+
+    if (pivotSubsystem.isPivotWithinAcceptableError() && !pivotTimer.hasElapsed(0.001)) {
+      pivotTimer.start();
     }
   }
 
@@ -128,12 +134,12 @@ public class ShootSpeakerAuto extends DriveCommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return timer.hasElapsed(0.1);
+    return pewPewCompleteTimer.hasElapsed(0.1);
     // return !shooterSubsystem.hasNote();
   }
   
   public boolean isReadyToShoot() {
-    return shooterSubsystem.isShooterWithinAcceptableError() && pivotSubsystem.isPivotWithinAcceptableError() && Math.abs(headingError) < DriveConstants.HEADING_ACCEPTABLE_ERROR_RADIANS;
+    return shooterSubsystem.isShooterWithinAcceptableError() && pivotTimer.hasElapsed(0.1) && Math.abs(headingError) < DriveConstants.HEADING_ACCEPTABLE_ERROR_RADIANS;
   }
 
   private double deadband(double val) {

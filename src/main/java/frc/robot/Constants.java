@@ -347,7 +347,7 @@ public final class Constants {
 
     public static final double SHOOT_AMP_ANGLE = 0.35205078125;
     public static final double SHOOT_TRAP_ANGLE = 0;
-    public static final double PIVOT_ACCEPTABLE_ERROR = 0.012;
+    public static final double PIVOT_ACCEPTABLE_ERROR = 0.015;
 
     public static double[][] SPEAKER_PIVOT_POSITION = {
       // Distance, Angle (rotations)
