@@ -7,6 +7,9 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -32,6 +35,9 @@ public class Robot extends TimedRobot {
     m_robotContainer = new RobotContainer();
 //    uncomment the line below if there is a USB camera plugged into the RoboRIO
 //    CameraServer.startAutomaticCapture();
+
+    DataLogManager.start();
+
   }
 
   /**
@@ -55,6 +61,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void disabledInit() {
+    DataLogManager.stop();
   }
 
   @Override

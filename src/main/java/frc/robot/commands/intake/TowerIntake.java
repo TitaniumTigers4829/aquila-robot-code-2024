@@ -72,7 +72,7 @@ public class TowerIntake extends Command {
           SmarterDashboardRegistry.noteHalfwayIn();
         } else {
           if (!intakeSensorLatch) {
-            shooterSubsystem.setRollerSpeed(0.3);
+            shooterSubsystem.setRollerSpeed(0.36);
             intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_SPEED);
             SmarterDashboardRegistry.noteIn();
           } else {
@@ -87,7 +87,6 @@ public class TowerIntake extends Command {
     hasNoteCallback.accept((Boolean)intakeSensorLatch);
   }
   
-
   @Override
   public void end(boolean interrupted) {
     leds.setProcess(LEDProcess.DEFAULT);

@@ -41,7 +41,6 @@ public class IntakeAuto extends Command {
     leds.setProcess(LEDProcess.INTAKE);
   }
   
-  /** Creates a new TowerIntake. */
   @Override
   public void execute() {
     pivotSubsystem.setPivotAngle(PivotConstants.PIVOT_INTAKE_ANGLE);
@@ -68,8 +67,6 @@ public class IntakeAuto extends Command {
       }
     }
   }
-
-  
 
   @Override
   public void end(boolean interrupted) {

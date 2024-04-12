@@ -85,7 +85,7 @@ public class PivotSubsystem extends SubsystemBase {
 
   /**
    * Gets the angle of the pivot
-   * @return angle of pivot in degrees
+   * @return angle of pivot in rotations
    */
   public double getAngle() {
     pivotPos.refresh();
@@ -95,7 +95,7 @@ public class PivotSubsystem extends SubsystemBase {
   /**
    * Returns if the pivot is within an acceptable rotation 
    * in relation to the target position
-   * @return pivot error between desired and actual state in degrees
+   * @return pivot error between desired and actual state in rotations
    */
   public boolean isPivotWithinAcceptableError() {
     return Math.abs(pivotTargetAngle - getAngle()) < PivotConstants.PIVOT_ACCEPTABLE_ERROR;

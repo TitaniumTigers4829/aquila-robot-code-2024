@@ -2,6 +2,8 @@ package frc.robot;
 
 import java.util.function.DoubleSupplier;
 
+import javax.xml.crypto.Data;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DataLogManager;
@@ -14,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.HardwareConstants;
 import frc.robot.Constants.JoystickConstants;
+import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.LEDConstants.LEDProcess;
 // import frc.robot.commands.auto.BlueNoteEight;
 import frc.robot.commands.auto.BlueAmpSideFourNote;
@@ -37,6 +40,8 @@ import frc.robot.commands.drive.Drive;
 import frc.robot.commands.intake.ManualIntake;
 import frc.robot.commands.intake.TowerIntake;
 import frc.robot.extras.SmarterDashboardRegistry;
+import frc.robot.extras.characterization.WheelRadiusCharacterization;
+import frc.robot.extras.characterization.WheelRadiusCharacterization.Direction;
 import frc.robot.commands.shooter.ManualPivot;
 import frc.robot.commands.shooter.ShootAmp;
 import frc.robot.commands.shooter.ShootPass;
@@ -97,7 +102,6 @@ public class RobotContainer {
     
     ledSubsystem.setProcess(LEDProcess.DEFAULT);
 
-   
   }
   
   private static double deadband(double value, double deadband) {
@@ -141,8 +145,13 @@ public class RobotContainer {
   public void teleopInit() {
     configureButtonBindings();
     SmarterDashboardRegistry.initialize();
-    DataLogManager.start();
-    new StopShooterAndIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem).schedule();
+    shooterSubsystem.setFlywheelNeutral();
+    shooterSubsystem.setRollerSpeed(0);
+    intakeSubsystem.setFlapperSpeed(0);
+    intakeSubsystem.setIntakeSpeed(0);
+    pivotSubsystem.setPivotAngle(PivotConstants.PIVOT_INTAKE_ANGLE);
+    visionSubsystem.setTeleopStatus(true);
+    // new StopShooterAndIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem).schedule();
   }
 
   public void intakeCallback(boolean hasNote) {
@@ -235,7 +244,7 @@ public class RobotContainer {
     // shooterSubsystem.setDefaultCommand(new FlywheelSpinUpAuto(shooterSubsystem, visionSubsystem));
 
     driverLeftTrigger.whileTrue(new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem, false, ledSubsystem, this::intakeCallback));
-    driverLeftTrigger.whileFalse(new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem, false, ledSubsystem, this::intakeCallback).withTimeout(0.3));
+    // driverLeftTrigger.whileFalse(new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem, false, ledSubsystem, this::intakeCallback).withTimeout(0.3));
     // Amp Lineup
     driverAButton.whileTrue(new AutoAlignWithAmp(driveSubsystem, visionSubsystem));
     // Spinup for shoot
@@ -253,7 +262,8 @@ public class RobotContainer {
     // driverBButton.whileTrue(new ShootPass(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, driverLeftStickX, driverLeftStickY, driverRightBumper, ledSubsystem));
 
     // driverXButton.
-    driverBButton.whileTrue(new ShootPass(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, driverLeftStickY, operatorLeftStickY, driverYButton, ledSubsystem));
+    driverBButton.whileTrue(new WheelRadiusCharacterization(driveSubsystem, Direction.CLOCKWISE));
+    // driverBButton.whileTrue(new ShootPass(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, driverLeftStickY, operatorLeftStickY, driverYButton, ledSubsystem));
     // driverDownDirectionPad.whileTrue(new IntakeFromShooter(shooterSubsystem, intakeSubsystem));
     // driverYButton.whileTrue(new ShootSpeaker(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, driverLeftStickX, operatorLeftStickY, driverRightBumper, ledSubsystem));
     // OPERATOR BUTTONS
@@ -266,11 +276,12 @@ public class RobotContainer {
     operatorUpDirectionPad.whileTrue(new SubwooferShot(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, driverLeftStickX, driverLeftStickY, driverRightStickX, driverRightBumper, ledSubsystem));
     // intake (aka SUCC_BUTTON)
     operatorLeftTrigger.whileTrue(new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem, false, ledSubsystem, this::intakeCallback));
-    operatorLeftTrigger.whileFalse(new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem, false, ledSubsystem, this::intakeCallback).withTimeout(0.2));
+    // operatorLeftTrigger.whileFalse(new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem, false, ledSubsystem, this::intakeCallback).withTimeout(0.2));
     // outtake (aka UNSUCC_BUTTON)
     operatorLeftBumper.whileTrue(new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem, true, ledSubsystem, this::intakeCallback));
     // manual pivot (possible climb, unlikely)
     operatorAButton.whileTrue(new ManualPivot(pivotSubsystem, ()->modifyAxisCubed(operatorRightStickY)));
+    operatorDownDirectionPad.whileTrue(new ManualPivot(pivotSubsystem, ()->-0.25));
     // manual rollers
     operatorYButton.whileTrue(new ManualIntake(intakeSubsystem, true));
     operatorXButton.whileTrue(new ManualIntake(intakeSubsystem, false));
