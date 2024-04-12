@@ -1,16 +1,12 @@
 package frc.robot.commands.autodrive;
 
 import java.util.Optional;
-import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.HardwareConstants;
 import frc.robot.Constants.ShooterConstants;
@@ -20,9 +16,8 @@ import frc.robot.subsystems.vision.VisionSubsystem;
 
 public class AutoAlignWithAmp extends DriveCommandBase {
   private final DriveSubsystem driveSubsystem;
-  private final DoubleSupplier[] leftStick;
-  private final SlewRateLimiter xLimiter = new SlewRateLimiter(0.2);
-  private final SlewRateLimiter yLimiter = new SlewRateLimiter(0.2);
+  // private final SlewRateLimiter xLimiter = new SlewRateLimiter(0.2);
+  // private final SlewRateLimiter yLimiter = new SlewRateLimiter(0.2);
 
   private boolean isRed;
   private Pose2d ampPose;
@@ -49,10 +44,10 @@ public class AutoAlignWithAmp extends DriveCommandBase {
   );
 
   /** Creates a new AutoAlignWithAmp. */
-  public AutoAlignWithAmp(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, DoubleSupplier[] leftStick) {
+  public AutoAlignWithAmp(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem) {
     super(driveSubsystem, visionSubsystem);
     this.driveSubsystem = driveSubsystem;
-    this.leftStick = leftStick;
+    // this.leftStick = leftStick;
     addRequirements(driveSubsystem, visionSubsystem);
   }
 
@@ -85,8 +80,6 @@ public class AutoAlignWithAmp extends DriveCommandBase {
     ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
       xOutput,
       yOutput,
-      // leftStick[1].getAsDouble() * DriveConstants.MAX_SPEED_METERS_PER_SECOND,
-      // leftStick[0].getAsDouble() * DriveConstants.MAX_SPEED_METERS_PER_SECOND,
       turnOutput,
       driveSubsystem.getOdometryRotation2d()
     );

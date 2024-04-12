@@ -9,8 +9,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.commands.shooter.SpinUpForSpeaker;
-import frc.robot.commands.shooter.SubwooferShot;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.leds.LEDSubsystem;
 import frc.robot.subsystems.pivot.PivotSubsystem;
@@ -28,7 +26,7 @@ public class RedAmpSideFourNote extends SequentialCommandGroup {
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
       new InstantCommand(()->driveSubsystem.resetOdometry(new Pose2d(15.752967834472656, 6.664938449859619, Rotation2d.fromRadians(2.0491481821878663)))),
-      new SpinUpForSpeakerAuto(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, null, null, null, ledSubsystem),
+      new SpinUpForSpeakerAuto(shooterSubsystem, pivotSubsystem, null),
       new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, ledSubsystem).withTimeout(1.5),
       new ParallelCommandGroup(
         new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "red amp side four note 1", false),

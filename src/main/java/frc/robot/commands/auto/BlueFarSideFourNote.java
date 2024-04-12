@@ -5,7 +5,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.commands.shooter.SubwooferShot;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.leds.LEDSubsystem;
 import frc.robot.subsystems.pivot.PivotSubsystem;
@@ -23,7 +22,7 @@ public class BlueFarSideFourNote extends SequentialCommandGroup {
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
       new InstantCommand(()->driveSubsystem.resetOdometry(new Pose2d(0.7656821853637688, 4.516969680786133, Rotation2d.fromRadians(-0.9913894645352261)))),
-      new SpinUpForSpeakerAuto(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, null, null, null, ledSubsystem).withTimeout(0.01),
+      new SpinUpForSpeakerAuto(shooterSubsystem, pivotSubsystem, null).withTimeout(0.01),
       new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, ledSubsystem).withTimeout(1.0),
       new ParallelCommandGroup(
             new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "redfar3note 1", false),

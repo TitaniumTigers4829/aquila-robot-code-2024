@@ -5,7 +5,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.commands.shooter.SubwooferShot;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.leds.LEDSubsystem;
 import frc.robot.subsystems.pivot.PivotSubsystem;
@@ -23,7 +22,7 @@ public class BlueFiveNote extends SequentialCommandGroup {
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
       new InstantCommand(()->driveSubsystem.resetOdometry(new Pose2d(1.3384751922607414, 5.519354820251465, Rotation2d.fromRadians(0)))),
-      new SpinUpForSpeakerAuto(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, null, null, null, ledSubsystem).withTimeout(0.01),  
+      new SpinUpForSpeakerAuto(shooterSubsystem, pivotSubsystem, null).withTimeout(0.01),  
       new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "blue to shoot pos", false),
       new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, ledSubsystem).withTimeout(1.3),
       new ParallelCommandGroup(

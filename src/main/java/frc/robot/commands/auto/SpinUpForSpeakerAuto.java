@@ -4,48 +4,30 @@
 
 package frc.robot.commands.auto;
 
-import java.util.Optional;
-import java.util.function.BooleanSupplier;
-import java.util.function.DoubleSupplier;
-
-import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import frc.robot.Constants.DriveConstants;
-import frc.robot.Constants.FieldConstants;
-import frc.robot.Constants.HardwareConstants;
+import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.LEDConstants.LEDProcess;
-import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.ShooterConstants;
-import frc.robot.commands.drive.DriveCommandBase;
 import frc.robot.subsystems.leds.LEDSubsystem;
 import frc.robot.subsystems.pivot.PivotSubsystem;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
-import frc.robot.subsystems.swerve.DriveSubsystem;
-import frc.robot.subsystems.vision.VisionSubsystem;
 
-public class SpinUpForSpeakerAuto extends DriveCommandBase {
-  private final DriveSubsystem driveSubsystem;
+public class SpinUpForSpeakerAuto extends Command {
   private final ShooterSubsystem shooterSubsystem;
   private final PivotSubsystem pivotSubsystem;
   private final LEDSubsystem leds;
 
 
   /** Creates a new SpinUpForSpeaker. */
-  public SpinUpForSpeakerAuto(DriveSubsystem driveSubsystem, ShooterSubsystem shooterSubsystem, PivotSubsystem pivotSubsystem, VisionSubsystem visionSubsystem, DoubleSupplier leftX, DoubleSupplier leftY, BooleanSupplier isFieldRelative, LEDSubsystem leds) {
-    super(driveSubsystem, visionSubsystem);
-    this.driveSubsystem = driveSubsystem;
+  public SpinUpForSpeakerAuto(ShooterSubsystem shooterSubsystem, PivotSubsystem pivotSubsystem, LEDSubsystem leds) {
     this.shooterSubsystem = shooterSubsystem;
     this.pivotSubsystem = pivotSubsystem;
     this.leds = leds;
-    addRequirements(driveSubsystem, visionSubsystem, shooterSubsystem, pivotSubsystem);
+    addRequirements(shooterSubsystem, pivotSubsystem);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    Optional<Alliance> alliance = DriverStation.getAlliance();
    
   }
 
@@ -78,12 +60,4 @@ public class SpinUpForSpeakerAuto extends DriveCommandBase {
   public boolean isReadyToShoot() {
     return shooterSubsystem.isShooterWithinAcceptableError() && pivotSubsystem.isPivotWithinAcceptableError();
   }
-
-  private double deadband(double val) {
-    if (Math.abs(val) < HardwareConstants.DEADBAND_VALUE) {
-      return 0.0;
-    } else {
-      return val;
-    }
-  } 
 }

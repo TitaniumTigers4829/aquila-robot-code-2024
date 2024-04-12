@@ -22,7 +22,6 @@ public class ShooterSubsystem extends SubsystemBase {
   private final TalonFX leaderFlywheel;
   private final TalonFX followerFlywheel;
   private final TalonFX rollerMotor;
-  // private final WPI_TalonSRX trapBlower;
   
   private final DigitalInput noteSensor;
 
@@ -37,7 +36,6 @@ public class ShooterSubsystem extends SubsystemBase {
     leaderFlywheel = new TalonFX(ShooterConstants.LEADER_FLYWHEEL_ID);
     followerFlywheel = new TalonFX(ShooterConstants.FOLLOWER_FLYWHEEL_ID);
     rollerMotor = new TalonFX(ShooterConstants.ROLLER_MOTOR_ID);
-    // trapBlower = new WPI_TalonSRX(0);
 
     noteSensor = new DigitalInput(ShooterConstants.NOTE_SENSOR_ID);
     
@@ -73,14 +71,6 @@ public class ShooterSubsystem extends SubsystemBase {
 
     BaseStatusSignal.setUpdateFrequencyForAll(HardwareConstants.SIGNAL_FREQUENCY, leaderVelocity, followerVelocity);
     ParentDevice.optimizeBusUtilizationForAll(leaderFlywheel, rollerMotor, followerFlywheel);
-  }
-
-  /**
-   * runs the blower motor
-   * @param speed
-   */
-  public void runBlower(double speed) {
-    // trapBlower.set(speed);
   }
 
   /**
@@ -180,8 +170,6 @@ public class ShooterSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     SmartDashboard.putBoolean("has note", hasNote());
-    SmartDashboard.putNumber("current RPM", leaderVelocity.refresh().getValueAsDouble() * 60.0);
-    SmartDashboard.putNumber("error", shooterTargetRPM - (leaderVelocity.refresh().getValueAsDouble() * 60.0));
     if (hasNote()) {
       SmarterDashboardRegistry.noteIn();
     } else {
