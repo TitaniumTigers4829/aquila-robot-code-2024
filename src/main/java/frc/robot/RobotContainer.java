@@ -2,11 +2,8 @@ package frc.robot;
 
 import java.util.function.DoubleSupplier;
 
-import javax.xml.crypto.Data;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -33,7 +30,6 @@ import frc.robot.commands.auto.RedShootTaxi;
 import frc.robot.commands.auto.RedSixNote;
 // import frc.robot.commands.auto.RedUnderStage4note;
 import frc.robot.commands.auto.RedUnderStage4Note;
-import frc.robot.commands.auto.StopShooterAndIntake;
 import frc.robot.commands.autodrive.AutoAlignWithAmp;
 import frc.robot.commands.auto.RedNoteEight;
 import frc.robot.commands.drive.Drive;
@@ -44,7 +40,6 @@ import frc.robot.extras.characterization.WheelRadiusCharacterization;
 import frc.robot.extras.characterization.WheelRadiusCharacterization.Direction;
 import frc.robot.commands.shooter.ManualPivot;
 import frc.robot.commands.shooter.ShootAmp;
-import frc.robot.commands.shooter.ShootPass;
 import frc.robot.commands.shooter.ShootSpeaker;
 import frc.robot.commands.shooter.SpinUpForSpeaker;
 import frc.robot.commands.shooter.SubwooferShot;
@@ -155,7 +150,7 @@ public class RobotContainer {
   }
 
   public void intakeCallback(boolean hasNote) {
-    if (hasNote) {
+    if (hasNote) {  
       driverController.setRumble(RumbleType.kBothRumble, 0.1);
       operatorController.setRumble(RumbleType.kBothRumble, 1);
     } else {
