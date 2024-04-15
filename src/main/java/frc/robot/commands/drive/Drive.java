@@ -3,6 +3,7 @@ package frc.robot.commands.drive;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.vision.VisionSubsystem;
 import frc.robot.subsystems.swerve.DriveSubsystem;
@@ -15,6 +16,9 @@ public class Drive extends DriveCommandBase {
   private final BooleanSupplier isFieldRelative, isHighRotation;
   private double angularSpeed;
 
+  private SlewRateLimiter forwardLimiter = new SlewRateLimiter(10.0);
+  private SlewRateLimiter rightLimiter = new SlewRateLimiter(10.0);
+  private SlewRateLimiter rotationLimiter = new SlewRateLimiter(10.0);
   /**
    * The command for driving the robot using joystick inputs.
    * @param driveSubsystem The subsystem for the swerve drive
@@ -50,9 +54,9 @@ public class Drive extends DriveCommandBase {
     }
     
     driveSubsystem.drive(
-      leftJoystickY.getAsDouble() * DriveConstants.MAX_SPEED_METERS_PER_SECOND,
-      leftJoystickX.getAsDouble() * DriveConstants.MAX_SPEED_METERS_PER_SECOND,
-      rightJoystickX.getAsDouble() * angularSpeed,
+      forwardLimiter.calculate(leftJoystickY.getAsDouble() * DriveConstants.MAX_SPEED_METERS_PER_SECOND),
+      rightLimiter.calculate(leftJoystickX.getAsDouble() * DriveConstants.MAX_SPEED_METERS_PER_SECOND),
+      rotationLimiter.calculate(rightJoystickX.getAsDouble() * angularSpeed),
       isFieldRelative.getAsBoolean()
     );
 

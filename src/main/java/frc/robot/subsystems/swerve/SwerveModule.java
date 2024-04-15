@@ -18,6 +18,7 @@ import com.ctre.phoenix6.signals.SensorDirectionValue;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.Constants.HardwareConstants;
 import frc.robot.Constants.ModuleConstants;
@@ -192,6 +193,7 @@ public class SwerveModule {
    * This is called in the periodic of DriveSubsystem
    */
   public void periodicFunction() {
+    SmartDashboard.putNumber(name + "offset", turnEncoderPos.refresh().getValueAsDouble());
   }
 
 }

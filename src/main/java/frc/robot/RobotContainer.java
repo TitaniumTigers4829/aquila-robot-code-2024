@@ -114,7 +114,7 @@ public class RobotContainer {
       return 0.0;
     }
   }
-
+  
   private static double modifyAxisCubed(DoubleSupplier supplierValue) {
     double value = supplierValue.getAsDouble();
 

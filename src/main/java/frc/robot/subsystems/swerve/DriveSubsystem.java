@@ -344,5 +344,6 @@ public class DriveSubsystem extends SubsystemBase {
     // SmartDashboard.putNumber("speakerDistance", distance);
     SmartDashboard.putBoolean("canShoot", distance < 4.9);
     // SmartDashboard.putNumber("passingPos", pose.getTranslation().getDistance(SmarterDashboardRegistry.getPassingPos()));
+    rearRightSwerveModule.periodicFunction();
   }
 }

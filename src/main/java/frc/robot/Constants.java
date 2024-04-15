@@ -69,7 +69,7 @@ public final class Constants {
     public static final double FRONT_LEFT_ZERO_ANGLE = 0.137939453125;
     public static final double FRONT_RIGHT_ZERO_ANGLE = -0.420654296875;
     public static final double REAR_LEFT_ZERO_ANGLE = -0.475341796875;
-    public static final double REAR_RIGHT_ZERO_ANGLE = -0.0595703125;
+    public static final double REAR_RIGHT_ZERO_ANGLE = -0.05078125;
 
     public static final SensorDirectionValue FRONT_LEFT_CANCODER_REVERSED = SensorDirectionValue.CounterClockwise_Positive;
     public static final SensorDirectionValue FRONT_RIGHT_CANCODER_REVERSED = SensorDirectionValue.CounterClockwise_Positive;
