@@ -2,19 +2,14 @@ package frc.robot;
 
 import java.util.function.DoubleSupplier;
 
-import javax.xml.crypto.Data;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.HardwareConstants;
 import frc.robot.Constants.JoystickConstants;
@@ -159,7 +154,7 @@ public class RobotContainer {
   }
 
   public void intakeCallback(boolean hasNote) {
-    if (hasNote) {
+    if (hasNote) {  
       driverController.setRumble(RumbleType.kBothRumble, 0.1);
       operatorController.setRumble(RumbleType.kBothRumble, 1);
     } else {
@@ -204,7 +199,6 @@ public class RobotContainer {
     Trigger driverLeftBumper = new Trigger(driverController::getLeftBumper);
     Trigger driverBButton = new Trigger(driverController::getBButton);
     Trigger driverYButton = new Trigger(driverController::getYButton);
-    JoystickButton operatorWheeButton = new JoystickButton(operatorController, 7);
     DoubleSupplier operatorLeftStickY = operatorController::getLeftY;
 
     //DRIVER BUTTONS
@@ -225,7 +219,7 @@ public class RobotContainer {
     driverLeftTrigger.whileTrue(new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem, false, ledSubsystem, this::intakeCallback));
     driverLeftTrigger.whileFalse(new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem, false, ledSubsystem, this::intakeCallback).withTimeout(0.3));
     // Amp Lineup
-    driverAButton.whileTrue(new AutoAlignWithAmp(driveSubsystem, visionSubsystem, driverLeftStick));
+    driverAButton.whileTrue(new AutoAlignWithAmp(driveSubsystem, visionSubsystem));
     // Spinup for shoot
     driverRightTrigger.whileTrue(new SpinUpForSpeaker(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, driverLeftStickX, driverLeftStickY, driverRightBumper, ledSubsystem));
     
@@ -243,7 +237,7 @@ public class RobotContainer {
     // driverXButton.
     driverBButton.whileTrue(new ShootPass(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, driverLeftStickY, operatorLeftStickY, driverYButton, ledSubsystem));
     // driverDownDirectionPad.whileTrue(new IntakeFromShooter(shooterSubsystem, intakeSubsystem));
-    driverYButton.whileTrue(new ShootSpeaker(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, driverLeftStickX, operatorLeftStickY, driverRightBumper, ledSubsystem));
+    // driverYButton.whileTrue(new ShootSpeaker(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, driverLeftStickX, operatorLeftStickY, driverRightBumper, ledSubsystem));
     // OPERATOR BUTTONS
 
     // speaker
@@ -264,7 +258,6 @@ public class RobotContainer {
     operatorYButton.whileTrue(new ManualIntake(intakeSubsystem, true));
     operatorXButton.whileTrue(new ManualIntake(intakeSubsystem, false));
     
-    operatorWheeButton.onTrue(new InstantCommand(visionSubsystem::invertTeleopStatus));
     // operatorBButton.onTrue(new StopShooterAndIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem));
   }
 

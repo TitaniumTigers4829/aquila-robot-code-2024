@@ -14,7 +14,6 @@ import frc.robot.extras.NoteDetector;
 public class DriveToNote extends DriveCommandBase {
 
   private final DriveSubsystem driveSubsystem;
-  private final VisionSubsystem visionSubsystem;
   private final NoteDetector noteDetector;
 
   private final ProfiledPIDController xTranslationController = new ProfiledPIDController(
@@ -45,7 +44,6 @@ public class DriveToNote extends DriveCommandBase {
   public DriveToNote(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, NoteDetector noteDetector) {
     super(driveSubsystem, visionSubsystem);
     this.driveSubsystem = driveSubsystem;
-    this.visionSubsystem = visionSubsystem;
     this.noteDetector = noteDetector;
     addRequirements(driveSubsystem, visionSubsystem);
   }
