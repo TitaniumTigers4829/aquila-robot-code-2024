@@ -12,7 +12,6 @@ import frc.robot.Constants.VisionConstants;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.extras.LimelightHelpers;
 import frc.robot.extras.LimelightHelpers.LimelightResults;
-import frc.robot.extras.SmarterDashboardRegistry;
 
 public class VisionSubsystem extends SubsystemBase {
 
@@ -79,7 +78,7 @@ public class VisionSubsystem extends SubsystemBase {
     if (canSeeAprilTags()) {
       int closestAprilTagID = (int) LimelightHelpers.getFiducialID(currentlyUsedLimelight);
       double distance = getLimelightAprilTagDistance(closestAprilTagID);
-      SmartDashboard.putNumber("distance from apriltag", distance);
+      // SmartDashboard.putNumber("distance from apriltag", distance);
       return distance;
     }
     
@@ -174,6 +173,12 @@ public class VisionSubsystem extends SubsystemBase {
 
   public void setTeleopStatus(boolean isTeleop) {
     this.isTeleop = isTeleop;
+    SmartDashboard.putBoolean("allLimelights", isTeleop);
+  }
+
+  public void invertTeleopStatus() {
+    isTeleop = !isTeleop;
+    SmartDashboard.putBoolean("allLimelights", isTeleop);
   }
 
   @Override

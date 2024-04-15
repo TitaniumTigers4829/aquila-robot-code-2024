@@ -49,9 +49,7 @@ public abstract class DriveCommandBase extends Command {
     // Updates the robot's odometry with april tags
     double currentTimeStampSeconds = lastTimeStampSeconds;
 
-    SmartDashboard.putBoolean("yes", false);
     if (visionSubsystem.canSeeAprilTags()) {
-      SmartDashboard.putBoolean("yes", true);
       currentTimeStampSeconds = visionSubsystem.getTimeStampSeconds();
 
       double distanceFromClosestAprilTag = visionSubsystem.getDistanceFromClosestAprilTag();

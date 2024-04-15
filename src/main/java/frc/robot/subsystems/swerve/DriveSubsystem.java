@@ -277,7 +277,7 @@ public class DriveSubsystem extends SubsystemBase {
    */
   public void addPoseEstimatorVisionMeasurement(Pose2d visionMeasurement, double currentTimeStampSeconds) {
     odometry.addVisionMeasurement(visionMeasurement, currentTimeStampSeconds);
-    SmarterDashboardRegistry.setLimelightPose(visionMeasurement);
+    // SmarterDashboardRegistry.setLimelightPose(visionMeasurement);
   }
 
   /**
@@ -333,16 +333,16 @@ public class DriveSubsystem extends SubsystemBase {
 
   public void periodic() {
     Pose2d pose = getPose();
-    SmarterDashboardRegistry.setPose(pose);
+    // SmarterDashboardRegistry.setPose(pose);
     odometryLogger.append(pose.toString(), (long)Timer.getFPGATimestamp());
     DataLogManager.getLogDir();
-    SmartDashboard.putString("log", log.toString());
-    SmartDashboard.putString("log directory", DataLogManager.getLogDir());
-    // SmartDashboard.putBoolean("screwed", Math.abs(pose.getX()) > 20);
+    // SmartDashboard.putString("log", log.toString());
+    // SmartDashboard.putString("log directory", DataLogManager.getLogDir());
+    SmartDashboard.putBoolean("screwed", Math.abs(pose.getX()) > 20);
     SmartDashboard.putString("odometry", pose.toString());
     double distance = pose.getTranslation().getDistance(SmarterDashboardRegistry.getSpeakerPos());
-    SmartDashboard.putNumber("speakerDistance", distance);
+    // SmartDashboard.putNumber("speakerDistance", distance);
     SmartDashboard.putBoolean("canShoot", distance < 4.9);
-    SmartDashboard.putNumber("passingPos", pose.getTranslation().getDistance(SmarterDashboardRegistry.getPassingPos()));
+    // SmartDashboard.putNumber("passingPos", pose.getTranslation().getDistance(SmarterDashboardRegistry.getPassingPos()));
   }
 }

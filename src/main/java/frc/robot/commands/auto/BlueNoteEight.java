@@ -25,19 +25,22 @@ public class BlueNoteEight extends SequentialCommandGroup {
   public BlueNoteEight(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, IntakeSubsystem intakeSubsystem, ShooterSubsystem shooterSubsystem, PivotSubsystem pivotSubsystem, LEDSubsystem leds) {
     addCommands(
         new InstantCommand(()->driveSubsystem.resetOdometry(new Pose2d(0.7656831390380852, 4.481170177459717, Rotation2d.fromRadians(-1.0460003824312718)))),
-        // new SubwooferShot(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, ()->0, ()->0, ()->0, ()->false, leds).withTimeout(2),
-        new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, leds).withTimeout(2),
+        new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, leds).withTimeout(1.5),
         new ParallelCommandGroup(
             new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "blue to note 8", false),
-            new IntakeAuto(intakeSubsystem, pivotSubsystem, shooterSubsystem, leds).withTimeout(3.5)
+            new IntakeAuto(intakeSubsystem, pivotSubsystem, shooterSubsystem, leds).withTimeout(5)
         ),
+        new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, leds).withTimeout(1.5),
         new ParallelCommandGroup(
             new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "blue note 8 to shoot", false),
-            new IntakeAuto(intakeSubsystem, pivotSubsystem, shooterSubsystem, leds).withTimeout(1)
+            new IntakeAuto(intakeSubsystem, pivotSubsystem, shooterSubsystem, leds).withTimeout(4.8)
         ),
-        new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, leds).withTimeout(3),
+        new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, leds).withTimeout(1.5),
         new StopShooterAndIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem)
-        // new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "red 8 shoot to 7", false)
+        // new ParallelCommandGroup(
+        //   new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "red 8 shoot to 7", false),
+          // new IntakeAuto(intakeSubsystem, pivotSubsystem, shooterSubsystem, leds).withTimeout(2.7)
+        // )
     );
   }
 }

@@ -7,11 +7,9 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.HardwareConstants;
 import frc.robot.Constants.IntakeConstants;
-import frc.robot.extras.SmarterDashboardRegistry;
 
 public class IntakeSubsystem extends SubsystemBase {
   private final TalonFX leftIntakeMotor;
@@ -70,6 +68,6 @@ public class IntakeSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SmartDashboard.putBoolean("intake", sensorDetectsNote());
+    // SmartDashboard.putBoolean("intake", sensorDetectsNote());
   }
 }

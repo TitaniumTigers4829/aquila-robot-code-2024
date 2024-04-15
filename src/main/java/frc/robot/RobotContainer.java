@@ -35,6 +35,7 @@ import frc.robot.commands.auto.RedShootTaxi;
 import frc.robot.commands.auto.RedSixNote;
 // import frc.robot.commands.auto.RedUnderStage4note;
 import frc.robot.commands.auto.RedUnderStage4Note;
+import frc.robot.commands.auto.SimpleTxi;
 import frc.robot.commands.auto.StopShooterAndIntake;
 import frc.robot.commands.autodrive.AutoAlignWithAmp;
 import frc.robot.commands.auto.RedNoteEight;
@@ -98,6 +99,7 @@ public class RobotContainer {
     // autoChooser.addOption("red far 3 note", new RedFar3Note(driveSubsystem, visionSubsystem, pivotSubsystem, shooterSubsystem, intakeSubsystem));
     autoChooser.addOption("red six", new RedSixNote(driveSubsystem, visionSubsystem, shooterSubsystem, intakeSubsystem, pivotSubsystem, ledSubsystem));
     autoChooser.addOption("red far side four", new RedFarSideFourNote(driveSubsystem, visionSubsystem, shooterSubsystem, intakeSubsystem, pivotSubsystem, ledSubsystem));
+    autoChooser.addOption("simpleT", new SimpleTxi(driveSubsystem, visionSubsystem, pivotSubsystem, shooterSubsystem, ledSubsystem));
     autoChooser.addOption("nothing", null);
 
     SmartDashboard.putData("autoChooser", autoChooser);
@@ -152,7 +154,7 @@ public class RobotContainer {
     intakeSubsystem.setFlapperSpeed(0);
     intakeSubsystem.setIntakeSpeed(0);
     pivotSubsystem.setPivotAngle(PivotConstants.PIVOT_INTAKE_ANGLE);
-    visionSubsystem.setTeleopStatus(true);
+    visionSubsystem.setTeleopStatus(false);
     // new StopShooterAndIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem).schedule();
   }
 
@@ -174,42 +176,26 @@ public class RobotContainer {
 
     Trigger driverRightBumper = new Trigger(driverController::getRightBumper);
     Trigger driverRightDirectionPad = new Trigger(()->driverController.getPOV() == 90);
+    Trigger driverDownDirectionPad = new Trigger(()->driverController.getPOV() == 180);
     Trigger driverLeftDirectionPad = new Trigger(()->driverController.getPOV() == 270);
-    // JoystickButton driverRightBumper = new JoystickButton(driverController, JoystickConstants.RIGHT_BUMPER_ID);
-    // POVButton driverRightDirectionPad = new POVButton(driverController, JoystickConstants.RIGHT_D_PAD_ID);
-    // POVButton driverLeftDirectionPad = new POVButton(driverController, 270);
 
     // autodrive
     Trigger driverAButton = new Trigger(driverController::getAButton);
-    // JoystickButton driverAButton = new JoystickButton(driverController, JoystickConstants.A_BUTTON_ID);
 
     // intake
     Trigger operatorLeftTrigger = new Trigger(()->operatorController.getLeftTriggerAxis() > 0.2);
     Trigger operatorLeftBumper = new Trigger(operatorController::getLeftBumper);
-    // Trigger operatorLeftTrigger = new Trigger(() -> (operatorController.getRawAxis(JoystickConstants.LEFT_TRIGGER_ID) > 0.2));
-    // JoystickButton operatorLeftBumper = new JoystickButton(operatorController, JoystickConstants.LEFT_BUMPER_ID);
-
     // amp and speaker
     Trigger operatorBButton = new Trigger(operatorController::getBButton);
     Trigger operatorRightBumper = new Trigger(operatorController::getRightBumper);
     Trigger operatorRightTrigger = new Trigger(()->operatorController.getRightTriggerAxis() > 0.2);
     Trigger driverRightTrigger = new Trigger(()->driverController.getRightTriggerAxis() > 0.2);
-    // JoystickButton operatorBButton = new JoystickButton(operatorController, JoystickConstants.B_BUTTON_ID);
-    // JoystickButton operatorRightBumper = new JoystickButton(operatorController, JoystickConstants.RIGHT_BUMPER_ID);
-    // Trigger operatorRightTrigger = new Trigger(() -> (operatorController.getRawAxis(JoystickConstants.RIGHT_TRIGGER_ID) > 0.2));
-    // Trigger driverRightTrigger = new Trigger(() -> (driverController.getRawAxis(JoystickConstants.RIGHT_TRIGGER_ID) > 0.2));
-
 
     // manual pivot and intake rollers 
     Trigger operatorAButton = new Trigger(operatorController::getAButton);
     Trigger operatorXButton = new Trigger(operatorController::getXButton);
     Trigger operatorYButton = new Trigger(operatorController::getYButton);
     DoubleSupplier operatorRightStickY = operatorController::getRightY;
-    // JoystickButton operatorAButton = new JoystickButton(operatorController, JoystickConstants.A_BUTTON_ID);
-    // JoystickButton operatorXButton = new JoystickButton(operatorController, JoystickConstants.X_BUTTON_ID);
-    // JoystickButton operatorYButton = new JoystickButton(operatorController, JoystickConstants.Y_BUTTON_ID);
-    // DoubleSupplier operatorRightStickY = () -> operatorController.getRawAxis(JoystickConstants.RIGHT_STICK_Y_ID);
-
     // unused
     Trigger operatorUpDirectionPad = new Trigger(()->operatorController.getPOV() == 0);
     Trigger operatorLeftDirectionPad = new Trigger(()->operatorController.getPOV() == 270);
@@ -218,17 +204,8 @@ public class RobotContainer {
     Trigger driverLeftBumper = new Trigger(driverController::getLeftBumper);
     Trigger driverBButton = new Trigger(driverController::getBButton);
     Trigger driverYButton = new Trigger(driverController::getYButton);
+    JoystickButton operatorWheeButton = new JoystickButton(operatorController, 7);
     DoubleSupplier operatorLeftStickY = operatorController::getLeftY;
-    // POVButton operatorUpDirectionPad = new POVButton(operatorController, 0);
-    // POVButton operatorLeftDirectionPad = new POVButton(operatorController, 270);
-    // POVButton operatorDownDirectionPad = new POVButton(operatorController, 180);
-    // Trigger driverLeftTrigger = new Trigger(() -> (driverController.getRawAxis(JoystickConstants.LEFT_TRIGGER_ID) > 0.2));
-    // JoystickButton driverLeftBumper = new JoystickButton(driverController, 5);
-    // JoystickButton driverBButton = new JoystickButton(driverController, JoystickConstants.B_BUTTON_ID);//used for wheelcharacterisation
-    // JoystickButton driverYButton = new JoystickButton(driverController, JoystickConstants.Y_BUTTON_ID);//used for intakefromshooter
-    // DoubleSupplier operatorLeftStickY = () -> operatorController.getRawAxis(JoystickConstants.LEFT_STICK_Y_ID);
-
-
 
     //DRIVER BUTTONS
 
@@ -246,7 +223,7 @@ public class RobotContainer {
     // shooterSubsystem.setDefaultCommand(new FlywheelSpinUpAuto(shooterSubsystem, visionSubsystem));
 
     driverLeftTrigger.whileTrue(new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem, false, ledSubsystem, this::intakeCallback));
-    // driverLeftTrigger.whileFalse(new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem, false, ledSubsystem, this::intakeCallback).withTimeout(0.3));
+    driverLeftTrigger.whileFalse(new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem, false, ledSubsystem, this::intakeCallback).withTimeout(0.3));
     // Amp Lineup
     driverAButton.whileTrue(new AutoAlignWithAmp(driveSubsystem, visionSubsystem, driverLeftStick));
     // Spinup for shoot
@@ -264,8 +241,7 @@ public class RobotContainer {
     // driverBButton.whileTrue(new ShootPass(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, driverLeftStickX, driverLeftStickY, driverRightBumper, ledSubsystem));
 
     // driverXButton.
-    driverBButton.whileTrue(new WheelRadiusCharacterization(driveSubsystem, Direction.CLOCKWISE));
-    // driverBButton.whileTrue(new ShootPass(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, driverLeftStickY, operatorLeftStickY, driverYButton, ledSubsystem));
+    driverBButton.whileTrue(new ShootPass(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, driverLeftStickY, operatorLeftStickY, driverYButton, ledSubsystem));
     // driverDownDirectionPad.whileTrue(new IntakeFromShooter(shooterSubsystem, intakeSubsystem));
     driverYButton.whileTrue(new ShootSpeaker(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, driverLeftStickX, operatorLeftStickY, driverRightBumper, ledSubsystem));
     // OPERATOR BUTTONS
@@ -278,16 +254,17 @@ public class RobotContainer {
     operatorUpDirectionPad.whileTrue(new SubwooferShot(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, driverLeftStickX, driverLeftStickY, driverRightStickX, driverRightBumper, ledSubsystem));
     // intake (aka SUCC_BUTTON)
     operatorLeftTrigger.whileTrue(new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem, false, ledSubsystem, this::intakeCallback));
-    // operatorLeftTrigger.whileFalse(new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem, false, ledSubsystem, this::intakeCallback).withTimeout(0.2));
+    operatorLeftTrigger.whileFalse(new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem, false, ledSubsystem, this::intakeCallback).withTimeout(0.2));
     // outtake (aka UNSUCC_BUTTON)
     operatorLeftBumper.whileTrue(new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem, true, ledSubsystem, this::intakeCallback));
     // manual pivot (possible climb, unlikely)
     operatorAButton.whileTrue(new ManualPivot(pivotSubsystem, ()->modifyAxisCubed(operatorRightStickY)));
-    operatorDownDirectionPad.whileTrue(new ManualPivot(pivotSubsystem, ()->-0.25));
+    operatorDownDirectionPad.whileTrue(new ManualPivot(pivotSubsystem, ()->-0.2));
     // manual rollers
     operatorYButton.whileTrue(new ManualIntake(intakeSubsystem, true));
     operatorXButton.whileTrue(new ManualIntake(intakeSubsystem, false));
-
+    
+    operatorWheeButton.onTrue(new InstantCommand(visionSubsystem::invertTeleopStatus));
     // operatorBButton.onTrue(new StopShooterAndIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem));
   }
 

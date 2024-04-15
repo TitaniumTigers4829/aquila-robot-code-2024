@@ -13,7 +13,6 @@ import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.HardwareConstants;
 import frc.robot.Constants.PivotConstants;
@@ -98,7 +97,6 @@ public class PivotSubsystem extends SubsystemBase {
    * @return pivot error between desired and actual state in rotations
    */
   public boolean isPivotWithinAcceptableError() {
-    // SmartDashboard.putNumber("pivot error", Math.abs(pivotTargetAngle - getAngle()));
     return Math.abs(pivotTargetAngle - getAngle()) < PivotConstants.PIVOT_ACCEPTABLE_ERROR;
   }
 
@@ -124,7 +122,6 @@ public class PivotSubsystem extends SubsystemBase {
    * @param speakerDistance the distance in meters from the speaker
    */
   public void setPivotFromSpeakerDistance(double speakerDistance) {
-    SmartDashboard.putNumber("speaker distance", speakerDistance);
     double speakerAngle = speakerAngleLookupValues.getLookupValue(speakerDistance);
     pivotTargetAngle = speakerAngle;
     setPivotAngle(speakerAngle);
@@ -135,7 +132,6 @@ public class PivotSubsystem extends SubsystemBase {
    * @param passDistance the distance in meters from the passing position
    */
   public void setPivotFromPassDistance(double passDistance) {
-    SmartDashboard.putNumber("passing distance", passDistance);
     double passAngle = passAngleLookupValues.getLookupValue(passDistance);
     pivotTargetAngle = passAngle;
     setPivotAngle(passAngle);
@@ -147,13 +143,12 @@ public class PivotSubsystem extends SubsystemBase {
    */
   public void setPivotAngle(double angle) {
     pivotTargetAngle = angle;
-    SmartDashboard.putNumber("desired pivot angle", pivotTargetAngle);
     leaderPivotMotor.setControl(mmRequest.withPosition(angle));
     followerPivotMotor.setControl(mmRequest.withPosition(angle));
   }
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("pivot pos", pivotPos.refresh().getValueAsDouble());
+    // SmartDashboard.putNumber("pivot pos", pivotPos.refresh().getValueAsDouble());
   }
 }

@@ -50,13 +50,11 @@ public class ShootAmp extends Command {
       // leds.setProcess(LEDProcess.FINISH_LINE_UP);
       // shooterSubsystem.setRollerSpeed(0);
     // }
-        SmartDashboard.putBoolean("end", false);
   }
   // stick it in - jack
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    SmartDashboard.putBoolean("end", true);
     pivotSubsystem.setPivotAngle(PivotConstants.PIVOT_INTAKE_ANGLE);
     leds.setProcess(LEDProcess.DEFAULT);
     shooterSubsystem.setFlywheelNeutral();

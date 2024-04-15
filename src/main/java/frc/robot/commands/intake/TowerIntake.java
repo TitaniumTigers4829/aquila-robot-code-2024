@@ -87,7 +87,7 @@ public class TowerIntake extends Command {
         }
       }
     }
-    hasNoteCallback.accept((Boolean)intakeSensorLatch);
+    hasNoteCallback.accept((Boolean)intakeSensorLatch || shooterSubsystem.hasNote());
   }
   
   @Override

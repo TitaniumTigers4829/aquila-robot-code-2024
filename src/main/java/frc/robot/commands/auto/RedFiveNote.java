@@ -27,7 +27,7 @@ public class RedFiveNote extends SequentialCommandGroup {
       new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "red to shoot pos", false),
       new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, ledSubsystem).withTimeout(1.3),
       new ParallelCommandGroup(
-        new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "Red center to note 3", false),
+        new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "red center to note 3", false),
         new IntakeAuto(intakeSubsystem, pivotSubsystem, shooterSubsystem, ledSubsystem).withTimeout(3)
       ),
       new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, ledSubsystem).withTimeout(1.4),

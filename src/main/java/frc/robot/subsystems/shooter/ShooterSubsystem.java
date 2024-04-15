@@ -131,14 +131,8 @@ public class ShooterSubsystem extends SubsystemBase {
    */
   public void setRPM(double desiredRPM) {
     shooterTargetRPM = desiredRPM;
-    SmartDashboard.putNumber("desired RPM", shooterTargetRPM);
     leaderFlywheel.setControl(velocityRequest.withVelocity(desiredRPM / 60.0));
     followerFlywheel.setControl(velocityRequest.withVelocity(desiredRPM / 60.0));
-    if (hasNote()){
-      SmarterDashboardRegistry.noteIn();
-    } else {
-      SmarterDashboardRegistry.noNote();
-    }
   }
 
 
@@ -180,12 +174,10 @@ public class ShooterSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     SmartDashboard.putBoolean("has note", hasNote());
-    SmartDashboard.putNumber("current RPM", leaderVelocity.refresh().getValueAsDouble() * 60.0);
-    SmartDashboard.putNumber("error", shooterTargetRPM - (leaderVelocity.refresh().getValueAsDouble() * 60.0));
-    if (hasNote()) {
-      SmarterDashboardRegistry.noteIn();
-    } else {
-      SmarterDashboardRegistry.noNote();
-    }
+    // if (hasNote()) {
+    //   SmarterDashboardRegistry.noteIn();
+    // } else {
+    //   SmarterDashboardRegistry.noNote();
+    // }
   }
 }

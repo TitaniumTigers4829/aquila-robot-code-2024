@@ -92,7 +92,7 @@ public final class Constants {
     public static final double MAX_SPEED_METERS_PER_SECOND = 6.95;
     public static final double MAX_SHOOT_SPEED_METERS_PER_SECOND = 3;
 
-    public static final double HEADING_ACCEPTABLE_ERROR_RADIANS = Units.degreesToRadians(3.5);
+    public static final double HEADING_ACCEPTABLE_ERROR_RADIANS = Units.degreesToRadians(2.5);
     public static final double HEADING_ACCEPTABLE_ERROR_MOVING_RADIANS = Units.degreesToRadians(4);
   }
   
@@ -362,7 +362,7 @@ public final class Constants {
       {2.9, 0.086},
       {3.1, 0.0905},
       {3.3, 0.094},
-      {3.5, 0.097},
+      {3.5, 0.098},
       {3.7, 0.1},
       {3.9, 0.103},
       {4.1, 0.1055},
