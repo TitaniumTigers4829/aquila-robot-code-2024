@@ -16,9 +16,9 @@ public class Drive extends DriveCommandBase {
   private final BooleanSupplier isFieldRelative, isHighRotation;
   private double angularSpeed;
 
-  private SlewRateLimiter forwardLimiter = new SlewRateLimiter(10.0);
-  private SlewRateLimiter rightLimiter = new SlewRateLimiter(10.0);
-  private SlewRateLimiter rotationLimiter = new SlewRateLimiter(10.0);
+  private SlewRateLimiter yLimiter = new SlewRateLimiter(DriveConstants.X_RATE_LIMIT);
+  private SlewRateLimiter xLimiter = new SlewRateLimiter(DriveConstants.Y_RATE_LIMIT);
+  private SlewRateLimiter rotLimiter = new SlewRateLimiter(DriveConstants.ROT_RATE_LIMIT);
   
   /**
    * The command for driving the robot using joystick inputs.
@@ -29,6 +29,7 @@ public class Drive extends DriveCommandBase {
    * @param rightJoystickX The joystick input for turning
    * @param isFieldRelative The boolean supplier if the robot should drive
    * field relative
+   * @param isHighRotation The boolean supplier for if the robot should drive with a higher rotation
    */
   public Drive(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, DoubleSupplier leftJoystickY, DoubleSupplier leftJoystickX, DoubleSupplier rightJoystickX, BooleanSupplier isFieldRelative, BooleanSupplier isHighRotation) {
     super(driveSubsystem, visionSubsystem);
@@ -55,9 +56,9 @@ public class Drive extends DriveCommandBase {
     }
     
     driveSubsystem.drive(
-      forwardLimiter.calculate(leftJoystickY.getAsDouble() * DriveConstants.MAX_SPEED_METERS_PER_SECOND),
-      rightLimiter.calculate(leftJoystickX.getAsDouble() * DriveConstants.MAX_SPEED_METERS_PER_SECOND),
-      rotationLimiter.calculate(rightJoystickX.getAsDouble() * angularSpeed),
+      yLimiter.calculate(leftJoystickY.getAsDouble() * DriveConstants.MAX_SPEED_METERS_PER_SECOND),
+      xLimiter.calculate(leftJoystickX.getAsDouble() * DriveConstants.MAX_SPEED_METERS_PER_SECOND),
+      rotLimiter.calculate(rightJoystickX.getAsDouble() * angularSpeed),
       isFieldRelative.getAsBoolean()
     );
 
