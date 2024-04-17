@@ -31,7 +31,7 @@ public class IntakeFromShooter extends Command {
       shooterSubsystem.setFlywheelNeutral();
       shooterSubsystem.setRollerSpeed(0);
     }else{
-      shooterSubsystem.setRPM(-1);
+      shooterSubsystem.setRPM(-2000);
       shooterSubsystem.setRollerSpeed(-1);
     }
   }

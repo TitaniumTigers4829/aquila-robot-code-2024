@@ -20,18 +20,7 @@ public class VisionSubsystem extends SubsystemBase {
   private Pose2d lastSeenPose = new Pose2d();
   private boolean isTeleop = false;
 
-  private StringLogEntry poseLogger;
-  private DataLog log; 
-  private StringLogEntry frontLeftLogger;
-  private StringLogEntry frontRightLogger;
-  private StringLogEntry shooterLogger;
-
   public VisionSubsystem() {
-    log = DataLogManager.getLog();
-    poseLogger = new StringLogEntry(log, "llPose");
-    frontLeftLogger = new StringLogEntry(log, "front Left");
-    frontRightLogger = new StringLogEntry(log, "front right");
-    shooterLogger = new StringLogEntry(log, "shooter");
   }
 
   /**
@@ -141,36 +130,6 @@ public class VisionSubsystem extends SubsystemBase {
     return currentlyUsedLimelight;
   }
 
-  public Pose2d getPoseFromFrontLeft() {
-     Pose2d botPose = LimelightHelpers.getBotPose2d(VisionConstants.FRONT_LEFT_LIMELIGHT_NAME);
-      // The origin of botpose is at the center of the field
-      double robotX = botPose.getX() + FieldConstants.FIELD_LENGTH_METERS / 2.0;
-      double robotY = botPose.getY() + FieldConstants.FIELD_WIDTH_METERS / 2.0;
-      Rotation2d robotRotation = botPose.getRotation();
-      lastSeenPose = new Pose2d(robotX, robotY, robotRotation);
-      return new Pose2d(robotX, robotY, robotRotation);  
-  }
-
-  public Pose2d getPoseFromFrontRight() {
-     Pose2d botPose = LimelightHelpers.getBotPose2d(VisionConstants.FRONT_RIGHT_LIMELIGHT_NAME);
-      // The origin of botpose is at the center of the field
-      double robotX = botPose.getX() + FieldConstants.FIELD_LENGTH_METERS / 2.0;
-      double robotY = botPose.getY() + FieldConstants.FIELD_WIDTH_METERS / 2.0;
-      Rotation2d robotRotation = botPose.getRotation();
-      lastSeenPose = new Pose2d(robotX, robotY, robotRotation);
-      return new Pose2d(robotX, robotY, robotRotation);  
-  }
-
-  public Pose2d getPoseFromShooter() {
-     Pose2d botPose = LimelightHelpers.getBotPose2d(VisionConstants.SHOOTER_LIMELIGHT_NAME);
-      // The origin of botpose is at the center of the field
-      double robotX = botPose.getX() + FieldConstants.FIELD_LENGTH_METERS / 2.0;
-      double robotY = botPose.getY() + FieldConstants.FIELD_WIDTH_METERS / 2.0;
-      Rotation2d robotRotation = botPose.getRotation();
-      lastSeenPose = new Pose2d(robotX, robotY, robotRotation);
-      return new Pose2d(robotX, robotY, robotRotation);  
-  }
-
   public void setTeleopStatus(boolean isTeleop) {
     this.isTeleop = isTeleop;
     SmartDashboard.putBoolean("allLimelights", isTeleop);
@@ -183,15 +142,6 @@ public class VisionSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-
-    Pose2d loggedPose = getPoseFromAprilTags();
-    poseLogger.append(loggedPose.toString(), (long)Timer.getFPGATimestamp());
-    Pose2d frontLeftPose = getPoseFromFrontLeft();
-    frontLeftLogger.append(frontLeftPose.toString(), (long)Timer.getFPGATimestamp());
-    Pose2d frontRightPose = getPoseFromFrontRight();
-    frontRightLogger.append(frontRightPose.toString(), (long)Timer.getFPGATimestamp());
-    Pose2d shooterPose = getPoseFromShooter();
-    shooterLogger.append(shooterPose.toString(), (long)Timer.getFPGATimestamp());
 
     if (isTeleop) {
       // Every periodic chooses the limelight to use based off of their distance from april tags

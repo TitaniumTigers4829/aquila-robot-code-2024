@@ -48,9 +48,6 @@ public class DriveSubsystem extends SubsystemBase {
   private final AHRS gyro;
   private final SwerveDrivePoseEstimator odometry;
 
-  private StringLogEntry odometryLogger;
-  private DataLog log; 
-
   private Optional<DriverStation.Alliance> alliance;
 
   /**
@@ -124,8 +121,6 @@ public class DriveSubsystem extends SubsystemBase {
       this
     );
     
-    log = DataLogManager.getLog();
-    odometryLogger = new StringLogEntry(log, "odometry");
   }
 
   /**gets the chassis speeds*/
@@ -167,7 +162,11 @@ public class DriveSubsystem extends SubsystemBase {
     drive(-speeds.vxMetersPerSecond, -speeds.vyMetersPerSecond, -speeds.omegaRadiansPerSecond, false);
   }
 
-  /**pid on the chassis rotation, used during auto */
+  /** 
+   * Allows PID on the chassis rotation.
+   * @param speeds The ChassisSpeeds of the drive to set.
+   * @param rotationControl The control on the drive rotation.
+   */
   public void mergeDrive(ChassisSpeeds speeds, double rotationControl) {
     drive(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, rotationControl, false);
   }
@@ -191,12 +190,16 @@ public class DriveSubsystem extends SubsystemBase {
 
   /**
    * Returns the heading of the robot in degrees from 0 to 360. 
-   * Returned value is Counter-clockwise positive.
+   * @return Value is Counter-clockwise positive.
    */
   public double getHeading() {
     return -gyro.getAngle();
   }
 
+  /**
+   * Gets the rate of rotation of the NavX.
+   * @return The current rate in degrees per second.
+   */
   public double getGyroRate() {
     return -gyro.getRate();
   }
@@ -301,7 +304,8 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   /**
-   * Returns the current drivetrain position, as reported by the modules 
+   * Gets the current module positions.
+   * @return The current drivetrain position, as reported by the modules 
    * themselves. The order is: frontLeft, frontRight, backLeft, backRight
    * (should be the same as the kinematics).
    */
@@ -333,17 +337,14 @@ public class DriveSubsystem extends SubsystemBase {
 
   public void periodic() {
     Pose2d pose = getPose();
-    // SmarterDashboardRegistry.setPose(pose);
-    odometryLogger.append(pose.toString(), (long)Timer.getFPGATimestamp());
-    DataLogManager.getLogDir();
-    // SmartDashboard.putString("log", log.toString());
-    // SmartDashboard.putString("log directory", DataLogManager.getLogDir());
+    double distance = pose.getTranslation().getDistance(SmarterDashboardRegistry.getSpeakerPos());
+
     SmartDashboard.putBoolean("screwed", Math.abs(pose.getX()) > 20);
     SmartDashboard.putString("odometry", pose.toString());
-    double distance = pose.getTranslation().getDistance(SmarterDashboardRegistry.getSpeakerPos());
-    // SmartDashboard.putNumber("speakerDistance", distance);
     SmartDashboard.putBoolean("canShoot", distance < 4.9);
+
+    // SmartDashboard.putNumber("speakerDistance", distance);
     // SmartDashboard.putNumber("passingPos", pose.getTranslation().getDistance(SmarterDashboardRegistry.getPassingPos()));
-    rearRightSwerveModule.periodicFunction();
   }
+
 }

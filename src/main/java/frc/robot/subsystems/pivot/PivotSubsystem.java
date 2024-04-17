@@ -24,7 +24,7 @@ public class PivotSubsystem extends SubsystemBase {
   private final TalonFX leaderPivotMotor;
   private final TalonFX followerPivotMotor;
 
-  private final MotionMagicVoltage mmRequest;
+  private final MotionMagicVoltage mmPositionRequest;
 
   private final SingleLinearInterpolator speakerAngleLookupValues;
   private final SingleLinearInterpolator passAngleLookupValues;
@@ -38,7 +38,7 @@ public class PivotSubsystem extends SubsystemBase {
     followerPivotMotor = new TalonFX(PivotConstants.FOLLOWER_PIVOT_MOTOR_ID);
     pivotEncoder = new CANcoder(PivotConstants.PIVOT_ENCODER_ID);
 
-    mmRequest = new MotionMagicVoltage(0);
+    mmPositionRequest = new MotionMagicVoltage(0);
 
     speakerAngleLookupValues = new SingleLinearInterpolator(PivotConstants.SPEAKER_PIVOT_POSITION);
     passAngleLookupValues = new SingleLinearInterpolator(PivotConstants.PASS_PIVOT_POSITION);
@@ -143,8 +143,8 @@ public class PivotSubsystem extends SubsystemBase {
    */
   public void setPivotAngle(double angle) {
     pivotTargetAngle = angle;
-    leaderPivotMotor.setControl(mmRequest.withPosition(angle));
-    followerPivotMotor.setControl(mmRequest.withPosition(angle));
+    leaderPivotMotor.setControl(mmPositionRequest.withPosition(angle));
+    followerPivotMotor.setControl(mmPositionRequest.withPosition(angle));
   }
 
   @Override

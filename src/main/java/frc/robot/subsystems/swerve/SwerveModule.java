@@ -33,8 +33,8 @@ public class SwerveModule {
   private final StatusSignal<Double> driveMotorPosition;
   private final StatusSignal<Double> turnEncoderPos;
 
-  private final MotionMagicVoltage turnOutput;
-  private final VelocityVoltage driveOutput;
+  private final MotionMagicVoltage mmPositionRequest;
+  private final VelocityVoltage velocityRequest;
   
   private String name;
 
@@ -65,8 +65,8 @@ public class SwerveModule {
     driveMotor = new TalonFX(driveMotorChannel, HardwareConstants.CANIVORE_CAN_BUS_STRING);
     turnMotor = new TalonFX(turnMotorChannel, HardwareConstants.CANIVORE_CAN_BUS_STRING);
 
-    turnOutput = new MotionMagicVoltage(0);
-    driveOutput = new VelocityVoltage(0);
+    mmPositionRequest = new MotionMagicVoltage(0);
+    velocityRequest = new VelocityVoltage(0);
     
     CANcoderConfiguration turnEncoderConfig = new CANcoderConfiguration();
     turnEncoderConfig.MagnetSensor.MagnetOffset = -angleZero;
@@ -171,8 +171,8 @@ public class SwerveModule {
     double desiredDriveRPS = optimizedDesiredState.speedMetersPerSecond 
      * ModuleConstants.DRIVE_GEAR_RATIO / ModuleConstants.WHEEL_CIRCUMFERENCE_METERS;
      
-    driveMotor.setControl(driveOutput.withVelocity(desiredDriveRPS));
-    turnMotor.setControl(turnOutput.withPosition(optimizedDesiredState.angle.getRotations()));
+    driveMotor.setControl(velocityRequest.withVelocity(desiredDriveRPS));
+    turnMotor.setControl(mmPositionRequest.withPosition(optimizedDesiredState.angle.getRotations()));
   }
 
   /**
@@ -193,7 +193,6 @@ public class SwerveModule {
    * This is called in the periodic of DriveSubsystem
    */
   public void periodicFunction() {
-    SmartDashboard.putNumber(name + "offset", turnEncoderPos.refresh().getValueAsDouble());
   }
 
 }

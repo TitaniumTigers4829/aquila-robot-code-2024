@@ -16,8 +16,8 @@ public class Drive extends DriveCommandBase {
   private final BooleanSupplier isFieldRelative, isHighRotation;
   private double angularSpeed;
 
-  private SlewRateLimiter yLimiter = new SlewRateLimiter(DriveConstants.X_RATE_LIMIT);
-  private SlewRateLimiter xLimiter = new SlewRateLimiter(DriveConstants.Y_RATE_LIMIT);
+  private SlewRateLimiter yLimiter = new SlewRateLimiter(DriveConstants.Y_RATE_LIMIT);
+  private SlewRateLimiter xLimiter = new SlewRateLimiter(DriveConstants.X_RATE_LIMIT);
   private SlewRateLimiter rotLimiter = new SlewRateLimiter(DriveConstants.ROT_RATE_LIMIT);
   
   /**

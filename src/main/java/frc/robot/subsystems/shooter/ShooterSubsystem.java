@@ -30,6 +30,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
   private double shooterTargetRPM;
   private final VelocityVoltage velocityRequest;
+  private final VoltageOut voltageRequest;
 
   /** Creates a new ShooterSubsystem. */
   public ShooterSubsystem() { 
@@ -40,6 +41,7 @@ public class ShooterSubsystem extends SubsystemBase {
     noteSensor = new DigitalInput(ShooterConstants.NOTE_SENSOR_ID);
     
     velocityRequest = new VelocityVoltage(0);
+    voltageRequest = new VoltageOut(0);
 
     TalonFXConfiguration shooterConfig = new TalonFXConfiguration();
     shooterConfig.Slot0.kP = ShooterConstants.SHOOT_P;
@@ -83,7 +85,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
   /**
    * Gets if the tower has a note in it
-   * @return true if there is a note
+   * @return True if there is a note
    */
   public boolean hasNote() {
     return !noteSensor.get();
@@ -94,8 +96,8 @@ public class ShooterSubsystem extends SubsystemBase {
    * @param volts Voltage to set
    */
   public void setVolts(double volts) {
-    leaderFlywheel.setControl(new VoltageOut(volts));
-    followerFlywheel.setControl(new VoltageOut(volts));
+    leaderFlywheel.setControl(voltageRequest.withOutput(volts));
+    followerFlywheel.setControl(voltageRequest.withOutput(volts)));
   }
 
   /**

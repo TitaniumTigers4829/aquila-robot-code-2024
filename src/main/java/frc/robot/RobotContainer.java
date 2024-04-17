@@ -150,7 +150,6 @@ public class RobotContainer {
     intakeSubsystem.setIntakeSpeed(0);
     pivotSubsystem.setPivotAngle(PivotConstants.PIVOT_INTAKE_ANGLE);
     visionSubsystem.setTeleopStatus(false);
-    // new StopShooterAndIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem).schedule();
   }
 
   public void intakeCallback(boolean hasNote) {

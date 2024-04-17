@@ -28,7 +28,7 @@ public class IntakeSubsystem extends SubsystemBase {
     TalonFXConfiguration intakeConfig = new TalonFXConfiguration();
     intakeConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     intakeConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
-    //TODO: tune these:
+
     intakeConfig.CurrentLimits.StatorCurrentLimit = IntakeConstants.INTAKE_STATOR_LIMIT;
     intakeConfig.CurrentLimits.StatorCurrentLimitEnable = IntakeConstants.INTAKE_STATOR_ENABLE;
     intakeConfig.CurrentLimits.SupplyCurrentLimit = IntakeConstants.INTAKE_SUPPLY_LIMIT;
@@ -59,8 +59,8 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   /**
-   * sets the flapper speed
-   * @param speed speed
+   * Sets the flapper speed
+   * @param speed 1.0 being the max speed, -1.0 being the min speed
    */
   public void setFlapperSpeed(double speed) {
     flapperMotor.set(speed);

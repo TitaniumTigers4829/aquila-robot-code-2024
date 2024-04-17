@@ -15,6 +15,10 @@ public class FlywheelSpinUpAuto extends Command {
   private final ShooterSubsystem shooterSubsystem;
   private final VisionSubsystem visionSubsystem;
 
+  private boolean isRed = false;
+  private Translation2d speakerPos;
+
+
   public FlywheelSpinUpAuto(ShooterSubsystem shooterSubsystem, VisionSubsystem visionSubsystem) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.shooterSubsystem = shooterSubsystem;
@@ -24,13 +28,22 @@ public class FlywheelSpinUpAuto extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+       
+    speakerPos = isRed ? new Translation2d(FieldConstants.RED_SPEAKER_X, FieldConstants.RED_SPEAKER_Y) : new Translation2d(FieldConstants.BLUE_SPEAKER_X, FieldConstants.BLUE_SPEAKER_Y);
+
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (shooterSubsystem.hasNote() && visionSubsystem.canSeeAprilTags() && Units.metersToFeet(visionSubsystem.getDistanceFromClosestAprilTag()) <= 25) {
-      shooterSubsystem.setRPM(ShooterConstants.SHOOT_SPEAKER_RPM);
+
+    // get positions of various things
+    Translation2d robotPos = driveSubsystem.getPose().getTranslation();
+    // distance (for speaker lookups)
+    double distance = robotPos.getDistance(speakerPos);
+
+    if (shooterSubsystem.hasNote() && distance <= 25) {
+      shooterSubsystem.setRPM(ShooterConstants.SHOOT_SPEAKER_RPM * 0.5);
     }
   }
 
