@@ -97,7 +97,7 @@ public class ShooterSubsystem extends SubsystemBase {
    */
   public void setVolts(double volts) {
     leaderFlywheel.setControl(voltageRequest.withOutput(volts));
-    followerFlywheel.setControl(voltageRequest.withOutput(volts)));
+    followerFlywheel.setControl(voltageRequest.withOutput(volts));
   }
 
   /**
