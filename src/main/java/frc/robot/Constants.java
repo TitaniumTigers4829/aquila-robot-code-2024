@@ -96,7 +96,7 @@ public final class Constants {
     public static final double HEADING_ACCEPTABLE_ERROR_MOVING_RADIANS = Units.degreesToRadians(4);
 
     public static final double Y_RATE_LIMIT = 10.0;
-    public static final double X_RATE_LIMIT = 10.0
+    public static final double X_RATE_LIMIT = 10.0;
     public static final double ROT_RATE_LIMIT = 10.0;
   }
   

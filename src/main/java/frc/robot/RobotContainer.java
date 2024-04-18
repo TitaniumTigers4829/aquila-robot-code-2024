@@ -11,7 +11,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.Constants.HardwareConstants;
 import frc.robot.Constants.JoystickConstants;
 import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.LEDConstants.LEDProcess;
@@ -31,15 +30,13 @@ import frc.robot.commands.auto.RedSixNote;
 // import frc.robot.commands.auto.RedUnderStage4note;
 import frc.robot.commands.auto.RedUnderStage4Note;
 import frc.robot.commands.auto.SimpleTxi;
-import frc.robot.commands.auto.StopShooterAndIntake;
 import frc.robot.commands.autodrive.AutoAlignWithAmp;
 import frc.robot.commands.auto.RedNoteEight;
 import frc.robot.commands.drive.Drive;
 import frc.robot.commands.intake.ManualIntake;
 import frc.robot.commands.intake.TowerIntake;
+import frc.robot.extras.Util;
 import frc.robot.extras.SmarterDashboardRegistry;
-import frc.robot.extras.characterization.WheelRadiusCharacterization;
-import frc.robot.extras.characterization.WheelRadiusCharacterization.Direction;
 import frc.robot.commands.shooter.ManualPivot;
 import frc.robot.commands.shooter.ShootAmp;
 import frc.robot.commands.shooter.ShootPass;
@@ -103,44 +100,6 @@ public class RobotContainer {
 
   }
   
-  private static double deadband(double value, double deadband) {
-    if (Math.abs(value) > deadband) {
-      if (value > 0.0) {
-        return (value - deadband) / (1.0 - deadband);
-      } else {
-        return (value + deadband) / (1.0 - deadband);
-      }
-    } else {
-      return 0.0;
-    }
-  }
-  
-  private static double modifyAxisCubed(DoubleSupplier supplierValue) {
-    double value = supplierValue.getAsDouble();
-
-    // Deadband
-    value = deadband(value, HardwareConstants.DEADBAND_VALUE);
-
-    // Cube the axis
-    value = Math.copySign(value * value * value, value);
-
-    return value;
-  }
-
-  private static double[] modifyAxisCubedPolar(DoubleSupplier xJoystick, DoubleSupplier yJoystick) {
-    double xInput = deadband(xJoystick.getAsDouble(), HardwareConstants.DEADBAND_VALUE);
-    double yInput = deadband(yJoystick.getAsDouble(), HardwareConstants.DEADBAND_VALUE);
-    if (Math.abs(xInput) > 0 && Math.abs(yInput) > 0) {
-      double theta = Math.atan(xInput / yInput);
-      double hypotenuse = Math.sqrt(xInput * xInput + yInput * yInput);
-      double cubedHypotenuse = Math.pow(hypotenuse, 3);
-      xInput = Math.copySign(Math.sin(theta) * cubedHypotenuse, xInput);
-      yInput = Math.copySign(Math.cos(theta) * cubedHypotenuse, yInput);
-      return new double[]{xInput, yInput};
-    }
-    return new double[]{ Math.copySign(xInput * xInput * xInput, xInput),  Math.copySign(yInput * yInput * yInput, yInput)};
-  }
-
   public void teleopInit() {
     configureButtonBindings();
     SmarterDashboardRegistry.initialize();
@@ -166,7 +125,7 @@ public class RobotContainer {
     DoubleSupplier driverLeftStickX = driverController::getLeftX;
     DoubleSupplier driverLeftStickY = driverController::getLeftY;
     DoubleSupplier driverRightStickX = driverController::getRightX;
-    DoubleSupplier driverLeftStick[] = new DoubleSupplier[]{()->modifyAxisCubedPolar(driverLeftStickX, driverLeftStickY)[0], ()->modifyAxisCubedPolar(driverLeftStickX, driverLeftStickY)[1]};
+    DoubleSupplier driverLeftStick[] = new DoubleSupplier[]{()->Util.modifyAxisPolar(driverLeftStickX, driverLeftStickY, 2)[0], ()->Util.modifyAxisPolar(driverLeftStickX, driverLeftStickY, 2)[1]};
 
     Trigger driverRightBumper = new Trigger(driverController::getRightBumper);
     Trigger driverRightDirectionPad = new Trigger(()->driverController.getPOV() == 90);
@@ -207,7 +166,7 @@ public class RobotContainer {
     Command driveCommand = new Drive(driveSubsystem, visionSubsystem,
       driverLeftStick[1],
       driverLeftStick[0],
-      () -> modifyAxisCubed(driverRightStickX),
+      () -> Util.modifyAxis(driverRightStickX, 2),
       () -> !driverRightBumper.getAsBoolean(),
       () -> driverLeftBumper.getAsBoolean()
     );
@@ -251,7 +210,7 @@ public class RobotContainer {
     // outtake (aka UNSUCC_BUTTON)
     operatorLeftBumper.whileTrue(new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem, true, ledSubsystem, this::intakeCallback));
     // manual pivot (possible climb, unlikely)
-    operatorAButton.whileTrue(new ManualPivot(pivotSubsystem, ()->modifyAxisCubed(operatorRightStickY)));
+    operatorAButton.whileTrue(new ManualPivot(pivotSubsystem, ()->Util.modifyAxis(operatorRightStickY, 2)));
     operatorDownDirectionPad.whileTrue(new ManualPivot(pivotSubsystem, ()->-0.2));
     // manual rollers
     operatorYButton.whileTrue(new ManualIntake(intakeSubsystem, true));
