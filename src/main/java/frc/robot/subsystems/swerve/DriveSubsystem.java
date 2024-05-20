@@ -221,8 +221,8 @@ public class DriveSubsystem extends SubsystemBase {
     currentJerkY = curr_world_linear_accel_y - last_world_linear_accel_y;
     last_world_linear_accel_y = curr_world_linear_accel_y;
     
-    if ( ( Math.abs(currentJerkX) > 0.1 ) || //kCollisionThreshold_DeltaG
-         ( Math.abs(currentJerkY) >  0.1 ) ) { //kCollisionThreshold_DeltaG
+    if ( ( Math.abs(currentJerkX) > DriveConstants.COLLISION_THRESHOLD_DELTA_G ) || 
+         ( Math.abs(currentJerkY) >  DriveConstants.COLLISION_THRESHOLD_DELTA_G ) ) { 
         stateStandardDeviations = VecBuilder.fill(0, 0, 0);
        return collisionDetected = true;
     }

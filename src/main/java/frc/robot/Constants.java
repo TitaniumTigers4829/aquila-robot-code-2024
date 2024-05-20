@@ -98,6 +98,8 @@ public final class Constants {
     public static final double Y_RATE_LIMIT = 10.0;
     public static final double X_RATE_LIMIT = 10.0;
     public static final double ROT_RATE_LIMIT = 10.0;
+
+    public static final double COLLISION_THRESHOLD_DELTA_G = 0.1;
   }
   
   public static final class ModuleConstants { 

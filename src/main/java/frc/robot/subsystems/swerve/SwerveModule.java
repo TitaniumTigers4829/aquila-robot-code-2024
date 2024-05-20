@@ -126,7 +126,7 @@ public class SwerveModule {
 
     optimalSlipRatio = MathUtil.clamp(optimalSlipRatio, 0.01, 0.4);
     maxLinearSpeed = Math.floor(DriveConstants.MAX_SPEED_METERS_PER_SECOND * 1000) / 1000;
-    slipDebouncer = new Debouncer(maxSlippingTime.in(Units.Seconds), DebounceType.kRising);
+    slipDebouncer = new Debouncer(.2, DebounceType.kRising); // majic # lol
 
     BaseStatusSignal.setUpdateFrequencyForAll(HardwareConstants.SIGNAL_FREQUENCY, turnEncoderPos, driveMotorPosition, driveMotorVelocity);
 
