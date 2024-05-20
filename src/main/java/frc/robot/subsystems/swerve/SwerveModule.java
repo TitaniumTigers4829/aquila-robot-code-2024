@@ -15,11 +15,16 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.filter.Debouncer;
+import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
+import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.HardwareConstants;
 import frc.robot.Constants.ModuleConstants;
 
@@ -35,6 +40,11 @@ public class SwerveModule {
 
   private final MotionMagicVoltage mmPositionRequest;
   private final VelocityVoltage velocityRequest;
+
+  private Debouncer slipDebouncer;
+  private double maxLinearSpeed;
+  private double optimalSlipRatio;
+
   
   private String name;
 
@@ -113,6 +123,10 @@ public class SwerveModule {
 
     driveMotor.setPosition(0);
     turnMotor.setPosition(0);
+
+    optimalSlipRatio = MathUtil.clamp(optimalSlipRatio, 0.01, 0.4);
+    maxLinearSpeed = Math.floor(DriveConstants.MAX_SPEED_METERS_PER_SECOND * 1000) / 1000;
+    slipDebouncer = new Debouncer(maxSlippingTime.in(Units.Seconds), DebounceType.kRising);
 
     BaseStatusSignal.setUpdateFrequencyForAll(HardwareConstants.SIGNAL_FREQUENCY, turnEncoderPos, driveMotorPosition, driveMotorVelocity);
 

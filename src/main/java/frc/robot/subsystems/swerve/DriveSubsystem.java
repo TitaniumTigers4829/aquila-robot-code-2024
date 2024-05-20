@@ -34,7 +34,7 @@ import frc.robot.extras.SmarterDashboardRegistry;
 public class DriveSubsystem extends SubsystemBase {
 
   // This will stay the same throughout the match. These values are harder to test for and tune, so assume this guess is right.
-  private static final Vector<N3> stateStandardDeviations = VecBuilder.fill(DriveConstants.X_POS_TRUST, DriveConstants.Y_POS_TRUST, Units.degreesToRadians(DriveConstants.ANGLE_TRUST));
+  private static Vector<N3> stateStandardDeviations;
   
   // This will be changed throughout the match depending on how confident we are that the limelight is right.
   private static final Vector<N3> visionMeasurementStandardDeviations = VecBuilder.fill(VisionConstants.VISION_X_POS_TRUST,
@@ -47,6 +47,13 @@ public class DriveSubsystem extends SubsystemBase {
 
   private final AHRS gyro;
   private final SwerveDrivePoseEstimator odometry;
+
+  private boolean collisionDetected = false;
+
+  private double last_world_linear_accel_x;
+  private double last_world_linear_accel_y;
+  private double currentJerkX;
+  private double currentJerkY;
 
   private Optional<DriverStation.Alliance> alliance;
 
@@ -120,7 +127,8 @@ public class DriveSubsystem extends SubsystemBase {
       ()->false,
       this
     );
-    
+    stateStandardDeviations = VecBuilder.fill(DriveConstants.X_POS_TRUST, DriveConstants.Y_POS_TRUST, Units.degreesToRadians(DriveConstants.ANGLE_TRUST));
+
   }
 
   /**gets the chassis speeds*/
@@ -202,6 +210,26 @@ public class DriveSubsystem extends SubsystemBase {
    */
   public double getGyroRate() {
     return -gyro.getRate();
+  }
+
+  public boolean isCollisionDetected() {
+    
+    double curr_world_linear_accel_x = gyro.getWorldLinearAccelX();
+    currentJerkX = curr_world_linear_accel_x - last_world_linear_accel_x;
+    last_world_linear_accel_x = curr_world_linear_accel_x;
+    double curr_world_linear_accel_y = gyro.getWorldLinearAccelY();
+    currentJerkY = curr_world_linear_accel_y - last_world_linear_accel_y;
+    last_world_linear_accel_y = curr_world_linear_accel_y;
+    
+    if ( ( Math.abs(currentJerkX) > 0.1 ) || //kCollisionThreshold_DeltaG
+         ( Math.abs(currentJerkY) >  0.1 ) ) { //kCollisionThreshold_DeltaG
+        stateStandardDeviations = VecBuilder.fill(0, 0, 0);
+       return collisionDetected = true;
+    }
+    SmartDashboard.putBoolean(  "CollisionDetected", collisionDetected);
+
+    return collisionDetected = false;
+    
   }
 
   /**
@@ -342,6 +370,8 @@ public class DriveSubsystem extends SubsystemBase {
     SmartDashboard.putBoolean("screwed", Math.abs(pose.getX()) > 20);
     SmartDashboard.putString("odometry", pose.toString());
     SmartDashboard.putBoolean("canShoot", distance < 4.9);
+    SmartDashboard.putNumber("y jerk", currentJerkY);
+    SmartDashboard.putNumber("x jerk", currentJerkX);
 
     // SmartDashboard.putNumber("speakerDistance", distance);
     // SmartDashboard.putNumber("passingPos", pose.getTranslation().getDistance(SmarterDashboardRegistry.getPassingPos()));
