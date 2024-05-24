@@ -108,7 +108,6 @@ public class RobotContainer {
     intakeSubsystem.setFlapperSpeed(0);
     intakeSubsystem.setIntakeSpeed(0);
     pivotSubsystem.setPivotAngle(PivotConstants.PIVOT_INTAKE_ANGLE);
-    visionSubsystem.setTeleopStatus(false);
   }
 
   public void intakeCallback(boolean hasNote) {

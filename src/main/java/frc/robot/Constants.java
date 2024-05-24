@@ -138,6 +138,8 @@ public final class Constants {
     public static final int FRAMES_BEFORE_ADDING_VISION_MEASUREMENT = 2;
     public static final double LL3_FOV_MARGIN_OF_ERROR = 27;
     public static final double LL3G_FOV_MARGIN_OF_ERROR = 38;
+
+    public static final double MEGA_TAG_2_MAX_HEADING_RATE = 180;  // TODO: This can be tested more
   
     public static final String SHOOTER_LIMELIGHT_NAME = "limelight-shooter";
     public static final String FRONT_LEFT_LIMELIGHT_NAME = "limelight-left";

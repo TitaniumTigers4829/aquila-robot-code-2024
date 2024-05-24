@@ -12,16 +12,17 @@ import frc.robot.Constants.VisionConstants;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.extras.LimelightHelpers;
 import frc.robot.extras.LimelightHelpers.LimelightResults;
+import frc.robot.subsystems.swerve.DriveSubsystem;
 
 public class VisionSubsystem extends SubsystemBase {
 
   private LimelightResults currentlyUsedLimelightResults = LimelightHelpers.getLatestResults(VisionConstants.SHOOTER_LIMELIGHT_NAME);
   private String currentlyUsedLimelight = VisionConstants.SHOOTER_LIMELIGHT_NAME;
   private Pose2d lastSeenPose = new Pose2d();
-  private boolean isTeleop = false;
+  private double headingDegrees = 0;
+  private double headingRateDegrees = 0;
 
-  public VisionSubsystem() {
-  }
+  public VisionSubsystem() {}
 
   /**
    * Returns true if the limelight(s) can fully see one or more April Tag.
@@ -44,9 +45,12 @@ public class VisionSubsystem extends SubsystemBase {
    */
   public Pose2d getPoseFromAprilTags() {
     if (canSeeAprilTags()) {
-      // This is the MT2 Code, its not
-      // LimelightHelpers.SetRobotOrientation(VisionConstants.SHOOTER_LIMELIGHT_NAME, currentRobotHeadingDegrees, 0, 0, 0, 0, 0);
-      // return LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(currentlyUsedLimelight).pose;
+      // MegaTag2 is much more accurate, but only use it when the robot isn't rotating too fast
+      if (headingRateDegrees < VisionConstants.MEGA_TAG_2_MAX_HEADING_RATE) {
+        LimelightHelpers.SetRobotOrientation(VisionConstants.SHOOTER_LIMELIGHT_NAME, headingDegrees, 0, 0, 0, 0, 0);
+        return LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(currentlyUsedLimelight).pose;
+      }
+      
       Pose2d botPose = LimelightHelpers.getBotPose2d(currentlyUsedLimelight);
       // The origin of botpose is at the center of the field
       double robotX = botPose.getX() + FieldConstants.FIELD_LENGTH_METERS / 2.0;
@@ -122,6 +126,17 @@ public class VisionSubsystem extends SubsystemBase {
     return Double.MAX_VALUE;
   }
 
+  /**
+   * Sets the heading and heading rate of the robot, this is used
+   * for deciding between MegaTag 1 and 2 for pose estimation.
+   * @param headingDegrees the angle the robot is facing in degrees (0 degrees facing the red alliance)
+   * @param headingRateDegrees the rate the robot is rotating, CCW positive
+   */
+  public void setHeadingInfo(double headingDegrees, double headingRateDegrees) {
+    this.headingDegrees = headingDegrees;
+    this.headingRateDegrees = headingRateDegrees;
+  }
+
   public Pose2d getLastSeenPose() {
     return lastSeenPose;
   }
@@ -130,33 +145,17 @@ public class VisionSubsystem extends SubsystemBase {
     return currentlyUsedLimelight;
   }
 
-  public void setTeleopStatus(boolean isTeleop) {
-    this.isTeleop = isTeleop;
-    SmartDashboard.putBoolean("allLimelights", isTeleop);
-  }
-
-  public void invertTeleopStatus() {
-    isTeleop = !isTeleop;
-    SmartDashboard.putBoolean("allLimelights", isTeleop);
-  }
-
   @Override
   public void periodic() {
-
-    if (isTeleop) {
-      // Every periodic chooses the limelight to use based off of their distance from april tags
-      // This code has the limelights alternating in updating their results every other loop.
-      // It makes sense because they run at ~12hz, where the roborio runs at 50hz.
-      if (currentlyUsedLimelight.equals(VisionConstants.SHOOTER_LIMELIGHT_NAME)) {
-        currentlyUsedLimelight = VisionConstants.FRONT_LEFT_LIMELIGHT_NAME;
-      } else if (currentlyUsedLimelight.equals(VisionConstants.FRONT_LEFT_LIMELIGHT_NAME)) {
-        currentlyUsedLimelight = VisionConstants.FRONT_RIGHT_LIMELIGHT_NAME;
-      } else if (currentlyUsedLimelight.equals(VisionConstants.FRONT_RIGHT_LIMELIGHT_NAME)) {
-        currentlyUsedLimelight = VisionConstants.SHOOTER_LIMELIGHT_NAME;
-      }
-    } else {
-      // This is during auto
-        currentlyUsedLimelight = VisionConstants.SHOOTER_LIMELIGHT_NAME;
+    // Every periodic chooses the limelight to use based off of their distance from april tags
+    // This code has the limelights alternating in updating their results every other loop.
+    // It makes sense because they run at ~12hz, where the roborio runs at 50hz.
+    if (currentlyUsedLimelight.equals(VisionConstants.SHOOTER_LIMELIGHT_NAME)) {
+      currentlyUsedLimelight = VisionConstants.FRONT_LEFT_LIMELIGHT_NAME;
+    } else if (currentlyUsedLimelight.equals(VisionConstants.FRONT_LEFT_LIMELIGHT_NAME)) {
+      currentlyUsedLimelight = VisionConstants.FRONT_RIGHT_LIMELIGHT_NAME;
+    } else if (currentlyUsedLimelight.equals(VisionConstants.FRONT_RIGHT_LIMELIGHT_NAME)) {
+      currentlyUsedLimelight = VisionConstants.SHOOTER_LIMELIGHT_NAME;
     }
 
     // Gets the JSON dump from the currently used limelight
