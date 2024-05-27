@@ -125,6 +125,7 @@ public class DriveSubsystem extends SubsystemBase {
       stateStandardDeviations,
       visionMeasurementStandardDeviations
     );
+
     alliance = DriverStation.getAlliance();
     
     DataLog log = DataLogManager.getLog();
@@ -163,9 +164,9 @@ public class DriveSubsystem extends SubsystemBase {
   public void drive(double xSpeed, double ySpeed, double rotationSpeed, boolean fieldRelative) {
     // SmartDashboard.putBoolean("isFieldRelative", fieldRelative);
     SwerveModuleState[] swerveModuleStates = DriveConstants.DRIVE_KINEMATICS.toSwerveModuleStates(
-      fieldRelative
-      ? desiredSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rotationSpeed, getOdometryAllianceRelativeRotation2d()) 
-      : desiredSpeeds.plus(new ChassisSpeeds(xSpeed, ySpeed, rotationSpeed))); // there is no fucking way this works
+      desiredSpeeds = fieldRelative
+      ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rotationSpeed, getOdometryAllianceRelativeRotation2d()) 
+      : new ChassisSpeeds(xSpeed, ySpeed, rotationSpeed)); 
 
     SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, DriveConstants.MAX_SPEED_METERS_PER_SECOND);
   
