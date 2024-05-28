@@ -145,6 +145,8 @@ public class VisionSubsystem extends SubsystemBase {
     return currentlyUsedLimelight;
   }
 
+
+
   @Override
   public void periodic() {
     // Every periodic chooses the limelight to use based off of their distance from april tags
@@ -158,17 +160,22 @@ public class VisionSubsystem extends SubsystemBase {
       currentlyUsedLimelight = VisionConstants.SHOOTER_LIMELIGHT_NAME;
     }
 
-    // Gets the JSON dump from the currently used limelight
-    currentlyUsedLimelightResults = LimelightHelpers.getLatestResults(currentlyUsedLimelight);
 
-    // Turns the limelight LEDs on if they can't see an april tag
-    if (!canSeeAprilTags()) {
-      LimelightHelpers.setLEDMode_ForceOn(VisionConstants.FRONT_LEFT_LIMELIGHT_NAME);
-      LimelightHelpers.setLEDMode_ForceOn(VisionConstants.FRONT_RIGHT_LIMELIGHT_NAME);
-    } else {
-      LimelightHelpers.setLEDMode_ForceOff(VisionConstants.FRONT_LEFT_LIMELIGHT_NAME);
-      LimelightHelpers.setLEDMode_ForceOff(VisionConstants.FRONT_RIGHT_LIMELIGHT_NAME);
-    }
+    try{
+      new Thread(() -> {
+        while(true){
+         // Gets the JSON dump from the currently used limelight
+        currentlyUsedLimelightResults = LimelightHelpers.getLatestResults(currentlyUsedLimelight);
+          try {
+            Thread.sleep(1000);
+          } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+          }
+        }
+      }).start();
+    }catch(Exception e){}
+    
   }
 
 }
