@@ -16,7 +16,7 @@ import frc.robot.subsystems.swerve.DriveSubsystem;
 
 public class VisionSubsystem extends SubsystemBase {
 
-  private LimelightResults currentlyUsedLimelightResults = LimelightHelpers.getLatestResults(VisionConstants.SHOOTER_LIMELIGHT_NAME);
+  private LimelightHelpers.PoseEstimate currentlyUsedLimelightResults = LimelightHelpers.getBotPoseEstimate_wpiBlue(VisionConstants.SHOOTER_LIMELIGHT_NAME);
   private String currentlyUsedLimelight = VisionConstants.SHOOTER_LIMELIGHT_NAME;
   private Pose2d lastSeenPose = new Pose2d();
   private double headingDegrees = 0;
