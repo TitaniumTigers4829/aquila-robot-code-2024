@@ -26,7 +26,6 @@ public abstract class DriveCommandBase extends Command {
   private final DriveSubsystem driveSubsystem;
 
   private double lastTimeStampSeconds = 0;
-  // private int ticksAfterSeeing = 0;
 
   /**
    * An abstract class that handles pose estimation while driving.
@@ -41,13 +40,12 @@ public abstract class DriveCommandBase extends Command {
 
   @Override
   public void execute() {
-    // Updates the pose estimator using the swerve modules
     driveSubsystem.addPoseEstimatorSwerveMeasurement();
     visionSubsystem.setHeadingInfo(driveSubsystem.getOdometryRotation2d().getDegrees(), driveSubsystem.getGyroRate());
 
-    // Updates the robot's odometry with april tags
     double currentTimeStampSeconds = lastTimeStampSeconds;
 
+    // Updates the robot's odometry with april tags
     if (visionSubsystem.canSeeAprilTags()) {
       currentTimeStampSeconds = visionSubsystem.getTimeStampSeconds();
 

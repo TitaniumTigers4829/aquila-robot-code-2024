@@ -101,9 +101,6 @@ public class VisionSubsystem extends SubsystemBase {
    * pipeline latency, capture latency, and json parsing latency.
    */
   public double getLatencySeconds() {
-    // currentlyUsedLimelightEstimate.targetingResults.latency_capture 
-    // + currentlyUsedLimelightEstimate.targetingResults.latency_pipeline 
-    // + currentlyUsedLimelightEstimate.targetingResults.latency_jsonParse
     return (currentlyUsedLimelightEstimate.latency) / 1000.0;
   }
 
