@@ -12,7 +12,6 @@ import frc.robot.extras.interpolators.MultiLinearInterpolator;
 import frc.robot.subsystems.swerve.DriveSubsystem;
 import frc.robot.subsystems.vision.VisionSubsystem;
 
-
 public abstract class DriveCommandBase extends Command {
 
   private final MultiLinearInterpolator oneAprilTagLookupTable = 
