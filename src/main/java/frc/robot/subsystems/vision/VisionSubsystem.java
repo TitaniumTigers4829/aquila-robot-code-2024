@@ -16,7 +16,7 @@ import frc.robot.subsystems.swerve.DriveSubsystem;
 
 public class VisionSubsystem extends SubsystemBase {
 
-  private LimelightHelpers.PoseEstimate currentlyUsedLimelightResults = LimelightHelpers.getBotPoseEstimate_wpiBlue(VisionConstants.SHOOTER_LIMELIGHT_NAME);
+  private LimelightHelpers.PoseEstimate currentlyUsedLimelightEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue(VisionConstants.SHOOTER_LIMELIGHT_NAME);
   private String currentlyUsedLimelight = VisionConstants.SHOOTER_LIMELIGHT_NAME;
   private Pose2d lastSeenPose = new Pose2d();
   private double headingDegrees = 0;
@@ -84,7 +84,7 @@ public class VisionSubsystem extends SubsystemBase {
    * estimation can see.
    */
   public int getNumberOfAprilTags() {
-    return currentlyUsedLimelightResults.targetingResults.targets_Fiducials.length;
+    return currentlyUsedLimelightEstimate.tagCount;
   }
 
   /**
@@ -92,7 +92,7 @@ public class VisionSubsystem extends SubsystemBase {
    * is being used for pose estimation.
    */
   public double getTimeStampSeconds() {
-    return currentlyUsedLimelightResults.targetingResults.timestamp_LIMELIGHT_publish / 1000.0;
+    return currentlyUsedLimelightEstimate.timestampSeconds / 1000.0;
   }
 
   /**
@@ -101,9 +101,10 @@ public class VisionSubsystem extends SubsystemBase {
    * pipeline latency, capture latency, and json parsing latency.
    */
   public double getLatencySeconds() {
-    return (currentlyUsedLimelightResults.targetingResults.latency_capture 
-    + currentlyUsedLimelightResults.targetingResults.latency_pipeline 
-    + currentlyUsedLimelightResults.targetingResults.latency_jsonParse) / 1000.0;
+    // currentlyUsedLimelightEstimate.targetingResults.latency_capture 
+    // + currentlyUsedLimelightEstimate.targetingResults.latency_pipeline 
+    // + currentlyUsedLimelightEstimate.targetingResults.latency_jsonParse
+    return (currentlyUsedLimelightEstimate.latency) / 1000.0;
   }
 
   /**
@@ -165,7 +166,7 @@ public class VisionSubsystem extends SubsystemBase {
       new Thread(() -> {
         while(true){
          // Gets the JSON dump from the currently used limelight
-        currentlyUsedLimelightResults = LimelightHelpers.getLatestResults(currentlyUsedLimelight);
+        currentlyUsedLimelightEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue(currentlyUsedLimelight);
           try {
             Thread.sleep(1000);
           } catch (InterruptedException e) {
