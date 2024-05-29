@@ -17,12 +17,30 @@ import frc.robot.subsystems.vision.VisionSubsystem;
 
 public class RedShootTaxi extends SequentialCommandGroup {
   /** Creates a new RedShootTaxi. */
-  public RedShootTaxi(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, IntakeSubsystem intakeSubsystem, ShooterSubsystem shooterSubsystem, PivotSubsystem pivotSubsystem, LEDSubsystem leds) {
+  public RedShootTaxi(
+      DriveSubsystem driveSubsystem,
+      VisionSubsystem visionSubsystem,
+      IntakeSubsystem intakeSubsystem,
+      ShooterSubsystem shooterSubsystem,
+      PivotSubsystem pivotSubsystem,
+      LEDSubsystem leds) {
 
     addCommands(
-      new InstantCommand(()->driveSubsystem.resetOdometry(new Pose2d(15.7587890625, 4.4402618408203125, Rotation2d.fromRadians(-2.096547608393006)))),
-      new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, pivotSubsystem, intakeSubsystem, visionSubsystem, leds).withTimeout(5.0),
-      new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "redsimple", false)
-    );
+        new InstantCommand(
+            () ->
+                driveSubsystem.resetOdometry(
+                    new Pose2d(
+                        15.7587890625,
+                        4.4402618408203125,
+                        Rotation2d.fromRadians(-2.096547608393006)))),
+        new ShootSpeakerAuto(
+                driveSubsystem,
+                shooterSubsystem,
+                pivotSubsystem,
+                intakeSubsystem,
+                visionSubsystem,
+                leds)
+            .withTimeout(5.0),
+        new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "redsimple", false));
   }
 }

@@ -1,6 +1,11 @@
-package frc.robot.extras.swerve;
+// Copyright (c) 2024 FRC 6328
+// http://github.com/Mechanical-Advantage
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file at
+// the root directory of this project.
 
-import static frc.robot.extras.utils.EqualsUtil.*;
+package frc.robot.extras.swerve;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -8,16 +13,16 @@ import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import lombok.Builder;
-import lombok.RequiredArgsConstructor;
-import lombok.experimental.ExtensionMethod;
 import frc.robot.extras.utils.EqualsUtil;
 import frc.robot.extras.utils.GeomUtil;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
 /**
+ * Code modified again by FRC team 4795.
+ * 
  * "Inspired" by FRC team 254. See the license file in the root directory of this project.
  *
  * <p>Takes a prior setpoint (ChassisSpeeds), a desired setpoint (from a driver, or from a path
@@ -26,12 +31,14 @@ import frc.robot.extras.utils.GeomUtil;
  * robot will converge to the desired setpoint quickly while avoiding any intermediate state that is
  * kinematically infeasible (and can result in wheel slip or robot heading drift as a result).
  */
-@Builder
-@RequiredArgsConstructor
-@ExtensionMethod({GeomUtil.class, EqualsUtil.GeomExtensions.class})
 public class SwerveSetpointGenerator {
   private final SwerveDriveKinematics kinematics;
   private final Translation2d[] moduleLocations;
+
+  public SwerveSetpointGenerator(SwerveDriveKinematics kinematics, Translation2d[] moduleLocations) {
+    this.kinematics = kinematics;
+    this.moduleLocations =  moduleLocations;
+  }
 
   /**
    * Check if it would be faster to go to the opposite of the goal heading (and reverse drive
@@ -89,7 +96,7 @@ public class SwerveSetpointGenerator {
       double y_1,
       double f_1,
       int iterations_left) {
-    if (iterations_left < 0 || epsilonEquals(f_0, f_1)) {
+    if (iterations_left < 0 || EqualsUtil.epsilonEquals(f_0, f_1)) {
       return 1.0;
     }
     var s_guess = Math.max(0.0, Math.min(1.0, -f_0 / (f_1 - f_0)));
@@ -204,7 +211,7 @@ public class SwerveSetpointGenerator {
     // Special case: desiredState is a complete stop. In this case, module angle is arbitrary, so
     // just use the previous angle.
     boolean need_to_steer = true;
-    if (desiredState.toTwist2d().epsilonEquals(new Twist2d())) {
+    if (EqualsUtil.epsilonEquals(GeomUtil.toTwist2d(desiredState), new Twist2d())) {
       need_to_steer = false;
       for (int i = 0; i < modules.length; ++i) {
         desiredModuleState[i].angle = prevSetpoint.moduleStates()[i].angle;
@@ -248,8 +255,8 @@ public class SwerveSetpointGenerator {
       }
     }
     if (all_modules_should_flip
-        && !prevSetpoint.chassisSpeeds().toTwist2d().epsilonEquals(new Twist2d())
-        && !desiredState.toTwist2d().epsilonEquals(new Twist2d())) {
+        && !EqualsUtil.epsilonEquals(GeomUtil.toTwist2d(prevSetpoint.chassisSpeeds()), new Twist2d())
+        && !EqualsUtil.epsilonEquals(GeomUtil.toTwist2d(desiredState), new Twist2d())) {
       // It will (likely) be faster to stop the robot, rotate the modules in place to the complement
       // of the desired
       // angle, and accelerate again.
@@ -285,11 +292,11 @@ public class SwerveSetpointGenerator {
         continue;
       }
       overrideSteering.add(Optional.empty());
-      if (epsilonEquals(prevSetpoint.moduleStates()[i].speedMetersPerSecond, 0.0)) {
+      if (EqualsUtil.epsilonEquals(prevSetpoint.moduleStates()[i].speedMetersPerSecond, 0.0)) {
         // If module is stopped, we know that we will need to move straight to the final steering
         // angle, so limit based
         // purely on rotation in place.
-        if (epsilonEquals(desiredModuleState[i].speedMetersPerSecond, 0.0)) {
+        if (EqualsUtil.epsilonEquals(desiredModuleState[i].speedMetersPerSecond, 0.0)) {
           // Goal angle doesn't matter. Just leave module at its current angle.
           overrideSteering.set(i, Optional.of(prevSetpoint.moduleStates()[i].angle));
           continue;

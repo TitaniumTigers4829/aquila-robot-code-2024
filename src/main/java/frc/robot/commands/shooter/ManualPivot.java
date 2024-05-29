@@ -4,11 +4,10 @@
 
 package frc.robot.commands.shooter;
 
-import java.util.function.DoubleSupplier;
-
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.PivotConstants;
 import frc.robot.subsystems.pivot.PivotSubsystem;
+import java.util.function.DoubleSupplier;
 
 public class ManualPivot extends Command {
   private final PivotSubsystem pivotSubsytem;
@@ -23,8 +22,7 @@ public class ManualPivot extends Command {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override

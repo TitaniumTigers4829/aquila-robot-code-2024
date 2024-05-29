@@ -5,7 +5,6 @@ import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.HardwareConstants;
 import frc.robot.Constants.IntakeConstants;
@@ -20,11 +19,11 @@ public class IntakeSubsystem extends SubsystemBase {
     leftIntakeMotor = new TalonFX(IntakeConstants.LEFT_INTAKE_MOTOR_ID);
     rightIntakeMotor = new TalonFX(IntakeConstants.RIGHT_INTAKE_MOTOR_ID);
     flapperMotor = new TalonFX(IntakeConstants.FLAPPER_MOTOR_ID);
-    
+
     TalonFXConfiguration intakeConfig = new TalonFXConfiguration();
     intakeConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     intakeConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
-    //TODO: tune these:
+    // TODO: tune these:
     intakeConfig.CurrentLimits.StatorCurrentLimit = IntakeConstants.INTAKE_STATOR_LIMIT;
     intakeConfig.CurrentLimits.StatorCurrentLimitEnable = IntakeConstants.INTAKE_STATOR_ENABLE;
     intakeConfig.CurrentLimits.SupplyCurrentLimit = IntakeConstants.INTAKE_SUPPLY_LIMIT;
@@ -38,6 +37,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
   /**
    * Sets the intake speed
+   *
    * @param speed 1.0 being the max speed, -1.0 being the min speed
    */
   public void setIntakeSpeed(double speed) {
@@ -47,6 +47,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
   /**
    * sets the flapper speed
+   *
    * @param speed speed
    */
   public void setFlapperSpeed(double speed) {
@@ -54,6 +55,5 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   @Override
-  public void periodic() {
-  }
+  public void periodic() {}
 }

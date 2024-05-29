@@ -12,7 +12,6 @@ import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.HardwareConstants;
@@ -56,18 +55,20 @@ public class PivotSubsystem extends SubsystemBase {
 
     pivotConfig.Slot0.GravityType = GravityTypeValue.Arm_Cosine;
 
-    pivotConfig.MotionMagic.MotionMagicAcceleration = PivotConstants.MAX_VELOCITY_ROTATIONS_PER_SECOND;
-    pivotConfig.MotionMagic.MotionMagicCruiseVelocity = PivotConstants.MAX_ACCELERATION_ROTATIONS_PER_SECOND_SQUARED;
+    pivotConfig.MotionMagic.MotionMagicAcceleration =
+        PivotConstants.MAX_VELOCITY_ROTATIONS_PER_SECOND;
+    pivotConfig.MotionMagic.MotionMagicCruiseVelocity =
+        PivotConstants.MAX_ACCELERATION_ROTATIONS_PER_SECOND_SQUARED;
 
     pivotConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    pivotConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive; 
+    pivotConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
     pivotConfig.MotorOutput.DutyCycleNeutralDeadband = HardwareConstants.MIN_FALCON_DEADBAND;
 
     pivotConfig.ClosedLoopGeneral.ContinuousWrap = true;
 
     pivotConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
     pivotConfig.Feedback.FeedbackRemoteSensorID = pivotEncoder.getDeviceID();
-    
+
     pivotConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold = PivotConstants.MAX_ANGLE;
     pivotConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = PivotConstants.MIN_ANGLE;
     pivotConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = false;
@@ -84,6 +85,7 @@ public class PivotSubsystem extends SubsystemBase {
 
   /**
    * Gets the angle of the pivot
+   *
    * @return angle of pivot in degrees
    */
   public double getAngle() {
@@ -92,8 +94,8 @@ public class PivotSubsystem extends SubsystemBase {
   }
 
   /**
-   * Returns if the pivot is within an acceptable rotation 
-   * in relation to the target position
+   * Returns if the pivot is within an acceptable rotation in relation to the target position
+   *
    * @return pivot error between desired and actual state in degrees
    */
   public boolean isPivotWithinAcceptableError() {
@@ -103,6 +105,7 @@ public class PivotSubsystem extends SubsystemBase {
 
   /**
    * Sets the output of the pivot
+   *
    * @param output output value from -1.0 to 1.0
    */
   public void setPivotSpeed(double output) {
@@ -112,6 +115,7 @@ public class PivotSubsystem extends SubsystemBase {
 
   /**
    * Gets the target angle of the pivot in degrees
+   *
    * @return the target angle
    */
   public double getPivotTarget() {
@@ -120,6 +124,7 @@ public class PivotSubsystem extends SubsystemBase {
 
   /**
    * Uses distance in meters from the speaker to set the pivot angle (degrees) of the shooter
+   *
    * @param distance the distance in meters from the speaker
    */
   public void setPivotFromDistance(double distance) {
@@ -131,6 +136,7 @@ public class PivotSubsystem extends SubsystemBase {
 
   /**
    * Sets the pivot using the leader/follower motors
+   *
    * @param angle the angle (degrees) to set
    */
   public void setPivotAngle(double angle) {

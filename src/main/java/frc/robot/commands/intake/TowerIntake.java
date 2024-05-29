@@ -7,9 +7,9 @@ package frc.robot.commands.intake;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.LEDConstants.LEDProcess;
-import frc.robot.extras.SmarterDashboardRegistry;
 import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.ShooterConstants;
+import frc.robot.extras.SmarterDashboardRegistry;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.leds.LEDSubsystem;
 import frc.robot.subsystems.pivot.PivotSubsystem;
@@ -21,8 +21,13 @@ public class TowerIntake extends Command {
   private final ShooterSubsystem shooterSubsystem;
   private final LEDSubsystem leds;
   private final boolean intakeReverse;
-  
-  public TowerIntake(IntakeSubsystem intakeSubsystem, PivotSubsystem pivotSubsystem, ShooterSubsystem shooterSubsystem, boolean intakeReverse, LEDSubsystem leds) {
+
+  public TowerIntake(
+      IntakeSubsystem intakeSubsystem,
+      PivotSubsystem pivotSubsystem,
+      ShooterSubsystem shooterSubsystem,
+      boolean intakeReverse,
+      LEDSubsystem leds) {
     this.intakeSubsystem = intakeSubsystem;
     this.pivotSubsystem = pivotSubsystem;
     this.shooterSubsystem = shooterSubsystem;
@@ -30,7 +35,7 @@ public class TowerIntake extends Command {
     this.leds = leds;
     addRequirements(intakeSubsystem, pivotSubsystem, shooterSubsystem, leds);
   }
-  
+
   /** Creates a new TowerIntake. */
   @Override
   public void execute() {
@@ -39,7 +44,7 @@ public class TowerIntake extends Command {
     if (pivotSubsystem.isPivotWithinAcceptableError()) {
       if (intakeReverse) {
         leds.setProcess(LEDProcess.REVERSE_INTAKE);
-        shooterSubsystem.setRollerSpeed(-ShooterConstants.ROLLER_INTAKE_SPEED); 
+        shooterSubsystem.setRollerSpeed(-ShooterConstants.ROLLER_INTAKE_SPEED);
         intakeSubsystem.setIntakeSpeed(-IntakeConstants.INTAKE_SPEED);
         intakeSubsystem.setFlapperSpeed(-IntakeConstants.FLAPPER_SPEED);
       } else {
@@ -60,12 +65,11 @@ public class TowerIntake extends Command {
 
     if (intakeReverse) {
       leds.setProcess(LEDProcess.REVERSE_INTAKE);
-      shooterSubsystem.setRollerSpeed(-ShooterConstants.ROLLER_INTAKE_SPEED); 
+      shooterSubsystem.setRollerSpeed(-ShooterConstants.ROLLER_INTAKE_SPEED);
       intakeSubsystem.setIntakeSpeed(-IntakeConstants.INTAKE_SPEED);
       intakeSubsystem.setFlapperSpeed(-IntakeConstants.FLAPPER_SPEED);
     }
   }
-  
 
   @Override
   public void end(boolean interrupted) {

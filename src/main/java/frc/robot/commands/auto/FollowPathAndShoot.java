@@ -4,11 +4,8 @@
 
 package frc.robot.commands.auto;
 
-import java.util.Optional;
-
 import com.choreo.lib.Choreo;
 import com.choreo.lib.ChoreoTrajectory;
-
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -26,6 +23,7 @@ import frc.robot.subsystems.pivot.PivotSubsystem;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.swerve.DriveSubsystem;
 import frc.robot.subsystems.vision.VisionSubsystem;
+import java.util.Optional;
 
 public class FollowPathAndShoot extends DriveCommandBase {
   private DriveSubsystem driveSubsystem;
@@ -38,15 +36,21 @@ public class FollowPathAndShoot extends DriveCommandBase {
   private double desiredHeading;
   private double headingError = 0;
 
-  private final ProfiledPIDController thetaController = new ProfiledPIDController(
-    ShooterConstants.AUTO_SHOOT_P,
-    ShooterConstants.AUTO_SHOOT_I, 
-    ShooterConstants.AUTO_SHOOT_D, 
-    ShooterConstants.AUTO_SHOOT_CONSTRAINTS
-  );
+  private final ProfiledPIDController thetaController =
+      new ProfiledPIDController(
+          ShooterConstants.AUTO_SHOOT_P,
+          ShooterConstants.AUTO_SHOOT_I,
+          ShooterConstants.AUTO_SHOOT_D,
+          ShooterConstants.AUTO_SHOOT_CONSTRAINTS);
 
   /** Creates a new FollowPathAndShoot. */
-  public FollowPathAndShoot(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, PivotSubsystem pivotSubsystem, ShooterSubsystem shooterSubsystem, String path, boolean resetOdometry) {
+  public FollowPathAndShoot(
+      DriveSubsystem driveSubsystem,
+      VisionSubsystem visionSubsystem,
+      PivotSubsystem pivotSubsystem,
+      ShooterSubsystem shooterSubsystem,
+      String path,
+      boolean resetOdometry) {
     super(driveSubsystem, visionSubsystem);
     this.driveSubsystem = driveSubsystem;
     this.pivotSubsystem = pivotSubsystem;
@@ -55,15 +59,16 @@ public class FollowPathAndShoot extends DriveCommandBase {
     if (resetOdometry) {
       driveSubsystem.resetOdometry(traj.getInitialPose());
     }
-    controllerCommand = Choreo.choreoSwerveCommand(
-      traj,
-      driveSubsystem::getPose, 
-      new PIDController(TrajectoryConstants.AUTO_TRANSLATION_P, 0, 0), 
-      new PIDController(TrajectoryConstants.AUTO_TRANSLATION_P, 0, 0), 
-      new PIDController(TrajectoryConstants.AUTO_THETA_P, 0, 0), 
-      (ChassisSpeeds speeds) -> mergeDrive(speeds),
-        ()->false,
-      driveSubsystem);
+    controllerCommand =
+        Choreo.choreoSwerveCommand(
+            traj,
+            driveSubsystem::getPose,
+            new PIDController(TrajectoryConstants.AUTO_TRANSLATION_P, 0, 0),
+            new PIDController(TrajectoryConstants.AUTO_TRANSLATION_P, 0, 0),
+            new PIDController(TrajectoryConstants.AUTO_THETA_P, 0, 0),
+            (ChassisSpeeds speeds) -> mergeDrive(speeds),
+            () -> false,
+            driveSubsystem);
     addRequirements(visionSubsystem, pivotSubsystem, shooterSubsystem);
   }
 
@@ -78,7 +83,16 @@ public class FollowPathAndShoot extends DriveCommandBase {
     } else {
       isRed = true;
     }
-    speakerPos = isRed ? new Translation3d(FieldConstants.RED_SPEAKER_X, FieldConstants.RED_SPEAKER_Y, ShooterConstants.SPEAKER_HEIGHT) : new Translation3d(FieldConstants.BLUE_SPEAKER_X, FieldConstants.BLUE_SPEAKER_Y, ShooterConstants.SPEAKER_HEIGHT);
+    speakerPos =
+        isRed
+            ? new Translation3d(
+                FieldConstants.RED_SPEAKER_X,
+                FieldConstants.RED_SPEAKER_Y,
+                ShooterConstants.SPEAKER_HEIGHT)
+            : new Translation3d(
+                FieldConstants.BLUE_SPEAKER_X,
+                FieldConstants.BLUE_SPEAKER_Y,
+                ShooterConstants.SPEAKER_HEIGHT);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -88,7 +102,8 @@ public class FollowPathAndShoot extends DriveCommandBase {
     controllerCommand.execute();
 
     Translation2d robotPose2d = driveSubsystem.getPose().getTranslation();
-    Translation3d robotPos3d = new Translation3d(robotPose2d.getX(), robotPose2d.getY(), ShooterConstants.SHOOTER_HEIGHT);
+    Translation3d robotPos3d =
+        new Translation3d(robotPose2d.getX(), robotPose2d.getY(), ShooterConstants.SHOOTER_HEIGHT);
     // speeds
     ChassisSpeeds speeds = driveSubsystem.getRobotRelativeSpeeds();
     // this gets the time that the note will be in the air between the robot and the speaker
@@ -102,7 +117,8 @@ public class FollowPathAndShoot extends DriveCommandBase {
     robotPose2d.plus(new Translation2d(dx, dy).rotateBy(driveSubsystem.getOdometryRotation2d()));
     // continue the command as normal
     double distance = robotPose2d.getDistance(speakerPos.toTranslation2d());
-    desiredHeading = Math.atan2(robotPose2d.getY() - speakerPos.getY(), robotPose2d.getX() - speakerPos.getX());
+    desiredHeading =
+        Math.atan2(robotPose2d.getY() - speakerPos.getY(), robotPose2d.getX() - speakerPos.getX());
     // heading error
     headingError = desiredHeading - driveSubsystem.getOdometryRotation2d().getRadians();
     // get PID output
@@ -112,7 +128,9 @@ public class FollowPathAndShoot extends DriveCommandBase {
     pivotSubsystem.setPivotFromDistance(distance);
 
     // if we are ready to shoot:
-    if (shooterSubsystem.isReadyToShoot(headingError) && pivotSubsystem.isPivotWithinAcceptableError() && Math.abs(headingError) < DriveConstants.HEADING_ACCEPTABLE_ERROR_MOVING_RADIANS) {
+    if (shooterSubsystem.isReadyToShoot(headingError)
+        && pivotSubsystem.isPivotWithinAcceptableError()
+        && Math.abs(headingError) < DriveConstants.HEADING_ACCEPTABLE_ERROR_MOVING_RADIANS) {
       shooterSubsystem.setRollerSpeed(ShooterConstants.ROLLER_SHOOT_SPEED);
     }
   }
@@ -134,6 +152,7 @@ public class FollowPathAndShoot extends DriveCommandBase {
   }
 
   private void mergeDrive(ChassisSpeeds speeds) {
-    driveSubsystem.drive(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, rotationControl, false);
+    driveSubsystem.drive(
+        speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, rotationControl, false);
   }
 }

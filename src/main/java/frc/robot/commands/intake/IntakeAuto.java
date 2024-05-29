@@ -19,9 +19,13 @@ public class IntakeAuto extends Command {
   private final PivotSubsystem pivotSubsystem;
   private final ShooterSubsystem shooterSubsystem;
   private final LEDSubsystem leds;
-  
+
   /** Creates a new TowerIntake. */
-  public IntakeAuto(IntakeSubsystem intakeSubsystem, PivotSubsystem pivotSubsystem, ShooterSubsystem shooterSubsystem, LEDSubsystem leds) {
+  public IntakeAuto(
+      IntakeSubsystem intakeSubsystem,
+      PivotSubsystem pivotSubsystem,
+      ShooterSubsystem shooterSubsystem,
+      LEDSubsystem leds) {
     this.intakeSubsystem = intakeSubsystem;
     this.pivotSubsystem = pivotSubsystem;
     this.shooterSubsystem = shooterSubsystem;
@@ -41,14 +45,13 @@ public class IntakeAuto extends Command {
         intakeSubsystem.setFlapperSpeed(0);
       } else {
         leds.setProcess(LEDProcess.INTAKE);
-        shooterSubsystem.setRollerSpeed(ShooterConstants.ROLLER_INTAKE_SPEED); 
+        shooterSubsystem.setRollerSpeed(ShooterConstants.ROLLER_INTAKE_SPEED);
         intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_SPEED);
         intakeSubsystem.setFlapperSpeed(IntakeConstants.FLAPPER_SPEED);
       }
       // shooterSubsystem.setRPM(ShooterConstants.SHOOT_SPEAKER_RPM);
     }
   }
-  
 
   @Override
   public void end(boolean interrupted) {

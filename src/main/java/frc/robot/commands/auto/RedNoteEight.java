@@ -23,22 +23,52 @@ import frc.robot.subsystems.vision.VisionSubsystem;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class RedNoteEight extends SequentialCommandGroup {
   /** Creates a new BlueSimpleTwoNote. */
-  public RedNoteEight(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, IntakeSubsystem intakeSubsystem, ShooterSubsystem shooterSubsystem, PivotSubsystem pivotSubsystem, LEDSubsystem leds) {
+  public RedNoteEight(
+      DriveSubsystem driveSubsystem,
+      VisionSubsystem visionSubsystem,
+      IntakeSubsystem intakeSubsystem,
+      ShooterSubsystem shooterSubsystem,
+      PivotSubsystem pivotSubsystem,
+      LEDSubsystem leds) {
     addCommands(
-        new InstantCommand(()->driveSubsystem.resetOdometry(new Pose2d(15.788766860961914, 4.481170177459717, Rotation2d.fromRadians(-2.0955922711585213)))),
-        new SubwooferShot(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, ()->0, ()->0, ()->0, ()->false, leds).withTimeout(2),
-        // new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, pivotSubsystem, intakeSubsystem, visionSubsystem, leds).withTimeout(2),
+        new InstantCommand(
+            () ->
+                driveSubsystem.resetOdometry(
+                    new Pose2d(
+                        15.788766860961914,
+                        4.481170177459717,
+                        Rotation2d.fromRadians(-2.0955922711585213)))),
+        new SubwooferShot(
+                driveSubsystem,
+                shooterSubsystem,
+                pivotSubsystem,
+                visionSubsystem,
+                () -> 0,
+                () -> 0,
+                () -> 0,
+                () -> false,
+                leds)
+            .withTimeout(2),
+        // new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, pivotSubsystem, intakeSubsystem,
+        // visionSubsystem, leds).withTimeout(2),
         new ParallelCommandGroup(
             new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "red to note 8", false),
-            new IntakeAuto(intakeSubsystem, pivotSubsystem, shooterSubsystem, leds).withTimeout(3.5)
-        ),
+            new IntakeAuto(intakeSubsystem, pivotSubsystem, shooterSubsystem, leds)
+                .withTimeout(3.5)),
         new ParallelCommandGroup(
-            new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "red note 8 to shoot", false),
-            new IntakeAuto(intakeSubsystem, pivotSubsystem, shooterSubsystem, leds).withTimeout(1)
-        ),
-        new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, pivotSubsystem, intakeSubsystem, visionSubsystem, leds).withTimeout(3),
+            new FollowChoreoTrajectory(
+                driveSubsystem, visionSubsystem, "red note 8 to shoot", false),
+            new IntakeAuto(intakeSubsystem, pivotSubsystem, shooterSubsystem, leds).withTimeout(1)),
+        new ShootSpeakerAuto(
+                driveSubsystem,
+                shooterSubsystem,
+                pivotSubsystem,
+                intakeSubsystem,
+                visionSubsystem,
+                leds)
+            .withTimeout(3),
         new StopShooterAndIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem)
         // new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "red 8 shoot to 7", false)
-    );
+        );
   }
 }

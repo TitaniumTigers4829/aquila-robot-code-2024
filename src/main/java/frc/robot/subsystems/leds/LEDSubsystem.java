@@ -7,7 +7,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.LEDConstants;
 import frc.robot.Constants.LEDConstants.LEDProcess;
 
-
 public class LEDSubsystem extends SubsystemBase {
 
   private Spark ledSpark;
@@ -20,11 +19,14 @@ public class LEDSubsystem extends SubsystemBase {
   public LEDSubsystem() {
     ledSpark = new Spark(LEDConstants.LED_PORT);
     setProcess(LEDProcess.OFF);
-    isRed = DriverStation.getAlliance().isPresent() && (DriverStation.getAlliance().get() == Alliance.Red);
+    isRed =
+        DriverStation.getAlliance().isPresent()
+            && (DriverStation.getAlliance().get() == Alliance.Red);
   }
-  
+
   /**
    * Sets the process of the LEDs
+   *
    * @param process The process to set
    */
   public void setProcess(LEDProcess process) {
@@ -33,6 +35,7 @@ public class LEDSubsystem extends SubsystemBase {
 
   /**
    * Gets the spark (color) value to set from the process
+   *
    * @param pr The process
    * @return The spark value from the process
    */
@@ -49,6 +52,7 @@ public class LEDSubsystem extends SubsystemBase {
 
   /**
    * The LED alliance color based on what alliance we are on
+   *
    * @return The LED color (red vs blue).
    */
   private double allianceColor() {
@@ -61,6 +65,7 @@ public class LEDSubsystem extends SubsystemBase {
 
   /**
    * Sets the default color of the LEDs.
+   *
    * @return Auto LED color if robot is in auto, otherwise alliance color
    */
   private double defaultColor() {
@@ -71,9 +76,7 @@ public class LEDSubsystem extends SubsystemBase {
     }
   }
 
-  /**
-   * Turns the LEDs off
-   */
+  /** Turns the LEDs off */
   public void off() {
     process = LEDProcess.OFF;
   }

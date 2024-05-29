@@ -75,12 +75,12 @@ dependencies {
 
     testImplementation 'org.junit.jupiter:junit-jupiter:5.10.1'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.10.1'
-    
-	// compileOnly 'org.projectlombok:lombok:1.18.32'
-	// annotationProcessor 'org.projectlombok:lombok:1.18.32'
-	
-	// testCompileOnly 'org.projectlombok:lombok:1.18.32'
-	// testAnnotationProcessor 'org.projectlombok:lombok:1.18.32'
+
+    // compileOnly 'org.projectlombok:lombok:1.18.32'
+    // annotationProcessor 'org.projectlombok:lombok:1.18.32'
+
+    // testCompileOnly 'org.projectlombok:lombok:1.18.32'
+    // testAnnotationProcessor 'org.projectlombok:lombok:1.18.32'
 }
 
 test {
@@ -96,7 +96,11 @@ wpi.sim.addDriverstation()
 // in order to make them all available at runtime. Also adding the manifest so WPILib
 // knows where to look for our Robot Class.
 jar {
-    from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
+    from {
+        configurations.runtimeClasspath.collect {
+            it.isDirectory() ? it : zipTree(it)
+        }
+    }
     from sourceSets.main.allSource
     manifest edu.wpi.first.gradlerio.GradleRIOPlugin.javaManifest(ROBOT_MAIN_CLASS)
     duplicatesStrategy = DuplicatesStrategy.INCLUDE

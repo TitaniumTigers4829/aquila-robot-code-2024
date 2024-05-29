@@ -4,7 +4,6 @@
 
 // package frc.robot.commands.autodrive;
 
-
 // import java.util.Optional;
 
 // import com.choreo.lib.ChoreoTrajectory;
@@ -59,7 +58,9 @@
 //       // otherwise default to blue alliance
 //       isRed = true;
 //     }
-//      ampPos = isRed ? new Pose2d(FieldConstants.RED_AMP_SHOOT_X, FieldConstants.RED_AMP_SHOOT_Y, FieldConstants.RED_AMP_ROTATION) : new Pose2d(FieldConstants.BLUE_AMP_SHOOT_X, FieldConstants.BLUE_AMP_SHOOT_Y, FieldConstants.BLUE_AMP_ROTATION);
+//      ampPos = isRed ? new Pose2d(FieldConstants.RED_AMP_SHOOT_X, FieldConstants.RED_AMP_SHOOT_Y,
+// FieldConstants.RED_AMP_ROTATION) : new Pose2d(FieldConstants.BLUE_AMP_SHOOT_X,
+// FieldConstants.BLUE_AMP_SHOOT_Y, FieldConstants.BLUE_AMP_ROTATION);
 
 //     // // TODO: rotation?
 //     // Pose2d endPose = new Pose2d(finalX, finalY, new Rotation2d());
@@ -79,9 +80,12 @@
 //     super.execute();
 //     controllerCommand.execute();
 //       //  TODO: LEDs
-//     // if (Math.abs(ampPos.getX() - driveSubsystem.getPose().getX()) < TrajectoryConstants.X_TOLERANCE
-//     //   && Math.abs(ampPos.getY() - driveSubsystem.getPose().getY()) < TrajectoryConstants.Y_TOLERANCE
-//     //   && Math.abs(ampPos.getRotation().getDegrees() - driveSubsystem.getPose().getRotation().getDegrees()) < TrajectoryConstants.THETA_TOLERANCE) {
+//     // if (Math.abs(ampPos.getX() - driveSubsystem.getPose().getX()) <
+// TrajectoryConstants.X_TOLERANCE
+//     //   && Math.abs(ampPos.getY() - driveSubsystem.getPose().getY()) <
+// TrajectoryConstants.Y_TOLERANCE
+//     //   && Math.abs(ampPos.getRotation().getDegrees() -
+// driveSubsystem.getPose().getRotation().getDegrees()) < TrajectoryConstants.THETA_TOLERANCE) {
 //     // }
 //   }
 
@@ -94,6 +98,6 @@
 //   // Returns true when the command should end.
 //   @Override
 //   public boolean isFinished() {
-//     return controllerCommand.isFinished(); 
+//     return controllerCommand.isFinished();
 //   }
 // }
