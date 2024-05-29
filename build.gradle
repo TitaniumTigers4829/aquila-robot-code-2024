@@ -102,6 +102,8 @@ tasks.withType(JavaCompile) {
     options.compilerArgs.add '-XDstringConcat=inline'
 }
 
+// Spotless formatting
+project.compileJava.dependsOn(spotlessApply)
 spotless {
    java {
       target fileTree('.') {
