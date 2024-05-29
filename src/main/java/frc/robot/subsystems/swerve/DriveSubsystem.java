@@ -56,6 +56,7 @@ public class DriveSubsystem extends SubsystemBase {
   private final AHRS gyro;
   private final SwerveDrivePoseEstimator odometry;
 
+  private static final ModuleLimits currentModuleLimits = new ModuleLimits(DriveConstants.MAX_SPEED_METERS_PER_SECOND, 4, DriveConstants.MAX_ANGULAR_SPEED_RADIANS_PER_SECOND);
   private SwerveSetpointGenerator setpointGenerator;
   private SwerveSetpoint currentSetpoint;
   // private ModuleLimits currentModuleLimits;
@@ -170,11 +171,19 @@ public class DriveSubsystem extends SubsystemBase {
 
     SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, DriveConstants.MAX_SPEED_METERS_PER_SECOND);
   
+    currentSetpoint =
+    setpointGenerator.generateSetpoint(
+        currentModuleLimits, currentSetpoint, desiredSpeeds, HardwareConstants.TIMEOUT_S);
+
+    setModuleStates(currentSetpoint.getModuleStates())
+  }
+
+
+  public void setModuleStates(SwerveModuleState[] desiredStates) {
     frontLeftSwerveModule.setDesiredState(swerveModuleStates[0]);
     frontRightSwerveModule.setDesiredState(swerveModuleStates[1]);
     rearLeftSwerveModule.setDesiredState(swerveModuleStates[2]);
     rearRightSwerveModule.setDesiredState(swerveModuleStates[3]);
-
   }
 
   public void drive(ChassisSpeeds speeds) {
@@ -373,12 +382,9 @@ public class DriveSubsystem extends SubsystemBase {
     SmartDashboard.putString("odometry", pose.toString());
     // SmartDashboard.putNumber("offset", rearLeftSwerveModule.getState().angle.getRotations());
     SmartDashboard.putNumber("speakerDistance", pose.getTranslation().getDistance(SmarterDashboardRegistry.getSpeakerPos()));
-    ModuleLimits currentModuleLimits = new ModuleLimits(DriveConstants.MAX_SPEED_METERS_PER_SECOND, 4, DriveConstants.MAX_ANGULAR_SPEED_RADIANS_PER_SECOND);
-    currentSetpoint =
-    setpointGenerator.generateSetpoint(
-        currentModuleLimits, currentSetpoint, desiredSpeeds, HardwareConstants.TIMEOUT_S);
-    SwerveModuleState[]  optimizedSetpointStates[] =
-        SwerveModuleState.optimize(currentSetpoint.moduleStates(), getModuleAngles());
+
+    // SwerveModuleState[]  optimizedSetpointStates[] =
+    //     SwerveModuleState.optimize(currentSetpoint.moduleStates(), getModuleAngles());
 
   }
 }
