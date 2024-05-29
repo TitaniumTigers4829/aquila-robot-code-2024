@@ -34,8 +34,8 @@ import frc.robot.extras.SmarterDashboardRegistry;
 public class DriveSubsystem extends SubsystemBase {
 
   // This will stay the same throughout the match. These values are harder to test for and tune, so assume this guess is right.
-  private static Vector<N3> stateStandardDeviations;
-  
+  private final Vector<N3> stateStandardDeviations = VecBuilder.fill(DriveConstants.X_POS_TRUST, DriveConstants.Y_POS_TRUST, Units.degreesToRadians(DriveConstants.ANGLE_TRUST));
+
   // This will be changed throughout the match depending on how confident we are that the limelight is right.
   private static final Vector<N3> visionMeasurementStandardDeviations = VecBuilder.fill(VisionConstants.VISION_X_POS_TRUST,
    VisionConstants.VISION_Y_POS_TRUST, Units.degreesToRadians(VisionConstants.VISION_ANGLE_TRUST));
@@ -50,8 +50,8 @@ public class DriveSubsystem extends SubsystemBase {
 
   private boolean collisionDetected = false;
 
-  private double last_world_linear_accel_x;
-  private double last_world_linear_accel_y;
+  private double lastWorldLinearAccelX;
+  private double lastWorldLinearAccelY;
   private double currentJerkX;
   private double currentJerkY;
 
@@ -127,7 +127,6 @@ public class DriveSubsystem extends SubsystemBase {
       ()->false,
       this
     );
-    stateStandardDeviations = VecBuilder.fill(DriveConstants.X_POS_TRUST, DriveConstants.Y_POS_TRUST, Units.degreesToRadians(DriveConstants.ANGLE_TRUST));
 
   }
 
@@ -214,12 +213,12 @@ public class DriveSubsystem extends SubsystemBase {
 
   public boolean isCollisionDetected() {
     
-    double curr_world_linear_accel_x = gyro.getWorldLinearAccelX();
-    currentJerkX = curr_world_linear_accel_x - last_world_linear_accel_x;
-    last_world_linear_accel_x = curr_world_linear_accel_x;
-    double curr_world_linear_accel_y = gyro.getWorldLinearAccelY();
-    currentJerkY = curr_world_linear_accel_y - last_world_linear_accel_y;
-    last_world_linear_accel_y = curr_world_linear_accel_y;
+    double currWorldLinearAccelX = gyro.getWorldLinearAccelX();
+    currentJerkX = currWorldLinearAccelX - lastWorldLinearAccelX;
+    lastWorldLinearAccelX = currWorldLinearAccelX;
+    double currWorldLinearAccelY = gyro.getWorldLinearAccelY();
+    currentJerkY = currWorldLinearAccelY - lastWorldLinearAccelY;
+    lastWorldLinearAccelY = currWorldLinearAccelY;
     
     if ( ( Math.abs(currentJerkX) > DriveConstants.COLLISION_THRESHOLD_DELTA_G ) || 
          ( Math.abs(currentJerkY) >  DriveConstants.COLLISION_THRESHOLD_DELTA_G ) ) { 
@@ -228,9 +227,10 @@ public class DriveSubsystem extends SubsystemBase {
     }
     SmartDashboard.putBoolean(  "CollisionDetected", collisionDetected);
 
-    return collisionDetected = false;
-    
+    return collisionDetected = false; 
   }
+
+  public boolean skidDetected() {}
 
   /**
    * Returns a Rotation2d for the heading of the robot.

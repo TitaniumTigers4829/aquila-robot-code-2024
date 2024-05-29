@@ -44,7 +44,8 @@ public class SwerveModule {
   private Debouncer slipDebouncer;
   private double maxLinearSpeed;
   private double optimalSlipRatio;
-
+  private double currentSlipRatio = 0.0;
+  private boolean isSlipping = false;
   
   private String name;
 
@@ -133,6 +134,20 @@ public class SwerveModule {
     ParentDevice.optimizeBusUtilizationForAll(turnEncoder, driveMotor, turnMotor);
   }
 
+   private void updateSlipRatio(double wheelSpeed) { //account for inertial velocity
+    // Calculate current slip ratio
+    currentSlipRatio = ((wheelSpeed));
+
+    // Check if wheel is slipping, false if disabled
+    isSlipping = slipDebouncer.calculate(currentSlipRatio > optimalSlipRatio) & isEnabled();
+  }
+
+  public boolean isSlipping() {
+    return isSlipping;
+  }
+
+  /**
+
   /**
    * Gets the heading of the module
    * @return the absolute position of the CANCoder
@@ -187,6 +202,8 @@ public class SwerveModule {
      
     driveMotor.setControl(velocityRequest.withVelocity(desiredDriveRPS));
     turnMotor.setControl(mmPositionRequest.withPosition(optimizedDesiredState.angle.getRotations()));
+
+    updateSlipRatio(optimizedDesiredState.speedMetersPerSecond);
   }
 
   /**
