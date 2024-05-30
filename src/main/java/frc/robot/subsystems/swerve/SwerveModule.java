@@ -147,8 +147,6 @@ public class SwerveModule {
   }
 
   /**
-
-  /**
    * Gets the heading of the module
    * @return the absolute position of the CANCoder
    */
