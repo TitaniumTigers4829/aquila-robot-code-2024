@@ -41,14 +41,20 @@ public abstract class DriveCommandBase extends Command {
   public void execute() {
     driveSubsystem.addPoseEstimatorSwerveMeasurement();
     visionSubsystem.setHeadingInfo(driveSubsystem.getOdometryRotation2d().getDegrees(), driveSubsystem.getGyroRate());
+    calculatePoseFromLimelight(0);
+    calculatePoseFromLimelight(1);
+    calculatePoseFromLimelight(2);
+  }
 
+  public void calculatePoseFromLimelight(int num) {
     double currentTimeStampSeconds = lastTimeStampSeconds;
+    String currentlyUsedLimelight = visionSubsystem.getLimelightName(num);
 
     // Updates the robot's odometry with april tags
-    if (visionSubsystem.canSeeAprilTags()) {
+    if (visionSubsystem.canSeeAprilTags(currentlyUsedLimelight)) {
       currentTimeStampSeconds = visionSubsystem.getTimeStampSeconds();
 
-      double distanceFromClosestAprilTag = visionSubsystem.getDistanceFromClosestAprilTag();
+      double distanceFromClosestAprilTag = visionSubsystem.getDistanceFromClosestAprilTag(currentlyUsedLimelight);
       // Sets the pose estimator confidence in vision based off of number of april tags and distance
       if (visionSubsystem.getNumberOfAprilTags() == 1) {
         double[] standardDeviations = oneAprilTagLookupTable.getLookupValue(distanceFromClosestAprilTag);
@@ -58,11 +64,12 @@ public abstract class DriveCommandBase extends Command {
         driveSubsystem.setPoseEstimatorVisionConfidence(standardDeviations[0], standardDeviations[1], standardDeviations[2]);
       }
 
-      Pose2d limelightVisionMeasurement = visionSubsystem.getPoseFromAprilTags();
+      Pose2d limelightVisionMeasurement = visionSubsystem.getPoseFromAprilTags(currentlyUsedLimelight);
       driveSubsystem.addPoseEstimatorVisionMeasurement(limelightVisionMeasurement, Timer.getFPGATimestamp() - visionSubsystem.getLatencySeconds());
     }
 
     lastTimeStampSeconds = currentTimeStampSeconds;
+
   }
 
 }
