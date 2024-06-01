@@ -1,6 +1,7 @@
 package frc.robot.subsystems.vision;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.extras.LimelightHelpers;
@@ -176,7 +177,9 @@ public class VisionSubsystem extends SubsystemBase {
           last_TY = current_TY;
         }
       }).start();
-    } catch (Exception e) {}
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
   } 
 
   @Override
