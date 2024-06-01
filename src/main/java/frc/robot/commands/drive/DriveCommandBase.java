@@ -63,8 +63,7 @@ public abstract class DriveCommandBase extends Command {
         driveSubsystem.setPoseEstimatorVisionConfidence(standardDeviations[0], standardDeviations[1], standardDeviations[2]);
       }
 
-      Pose2d limelightVisionMeasurement = visionSubsystem.getPoseFromAprilTags(index);
-      driveSubsystem.addPoseEstimatorVisionMeasurement(limelightVisionMeasurement, Timer.getFPGATimestamp() - visionSubsystem.getLatencySeconds());
+      driveSubsystem.addPoseEstimatorVisionMeasurement( visionSubsystem.getPoseFromAprilTags(index).pose, Timer.getFPGATimestamp() - visionSubsystem.getLatencySeconds());
     }
 
     lastTimeStampSeconds = currentTimeStampSeconds;
