@@ -62,9 +62,8 @@ public abstract class DriveCommandBase extends Command {
       }
 
       if (visionSubsystem.canSeeAprilTags()) {
-        Pose2d limelightVisionMeasurement = visionSubsystem.getPoseFromAprilTags();
 
-        driveSubsystem.addPoseEstimatorVisionMeasurement(limelightVisionMeasurement, Timer.getFPGATimestamp() - visionSubsystem.getLatencySeconds());
+        driveSubsystem.addPoseEstimatorVisionMeasurement(visionSubsystem.getPoseFromAprilTags().pose, Timer.getFPGATimestamp() - visionSubsystem.getLatencySeconds());
       }
     }
 
