@@ -70,7 +70,7 @@ public class VisionSubsystem extends SubsystemBase {
       // lastSeenPose = new Pose2d(robotX, robotY, robotRotation);
       // return new Pose2d(robotX, robotY, robotRotation);
     } else {
-      return new PoseEstimate();
+      limelightEstimates[index] = {new PoseEstimate(), new PoseEstimate(), new PoseEstimate()};
     }
   }
 
@@ -120,15 +120,15 @@ public class VisionSubsystem extends SubsystemBase {
    * This method should only be called once there has been a check for if
    * the limelights can see april tags.
    */
-  private double getLimelightAprilTagDistance(int aprilTagID, int index) {
-    if (aprilTagID >= 1 && aprilTagID <= 16) {
-      double aprilTagX = VisionConstants.APRIL_TAG_POSITIONS[aprilTagID - 1][0]; // April tag id starts at 1
-      double aprilTagY = VisionConstants.APRIL_TAG_POSITIONS[aprilTagID - 1][1];
-      Pose2d pose = getPoseFromAprilTags(index);
-      double robotX = pose.getX();
-      double robotY = pose.getY();
+  private double getLimelightAprilTagDistance() {
+    // if (aprilTagID >= 1 && aprilTagID <= 16) {
+    //   double aprilTagX = VisionConstants.APRIL_TAG_POSITIONS[aprilTagID - 1][0]; // April tag id starts at 1
+    //   double aprilTagY = VisionConstants.APRIL_TAG_POSITIONS[aprilTagID - 1][1];
+    //   // Pose2d pose = getPoseFromAprilTags(index);
+    //   double robotX = pose.getX();
+    //   double robotY = pose.getY();
       // Uses distance formula
-      return Math.sqrt(Math.pow(aprilTagX - robotX, 2) + Math.pow(aprilTagY - robotY, 2));
+      return Estimate.avgTagDist; // or RawFiducial.disToCamera??
     }
 
     // To be safe returns a big distance from the april tags if it can't see any
@@ -180,7 +180,7 @@ public class VisionSubsystem extends SubsystemBase {
     try {
       new Thread(() -> {
         while (true) {
-        setLimelightPose(index, getPoseFromAprilTags(index));
+        setLimelightPose(index, getPoseFromAprilTags(index).pose);
         }
       }).start();
     } catch (Exception e) {}
