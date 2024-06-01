@@ -12,6 +12,9 @@ public class VisionSubsystem extends SubsystemBase {
   private double headingDegrees = 0;
   private double headingRateDegrees = 0;
 
+  /**
+   * The pose estimates from the limelights in the following order {shooterLimelight, frontLeftLimelight, frontRightLimelight}
+   */
   private PoseEstimate[] limelightEstimates = {new PoseEstimate(), new PoseEstimate(), new PoseEstimate()};
 
   public VisionSubsystem() {
@@ -116,15 +119,11 @@ public class VisionSubsystem extends SubsystemBase {
     this.headingRateDegrees = headingRateDegrees;
   }
 
-  public Pose2d getLastSeenPose() {
-    return lastSeenPose;
-  }
-
   /**
    * 0 = Shooter
    * 1 = Front Left
    * 2 = Front Right
-   * @param num
+   * @param limelightNumber the limelight
    * @return
    */
   public String getLimelightName(int limelightNumber) {
@@ -138,19 +137,29 @@ public class VisionSubsystem extends SubsystemBase {
      throw new IllegalArgumentException();
   }
 
+  /**
+   * Gets the pose calculated the last time a limelight saw an April Tag
+   */
+  public Pose2d getLastSeenPose() {
+    return lastSeenPose;
+  }
+
   public void visionThread(int limelightNumber) {
     try {
       new Thread(() -> {
         while (true) {
           updateLimelightPoseEstimate(limelightNumber);
+          // This is to keep track of the last valid pose calculated by the limelights
+          // it is used when the driver resets the robot odometry to the limelight calculated position
+          if (canSeeAprilTags(limelightNumber)) {
+            lastSeenPose = getPoseFromAprilTags(limelightNumber);
+          }
         }
       }).start();
     } catch (Exception e) {}
   } 
 
   @Override
-  public void periodic() {
-    
-  }
+  public void periodic() {}
 
 }
