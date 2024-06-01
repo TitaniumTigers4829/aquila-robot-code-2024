@@ -53,7 +53,7 @@ public abstract class DriveCommandBase extends Command {
     if (visionSubsystem.canSeeAprilTags(index)) {
       currentTimeStampSeconds = visionSubsystem.getTimeStampSeconds(index);
 
-      double distanceFromClosestAprilTag = visionSubsystem.getDistanceFromClosestAprilTag(index);
+      double distanceFromClosestAprilTag = visionSubsystem.getLimelightAprilTagDistance(index);
       // Sets the pose estimator confidence in vision based off of number of april tags and distance
       if (visionSubsystem.getNumberOfAprilTags(index) == 1) {
         double[] standardDeviations = oneAprilTagLookupTable.getLookupValue(distanceFromClosestAprilTag);
@@ -63,7 +63,7 @@ public abstract class DriveCommandBase extends Command {
         driveSubsystem.setPoseEstimatorVisionConfidence(standardDeviations[0], standardDeviations[1], standardDeviations[2]);
       }
 
-      driveSubsystem.addPoseEstimatorVisionMeasurement(visionSubsystem.getPoseFromAprilTags(index), Timer.getFPGATimestamp() - visionSubsystem.getLatencySeconds());
+      driveSubsystem.addPoseEstimatorVisionMeasurement(visionSubsystem.getPoseFromAprilTags(index), Timer.getFPGATimestamp() - visionSubsystem.getLatencySeconds(index));
     }
 
     lastTimeStampSeconds = currentTimeStampSeconds;

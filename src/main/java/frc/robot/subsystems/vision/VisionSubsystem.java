@@ -1,21 +1,10 @@
 package frc.robot.subsystems.vision;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.util.datalog.DataLog;
-import edu.wpi.first.util.datalog.StringLogEntry;
-import edu.wpi.first.wpilibj.DataLogManager;
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.VisionConstants;
-import frc.robot.Constants.FieldConstants;
 import frc.robot.extras.LimelightHelpers;
-import frc.robot.extras.SmarterDashboardRegistry;
-import frc.robot.extras.LimelightHelpers.LimelightResults;
 import frc.robot.extras.LimelightHelpers.PoseEstimate;
-import frc.robot.subsystems.swerve.DriveSubsystem;
 
 public class VisionSubsystem extends SubsystemBase {
 
@@ -32,56 +21,48 @@ public class VisionSubsystem extends SubsystemBase {
   }
 
   /**
-   * Returns true if the limelight(s) can fully see one or more April Tag.
+   * Checks if the specified limelight can fully see one or more April Tag.
+   * @param limelightNumber the number of the limelight
+   * @return true if the limelight can fully see one or more April Tag
    */
-  public boolean canSeeAprilTags(int index) {
+  public boolean canSeeAprilTags(int limelightNumber) {
     // First checks if it can see an april tag, then checks if it is fully in frame
     // Different Limelights have different FOVs
-    if (getLimelightName(index).equals(VisionConstants.SHOOTER_LIMELIGHT_NAME)) {
-      
-          return limelightEstimates[index].rawFiducials.length != 0
-      && Math.abs(LimelightHelpers.getTX(getLimelightName(index))) <= VisionConstants.LL3G_FOV_MARGIN_OF_ERROR;
+    if (getLimelightName(limelightNumber).equals(VisionConstants.SHOOTER_LIMELIGHT_NAME)) {
+      return limelightEstimates[limelightNumber].rawFiducials.length != 0
+        && Math.abs(LimelightHelpers.getTX(getLimelightName(limelightNumber))) <= VisionConstants.LL3G_FOV_MARGIN_OF_ERROR;
     }
-    return  limelightEstimates[index].rawFiducials.length != 0
-      && Math.abs(LimelightHelpers.getTX(getLimelightName(index))) <= VisionConstants.LL3_FOV_MARGIN_OF_ERROR;
+    return limelightEstimates[limelightNumber].rawFiducials.length != 0
+      && Math.abs(LimelightHelpers.getTX(getLimelightName(limelightNumber))) <= VisionConstants.LL3_FOV_MARGIN_OF_ERROR;
   }
 
   /**
-   * Returns the pose of the robot calculated by the limelight. If there
-   * are multiple limelights that can see april tags, it uses the limelight
-   * that is closest to an april tag.
+   * Gets the JSON dump from the specified limelight and puts it into a PoseEstimate object,
+   * which is then placed into its corresponding spot in the limelightEstimates array.
+   * @param limelightNumber the number of the limelight
    */
-  public void updateLimelightPoseEstimate(int index) {
-    if (canSeeAprilTags(index)) {
+  public void updateLimelightPoseEstimate(int limelightNumber) {
+    if (canSeeAprilTags(limelightNumber)) {
       // MegaTag2 is much more accurate, but only use it when the robot isn't rotating too fast
       if (headingRateDegrees < VisionConstants.MEGA_TAG_2_MAX_HEADING_RATE) {
         LimelightHelpers.SetRobotOrientation(VisionConstants.SHOOTER_LIMELIGHT_NAME, headingDegrees, 0, 0, 0, 0, 0);
-        limelightEstimates[index] = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(getLimelightName(index));
+        limelightEstimates[limelightNumber] = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(getLimelightName(limelightNumber));
       }
-      limelightEstimates[index] = LimelightHelpers.getBotPoseEstimate_wpiBlue(getLimelightName(index));
+      limelightEstimates[limelightNumber] = LimelightHelpers.getBotPoseEstimate_wpiBlue(getLimelightName(limelightNumber));
     } else {
-      limelightEstimates[index] = new PoseEstimate();
+      limelightEstimates[limelightNumber] = new PoseEstimate();
     }
-  }
-
-  public Pose2d getPoseFromAprilTags(int limelightNumber) {
-    return limelightEstimates[limelightNumber].pose;
   }
 
   /**
-   * Returns the distance in meters from the limelight(s) to the closest 
-   * april tag that they can see.
+   * Gets the pose of the robot calculated by specified limelight via any April
+   * Tags it sees
+   * @param limelightNumber the number of the limelight
+   * @return the pose of the robot, if the limelight can't see any April Tags,
+   * it will return 0 for x, y, and theta
    */
-  public double getDistanceFromClosestAprilTag(int index) {
-    if (canSeeAprilTags(index)) {
-      int closestAprilTagID = (int) LimelightHelpers.getFiducialID(getLimelightName(index)); //limelightEstimates[index].rawFieducials......
-      double distance = getLimelightAprilTagDistance(index);
-      // SmartDashboard.putNumber("distance from apriltag", distance);
-      return distance;
-    }
-    
-    // To be safe returns a big distance from the april tags if it can't see any
-    return Double.MAX_VALUE;
+  public Pose2d getPoseFromAprilTags(int limelightNumber) {
+    return limelightEstimates[limelightNumber].pose;
   }
 
   /**
@@ -111,12 +92,13 @@ public class VisionSubsystem extends SubsystemBase {
   }
 
   /**
-   * Calculates the distance between the specified robot and april tag.
-   * This method should only be called once there has been a check for if
-   * the limelights can see april tags.
+   * Gets the average distance between the specified limelight and the April Tags it sees
+   * @param limelightNumber the number of the limelight
+   * @return the average distance between the robot and the April Tag(s) in meters
    */
-  private double getLimelightAprilTagDistance(int limelightNumber) {
+  public double getLimelightAprilTagDistance(int limelightNumber) {
     if (canSeeAprilTags(limelightNumber)) {
+      // TODO: Verify this is in meters (there's almost no way its not, but just make sure)
       return limelightEstimates[limelightNumber].avgTagDist; // or RawFiducial.disToCamera??
     }
     // To be safe returns a big distance from the april tags if it can't see any
@@ -138,10 +120,6 @@ public class VisionSubsystem extends SubsystemBase {
     return lastSeenPose;
   }
 
-  public PoseEstimate[] getLimelightPoseEstimates() {
-    return limelightEstimates;
-  }
-
   /**
    * 0 = Shooter
    * 1 = Front Left
@@ -149,22 +127,22 @@ public class VisionSubsystem extends SubsystemBase {
    * @param num
    * @return
    */
-  public String getLimelightName(int num) {
-    if (num == 0) {
+  public String getLimelightName(int limelightNumber) {
+    if (limelightNumber == 0) {
       return VisionConstants.SHOOTER_LIMELIGHT_NAME;
-    } else if (num == 1) {
+    } else if (limelightNumber == 1) {
       return VisionConstants.FRONT_LEFT_LIMELIGHT_NAME;
-    } else if (num == 2) {
+    } else if (limelightNumber == 2) {
       return VisionConstants.FRONT_RIGHT_LIMELIGHT_NAME;
     }
      throw new IllegalArgumentException();
   }
 
-  public void visionThread(int index) {
+  public void visionThread(int limelightNumber) {
     try {
       new Thread(() -> {
         while (true) {
-        updateLimelightPoseEstimate(index);
+          updateLimelightPoseEstimate(limelightNumber);
         }
       }).start();
     } catch (Exception e) {}
