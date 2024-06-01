@@ -133,7 +133,7 @@ public class VisionSubsystem extends SubsystemBase {
     } else if (limelightNumber == 2) {
       return VisionConstants.FRONT_RIGHT_LIMELIGHT_NAME;
     }
-     throw new IllegalArgumentException("You enterd a number for a non-existent limelight");
+     throw new IllegalArgumentException("You entered a number for a non-existent limelight");
   }
 
   /**
@@ -164,7 +164,7 @@ public class VisionSubsystem extends SubsystemBase {
           // are EXACTLY the same, it hasn't updated yet with a new reading. We are doing it this way,
           // because to get the timestamp of the reading, you need to parse the JSON dump which can be
           // very demanding whereas this only has to get the Network Table entries for TX and TY.
-          if (last_TX != current_TX && last_TY != current_TY) {
+          if (last_TX != current_TX || last_TY != current_TY) {
             updateLimelightPoseEstimate(limelightNumber);
             // This is to keep track of the last valid pose calculated by the limelights
             // it is used when the driver resets the robot odometry to the limelight calculated position

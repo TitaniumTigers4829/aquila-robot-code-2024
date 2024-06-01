@@ -2,11 +2,8 @@
 
 package frc.robot.commands.drive;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.extras.interpolators.MultiLinearInterpolator;
 import frc.robot.subsystems.swerve.DriveSubsystem;
@@ -18,8 +15,6 @@ public abstract class DriveCommandBase extends Command {
     new MultiLinearInterpolator(VisionConstants.ONE_APRIL_TAG_LOOKUP_TABLE);
   private final MultiLinearInterpolator twoAprilTagLookupTable = 
     new MultiLinearInterpolator(VisionConstants.TWO_APRIL_TAG_LOOKUP_TABLE);
-
-  Pose2d middleField = new Pose2d(FieldConstants.FIELD_LENGTH_METERS / 2.0, FieldConstants.FIELD_WIDTH_METERS / 2.0, new Rotation2d());
 
   private final VisionSubsystem visionSubsystem;
   private final DriveSubsystem driveSubsystem;
@@ -46,24 +41,24 @@ public abstract class DriveCommandBase extends Command {
     calculatePoseFromLimelight(VisionConstants.FRONT_RIGHT_LIMELIGHT_NUMBER);
   }
 
-  public void calculatePoseFromLimelight(int index) {
+  public void calculatePoseFromLimelight(int limelightNumber) {
     double currentTimeStampSeconds = lastTimeStampSeconds;
 
     // Updates the robot's odometry with april tags
-    if (visionSubsystem.canSeeAprilTags(index)) {
-      currentTimeStampSeconds = visionSubsystem.getTimeStampSeconds(index);
+    if (visionSubsystem.canSeeAprilTags(limelightNumber)) {
+      currentTimeStampSeconds = visionSubsystem.getTimeStampSeconds(limelightNumber);
 
-      double distanceFromClosestAprilTag = visionSubsystem.getLimelightAprilTagDistance(index);
+      double distanceFromClosestAprilTag = visionSubsystem.getLimelightAprilTagDistance(limelightNumber);
       // Sets the pose estimator confidence in vision based off of number of april tags and distance
-      if (visionSubsystem.getNumberOfAprilTags(index) == 1) {
+      if (visionSubsystem.getNumberOfAprilTags(limelightNumber) == 1) {
         double[] standardDeviations = oneAprilTagLookupTable.getLookupValue(distanceFromClosestAprilTag);
         driveSubsystem.setPoseEstimatorVisionConfidence(standardDeviations[0], standardDeviations[1], standardDeviations[2]);
-      } else if (visionSubsystem.getNumberOfAprilTags(index) > 1) {
+      } else if (visionSubsystem.getNumberOfAprilTags(limelightNumber) > 1) {
         double[] standardDeviations = twoAprilTagLookupTable.getLookupValue(distanceFromClosestAprilTag);
         driveSubsystem.setPoseEstimatorVisionConfidence(standardDeviations[0], standardDeviations[1], standardDeviations[2]);
       }
 
-      driveSubsystem.addPoseEstimatorVisionMeasurement(visionSubsystem.getPoseFromAprilTags(index), Timer.getFPGATimestamp() - visionSubsystem.getLatencySeconds(index));
+      driveSubsystem.addPoseEstimatorVisionMeasurement(visionSubsystem.getPoseFromAprilTags(limelightNumber), Timer.getFPGATimestamp() - visionSubsystem.getLatencySeconds(limelightNumber));
     }
 
     lastTimeStampSeconds = currentTimeStampSeconds;
