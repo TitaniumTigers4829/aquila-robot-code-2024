@@ -120,11 +120,9 @@ public class VisionSubsystem extends SubsystemBase {
   }
 
   /**
-   * 0 = Shooter
-   * 1 = Front Left
-   * 2 = Front Right
-   * @param limelightNumber the limelight
-   * @return
+   * Gets the limelight name associated with the specified limelight number/index
+   * @param limelightNumber the limelight number
+   * @return 0 = limelight-shooter, 1 = limelight-left, 2 = limelight-right
    */
   public String getLimelightName(int limelightNumber) {
     if (limelightNumber == 0) {
@@ -134,7 +132,7 @@ public class VisionSubsystem extends SubsystemBase {
     } else if (limelightNumber == 2) {
       return VisionConstants.FRONT_RIGHT_LIMELIGHT_NAME;
     }
-     throw new IllegalArgumentException();
+     throw new IllegalArgumentException("You enterd a number for a non-existent limelight");
   }
 
   /**
@@ -144,16 +142,38 @@ public class VisionSubsystem extends SubsystemBase {
     return lastSeenPose;
   }
 
+  /**
+   * This makes a thread which updates the pose estimate for the specified limelight.
+   * Because we have 3 limelights, if we are trying to parse the JSON dump  for each limelight
+   * one after another every scheduler loop, we will have loop overruns, so we opted to have them 
+   * run in parallel like this.
+   * @param limelightNumber the limelight number
+   */
   public void visionThread(int limelightNumber) {
     try {
       new Thread(() -> {
+        double last_TX = 0;
+        double last_TY = 0;
+
         while (true) {
-          updateLimelightPoseEstimate(limelightNumber);
-          // This is to keep track of the last valid pose calculated by the limelights
-          // it is used when the driver resets the robot odometry to the limelight calculated position
-          if (canSeeAprilTags(limelightNumber)) {
-            lastSeenPose = getPoseFromAprilTags(limelightNumber);
+          double current_TX = LimelightHelpers.getTX(getLimelightName(limelightNumber));
+          double current_TY = LimelightHelpers.getTY(getLimelightName(limelightNumber));
+
+          // This checks if the limelight reading is new. The reasoning being that if the TX and TY
+          // are EXACTLY the same, it hasn't updated yet with a new reading. We are doing it this way,
+          // because to get the timestamp of the reading, you need to parse the JSON dump which can be
+          // very demanding whereas this only has to get the Network Table entries for TX and TY.
+          if (last_TX != current_TX && last_TY != current_TY) {
+            updateLimelightPoseEstimate(limelightNumber);
+            // This is to keep track of the last valid pose calculated by the limelights
+            // it is used when the driver resets the robot odometry to the limelight calculated position
+            if (canSeeAprilTags(limelightNumber)) {
+              lastSeenPose = getPoseFromAprilTags(limelightNumber);
+            }
           }
+
+          last_TX = current_TX;
+          last_TY = current_TY;
         }
       }).start();
     } catch (Exception e) {}
