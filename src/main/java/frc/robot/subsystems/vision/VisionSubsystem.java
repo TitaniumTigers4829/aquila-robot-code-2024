@@ -62,7 +62,7 @@ public class VisionSubsystem extends SubsystemBase {
 
       // LimelightHelpers.getJSONDump();
       
-      return limelightEstimates[index].pose;
+      limelightEstimates[index] = LimelightHelpers.getBotPoseEstimate_wpiBlue(getLimelightName(index));
       // // The origin of botpose is at the center of the field
       // double robotX = botPose.getX() + FieldConstants.FIELD_LENGTH_METERS / 2.0;
       // double robotY = botPose.getY() + FieldConstants.FIELD_WIDTH_METERS / 2.0;
@@ -70,7 +70,7 @@ public class VisionSubsystem extends SubsystemBase {
       // lastSeenPose = new Pose2d(robotX, robotY, robotRotation);
       // return new Pose2d(robotX, robotY, robotRotation);
     } else {
-      return new Pose2d();
+      return new PoseEstimate();
     }
   }
 
@@ -79,8 +79,8 @@ public class VisionSubsystem extends SubsystemBase {
    * april tag that they can see.
    */
   public double getDistanceFromClosestAprilTag(int index) {
-    if (canSeeAprilTags(, index)) {
-      int closestAprilTagID = (int) LimelightHelpers.getFiducialID(getLimelightName(index));
+    if (canSeeAprilTags(index)) {
+      int closestAprilTagID = (int) LimelightHelpers.getFiducialID(getLimelightName(index)); //limelightEstimates[index].rawFieducials......
       double distance = getLimelightAprilTagDistance(closestAprilTagID, index);
       // SmartDashboard.putNumber("distance from apriltag", distance);
       return distance;
