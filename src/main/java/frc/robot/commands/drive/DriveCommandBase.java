@@ -51,19 +51,19 @@ public abstract class DriveCommandBase extends Command {
 
     // Updates the robot's odometry with april tags
     if (visionSubsystem.canSeeAprilTags(index)) {
-      currentTimeStampSeconds = visionSubsystem.getTimeStampSeconds();
+      currentTimeStampSeconds = visionSubsystem.getTimeStampSeconds(index);
 
       double distanceFromClosestAprilTag = visionSubsystem.getDistanceFromClosestAprilTag(index);
       // Sets the pose estimator confidence in vision based off of number of april tags and distance
-      if (visionSubsystem.getNumberOfAprilTags() == 1) {
+      if (visionSubsystem.getNumberOfAprilTags(index) == 1) {
         double[] standardDeviations = oneAprilTagLookupTable.getLookupValue(distanceFromClosestAprilTag);
         driveSubsystem.setPoseEstimatorVisionConfidence(standardDeviations[0], standardDeviations[1], standardDeviations[2]);
-      } else if (visionSubsystem.getNumberOfAprilTags() > 1) {
+      } else if (visionSubsystem.getNumberOfAprilTags(index) > 1) {
         double[] standardDeviations = twoAprilTagLookupTable.getLookupValue(distanceFromClosestAprilTag);
         driveSubsystem.setPoseEstimatorVisionConfidence(standardDeviations[0], standardDeviations[1], standardDeviations[2]);
       }
 
-      driveSubsystem.addPoseEstimatorVisionMeasurement( visionSubsystem.getPoseFromAprilTags(index).pose, Timer.getFPGATimestamp() - visionSubsystem.getLatencySeconds());
+      driveSubsystem.addPoseEstimatorVisionMeasurement(visionSubsystem.getPoseFromAprilTags(index), Timer.getFPGATimestamp() - visionSubsystem.getLatencySeconds());
     }
 
     lastTimeStampSeconds = currentTimeStampSeconds;

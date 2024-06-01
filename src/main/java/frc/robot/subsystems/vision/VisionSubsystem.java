@@ -19,7 +19,6 @@ import frc.robot.subsystems.swerve.DriveSubsystem;
 
 public class VisionSubsystem extends SubsystemBase {
 
-  private PoseEstimate Estimate = LimelightHelpers.getBotPoseEstimate_wpiBlue(VisionConstants.SHOOTER_LIMELIGHT_NAME);
   private Pose2d lastSeenPose = new Pose2d();
   private double headingDegrees = 0;
   private double headingRateDegrees = 0;
@@ -52,26 +51,21 @@ public class VisionSubsystem extends SubsystemBase {
    * are multiple limelights that can see april tags, it uses the limelight
    * that is closest to an april tag.
    */
-  public void getPoseFromAprilTags(int index) {
+  public void updateLimelightPoseEstimate(int index) {
     if (canSeeAprilTags(index)) {
       // MegaTag2 is much more accurate, but only use it when the robot isn't rotating too fast
       if (headingRateDegrees < VisionConstants.MEGA_TAG_2_MAX_HEADING_RATE) {
         LimelightHelpers.SetRobotOrientation(VisionConstants.SHOOTER_LIMELIGHT_NAME, headingDegrees, 0, 0, 0, 0, 0);
         limelightEstimates[index] = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(getLimelightName(index));
       }
-
-      // LimelightHelpers.getJSONDump();
-      
       limelightEstimates[index] = LimelightHelpers.getBotPoseEstimate_wpiBlue(getLimelightName(index));
-      // // The origin of botpose is at the center of the field
-      // double robotX = botPose.getX() + FieldConstants.FIELD_LENGTH_METERS / 2.0;
-      // double robotY = botPose.getY() + FieldConstants.FIELD_WIDTH_METERS / 2.0;
-      // Rotation2d robotRotation = botPose.getRotation();
-      // lastSeenPose = new Pose2d(robotX, robotY, robotRotation);
-      // return new Pose2d(robotX, robotY, robotRotation);
     } else {
-      limelightEstimates[index] = {new PoseEstimate(), new PoseEstimate(), new PoseEstimate()};
+      limelightEstimates[index] = new PoseEstimate();
     }
+  }
+
+  public Pose2d getPoseFromAprilTags(int limelightNumber) {
+    return limelightEstimates[limelightNumber].pose;
   }
 
   /**
@@ -81,7 +75,7 @@ public class VisionSubsystem extends SubsystemBase {
   public double getDistanceFromClosestAprilTag(int index) {
     if (canSeeAprilTags(index)) {
       int closestAprilTagID = (int) LimelightHelpers.getFiducialID(getLimelightName(index)); //limelightEstimates[index].rawFieducials......
-      double distance = getLimelightAprilTagDistance(closestAprilTagID, index);
+      double distance = getLimelightAprilTagDistance(index);
       // SmartDashboard.putNumber("distance from apriltag", distance);
       return distance;
     }
@@ -94,16 +88,16 @@ public class VisionSubsystem extends SubsystemBase {
    * Returns how many april tags the limelight that is being used for pose
    * estimation can see.
    */
-  public int getNumberOfAprilTags() {
-    return Estimate.tagCount;
+  public int getNumberOfAprilTags(int limelightNumber) {
+    return limelightEstimates[limelightNumber].tagCount;
   }
 
   /**
    * Returns the timestamp for the vision measurement from the limelight that
    * is being used for pose estimation.
    */
-  public double getTimeStampSeconds() {
-    return Estimate.timestampSeconds / 1000.0;
+  public double getTimeStampSeconds(int limelightNumber) {
+    return limelightEstimates[limelightNumber].timestampSeconds / 1000.0;
   }
 
   /**
@@ -111,8 +105,9 @@ public class VisionSubsystem extends SubsystemBase {
    * used for pose estimation calculated the robot's pose. It adds the
    * pipeline latency, capture latency, and json parsing latency.
    */
-  public double getLatencySeconds() {
-    return (Estimate.latency) / 1000.0;
+  public double getLatencySeconds(int limelightNumber) {
+    // TODO: Verify this works
+    return (limelightEstimates[limelightNumber].latency) / 1000.0;
   }
 
   /**
@@ -120,17 +115,10 @@ public class VisionSubsystem extends SubsystemBase {
    * This method should only be called once there has been a check for if
    * the limelights can see april tags.
    */
-  private double getLimelightAprilTagDistance() {
-    // if (aprilTagID >= 1 && aprilTagID <= 16) {
-    //   double aprilTagX = VisionConstants.APRIL_TAG_POSITIONS[aprilTagID - 1][0]; // April tag id starts at 1
-    //   double aprilTagY = VisionConstants.APRIL_TAG_POSITIONS[aprilTagID - 1][1];
-    //   // Pose2d pose = getPoseFromAprilTags(index);
-    //   double robotX = pose.getX();
-    //   double robotY = pose.getY();
-      // Uses distance formula
-      return Estimate.avgTagDist; // or RawFiducial.disToCamera??
+  private double getLimelightAprilTagDistance(int limelightNumber) {
+    if (canSeeAprilTags(limelightNumber)) {
+      return limelightEstimates[limelightNumber].avgTagDist; // or RawFiducial.disToCamera??
     }
-
     // To be safe returns a big distance from the april tags if it can't see any
     return Double.MAX_VALUE;
   }
@@ -150,11 +138,7 @@ public class VisionSubsystem extends SubsystemBase {
     return lastSeenPose;
   }
 
-  private void setLimelightPose(int index, PoseEstimate pose) {
-    limelightEstimates[index] = pose;
-  }
-
-  public PoseEstimate[] getLimelightPoses() {
+  public PoseEstimate[] getLimelightPoseEstimates() {
     return limelightEstimates;
   }
 
@@ -180,7 +164,7 @@ public class VisionSubsystem extends SubsystemBase {
     try {
       new Thread(() -> {
         while (true) {
-        setLimelightPose(index, getPoseFromAprilTags(index).pose);
+        updateLimelightPoseEstimate(index);
         }
       }).start();
     } catch (Exception e) {}
