@@ -139,11 +139,14 @@ public final class Constants {
     public static final double LL3_FOV_MARGIN_OF_ERROR = 27;
     public static final double LL3G_FOV_MARGIN_OF_ERROR = 38;
 
-    public static final double MEGA_TAG_2_MAX_HEADING_RATE = 180;  // TODO: This can be tested more
-  
+    public static final double MEGA_TAG_2_MAX_HEADING_RATE = 180; // degrees/s // TODO: This can be tested more
+
     public static final String SHOOTER_LIMELIGHT_NAME = "limelight-shooter";
+    public static final int SHOOTER_LIMELIGHT_NUMBER = 0;
     public static final String FRONT_LEFT_LIMELIGHT_NAME = "limelight-left";
+    public static final int FRONT_LEFT_LIMELIGHT_NUMBER = 1;
     public static final String FRONT_RIGHT_LIMELIGHT_NAME = "limelight-right";
+    public static final int FRONT_RIGHT_LIMELIGHT_NUMBER = 2;
 
     public static final double[][] APRIL_TAG_POSITIONS = {
       // {x, y, z, rotation (degrees)}

@@ -10,7 +10,7 @@ public class VisionSubsystem extends SubsystemBase {
 
   private Pose2d lastSeenPose = new Pose2d();
   private double headingDegrees = 0;
-  private double headingRateDegrees = 0;
+  private double headingRateDegreesPerSecond = 0;
 
   /**
    * The pose estimates from the limelights in the following order {shooterLimelight, frontLeftLimelight, frontRightLimelight}
@@ -18,9 +18,9 @@ public class VisionSubsystem extends SubsystemBase {
   private PoseEstimate[] limelightEstimates = {new PoseEstimate(), new PoseEstimate(), new PoseEstimate()};
 
   public VisionSubsystem() {
-    visionThread(0);
-    visionThread(1);
-    visionThread(2);
+    visionThread(VisionConstants.SHOOTER_LIMELIGHT_NUMBER);
+    visionThread(VisionConstants.FRONT_LEFT_LIMELIGHT_NUMBER);
+    visionThread(VisionConstants.FRONT_RIGHT_LIMELIGHT_NUMBER);
   }
 
   /**
@@ -32,10 +32,10 @@ public class VisionSubsystem extends SubsystemBase {
     // First checks if it can see an april tag, then checks if it is fully in frame
     // Different Limelights have different FOVs
     if (getLimelightName(limelightNumber).equals(VisionConstants.SHOOTER_LIMELIGHT_NAME)) {
-      return limelightEstimates[limelightNumber].rawFiducials.length != 0
+      return getNumberOfAprilTags(limelightNumber) != 0
         && Math.abs(LimelightHelpers.getTX(getLimelightName(limelightNumber))) <= VisionConstants.LL3G_FOV_MARGIN_OF_ERROR;
     }
-    return limelightEstimates[limelightNumber].rawFiducials.length != 0
+    return getNumberOfAprilTags(limelightNumber) != 0
       && Math.abs(LimelightHelpers.getTX(getLimelightName(limelightNumber))) <= VisionConstants.LL3_FOV_MARGIN_OF_ERROR;
   }
 
@@ -47,7 +47,7 @@ public class VisionSubsystem extends SubsystemBase {
   public void updateLimelightPoseEstimate(int limelightNumber) {
     if (canSeeAprilTags(limelightNumber)) {
       // MegaTag2 is much more accurate, but only use it when the robot isn't rotating too fast
-      if (headingRateDegrees < VisionConstants.MEGA_TAG_2_MAX_HEADING_RATE) {
+      if (headingRateDegreesPerSecond < VisionConstants.MEGA_TAG_2_MAX_HEADING_RATE) {
         LimelightHelpers.SetRobotOrientation(VisionConstants.SHOOTER_LIMELIGHT_NAME, headingDegrees, 0, 0, 0, 0, 0);
         limelightEstimates[limelightNumber] = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(getLimelightName(limelightNumber));
       }
@@ -116,7 +116,7 @@ public class VisionSubsystem extends SubsystemBase {
    */
   public void setHeadingInfo(double headingDegrees, double headingRateDegrees) {
     this.headingDegrees = headingDegrees;
-    this.headingRateDegrees = headingRateDegrees;
+    this.headingRateDegreesPerSecond = headingRateDegrees;
   }
 
   /**

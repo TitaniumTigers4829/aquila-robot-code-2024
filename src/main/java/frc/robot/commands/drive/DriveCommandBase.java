@@ -41,9 +41,9 @@ public abstract class DriveCommandBase extends Command {
   public void execute() {
     driveSubsystem.addPoseEstimatorSwerveMeasurement();
     visionSubsystem.setHeadingInfo(driveSubsystem.getOdometryRotation2d().getDegrees(), driveSubsystem.getGyroRate());
-    calculatePoseFromLimelight(0);
-    calculatePoseFromLimelight(1);
-    calculatePoseFromLimelight(2);
+    calculatePoseFromLimelight(VisionConstants.SHOOTER_LIMELIGHT_NUMBER);
+    calculatePoseFromLimelight(VisionConstants.FRONT_LEFT_LIMELIGHT_NUMBER);
+    calculatePoseFromLimelight(VisionConstants.FRONT_RIGHT_LIMELIGHT_NUMBER);
   }
 
   public void calculatePoseFromLimelight(int index) {
@@ -67,7 +67,6 @@ public abstract class DriveCommandBase extends Command {
     }
 
     lastTimeStampSeconds = currentTimeStampSeconds;
-
   }
 
 }
