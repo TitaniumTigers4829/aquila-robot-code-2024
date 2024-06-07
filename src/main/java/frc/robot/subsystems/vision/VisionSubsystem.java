@@ -36,13 +36,17 @@ public class VisionSubsystem extends SubsystemBase {
   public boolean canSeeAprilTags(int limelightNumber) {
     // First checks if it can see an april tag, then checks if it is fully in frame
     // Different Limelights have different FOVs
-    if (getNumberOfAprilTags(limelightNumber) > 0 && getNumberOfAprilTags(limelightNumber) <= VisionConstants.APRIL_TAG_POSITIONS.length) {
+    if (getNumberOfAprilTags(limelightNumber) > 0
+        && getNumberOfAprilTags(limelightNumber) <= VisionConstants.APRIL_TAG_POSITIONS.length) {
       if (getLimelightName(limelightNumber).equals(VisionConstants.SHOOTER_LIMELIGHT_NAME)) {
-        return Math.abs(LimelightHelpers.getTX(getLimelightName(limelightNumber))) <= VisionConstants.LL3G_FOV_MARGIN_OF_ERROR;
+        return Math.abs(LimelightHelpers.getTX(getLimelightName(limelightNumber)))
+            <= VisionConstants.LL3G_FOV_MARGIN_OF_ERROR;
       } else {
-        return Math.abs(LimelightHelpers.getTX(getLimelightName(limelightNumber))) <= VisionConstants.LL3_FOV_MARGIN_OF_ERROR;
+        return Math.abs(LimelightHelpers.getTX(getLimelightName(limelightNumber)))
+            <= VisionConstants.LL3_FOV_MARGIN_OF_ERROR;
       }
     }
+    return false;
   }
 
   /**
@@ -56,7 +60,7 @@ public class VisionSubsystem extends SubsystemBase {
       limelightEstimates[limelightNumber] = new PoseEstimate();
     }
     // MegaTag2 is much more accurate, but only use it when the robot isn't rotating too fast
-    else if (headingRateDegreesPerSecond < VisionConstants.MEGA_TAG_2_MAX_HEADING_RATE) {
+    if (headingRateDegreesPerSecond < VisionConstants.MEGA_TAG_2_MAX_HEADING_RATE) {
       LimelightHelpers.SetRobotOrientation(
           VisionConstants.SHOOTER_LIMELIGHT_NAME, headingDegrees, 0, 0, 0, 0, 0);
       limelightEstimates[limelightNumber] =
@@ -186,12 +190,14 @@ public class VisionSubsystem extends SubsystemBase {
                     if (canSeeAprilTags(limelightNumber)) {
                       lastSeenPose = getPoseFromAprilTags(limelightNumber);
                     }
+                  } else {
+                    limelightEstimates[limelightNumber] = new PoseEstimate();
                   }
 
                   last_TX = current_TX;
                   last_TY = current_TY;
                   try {
-                    Thread.sleep(1000);
+                    Thread.sleep(80);
                   } catch (Exception e) {
                     e.printStackTrace();
                   }
