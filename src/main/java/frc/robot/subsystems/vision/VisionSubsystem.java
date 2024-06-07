@@ -36,14 +36,13 @@ public class VisionSubsystem extends SubsystemBase {
   public boolean canSeeAprilTags(int limelightNumber) {
     // First checks if it can see an april tag, then checks if it is fully in frame
     // Different Limelights have different FOVs
-    if (getLimelightName(limelightNumber).equals(VisionConstants.SHOOTER_LIMELIGHT_NAME)) {
-      return getNumberOfAprilTags(limelightNumber) != 0
-          && Math.abs(LimelightHelpers.getTX(getLimelightName(limelightNumber)))
-              <= VisionConstants.LL3G_FOV_MARGIN_OF_ERROR;
+    if (getNumberOfAprilTags(limelightNumber) > 0 && getNumberOfAprilTags(limelightNumber) <= VisionConstants.APRIL_TAG_POSITIONS.length) {
+      if (getLimelightName(limelightNumber).equals(VisionConstants.SHOOTER_LIMELIGHT_NAME)) {
+        return Math.abs(LimelightHelpers.getTX(getLimelightName(limelightNumber))) <= VisionConstants.LL3G_FOV_MARGIN_OF_ERROR;
+      } else {
+        return Math.abs(LimelightHelpers.getTX(getLimelightName(limelightNumber))) <= VisionConstants.LL3_FOV_MARGIN_OF_ERROR;
+      }
     }
-    return getNumberOfAprilTags(limelightNumber) != 0
-        && Math.abs(LimelightHelpers.getTX(getLimelightName(limelightNumber)))
-            <= VisionConstants.LL3_FOV_MARGIN_OF_ERROR;
   }
 
   /**
@@ -57,7 +56,7 @@ public class VisionSubsystem extends SubsystemBase {
       limelightEstimates[limelightNumber] = new PoseEstimate();
     }
     // MegaTag2 is much more accurate, but only use it when the robot isn't rotating too fast
-    if (headingRateDegreesPerSecond < VisionConstants.MEGA_TAG_2_MAX_HEADING_RATE) {
+    else if (headingRateDegreesPerSecond < VisionConstants.MEGA_TAG_2_MAX_HEADING_RATE) {
       LimelightHelpers.SetRobotOrientation(
           VisionConstants.SHOOTER_LIMELIGHT_NAME, headingDegrees, 0, 0, 0, 0, 0);
       limelightEstimates[limelightNumber] =
