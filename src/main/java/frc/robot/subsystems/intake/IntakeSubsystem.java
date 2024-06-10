@@ -5,7 +5,6 @@ import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.HardwareConstants;
@@ -24,7 +23,7 @@ public class IntakeSubsystem extends SubsystemBase {
     rightIntakeMotor = new TalonFX(IntakeConstants.RIGHT_INTAKE_MOTOR_ID);
     flapperMotor = new TalonFX(IntakeConstants.FLAPPER_MOTOR_ID);
     noteSensor = new DigitalInput(IntakeConstants.NOTE_SENSOR_ID);
-    
+
     TalonFXConfiguration intakeConfig = new TalonFXConfiguration();
     intakeConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     intakeConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
@@ -35,6 +34,7 @@ public class IntakeSubsystem extends SubsystemBase {
     intakeConfig.CurrentLimits.SupplyCurrentLimitEnable = IntakeConstants.INTAKE_SUPPLY_ENABLE;
 
     leftIntakeMotor.getConfigurator().apply(intakeConfig, HardwareConstants.TIMEOUT_S);
+    // intakeConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     rightIntakeMotor.getConfigurator().apply(intakeConfig, HardwareConstants.TIMEOUT_S);
 
     ParentDevice.optimizeBusUtilizationForAll(leftIntakeMotor, rightIntakeMotor);
@@ -42,6 +42,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
   /**
    * Sets the intake speed
+   *
    * @param speed 1.0 being the max speed, -1.0 being the min speed
    */
   public void setIntakeSpeed(double speed) {
@@ -51,6 +52,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
   /**
    * Gets whether or not the intake sensor detects a note
+   *
    * @return whether or not it detects a note
    */
   public boolean sensorDetectsNote() {
@@ -60,6 +62,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
   /**
    * Sets the flapper speed
+   *
    * @param speed 1.0 being the max speed, -1.0 being the min speed
    */
   public void setFlapperSpeed(double speed) {
