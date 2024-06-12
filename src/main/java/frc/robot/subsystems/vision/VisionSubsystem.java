@@ -6,12 +6,15 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.extras.LimelightHelpers;
 import frc.robot.extras.LimelightHelpers.PoseEstimate;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class VisionSubsystem extends SubsystemBase {
 
   private Pose2d lastSeenPose = new Pose2d();
   private double headingDegrees = 0;
   private double headingRateDegreesPerSecond = 0;
+  private Lock poseLock = new ReentrantLock();
 
   /**
    * The pose estimates from the limelights in the following order {shooterLimelight,
@@ -62,13 +65,23 @@ public class VisionSubsystem extends SubsystemBase {
     // MegaTag2 is much more accurate, but only use it when the robot isn't rotating too fast
     if (headingRateDegreesPerSecond < VisionConstants.MEGA_TAG_2_MAX_HEADING_RATE) {
       LimelightHelpers.SetRobotOrientation(
-          VisionConstants.SHOOTER_LIMELIGHT_NAME, headingDegrees, 0, 0, 0, 0, 0);
+          getLimelightName(limelightNumber),
+          headingDegrees,
+          0, // <- dunno if this'll be useful
+          0,
+          0,
+          0,
+          0);
       limelightEstimates[limelightNumber] =
           LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(getLimelightName(limelightNumber));
     } else {
       limelightEstimates[limelightNumber] =
           LimelightHelpers.getBotPoseEstimate_wpiBlue(getLimelightName(limelightNumber));
     }
+  }
+
+  public void updateMegatag1PoseEstimate(int limelightNumber) {
+    limelightEstimates[limelightNumber] = LimelightHelpers.getBotPoseEstimate_wpiBlue(getLimelightName(limelightNumber));
   }
 
   /**
@@ -164,6 +177,7 @@ public class VisionSubsystem extends SubsystemBase {
    * @param limelightNumber the limelight number
    */
   public void visionThread(int limelightNumber) {
+    poseLock.lock();
     try {
       new Thread(
               () -> {
@@ -206,6 +220,8 @@ public class VisionSubsystem extends SubsystemBase {
           .start();
     } catch (Exception e) {
       e.printStackTrace();
+    } finally {
+      poseLock.unlock();
     }
   }
 
