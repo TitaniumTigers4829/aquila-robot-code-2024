@@ -1,7 +1,3 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot.commands.intake;
 
 import java.util.function.Consumer;
@@ -23,20 +19,10 @@ public class TowerIntake extends Command {
   private final ShooterSubsystem shooterSubsystem;
   private final LEDSubsystem leds;
   private final boolean intakeReverse;
-<<<<<<< HEAD
-
-  public TowerIntake(
-      IntakeSubsystem intakeSubsystem,
-      PivotSubsystem pivotSubsystem,
-      ShooterSubsystem shooterSubsystem,
-      boolean intakeReverse,
-      LEDSubsystem leds) {
-=======
   private final Consumer<Boolean> hasNoteCallback;
   private boolean intakeSensorLatch;
   
   public TowerIntake(IntakeSubsystem intakeSubsystem, PivotSubsystem pivotSubsystem, ShooterSubsystem shooterSubsystem, boolean intakeReverse, LEDSubsystem leds, Consumer<Boolean> hasNoteCallback) {
->>>>>>> a75b5d6fdf996eef8ed7f07abb9a1536a5f8390d
     this.intakeSubsystem = intakeSubsystem;
     this.pivotSubsystem = pivotSubsystem;
     this.shooterSubsystem = shooterSubsystem;
@@ -46,8 +32,6 @@ public class TowerIntake extends Command {
     addRequirements(intakeSubsystem, pivotSubsystem, shooterSubsystem, leds);
   }
 
-<<<<<<< HEAD
-=======
   @Override
   public void initialize() {
     intakeSensorLatch = false;
@@ -59,7 +43,6 @@ public class TowerIntake extends Command {
     leds.setProcess(LEDProcess.INTAKE);
   }
   
->>>>>>> a75b5d6fdf996eef8ed7f07abb9a1536a5f8390d
   /** Creates a new TowerIntake. */
   @Override
   public void execute() {
@@ -68,11 +51,7 @@ public class TowerIntake extends Command {
     if (pivotSubsystem.isPivotWithinAcceptableError()) {
       if (intakeReverse) {
         leds.setProcess(LEDProcess.REVERSE_INTAKE);
-<<<<<<< HEAD
-        shooterSubsystem.setRollerSpeed(-ShooterConstants.ROLLER_INTAKE_SPEED);
-=======
         shooterSubsystem.setRollerSpeed(-ShooterConstants.ROLLER_INTAKE_BEFORE_LATCH_SPEED); 
->>>>>>> a75b5d6fdf996eef8ed7f07abb9a1536a5f8390d
         intakeSubsystem.setIntakeSpeed(-IntakeConstants.INTAKE_SPEED);
         intakeSubsystem.setFlapperSpeed(-IntakeConstants.FLAPPER_SPEED);
         SmarterDashboardRegistry.noNote();
@@ -101,21 +80,9 @@ public class TowerIntake extends Command {
         }
       }
     }
-<<<<<<< HEAD
-
-    if (intakeReverse) {
-      leds.setProcess(LEDProcess.REVERSE_INTAKE);
-      shooterSubsystem.setRollerSpeed(-ShooterConstants.ROLLER_INTAKE_SPEED);
-      intakeSubsystem.setIntakeSpeed(-IntakeConstants.INTAKE_SPEED);
-      intakeSubsystem.setFlapperSpeed(-IntakeConstants.FLAPPER_SPEED);
-    }
-  }
-
-=======
     hasNoteCallback.accept((Boolean)intakeSensorLatch || shooterSubsystem.hasNote());
   }
   
->>>>>>> a75b5d6fdf996eef8ed7f07abb9a1536a5f8390d
   @Override
   public void end(boolean interrupted) {
     leds.setProcess(LEDProcess.DEFAULT);
