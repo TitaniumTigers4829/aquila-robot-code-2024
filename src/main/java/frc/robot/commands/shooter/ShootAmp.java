@@ -1,7 +1,3 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot.commands.shooter;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -43,24 +39,15 @@ public class ShootAmp extends Command {
     pivotSubsystem.setPivotAngle(PivotConstants.SHOOT_AMP_ANGLE);
     shooterSubsystem.setRPM(ShooterConstants.SHOOT_AMP_RPM);
 
-    // if (pivotSubsystem.isPivotWithinAcceptableError() &&
-    // shooterSubsystem.isShooterWithinAcceptableError()) {
-    if (shoot.getAsBoolean()) {
-      shooterSubsystem.setRollerSpeed(ShooterConstants.ROLLER_SHOOT_SPEED);
-      // leds.setProcess(LEDProcess.SHOOT);
-    }
-    // } else {
-    // leds.setProcess(LEDProcess.FINISH_LINE_UP);
-    // shooterSubsystem.setRollerSpeed(0);
-    // }
-    SmartDashboard.putBoolean("end", false);
+      if (shoot.getAsBoolean()) {
+        shooterSubsystem.setRollerSpeed(ShooterConstants.ROLLER_SHOOT_SPEED);
+        leds.setProcess(LEDProcess.SHOOT);
+      }
   }
 
-  // stick it in - jack
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    SmartDashboard.putBoolean("end", true);
     pivotSubsystem.setPivotAngle(PivotConstants.PIVOT_INTAKE_ANGLE);
     leds.setProcess(LEDProcess.DEFAULT);
     shooterSubsystem.setFlywheelNeutral();

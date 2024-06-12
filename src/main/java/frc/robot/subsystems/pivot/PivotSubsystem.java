@@ -12,7 +12,6 @@ import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.HardwareConstants;
 import frc.robot.Constants.PivotConstants;
@@ -24,9 +23,10 @@ public class PivotSubsystem extends SubsystemBase {
   private final TalonFX leaderPivotMotor;
   private final TalonFX followerPivotMotor;
 
-  private final MotionMagicVoltage mmRequest;
+  private final MotionMagicVoltage mmPositionRequest;
 
   private final SingleLinearInterpolator speakerAngleLookupValues;
+  private final SingleLinearInterpolator passAngleLookupValues;
 
   private final StatusSignal<Double> pivotPos;
   private double pivotTargetAngle;
@@ -37,14 +37,14 @@ public class PivotSubsystem extends SubsystemBase {
     followerPivotMotor = new TalonFX(PivotConstants.FOLLOWER_PIVOT_MOTOR_ID);
     pivotEncoder = new CANcoder(PivotConstants.PIVOT_ENCODER_ID);
 
-    mmRequest = new MotionMagicVoltage(0);
+    mmPositionRequest = new MotionMagicVoltage(0);
 
     speakerAngleLookupValues = new SingleLinearInterpolator(PivotConstants.SPEAKER_PIVOT_POSITION);
+    passAngleLookupValues = new SingleLinearInterpolator(PivotConstants.PASS_PIVOT_POSITION);
 
     CANcoderConfiguration pivotEncoderConfig = new CANcoderConfiguration();
     pivotEncoderConfig.MagnetSensor.MagnetOffset = -PivotConstants.ANGLE_ZERO;
     pivotEncoderConfig.MagnetSensor.SensorDirection = PivotConstants.ENCODER_REVERSED;
-    // pivotEncoderConfig.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Unsigned_0To1;
     pivotEncoder.getConfigurator().apply(pivotEncoderConfig, HardwareConstants.TIMEOUT_S);
 
     TalonFXConfiguration pivotConfig = new TalonFXConfiguration();
@@ -71,8 +71,8 @@ public class PivotSubsystem extends SubsystemBase {
 
     pivotConfig.SoftwareLimitSwitch.ForwardSoftLimitThreshold = PivotConstants.MAX_ANGLE;
     pivotConfig.SoftwareLimitSwitch.ReverseSoftLimitThreshold = PivotConstants.MIN_ANGLE;
-    pivotConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = false;
-    pivotConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = false;
+    pivotConfig.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
+    pivotConfig.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
     leaderPivotMotor.getConfigurator().apply(pivotConfig, HardwareConstants.TIMEOUT_S);
     pivotConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     followerPivotMotor.getConfigurator().apply(pivotConfig, HardwareConstants.TIMEOUT_S);
@@ -85,8 +85,7 @@ public class PivotSubsystem extends SubsystemBase {
 
   /**
    * Gets the angle of the pivot
-   *
-   * @return angle of pivot in degrees
+   * @return angle of pivot in rotations
    */
   public double getAngle() {
     pivotPos.refresh();
@@ -94,12 +93,11 @@ public class PivotSubsystem extends SubsystemBase {
   }
 
   /**
-   * Returns if the pivot is within an acceptable rotation in relation to the target position
-   *
-   * @return pivot error between desired and actual state in degrees
+   * Returns if the pivot is within an acceptable rotation 
+   * in relation to the target position
+   * @return pivot error between desired and actual state in rotations
    */
   public boolean isPivotWithinAcceptableError() {
-    SmartDashboard.putNumber("pivot error", Math.abs(pivotTargetAngle - getAngle()));
     return Math.abs(pivotTargetAngle - getAngle()) < PivotConstants.PIVOT_ACCEPTABLE_ERROR;
   }
 
@@ -124,16 +122,24 @@ public class PivotSubsystem extends SubsystemBase {
 
   /**
    * Uses distance in meters from the speaker to set the pivot angle (degrees) of the shooter
-   *
-   * @param distance the distance in meters from the speaker
+   * @param speakerDistance the distance in meters from the speaker
    */
-  public void setPivotFromDistance(double distance) {
-    SmartDashboard.putNumber("distance", distance);
-    double angle = speakerAngleLookupValues.getLookupValue(distance);
-    pivotTargetAngle = angle;
-    setPivotAngle(angle);
+  public void setPivotFromSpeakerDistance(double speakerDistance) {
+    double speakerAngle = speakerAngleLookupValues.getLookupValue(speakerDistance);
+    pivotTargetAngle = speakerAngle;
+    setPivotAngle(speakerAngle);
   }
 
+  /**
+   * Uses distance in meters from the passing position to set the pivot angle (degrees) of the shooter
+   * @param passDistance the distance in meters from the passing position
+   */
+  public void setPivotFromPassDistance(double passDistance) {
+    double passAngle = passAngleLookupValues.getLookupValue(passDistance);
+    pivotTargetAngle = passAngle;
+    setPivotAngle(passAngle);
+  }
+  
   /**
    * Sets the pivot using the leader/follower motors
    *
@@ -141,13 +147,12 @@ public class PivotSubsystem extends SubsystemBase {
    */
   public void setPivotAngle(double angle) {
     pivotTargetAngle = angle;
-    SmartDashboard.putNumber("desired pivot angle", pivotTargetAngle);
-    leaderPivotMotor.setControl(mmRequest.withPosition(angle));
-    followerPivotMotor.setControl(mmRequest.withPosition(angle));
+    leaderPivotMotor.setControl(mmPositionRequest.withPosition(angle));
+    followerPivotMotor.setControl(mmPositionRequest.withPosition(angle));
   }
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("pivot pos", pivotPos.refresh().getValueAsDouble());
+    // SmartDashboard.putNumber("pivot pos", pivotPos.refresh().getValueAsDouble());
   }
 }

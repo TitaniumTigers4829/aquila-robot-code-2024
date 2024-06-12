@@ -1,4 +1,4 @@
-// TigerLib 2023
+// TigerLib 2024
 // Do not edit this code unless you know what you're doing
 
 package frc.robot.extras.interpolators;

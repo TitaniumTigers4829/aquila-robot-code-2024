@@ -31,9 +31,9 @@ public class SwerveModule {
   private final StatusSignal<Double> driveMotorPosition;
   private final StatusSignal<Double> turnEncoderPos;
 
-  private final MotionMagicVoltage turnOutput;
-  private final VelocityVoltage driveOutput;
-
+  private final MotionMagicVoltage mmPositionRequest;
+  private final VelocityVoltage velocityRequest;
+  
   private String name;
 
   /**
@@ -63,9 +63,9 @@ public class SwerveModule {
     driveMotor = new TalonFX(driveMotorChannel, HardwareConstants.CANIVORE_CAN_BUS_STRING);
     turnMotor = new TalonFX(turnMotorChannel, HardwareConstants.CANIVORE_CAN_BUS_STRING);
 
-    turnOutput = new MotionMagicVoltage(0);
-    driveOutput = new VelocityVoltage(0);
-
+    mmPositionRequest = new MotionMagicVoltage(0);
+    velocityRequest = new VelocityVoltage(0);
+    
     CANcoderConfiguration turnEncoderConfig = new CANcoderConfiguration();
     turnEncoderConfig.MagnetSensor.MagnetOffset = -angleZero;
     turnEncoderConfig.MagnetSensor.SensorDirection = encoderReversed;
@@ -80,7 +80,7 @@ public class SwerveModule {
     driveConfig.Slot0.kS = ModuleConstants.DRIVE_S;
     driveConfig.Slot0.kV = ModuleConstants.DRIVE_V;
     driveConfig.Slot0.kA = ModuleConstants.DRIVE_A;
-    driveConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+    driveConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     driveConfig.MotorOutput.Inverted = driveReversed;
     driveConfig.MotorOutput.DutyCycleNeutralDeadband = HardwareConstants.MIN_FALCON_DEADBAND;
     driveConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
@@ -104,6 +104,8 @@ public class SwerveModule {
     turnConfig.MotionMagic.MotionMagicAcceleration =
         ModuleConstants.MAX_ANGULAR_ACCELERATION_ROTATIONS_PER_SECOND_SQUARED;
     turnConfig.ClosedLoopGeneral.ContinuousWrap = true;
+    turnConfig.CurrentLimits.SupplyCurrentLimit = 20;
+    turnConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
     turnMotor.getConfigurator().apply(turnConfig, HardwareConstants.TIMEOUT_S);
 
     turnEncoderPos = turnEncoder.getAbsolutePosition();
@@ -176,13 +178,11 @@ public class SwerveModule {
     }
 
     // Converts meters per second to rotations per second
-    double desiredDriveRPS =
-        optimizedDesiredState.speedMetersPerSecond
-            * ModuleConstants.DRIVE_GEAR_RATIO
-            / ModuleConstants.WHEEL_CIRCUMFERENCE_METERS;
-
-    driveMotor.setControl(driveOutput.withVelocity(desiredDriveRPS));
-    turnMotor.setControl(turnOutput.withPosition(optimizedDesiredState.angle.getRotations()));
+    double desiredDriveRPS = optimizedDesiredState.speedMetersPerSecond 
+     * ModuleConstants.DRIVE_GEAR_RATIO / ModuleConstants.WHEEL_CIRCUMFERENCE_METERS;
+     
+    driveMotor.setControl(velocityRequest.withVelocity(desiredDriveRPS));
+    turnMotor.setControl(mmPositionRequest.withPosition(optimizedDesiredState.angle.getRotations()));
   }
 
   /**

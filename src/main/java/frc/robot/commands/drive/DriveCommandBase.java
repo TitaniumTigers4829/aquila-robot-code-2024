@@ -3,13 +3,16 @@
 package frc.robot.commands.drive;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.extras.interpolators.MultiLinearInterpolator;
 import frc.robot.subsystems.swerve.DriveSubsystem;
 import frc.robot.subsystems.vision.VisionSubsystem;
+
 
 public abstract class DriveCommandBase extends Command {
 
@@ -18,11 +21,13 @@ public abstract class DriveCommandBase extends Command {
   private final MultiLinearInterpolator twoAprilTagLookupTable =
       new MultiLinearInterpolator(VisionConstants.TWO_APRIL_TAG_LOOKUP_TABLE);
 
+  Pose2d middleField = new Pose2d(FieldConstants.FIELD_LENGTH_METERS / 2.0, FieldConstants.FIELD_WIDTH_METERS / 2.0, new Rotation2d());
+
   private final VisionSubsystem visionSubsystem;
   private final DriveSubsystem driveSubsystem;
 
   private double lastTimeStampSeconds = 0;
-  private int ticksAfterSeeing = 0;
+  // private int ticksAfterSeeing = 0;
 
   /**
    * An abstract class that handles pose estimation while driving.
@@ -46,7 +51,6 @@ public abstract class DriveCommandBase extends Command {
     double currentTimeStampSeconds = lastTimeStampSeconds;
 
     if (visionSubsystem.canSeeAprilTags()) {
-      ticksAfterSeeing++;
       currentTimeStampSeconds = visionSubsystem.getTimeStampSeconds();
 
       double distanceFromClosestAprilTag = visionSubsystem.getDistanceFromClosestAprilTag();
@@ -63,17 +67,12 @@ public abstract class DriveCommandBase extends Command {
             standardDeviations[0], standardDeviations[1], standardDeviations[2]);
       }
 
-      // Only updates the pose estimator if the limelight pose is new and reliable
-      if (currentTimeStampSeconds > lastTimeStampSeconds
-          && ticksAfterSeeing > VisionConstants.FRAMES_BEFORE_ADDING_VISION_MEASUREMENT) {
+      if (visionSubsystem.canSeeAprilTags()) {
+
         Pose2d limelightVisionMeasurement = visionSubsystem.getPoseFromAprilTags();
-        driveSubsystem.addPoseEstimatorVisionMeasurement(
-            limelightVisionMeasurement,
-            Timer.getFPGATimestamp() - visionSubsystem.getLatencySeconds());
-        SmartDashboard.putString("llodometyr", limelightVisionMeasurement.toString());
+
+        driveSubsystem.addPoseEstimatorVisionMeasurement(limelightVisionMeasurement, Timer.getFPGATimestamp() - visionSubsystem.getLatencySeconds());
       }
-    } else {
-      ticksAfterSeeing = 0;
     }
 
     lastTimeStampSeconds = currentTimeStampSeconds;

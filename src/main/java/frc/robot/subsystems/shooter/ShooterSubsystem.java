@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.HardwareConstants;
 import frc.robot.Constants.ShooterConstants;
+import frc.robot.extras.SmarterDashboardRegistry;
 
 public class ShooterSubsystem extends SubsystemBase {
   private final TalonFX leaderFlywheel;
@@ -28,6 +29,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
   private double shooterTargetRPM;
   private final VelocityVoltage velocityRequest;
+  private final VoltageOut voltageRequest;
 
   /** Creates a new ShooterSubsystem. */
   public ShooterSubsystem() {
@@ -36,7 +38,9 @@ public class ShooterSubsystem extends SubsystemBase {
     rollerMotor = new TalonFX(ShooterConstants.ROLLER_MOTOR_ID);
 
     noteSensor = new DigitalInput(ShooterConstants.NOTE_SENSOR_ID);
+    
     velocityRequest = new VelocityVoltage(0);
+    voltageRequest = new VoltageOut(0);
 
     TalonFXConfiguration shooterConfig = new TalonFXConfiguration();
     shooterConfig.Slot0.kP = ShooterConstants.SHOOT_P;
@@ -82,21 +86,19 @@ public class ShooterSubsystem extends SubsystemBase {
 
   /**
    * Gets if the tower has a note in it
-   *
-   * @return true if there is a note
+   * @return True if there is a note
    */
   public boolean hasNote() {
     return !noteSensor.get();
   }
 
   /**
-   * sets the voltage to the shooter flywheels
-   *
-   * @param volts the volts
+   * Directly sets the voltage to the shooter flywheels
+   * @param volts Voltage to set
    */
   public void setVolts(double volts) {
-    leaderFlywheel.setControl(new VoltageOut(volts));
-    followerFlywheel.setControl(new VoltageOut(volts));
+    leaderFlywheel.setControl(voltageRequest.withOutput(volts));
+    followerFlywheel.setControl(voltageRequest.withOutput(volts));
   }
 
   /**
@@ -138,9 +140,8 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   /**
-   * sets the flywheel speed
-   *
-   * @param speed the speed from [-1, 1]
+   * Sets the flywheel speed
+   * @param speed 1.0 being the max speed, -1.0 being the min speed
    */
   public void setSpeed(double speed) {
     leaderFlywheel.set(speed);
@@ -157,17 +158,22 @@ public class ShooterSubsystem extends SubsystemBase {
     return leaderVelocity.getValueAsDouble() * 60.0;
   }
 
+ /**
+ * Gets the velocity of the flywheel motors 
+ * @return velocity (rot/s) of the flywheel motors
+ */
   public double getFlywheelVelocity() {
     leaderVelocity.refresh();
     return leaderVelocity.getValueAsDouble();
   }
-
-  /** the period method */
+  
   @Override
   public void periodic() {
     SmartDashboard.putBoolean("has note", hasNote());
-    SmartDashboard.putNumber("velocity", leaderVelocity.refresh().getValueAsDouble() * 60.0);
-    // SmartDashboard.putNumber("current velocity", (leaderVelocity.refresh().getValueAsDouble() *
-    // 60));
+    if (hasNote()) {
+      SmarterDashboardRegistry.noteIn();
+    } else {
+      SmarterDashboardRegistry.noNote();
+    }
   }
 }

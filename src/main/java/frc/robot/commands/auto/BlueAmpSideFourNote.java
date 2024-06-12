@@ -9,8 +9,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.commands.intake.IntakeAuto;
-import frc.robot.commands.shooter.SubwooferShot;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.leds.LEDSubsystem;
 import frc.robot.subsystems.pivot.PivotSubsystem;
@@ -33,52 +31,24 @@ public class BlueAmpSideFourNote extends SequentialCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-        new InstantCommand(
-            () ->
-                driveSubsystem.resetOdometry(
-                    new Pose2d(
-                        0.801482165527343,
-                        6.664938449859619,
-                        Rotation2d.fromRadians(1.0924444714019268)))),
-        new SubwooferShot(
-                driveSubsystem,
-                shooterSubsystem,
-                pivotSubsystem,
-                visionSubsystem,
-                () -> 0,
-                () -> 0,
-                () -> 0,
-                () -> false,
-                ledSubsystem)
-            .withTimeout(1.5),
-        new ParallelCommandGroup(
-            new FollowChoreoTrajectory(
-                driveSubsystem, visionSubsystem, "blue amp side four note 1", false),
-            new IntakeAuto(intakeSubsystem, pivotSubsystem, shooterSubsystem, ledSubsystem)
-                .withTimeout(2)),
-        new ShootSpeakerAuto(
-                driveSubsystem,
-                shooterSubsystem,
-                pivotSubsystem,
-                intakeSubsystem,
-                visionSubsystem,
-                ledSubsystem)
-            .withTimeout(1.7),
-        new ParallelCommandGroup(
-            new FollowChoreoTrajectory(
-                driveSubsystem, visionSubsystem, "blue amp side four note 2", false),
-            new IntakeAuto(intakeSubsystem, pivotSubsystem, shooterSubsystem, ledSubsystem)
-                .withTimeout(2.8)),
-        new FollowChoreoTrajectory(
-            driveSubsystem, visionSubsystem, "blue amp side four note 3", false),
-        new ShootSpeakerAuto(
-                driveSubsystem,
-                shooterSubsystem,
-                pivotSubsystem,
-                intakeSubsystem,
-                visionSubsystem,
-                ledSubsystem)
-            .withTimeout(3),
-        new StopShooterAndIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem));
+      new InstantCommand(()->driveSubsystem.resetOdometry(new Pose2d(0.7656831390380852, 6.629139423370361, Rotation2d.fromRadians(1.0924444714019268)))),
+      new SpinUpForSpeakerAuto(shooterSubsystem, pivotSubsystem, null),
+      new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, ledSubsystem).withTimeout(1.5),
+      new ParallelCommandGroup(
+        new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "blue amp side four note 1", false),
+        new IntakeAuto(intakeSubsystem, pivotSubsystem, shooterSubsystem, ledSubsystem).withTimeout(2)
+      ),
+      new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, ledSubsystem).withTimeout(1.7),
+      new ParallelCommandGroup(
+        new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "blue amp side four note 2", false),
+        new IntakeAuto(intakeSubsystem, pivotSubsystem, shooterSubsystem, ledSubsystem).withTimeout(2.8)
+      ),
+      new ParallelCommandGroup(
+        new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "blue amp side four note 3", false),
+        new IntakeAuto(intakeSubsystem, pivotSubsystem, shooterSubsystem, ledSubsystem)
+      ),
+      new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, ledSubsystem).withTimeout(3),
+      new StopShooterAndIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem)
+    );
   }
 }

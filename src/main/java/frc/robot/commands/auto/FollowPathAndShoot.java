@@ -108,7 +108,7 @@ public class FollowPathAndShoot extends DriveCommandBase {
     ChassisSpeeds speeds = driveSubsystem.getRobotRelativeSpeeds();
     // this gets the time that the note will be in the air between the robot and the speaker
     double tmpDist = robotPos3d.getDistance(speakerPos);
-    double dt = tmpDist / ShooterConstants.NOTE_LAUNCH_VELOCITY;
+    double dt = tmpDist / ShooterConstants.NOTE_LAUNCH_VELOCITY_METERS_PER_SECOND;
     // For shooting while moving, we can pretend that our robot is stationary, but has traveled
     // the distance that was how long the note was in the air for times the robots current velocity
     double dx = speeds.vxMetersPerSecond * dt * ((tmpDist * 0.05) + 1);
@@ -125,7 +125,7 @@ public class FollowPathAndShoot extends DriveCommandBase {
     rotationControl = thetaController.calculate(headingError, 0);
 
     shooterSubsystem.setRPM(ShooterConstants.SHOOT_SPEAKER_RPM);
-    pivotSubsystem.setPivotFromDistance(distance);
+    pivotSubsystem.setPivotFromSpeakerDistance(distance);
 
     // if we are ready to shoot:
     if (shooterSubsystem.isReadyToShoot(headingError)

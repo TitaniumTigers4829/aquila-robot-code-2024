@@ -1,6 +1,8 @@
 package frc.robot.subsystems.swerve;
 
 import com.kauailabs.navx.frc.AHRS;
+import com.pathplanner.lib.auto.AutoBuilder;
+
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
@@ -12,9 +14,6 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.util.datalog.DataLog;
-import edu.wpi.first.util.datalog.StringLogEntry;
-import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Timer;
@@ -62,9 +61,6 @@ public class DriveSubsystem extends SubsystemBase {
           DriveConstants.MAX_ANGULAR_SPEED_RADIANS_PER_SECOND);
   private SwerveSetpointGenerator setpointGenerator;
   private SwerveSetpoint currentSetpoint;
-  // private ModuleLimits currentModuleLimits;
-
-  private StringLogEntry odometryLogger;
 
   private Optional<DriverStation.Alliance> alliance;
 
@@ -130,9 +126,6 @@ public class DriveSubsystem extends SubsystemBase {
 
     alliance = DriverStation.getAlliance();
 
-    DataLog log = DataLogManager.getLog();
-    odometryLogger = new StringLogEntry(log, "odometry");
-
     setpointGenerator = new SwerveSetpointGenerator(DriveConstants.DRIVE_KINEMATICS, DriveConstants.MODULE_TRANSLATIONS);
     currentSetpoint = new SwerveSetpoint(new ChassisSpeeds(), getModuleStates());
   }
@@ -156,18 +149,11 @@ public class DriveSubsystem extends SubsystemBase {
    */
   @SuppressWarnings("ParameterName")
   public void drive(double xSpeed, double ySpeed, double rotationSpeed, boolean fieldRelative) {
-    // SmartDashboard.putBoolean("isFieldRelative", fieldRelative);
-    // SwerveModuleState[] swerveModuleStates =
-    // DriveConstants.DRIVE_KINEMATICS.toSwerveModuleStates(
     desiredSpeeds =
         fieldRelative
             ? ChassisSpeeds.fromFieldRelativeSpeeds(
                 xSpeed, ySpeed, rotationSpeed, getOdometryAllianceRelativeRotation2d())
             : new ChassisSpeeds(xSpeed, ySpeed, rotationSpeed);
-
-    // SwerveDriveKinematics.desaturateWheelSpeeds(
-    //     swerveModuleStates, DriveConstants.MAX_SPEED_METERS_PER_SECOND);
-
     currentSetpoint =
         setpointGenerator.generateSetpoint(
             currentModuleLimits, currentSetpoint, desiredSpeeds, HardwareConstants.TIMEOUT_S);
@@ -180,7 +166,11 @@ public class DriveSubsystem extends SubsystemBase {
         -speeds.vxMetersPerSecond, -speeds.vyMetersPerSecond, -speeds.omegaRadiansPerSecond, false);
   }
 
-  /** pid on the chassis rotation, used during auto */
+  /** 
+   * Allows PID on the chassis rotation.
+   * @param speeds The ChassisSpeeds of the drive to set.
+   * @param rotationControl The control on the drive rotation.
+   */
   public void mergeDrive(ChassisSpeeds speeds, double rotationControl) {
     drive(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, rotationControl, false);
   }
@@ -201,12 +191,25 @@ public class DriveSubsystem extends SubsystemBase {
     return wheelPositions;
   }
 
-  /** Returns the heading of the robot in degrees from 0 to 360. Counter-clockwise is positive. */
+  /**
+   * Returns the heading of the robot in degrees from 0 to 360. 
+   * @return Value is Counter-clockwise positive.
+   */
   public double getHeading() {
     return -gyro.getAngle();
   }
 
-  /** Returns a Rotation2d for the heading of the robot. */
+  /**
+   * Gets the rate of rotation of the NavX.
+   * @return The current rate in degrees per second.
+   */
+  public double getGyroRate() {
+    return -gyro.getRate();
+  }
+
+  /**
+   * Returns a Rotation2d for the heading of the robot.
+   */  
   public Rotation2d getGyroRotation2d() {
     return Rotation2d.fromDegrees(getHeading());
   }
@@ -267,7 +270,7 @@ public class DriveSubsystem extends SubsystemBase {
   public void addPoseEstimatorVisionMeasurement(
       Pose2d visionMeasurement, double currentTimeStampSeconds) {
     odometry.addVisionMeasurement(visionMeasurement, currentTimeStampSeconds);
-    SmarterDashboardRegistry.setLimelightPose(visionMeasurement);
+    // SmarterDashboardRegistry.setLimelightPose(visionMeasurement);
   }
 
   /**
@@ -290,8 +293,10 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   /**
-   * Returns the current drivetrain position, as reported by the modules themselves. The order is:
-   * frontLeft, frontRight, backLeft, backRight (should be the same as the kinematics).
+   * Gets the current module positions.
+   * @return The current drivetrain position, as reported by the modules 
+   * themselves. The order is: frontLeft, frontRight, backLeft, backRight
+   * (should be the same as the kinematics).
    */
   public SwerveModulePosition[] getModulePositions() {
     SwerveModulePosition[] swerveModulePositions = {
@@ -346,17 +351,10 @@ public class DriveSubsystem extends SubsystemBase {
 
   public void periodic() {
     Pose2d pose = getPose();
-    SmarterDashboardRegistry.setPose(pose);
-    odometryLogger.append(pose.toString(), (long) Timer.getFPGATimestamp());
     SmartDashboard.putBoolean("screwed", Math.abs(pose.getX()) > 20);
     SmartDashboard.putString("odometry", pose.toString());
-    // SmartDashboard.putNumber("offset", rearLeftSwerveModule.getState().angle.getRotations());
-    SmartDashboard.putNumber(
-        "speakerDistance",
-        pose.getTranslation().getDistance(SmarterDashboardRegistry.getSpeakerPos()));
 
-    // SwerveModuleState[]  optimizedSetpointStates[] =
-    //     SwerveModuleState.optimize(currentSetpoint.moduleStates(), getModuleAngles());
-
+    SmartDashboard.putNumber("speakerDistance", pose.getTranslation().getDistance(SmarterDashboardRegistry.getSpeakerPos()));
   }
+
 }
