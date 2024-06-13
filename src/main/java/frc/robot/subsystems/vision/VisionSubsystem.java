@@ -80,10 +80,6 @@ public class VisionSubsystem extends SubsystemBase {
     }
   }
 
-  public void updateMegatag1PoseEstimate(int limelightNumber) {
-    limelightEstimates[limelightNumber] = LimelightHelpers.getBotPoseEstimate_wpiBlue(getLimelightName(limelightNumber));
-  }
-
   /**
    * Gets the pose of the robot calculated by specified limelight via any April Tags it sees
    *
