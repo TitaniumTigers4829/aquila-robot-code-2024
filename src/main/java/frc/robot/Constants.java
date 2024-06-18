@@ -61,9 +61,9 @@ public final class Constants {
     public static final int REAR_LEFT_TURN_MOTOR_ID = 8;
     public static final int REAR_RIGHT_TURN_MOTOR_ID = 7;
 
-    public static final int FRONT_LEFT_CANCODER_ID = 11;
+    public static final int FRONT_LEFT_CANCODER_ID = 14;
     public static final int FRONT_RIGHT_CANCODER_ID = 12;
-    public static final int REAR_LEFT_CANCODER_ID = 14;
+    public static final int REAR_LEFT_CANCODER_ID = 11;
     public static final int REAR_RIGHT_CANCODER_ID = 13;
 
     public static final double FRONT_LEFT_ZERO_ANGLE = 0.137939453125;
@@ -295,9 +295,9 @@ public final class Constants {
   
   public static final class IntakeConstants {
     public static final int LEFT_INTAKE_MOTOR_ID = 18;
-    public static final int RIGHT_INTAKE_MOTOR_ID = 19;
+    public static final int RIGHT_INTAKE_MOTOR_ID = 2;
     public static final int FLAPPER_MOTOR_ID = 1;
-    public static final int NOTE_SENSOR_ID = 1; // TODO
+    public static final int NOTE_SENSOR_ID = 6; // TODO
 
     public static final double INTAKE_SPEED = 1.0;
     public static final double INTAKE_NEUTRAL_SPEED = 0.0;
@@ -365,7 +365,7 @@ public final class Constants {
   public static final class ShooterConstants {
     public static final int LEADER_FLYWHEEL_ID = 4;
     public static final int FOLLOWER_FLYWHEEL_ID = 12;
-    public static final int ROLLER_MOTOR_ID = 2;
+    public static final int ROLLER_MOTOR_ID = 50;
 
     public static final double SHOOTER_SUPPLY_LIMIT = 60;
     public static final double SHOOTER_STATOR_LIMIT = 60;

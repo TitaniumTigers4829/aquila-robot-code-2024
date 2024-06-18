@@ -28,6 +28,8 @@ import frc.robot.commands.auto.RedAmpSideFourNote;
 import frc.robot.commands.auto.RedFourNote;
 import frc.robot.commands.auto.RedShootTaxi;
 import frc.robot.commands.autodrive.AutoAlignWithAmp;
+import frc.robot.commands.autodrive.DriveToNote;
+import frc.robot.commands.autodrive.IntakeNote;
 import frc.robot.commands.auto.RedNoteEight;
 import frc.robot.commands.drive.Drive;
 import frc.robot.commands.intake.TowerIntake;
@@ -181,14 +183,14 @@ public class RobotContainer {
     //DRIVER BUTTONS
 
     // // driving
-    // Command driveCommand = new Drive(driveSubsystem, visionSubsystem,
-    //   driverLeftStick[1],
-    //   driverLeftStick[0],
-    //   () -> modifyAxisCubed(driverRightStickX),
-    //   () -> !driverRightBumper.getAsBoolean()
-    // );
+    Command driveCommand = new Drive(driveSubsystem, visionSubsystem,
+      driverLeftStick[1],
+      driverLeftStick[0],
+      () -> modifyAxisCubed(driverRightStickX),
+      () -> !driverRightBumper.getAsBoolean()
+    );
 
-    // driveSubsystem.setDefaultCommand(driveCommand);
+    driveSubsystem.setDefaultCommand(driveCommand);
 
     // driverLeftTrigger.whileTrue(new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem, false, ledSubsystem));
     // // Amp Lineup
@@ -206,7 +208,7 @@ public class RobotContainer {
     // driverLeftDirectionPad.onTrue(new InstantCommand(() -> driveSubsystem.resetOdometry(visionSubsystem.getPoseFromAprilTags())));
 
 
-    driverBButton.whileTrue(new GetNotePos(noteDetector));
+    driverBButton.whileTrue(new IntakeNote(intakeSubsystem, pivotSubsystem, shooterSubsystem, ledSubsystem, driveSubsystem, visionSubsystem, noteDetector));
     // OPERATOR BUTTONS
 
     // // speaker

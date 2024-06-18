@@ -5,6 +5,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.TrajectoryConstants;
 import frc.robot.subsystems.swerve.DriveSubsystem;
 import frc.robot.subsystems.vision.VisionSubsystem;
@@ -32,7 +33,7 @@ public class DriveToNote extends DriveCommandBase {
   );
 
   private final ProfiledPIDController thetaController = new ProfiledPIDController(
-    TrajectoryConstants.AUTO_ALIGN_ROTATIONAL_P,
+    1.5,
     TrajectoryConstants.AUTO_ALIGN_ROTATIONAL_I,
     TrajectoryConstants.AUTO_ALIGN_ROTATIONAL_D,
     TrajectoryConstants.AUTO_ALIGN_ROTATIONAL_CONSTRAINTS
@@ -56,6 +57,7 @@ public class DriveToNote extends DriveCommandBase {
     noteRobotRelativeOffset = noteDetector.applyCameraOffset(noteDetector.getNoteRobotRelativeOffset());
 
     Pose2d robotPos = driveSubsystem.getPose();
+    SmartDashboard.putString("pose", robotPos.toString());
 
     // Uses trigonometry to get angle of note and robot relative position to the field
     Rotation2d thetaTotal = Rotation2d.fromRadians(robotPos.getRotation().getRadians() 
@@ -69,30 +71,32 @@ public class DriveToNote extends DriveCommandBase {
       robotPos.getY() + noteDistance * Math.cos(Math.PI/2 - thetaTotal.getRadians()),
       thetaTotal);
     thetaController.enableContinuousInput(-Math.PI, Math.PI);
+  SmartDashboard.putString("note field relative", noteFieldRelativePose.toString());
   }
+  
 
   @Override
   public void execute() {
     super.execute();
-    if (noteRobotRelativeOffset.getX() >= 0 && noteRobotRelativeOffset.getY() >= 0.0) {
       Pose2d robotPos = driveSubsystem.getPose();
-
+      SmartDashboard.putBoolean("hello", true);
       // Gets the pose error
       double xPoseError = noteFieldRelativePose.getX() - robotPos.getX();
       double yPoseError = noteFieldRelativePose.getY() - robotPos.getY();
       double thetaError = noteFieldRelativePose.getRotation().getRadians() - robotPos.getRotation().getRadians();
 
+
       // Uses the PID controllers to calculate the drive output
-      double xOutput = deadband(xTranslationController.calculate(xPoseError, 0));
-      double yOutput = deadband(yTranslationController.calculate(yPoseError, 0));
-      double thetaOutput = thetaController.calculate(thetaError, 0);
+      double xOutput = deadband(xTranslationController.calculate(-xPoseError, 0));
+      double yOutput = deadband(yTranslationController.calculate(-yPoseError, 0));
+      double thetaOutput = thetaController.calculate(0, 0);
 
       // Gets the chassis speeds for the robot using the odometry rotation (not alliance relative)
-      ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xOutput, yOutput, thetaOutput, driveSubsystem.getGyroFieldRelativeRotation2d());
+      ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xOutput, yOutput, thetaOutput, driveSubsystem.getGyroRotation2d());
 
       // Drives the robot towards the amp
       driveSubsystem.drive(chassisSpeeds);
-    }
+    
   }
 
   @Override
