@@ -1,7 +1,6 @@
 package frc.robot.subsystems.vision;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.extras.LimelightHelpers;
@@ -62,7 +61,7 @@ public class VisionSubsystem extends SubsystemBase {
     if (!canSeeAprilTags(limelightNumber)) {
       limelightEstimates[limelightNumber] = new PoseEstimate();
     }
-    // MegaTag2 is much more accurate, but only use it when the robot isn't rotating too fast
+
     if (headingRateDegreesPerSecond < VisionConstants.MEGA_TAG_2_MAX_HEADING_RATE) {
       LimelightHelpers.SetRobotOrientation(
           getLimelightName(limelightNumber),
@@ -91,6 +90,18 @@ public class VisionSubsystem extends SubsystemBase {
     return limelightEstimates[limelightNumber].pose;
   }
 
+  /**
+   * Gets the Megatag1 pose of the robot calculated by specified limelight via any April Tags it
+   * sees
+   *
+   * @param limelightNumber the number of the limelight
+   * @return the Megatag1 pose of the robot, if the limelight can't see any April Tags, it will
+   *     return 0 for x, y, and theta
+   */
+  public Pose2d getMegatag1Pose(int limelightNumber) {
+    return LimelightHelpers.getBotPoseEstimate_wpiBlue(getLimelightName(limelightNumber)).pose;
+  }
+
   /** Returns how many april tags the limelight that is being used for pose estimation can see. */
   public int getNumberOfAprilTags(int limelightNumber) {
     return limelightEstimates[limelightNumber].tagCount;
@@ -110,7 +121,6 @@ public class VisionSubsystem extends SubsystemBase {
    * latency.
    */
   public double getLatencySeconds(int limelightNumber) {
-    // TODO: Verify this works
     return (limelightEstimates[limelightNumber].latency) / 1000.0;
   }
 
@@ -122,8 +132,7 @@ public class VisionSubsystem extends SubsystemBase {
    */
   public double getLimelightAprilTagDistance(int limelightNumber) {
     if (canSeeAprilTags(limelightNumber)) {
-      // TODO: Verify this is in meters (there's almost no way its not, but just make sure)
-      return limelightEstimates[limelightNumber].avgTagDist; // or RawFiducial.disToCamera??
+      return limelightEstimates[limelightNumber].avgTagDist;
     }
     // To be safe returns a big distance from the april tags if it can't see any
     return Double.MAX_VALUE;
@@ -198,7 +207,7 @@ public class VisionSubsystem extends SubsystemBase {
                     // it is used when the driver resets the robot odometry to the limelight
                     // calculated position
                     if (canSeeAprilTags(limelightNumber)) {
-                      lastSeenPose = getPoseFromAprilTags(limelightNumber);
+                      lastSeenPose = getMegatag1Pose(limelightNumber);
                     }
                   } else {
                     limelightEstimates[limelightNumber] = new PoseEstimate();
@@ -207,7 +216,7 @@ public class VisionSubsystem extends SubsystemBase {
                   last_TX = current_TX;
                   last_TY = current_TY;
                   try {
-                    Thread.sleep(80);
+                    Thread.sleep(20);
                   } catch (Exception e) {
                     e.printStackTrace();
                   }
@@ -222,16 +231,5 @@ public class VisionSubsystem extends SubsystemBase {
   }
 
   @Override
-  public void periodic() {
-    SmartDashboard.putString(
-        "front left Odometry",
-        getPoseFromAprilTags(VisionConstants.FRONT_LEFT_LIMELIGHT_NUMBER).toString());
-
-    SmartDashboard.putString(
-        "front right Odometry",
-        getPoseFromAprilTags(VisionConstants.FRONT_RIGHT_LIMELIGHT_NUMBER).toString());
-    SmartDashboard.putString(
-        "shooter Odometry",
-        getPoseFromAprilTags(VisionConstants.SHOOTER_LIMELIGHT_NUMBER).toString());
-  }
+  public void periodic() {}
 }
