@@ -16,7 +16,6 @@ public class DriveToNote extends DriveCommandBase {
 
   private final DriveSubsystem driveSubsystem;
   private final VisionSubsystem visionSubsystem;
-  private final NoteDetector noteDetector;
 
   private final ProfiledPIDController xTranslationController = new ProfiledPIDController(
     TrajectoryConstants.AUTO_ALIGN_TRANSLATIONAL_P,
@@ -39,31 +38,32 @@ public class DriveToNote extends DriveCommandBase {
     TrajectoryConstants.AUTO_ALIGN_ROTATIONAL_CONSTRAINTS
   );
 
-  private Translation2d noteRobotRelativeOffset;
+  private Pose2d noteRobotRelativeOffset;
+  private Translation2d cameraOffset;
   private Pose2d noteFieldRelativePose;
 
   /** Creates a new AutoAlignWithAmp. */
-  public DriveToNote(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, NoteDetector noteDetector) {
+  public DriveToNote(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem) {
     super(driveSubsystem, visionSubsystem);
     this.driveSubsystem = driveSubsystem;
     this.visionSubsystem = visionSubsystem;
-    this.noteDetector = noteDetector;
     addRequirements(driveSubsystem, visionSubsystem);
   }
 
   @Override
   public void initialize() {
     // Gets the note position relative to the robot
-    noteRobotRelativeOffset = noteDetector.applyCameraOffset(noteDetector.getNoteRobotRelativeOffset());
+    noteRobotRelativeOffset = NoteDetector.getNoteRobotRelativeOffset();
+    cameraOffset = NoteDetector.applyCameraOffset(noteRobotRelativeOffset);
 
     Pose2d robotPos = driveSubsystem.getPose();
     SmartDashboard.putString("pose", robotPos.toString());
 
     // Uses trigonometry to get angle of note and robot relative position to the field
     Rotation2d thetaTotal = Rotation2d.fromRadians(robotPos.getRotation().getRadians() 
-      + Math.atan(-noteRobotRelativeOffset.getX() / noteRobotRelativeOffset.getY()));
+      + Math.atan(-cameraOffset.getX() / cameraOffset.getY()));
 
-    double noteDistance = Math.sqrt(Math.pow(noteRobotRelativeOffset.getX(),2) + Math.pow(noteRobotRelativeOffset.getY(),2));
+    double noteDistance = Math.sqrt(Math.pow(cameraOffset.getX(),2) + Math.pow(cameraOffset.getY(),2));
 
     // Gets the field position relative to the robot
     noteFieldRelativePose = new Pose2d(
@@ -71,7 +71,6 @@ public class DriveToNote extends DriveCommandBase {
       robotPos.getY() + noteDistance * Math.cos(Math.PI/2 - thetaTotal.getRadians()),
       thetaTotal);
     thetaController.enableContinuousInput(-Math.PI, Math.PI);
-  SmartDashboard.putString("note field relative", noteFieldRelativePose.toString());
   }
   
 

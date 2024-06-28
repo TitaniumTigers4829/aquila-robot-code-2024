@@ -208,7 +208,7 @@ public class RobotContainer {
     // driverLeftDirectionPad.onTrue(new InstantCommand(() -> driveSubsystem.resetOdometry(visionSubsystem.getPoseFromAprilTags())));
 
 
-    driverBButton.whileTrue(new IntakeNote(intakeSubsystem, pivotSubsystem, shooterSubsystem, ledSubsystem, driveSubsystem, visionSubsystem, noteDetector));
+    driverBButton.whileTrue(new IntakeNote(intakeSubsystem, pivotSubsystem, shooterSubsystem, ledSubsystem, driveSubsystem, visionSubsystem));
     // OPERATOR BUTTONS
 
     // // speaker

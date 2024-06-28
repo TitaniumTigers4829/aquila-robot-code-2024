@@ -21,11 +21,11 @@ public class IntakeNote extends ParallelCommandGroup {
   /** Creates a new IntakeNote. */
   
 
-  public IntakeNote(IntakeSubsystem intakeSubsystem, PivotSubsystem pivotSubsystem, ShooterSubsystem shooterSubsystem, LEDSubsystem ledSubsystem, DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, NoteDetector noteDetector) {
+  public IntakeNote(IntakeSubsystem intakeSubsystem, PivotSubsystem pivotSubsystem, ShooterSubsystem shooterSubsystem, LEDSubsystem ledSubsystem, DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
   addCommands(
       new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem, false, ledSubsystem), 
-    new DriveToNote(driveSubsystem, visionSubsystem, noteDetector));
+    new DriveToNote(driveSubsystem, visionSubsystem));
   }
 }
