@@ -64,20 +64,38 @@ public class VisionSubsystem extends SubsystemBase {
 
     if (headingRateDegreesPerSecond < VisionConstants.MEGA_TAG_2_MAX_HEADING_RATE) {
       LimelightHelpers.SetRobotOrientation(
-          getLimelightName(limelightNumber),
-          headingDegrees,
-          0, // <- dunno if this'll be useful
-          0,
-          0,
-          0,
-          0);
-      limelightEstimates[limelightNumber] =
-          LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(getLimelightName(limelightNumber));
+          getLimelightName(limelightNumber), headingDegrees, 0, 0, 0, 0, 0);
+      limelightEstimates[limelightNumber] = getMegaTag2PoseEstimate(limelightNumber);
     } else {
-      limelightEstimates[limelightNumber] =
-          LimelightHelpers.getBotPoseEstimate_wpiBlue(getLimelightName(limelightNumber));
+      limelightEstimates[limelightNumber] = getMegaTag1PoseEstimate(limelightNumber);
     }
   }
+
+  
+  /**
+   * Gets the MegaTag1 pose of the robot calculated by specified limelight via any April Tags it
+   * sees
+   *
+   * @param limelightNumber the number of the limelight
+   * @return the MegaTag1 pose of the robot, if the limelight can't see any April Tags, it will
+   *     return 0 for x, y, and theta
+   */
+  public PoseEstimate getMegaTag1PoseEstimate(int limelightNumber) {
+    return LimelightHelpers.getBotPoseEstimate_wpiBlue(getLimelightName(limelightNumber));
+  }
+
+   /**
+   * Gets the MegaTag2 pose of the robot calculated by specified limelight via any April Tags it
+   * sees
+   *
+   * @param limelightNumber the number of the limelight
+   * @return the MegaTag2 pose of the robot, if the limelight can't see any April Tags, it will
+   *     return 0 for x, y, and theta
+   */
+  public PoseEstimate getMegaTag2PoseEstimate(int limelightNumber) {
+    return LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(getLimelightName(limelightNumber));
+  }
+
 
   /**
    * Gets the pose of the robot calculated by specified limelight via any April Tags it sees
@@ -88,18 +106,6 @@ public class VisionSubsystem extends SubsystemBase {
    */
   public Pose2d getPoseFromAprilTags(int limelightNumber) {
     return limelightEstimates[limelightNumber].pose;
-  }
-
-  /**
-   * Gets the Megatag1 pose of the robot calculated by specified limelight via any April Tags it
-   * sees
-   *
-   * @param limelightNumber the number of the limelight
-   * @return the Megatag1 pose of the robot, if the limelight can't see any April Tags, it will
-   *     return 0 for x, y, and theta
-   */
-  public Pose2d getMegatag1Pose(int limelightNumber) {
-    return LimelightHelpers.getBotPoseEstimate_wpiBlue(getLimelightName(limelightNumber)).pose;
   }
 
   /** Returns how many april tags the limelight that is being used for pose estimation can see. */
@@ -182,7 +188,7 @@ public class VisionSubsystem extends SubsystemBase {
    * @param limelightNumber the limelight number
    */
   public void visionThread(int limelightNumber) {
-    poseLock.lock();
+ 
     try {
       new Thread(
               () -> {
@@ -190,6 +196,8 @@ public class VisionSubsystem extends SubsystemBase {
                 double last_TY = 0;
 
                 while (true) {
+                  poseLock.lock(); 
+                  
                   double current_TX = LimelightHelpers.getTX(getLimelightName(limelightNumber));
                   double current_TY = LimelightHelpers.getTY(getLimelightName(limelightNumber));
 
@@ -207,7 +215,7 @@ public class VisionSubsystem extends SubsystemBase {
                     // it is used when the driver resets the robot odometry to the limelight
                     // calculated position
                     if (canSeeAprilTags(limelightNumber)) {
-                      lastSeenPose = getMegatag1Pose(limelightNumber);
+                      lastSeenPose = getMegaTag1PoseEstimate(limelightNumber).pose;
                     }
                   } else {
                     limelightEstimates[limelightNumber] = new PoseEstimate();
@@ -219,15 +227,15 @@ public class VisionSubsystem extends SubsystemBase {
                     Thread.sleep(20);
                   } catch (Exception e) {
                     e.printStackTrace();
-                  }
+                } finally {
+                  poseLock.unlock();
                 }
-              })
+              }
+            })
           .start();
     } catch (Exception e) {
       e.printStackTrace();
-    } finally {
-      poseLock.unlock();
-    }
+    } 
   }
 
   @Override
