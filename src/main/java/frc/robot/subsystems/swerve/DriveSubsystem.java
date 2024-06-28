@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.HardwareConstants;
+import frc.robot.Constants.TrajectoryConstants;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.extras.SmarterDashboardRegistry;
 import frc.robot.extras.swerve.ModuleLimits;
@@ -128,6 +129,18 @@ public class DriveSubsystem extends SubsystemBase {
 
     setpointGenerator = new SwerveSetpointGenerator(DriveConstants.DRIVE_KINEMATICS, DriveConstants.MODULE_TRANSLATIONS);
     currentSetpoint = new SwerveSetpoint(new ChassisSpeeds(), getModuleStates());
+    
+    // Configure AutoBuilder
+    AutoBuilder.configureHolonomic(
+      this::getPose, 
+      this::resetOdometry, 
+      this::getRobotRelativeSpeeds, 
+      this::drive, 
+      TrajectoryConstants.CONFIG,
+      ()->false,
+      this
+    );
+    
   }
 
   /** gets the chassis speeds */
@@ -316,8 +329,6 @@ public class DriveSubsystem extends SubsystemBase {
    *     frontRight, backLeft, backRight (should be the same as the kinematics).
    */
   public void setModuleStates(SwerveModuleState[] desiredStates) {
-    SwerveDriveKinematics.desaturateWheelSpeeds(
-        desiredStates, DriveConstants.MAX_SPEED_METERS_PER_SECOND);
     frontLeftSwerveModule.setDesiredState(desiredStates[0]);
     frontRightSwerveModule.setDesiredState(desiredStates[1]);
     rearLeftSwerveModule.setDesiredState(desiredStates[2]);

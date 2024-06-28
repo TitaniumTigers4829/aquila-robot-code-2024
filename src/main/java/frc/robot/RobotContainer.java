@@ -17,17 +17,13 @@ import frc.robot.commands.auto.BlueFiveNote;
 import frc.robot.commands.auto.BlueFourNote;
 import frc.robot.commands.auto.BlueNoteEight;
 import frc.robot.commands.auto.BlueShootTaxi;
-import frc.robot.commands.auto.BlueUnderStage4Note;
 import frc.robot.commands.auto.RedFiveNote;
 import frc.robot.commands.auto.RedAmpSideFourNote;
-// import frc.robot.commands.auto.RedFar3Note;
 import frc.robot.commands.auto.RedFarSideFourNote;
 import frc.robot.commands.auto.RedFourNote;
 import frc.robot.commands.auto.RedNoteEight;
 import frc.robot.commands.auto.RedShootTaxi;
 import frc.robot.commands.auto.RedSixNote;
-// import frc.robot.commands.auto.RedUnderStage4note;
-import frc.robot.commands.auto.RedUnderStage4Note;
 import frc.robot.commands.auto.SimpleTxi;
 import frc.robot.commands.autodrive.AutoAlignWithAmp;
 import frc.robot.commands.drive.Drive;
@@ -41,7 +37,6 @@ import frc.robot.commands.shooter.ShootPass;
 import frc.robot.commands.shooter.ShootSpeaker;
 import frc.robot.commands.shooter.SpinUpForSpeaker;
 import frc.robot.commands.shooter.SubwooferShot;
-import frc.robot.extras.SmarterDashboardRegistry;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.leds.LEDSubsystem;
 import frc.robot.subsystems.pivot.PivotSubsystem;
@@ -86,9 +81,6 @@ public class RobotContainer {
     // autoChooser.addOption("1mtrrot", new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "1mtrrot", true));
     autoChooser.addOption("red five note", new RedFiveNote(driveSubsystem, visionSubsystem, shooterSubsystem,intakeSubsystem, pivotSubsystem, ledSubsystem));
     autoChooser.addOption("blue five note", new BlueFiveNote(driveSubsystem, visionSubsystem, shooterSubsystem,intakeSubsystem, pivotSubsystem, ledSubsystem));
-    autoChooser.addOption("red under stage 4 note", new RedUnderStage4Note(driveSubsystem, visionSubsystem, pivotSubsystem, shooterSubsystem, intakeSubsystem, ledSubsystem));
-    autoChooser.addOption("blue under stage 4 note", new BlueUnderStage4Note(driveSubsystem, visionSubsystem, pivotSubsystem, shooterSubsystem, intakeSubsystem, ledSubsystem));
-    // autoChooser.addOption("red far 3 note", new RedFar3Note(driveSubsystem, visionSubsystem, pivotSubsystem, shooterSubsystem, intakeSubsystem));
     autoChooser.addOption("red six", new RedSixNote(driveSubsystem, visionSubsystem, shooterSubsystem, intakeSubsystem, pivotSubsystem, ledSubsystem));
     autoChooser.addOption("red far side four", new RedFarSideFourNote(driveSubsystem, visionSubsystem, shooterSubsystem, intakeSubsystem, pivotSubsystem, ledSubsystem));
     autoChooser.addOption("simpleT", new SimpleTxi(driveSubsystem, visionSubsystem, pivotSubsystem, shooterSubsystem, ledSubsystem));
@@ -201,20 +193,9 @@ public class RobotContainer {
     // speaker
     operatorRightTrigger.whileTrue(new ShootSpeaker(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, driverLeftStickX, driverLeftStickY, driverRightBumper, ledSubsystem));
     // amp
-    operatorRightBumper.whileTrue(
-        new ShootAmp(shooterSubsystem, pivotSubsystem, ledSubsystem, operatorBButton));
+    operatorRightBumper.whileTrue(new ShootAmp(shooterSubsystem, pivotSubsystem, ledSubsystem, operatorBButton));
     // fender shot
-    operatorUpDirectionPad.whileTrue(
-        new SubwooferShot(
-            driveSubsystem,
-            shooterSubsystem,
-            pivotSubsystem,
-            visionSubsystem,
-            driverLeftStickX,
-            driverLeftStickY,
-            driverRightStickX,
-            driverRightBumper,
-            ledSubsystem));
+    operatorUpDirectionPad.whileTrue(new SubwooferShot(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, driverLeftStickX, driverLeftStickY, driverRightStickX, driverRightBumper, ledSubsystem));
     // intake (aka SUCC_BUTTON)
     operatorLeftTrigger.whileTrue(new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem, false, ledSubsystem, this::intakeCallback));
     operatorLeftTrigger.whileFalse(new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem, false, ledSubsystem, this::intakeCallback).withTimeout(0.2));
@@ -234,11 +215,8 @@ public class RobotContainer {
     SmarterDashboardRegistry.initialize();
     // Resets the pose factoring in the robot side
     // This is just a failsafe, pose should be reset at the beginning of auto
-    driveSubsystem.resetOdometry(
-        new Pose2d(
-            driveSubsystem.getPose().getX(),
-            driveSubsystem.getPose().getY(),
-            Rotation2d.fromDegrees(driveSubsystem.getAllianceAngleOffset())));
+    driveSubsystem.resetOdometry(new Pose2d(driveSubsystem.getPose().getX(), driveSubsystem.getPose().getY(),
+     Rotation2d.fromDegrees(driveSubsystem.getAllianceAngleOffset())));
     return autoChooser.getSelected();
   }
 }

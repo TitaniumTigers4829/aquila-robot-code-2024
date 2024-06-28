@@ -18,7 +18,9 @@ public class VisionSubsystem extends SubsystemBase {
 
   public VisionSubsystem() {}
 
-  /** Returns true if the limelight(s) can fully see one or more April Tag. */
+  /**
+   * Returns true if the limelight(s) can fully see one or more April Tag.
+   */
   public boolean canSeeAprilTags() {
     // First checks if it can see an april tag, then checks if it is fully in frame
     // Different Limelights have different FOVs

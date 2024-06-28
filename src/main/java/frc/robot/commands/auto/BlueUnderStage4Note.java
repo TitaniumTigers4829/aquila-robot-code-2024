@@ -16,6 +16,9 @@ import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.swerve.DriveSubsystem;
 import frc.robot.subsystems.vision.VisionSubsystem;
 
+// NOTE:  Consider using this command inline, rather than writing a subclass.  For more
+// information, see:
+// https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class BlueUnderStage4Note extends SequentialCommandGroup {
   /** Creates a new RedUnderStage4Note. */
   public BlueUnderStage4Note(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, PivotSubsystem pivotSubsystem, ShooterSubsystem shooterSubsystem, IntakeSubsystem intakeSubsystem, LEDSubsystem ledSubsystem) {
