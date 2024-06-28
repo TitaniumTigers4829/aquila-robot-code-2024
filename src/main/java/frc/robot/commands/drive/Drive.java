@@ -1,5 +1,8 @@
 package frc.robot.commands.drive;
 
+import frc.robot.Constants.DriveConstants;
+import frc.robot.subsystems.swerve.DriveSubsystem;
+import frc.robot.subsystems.vision.VisionSubsystem;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
@@ -16,12 +19,9 @@ public class Drive extends DriveCommandBase {
   private final BooleanSupplier isFieldRelative, isHighRotation;
   private double angularSpeed;
 
-  private SlewRateLimiter yLimiter = new SlewRateLimiter(DriveConstants.Y_RATE_LIMIT);
-  private SlewRateLimiter xLimiter = new SlewRateLimiter(DriveConstants.X_RATE_LIMIT);
-  private SlewRateLimiter rotLimiter = new SlewRateLimiter(DriveConstants.ROT_RATE_LIMIT);
-  
   /**
    * The command for driving the robot using joystick inputs.
+   *
    * @param driveSubsystem The subsystem for the swerve drive
    * @param visionSubsystem The subsystem for vision measurements
    * @param leftJoystickY The joystick input for driving forward and backwards
@@ -43,8 +43,7 @@ public class Drive extends DriveCommandBase {
   }
 
   @Override
-  public void initialize() {
-  }
+  public void initialize() {}
 
   @Override
   public void execute() {
@@ -56,9 +55,9 @@ public class Drive extends DriveCommandBase {
     }
     
     driveSubsystem.drive(
-      yLimiter.calculate(leftJoystickY.getAsDouble() * DriveConstants.MAX_SPEED_METERS_PER_SECOND),
-      xLimiter.calculate(leftJoystickX.getAsDouble() * DriveConstants.MAX_SPEED_METERS_PER_SECOND),
-      rotLimiter.calculate(rightJoystickX.getAsDouble() * angularSpeed),
+      leftJoystickY.getAsDouble() * DriveConstants.MAX_SPEED_METERS_PER_SECOND,
+      leftJoystickX.getAsDouble() * DriveConstants.MAX_SPEED_METERS_PER_SECOND,
+      rightJoystickX.getAsDouble() * angularSpeed,
       isFieldRelative.getAsBoolean()
     );
 
@@ -76,5 +75,4 @@ public class Drive extends DriveCommandBase {
   public boolean isFinished() {
     return false;
   }
-
 }

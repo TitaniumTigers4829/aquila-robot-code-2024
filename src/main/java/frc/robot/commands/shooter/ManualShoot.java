@@ -4,14 +4,13 @@
 
 package frc.robot.commands.shooter;
 
-import java.util.function.BooleanSupplier;
-import java.util.function.DoubleSupplier;
-
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.subsystems.pivot.PivotSubsystem;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
+import java.util.function.BooleanSupplier;
+import java.util.function.DoubleSupplier;
 
 public class ManualShoot extends Command {
   private final ShooterSubsystem shooterSubsystem;
@@ -21,7 +20,12 @@ public class ManualShoot extends Command {
   private final BooleanSupplier spinFlywheels, spinRollers;
 
   /** Creates a new SetShooterAngle. */
-  public ManualShoot(ShooterSubsystem shooterSubsystem, PivotSubsystem pivotSubsytem, DoubleSupplier speed, BooleanSupplier spinFlywheels, BooleanSupplier spinRollers) {
+  public ManualShoot(
+      ShooterSubsystem shooterSubsystem,
+      PivotSubsystem pivotSubsytem,
+      DoubleSupplier speed,
+      BooleanSupplier spinFlywheels,
+      BooleanSupplier spinRollers) {
     this.shooterSubsystem = shooterSubsystem;
     this.pivotSubsytem = pivotSubsytem;
     this.speed = speed;
@@ -32,8 +36,7 @@ public class ManualShoot extends Command {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
@@ -41,11 +44,12 @@ public class ManualShoot extends Command {
     pivotSubsytem.setPivotSpeed(speed.getAsDouble());
     // shooterSubsystem.setSpeed(spinFlywheels.getAsBoolean() ? 1 : 0);
     shooterSubsystem.setRPM(spinFlywheels.getAsBoolean() ? ShooterConstants.SHOOT_SPEAKER_RPM : 0);
-    shooterSubsystem.setRollerSpeed(spinRollers.getAsBoolean() ? ShooterConstants.ROLLER_SHOOT_SPEED : 0);
+    shooterSubsystem.setRollerSpeed(
+        spinRollers.getAsBoolean() ? ShooterConstants.ROLLER_SHOOT_SPEED : 0);
   }
 
   // Called once the command ends or is interrupted.
-  @Override 
+  @Override
   public void end(boolean interrupted) {
     pivotSubsytem.setPivotSpeed(PivotConstants.PIVOT_NEUTRAL_SPEED);
     shooterSubsystem.setFlywheelNeutral();

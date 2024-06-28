@@ -1,4 +1,4 @@
-// Copyright (c) LukeLib
+// Copyright (c) LukeLib 2024
 
 package frc.robot.extras.interpolators;
 

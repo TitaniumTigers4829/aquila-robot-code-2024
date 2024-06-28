@@ -2,14 +2,10 @@ package frc.robot.subsystems.vision;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.util.datalog.DataLog;
-import edu.wpi.first.util.datalog.StringLogEntry;
-import edu.wpi.first.wpilibj.DataLogManager;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.VisionConstants;
 import frc.robot.Constants.FieldConstants;
+import frc.robot.Constants.VisionConstants;
 import frc.robot.extras.LimelightHelpers;
 import frc.robot.extras.LimelightHelpers.LimelightResults;
 
@@ -20,8 +16,7 @@ public class VisionSubsystem extends SubsystemBase {
   private Pose2d lastSeenPose = new Pose2d();
   private boolean isTeleop = false;
 
-  public VisionSubsystem() {
-  }
+  public VisionSubsystem() {}
 
   /**
    * Returns true if the limelight(s) can fully see one or more April Tag.
@@ -38,9 +33,8 @@ public class VisionSubsystem extends SubsystemBase {
   }
 
   /**
-   * Returns the pose of the robot calculated by the limelight. If there
-   * are multiple limelights that can see april tags, it uses the limelight
-   * that is closest to an april tag. 
+   * Returns the pose of the robot calculated by the limelight. If there are multiple limelights
+   * that can see april tags, it uses the limelight that is closest to an april tag.
    */
   public Pose2d getPoseFromAprilTags() {
     if (canSeeAprilTags()) {
@@ -60,8 +54,8 @@ public class VisionSubsystem extends SubsystemBase {
   }
 
   /**
-   * Returns the distance in meters from the limelight(s) to the closest 
-   * april tag that they can see.
+   * Returns the distance in meters from the limelight(s) to the closest april tag that they can
+   * see.
    */
   public double getDistanceFromClosestAprilTag() {
     if (canSeeAprilTags()) {
@@ -70,42 +64,39 @@ public class VisionSubsystem extends SubsystemBase {
       // SmartDashboard.putNumber("distance from apriltag", distance);
       return distance;
     }
-    
+
     // To be safe returns a big distance from the april tags if it can't see any
     return Double.MAX_VALUE;
   }
 
-  /**
-   * Returns how many april tags the limelight that is being used for pose
-   * estimation can see.
-   */
+  /** Returns how many april tags the limelight that is being used for pose estimation can see. */
   public int getNumberOfAprilTags() {
     return currentlyUsedLimelightResults.targetingResults.targets_Fiducials.length;
   }
 
   /**
-   * Returns the timestamp for the vision measurement from the limelight that
-   * is being used for pose estimation.
+   * Returns the timestamp for the vision measurement from the limelight that is being used for pose
+   * estimation.
    */
   public double getTimeStampSeconds() {
     return currentlyUsedLimelightResults.targetingResults.timestamp_LIMELIGHT_publish / 1000.0;
   }
 
   /**
-   * Returns the latency in seconds of when the limelight that is being
-   * used for pose estimation calculated the robot's pose. It adds the
-   * pipeline latency, capture latency, and json parsing latency.
+   * Returns the latency in seconds of when the limelight that is being used for pose estimation
+   * calculated the robot's pose. It adds the pipeline latency, capture latency, and json parsing
+   * latency.
    */
   public double getLatencySeconds() {
-    return (currentlyUsedLimelightResults.targetingResults.latency_capture 
-    + currentlyUsedLimelightResults.targetingResults.latency_pipeline 
-    + currentlyUsedLimelightResults.targetingResults.latency_jsonParse) / 1000.0;
+    return (currentlyUsedLimelightResults.targetingResults.latency_capture
+            + currentlyUsedLimelightResults.targetingResults.latency_pipeline
+            + currentlyUsedLimelightResults.targetingResults.latency_jsonParse)
+        / 1000.0;
   }
 
   /**
-   * Calculates the distance between the specified robot and april tag.
-   * This method should only be called once there has been a check for if
-   * the limelights can see april tags.
+   * Calculates the distance between the specified robot and april tag. This method should only be
+   * called once there has been a check for if the limelights can see april tags.
    */
   private double getLimelightAprilTagDistance(int aprilTagID) {
     if (aprilTagID >= 1 && aprilTagID <= 16) {
@@ -171,5 +162,4 @@ public class VisionSubsystem extends SubsystemBase {
       LimelightHelpers.setLEDMode_ForceOff(VisionConstants.FRONT_RIGHT_LIMELIGHT_NAME);
     }
   }
-
 }

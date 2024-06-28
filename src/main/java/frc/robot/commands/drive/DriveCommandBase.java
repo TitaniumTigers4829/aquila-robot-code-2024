@@ -16,12 +16,10 @@ import frc.robot.subsystems.vision.VisionSubsystem;
 
 public abstract class DriveCommandBase extends Command {
 
-  private final MultiLinearInterpolator oneAprilTagLookupTable = 
-    new MultiLinearInterpolator(VisionConstants.ONE_APRIL_TAG_LOOKUP_TABLE);
-  private final MultiLinearInterpolator twoAprilTagLookupTable = 
-    new MultiLinearInterpolator(VisionConstants.TWO_APRIL_TAG_LOOKUP_TABLE);
-
-  Pose2d middleField = new Pose2d(FieldConstants.FIELD_LENGTH_METERS / 2.0, FieldConstants.FIELD_WIDTH_METERS / 2.0, new Rotation2d());
+  private final MultiLinearInterpolator oneAprilTagLookupTable =
+      new MultiLinearInterpolator(VisionConstants.ONE_APRIL_TAG_LOOKUP_TABLE);
+  private final MultiLinearInterpolator twoAprilTagLookupTable =
+      new MultiLinearInterpolator(VisionConstants.TWO_APRIL_TAG_LOOKUP_TABLE);
 
   private final VisionSubsystem visionSubsystem;
   private final DriveSubsystem driveSubsystem;
@@ -31,13 +29,15 @@ public abstract class DriveCommandBase extends Command {
 
   /**
    * An abstract class that handles pose estimation while driving.
+   *
    * @param driveSubsystem The subsystem for the swerve drive
    * @param visionSubsystem The subsystem for vision measurements
    */
   public DriveCommandBase(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem) {
     this.driveSubsystem = driveSubsystem;
     this.visionSubsystem = visionSubsystem;
-    // It is important that you do addRequirements(driveSubsystem, visionSubsystem) in whatever command extends this
+    // It is important that you do addRequirements(driveSubsystem, visionSubsystem) in whatever
+    // command extends this
   }
 
   @Override
@@ -54,11 +54,15 @@ public abstract class DriveCommandBase extends Command {
       double distanceFromClosestAprilTag = visionSubsystem.getDistanceFromClosestAprilTag();
       // Sets the pose estimator confidence in vision based off of number of april tags and distance
       if (visionSubsystem.getNumberOfAprilTags() == 1) {
-        double[] standardDeviations = oneAprilTagLookupTable.getLookupValue(distanceFromClosestAprilTag);
-        driveSubsystem.setPoseEstimatorVisionConfidence(standardDeviations[0], standardDeviations[1], standardDeviations[2]);
+        double[] standardDeviations =
+            oneAprilTagLookupTable.getLookupValue(distanceFromClosestAprilTag);
+        driveSubsystem.setPoseEstimatorVisionConfidence(
+            standardDeviations[0], standardDeviations[1], standardDeviations[2]);
       } else if (visionSubsystem.getNumberOfAprilTags() > 1) {
-        double[] standardDeviations = twoAprilTagLookupTable.getLookupValue(distanceFromClosestAprilTag);
-        driveSubsystem.setPoseEstimatorVisionConfidence(standardDeviations[0], standardDeviations[1], standardDeviations[2]);
+        double[] standardDeviations =
+            twoAprilTagLookupTable.getLookupValue(distanceFromClosestAprilTag);
+        driveSubsystem.setPoseEstimatorVisionConfidence(
+            standardDeviations[0], standardDeviations[1], standardDeviations[2]);
       }
 
       if (visionSubsystem.canSeeAprilTags()) {
@@ -71,5 +75,4 @@ public abstract class DriveCommandBase extends Command {
 
     lastTimeStampSeconds = currentTimeStampSeconds;
   }
-
 }

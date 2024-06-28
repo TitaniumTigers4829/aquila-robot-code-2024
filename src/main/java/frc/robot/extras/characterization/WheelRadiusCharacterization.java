@@ -17,7 +17,8 @@ public class WheelRadiusCharacterization extends Command {
     COUNTER_CLOCKWISE(1);
 
     private final int value;
-    Direction(int value){
+
+    Direction(int value) {
       this.value = value;
     }
   }
@@ -56,7 +57,8 @@ public class WheelRadiusCharacterization extends Command {
 
     // Get yaw and wheel positions
     accumGyroYawRads = driveSubsystem.getGyroRotation2d().getRadians() - lastGyroYawRads;
-    // accumGyroYawRads += MathUtil.angleModulus(driveSubsystem.getPose().getRotation().getRadians() - lastGyroYawRads);
+    // accumGyroYawRads += MathUtil.angleModulus(driveSubsystem.getPose().getRotation().getRadians()
+    // - lastGyroYawRads);
     double averageWheelPosition = 0.0;
     double[] wheelPositiions = driveSubsystem.getWheelRadiusCharacterizationPosition();
     for (int i = 0; i < 4; i++) {
@@ -65,10 +67,12 @@ public class WheelRadiusCharacterization extends Command {
     averageWheelPosition /= 4.0;
 
     currentEffectiveWheelRadius = (accumGyroYawRads * driveRadius) / averageWheelPosition;
-    SmartDashboard.putNumber("Drive/RadiusCharacterization/driveRadius",  driveRadius);
-    SmartDashboard.putNumber("Drive/RadiusCharacterization/DrivePosition",  averageWheelPosition);
-    SmartDashboard.putNumber("Drive/RadiusCharacterization/AccumGyroYawRads",  accumGyroYawRads);
-    SmartDashboard.putNumber("Drive/RadiusCharacterization/CurrentWheelRadiusInches", Units.metersToInches(currentEffectiveWheelRadius));
+    SmartDashboard.putNumber("Drive/RadiusCharacterization/driveRadius", driveRadius);
+    SmartDashboard.putNumber("Drive/RadiusCharacterization/DrivePosition", averageWheelPosition);
+    SmartDashboard.putNumber("Drive/RadiusCharacterization/AccumGyroYawRads", accumGyroYawRads);
+    SmartDashboard.putNumber(
+        "Drive/RadiusCharacterization/CurrentWheelRadiusInches",
+        Units.metersToInches(currentEffectiveWheelRadius));
   }
 
   @Override
@@ -80,7 +84,8 @@ public class WheelRadiusCharacterization extends Command {
           "Effective Wheel Radius: "
               + Units.metersToInches(currentEffectiveWheelRadius)
               + " inches");
-      SmartDashboard.putNumber("Effective Wheel Radius (inches): ", Units.metersToInches(currentEffectiveWheelRadius));
+      SmartDashboard.putNumber(
+          "Effective Wheel Radius (inches): ", Units.metersToInches(currentEffectiveWheelRadius));
     }
   }
 }
