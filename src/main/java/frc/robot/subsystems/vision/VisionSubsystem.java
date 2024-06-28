@@ -24,9 +24,9 @@ public class VisionSubsystem extends SubsystemBase {
   };
 
   public VisionSubsystem() {
-    visionThread(VisionConstants.SHOOTER_LIMELIGHT_NUMBER);
-    visionThread(VisionConstants.FRONT_LEFT_LIMELIGHT_NUMBER);
-    visionThread(VisionConstants.FRONT_RIGHT_LIMELIGHT_NUMBER);
+    // visionThread(VisionConstants.SHOOTER_LIMELIGHT_NUMBER);
+    // visionThread(VisionConstants.FRONT_LEFT_LIMELIGHT_NUMBER);
+    // visionThread(VisionConstants.FRONT_RIGHT_LIMELIGHT_NUMBER);
   }
 
   /**
@@ -179,65 +179,105 @@ public class VisionSubsystem extends SubsystemBase {
     return lastSeenPose;
   }
 
+  // /**
+  //  * This makes a thread which updates the pose estimate for the specified limelight. Because we
+  //  * have 3 limelights, if we are trying to parse the JSON dump for each limelight one after another
+  //  * every scheduler loop, we will have loop overruns, so we opted to have them run in parallel like
+  //  * this.
+  //  *
+  //  * @param limelightNumber the limelight number
+  //  */
+  // public void visionThread(int limelightNumber) {
+ 
+  //   try {
+  //     new Thread(
+  //             () -> {
+  //               double last_TX = 0;
+  //               double last_TY = 0;
+
+  //               while (true) {
+  //                 poseLock.lock(); 
+                  
+  //                 double current_TX = LimelightHelpers.getTX(getLimelightName(limelightNumber));
+  //                 double current_TY = LimelightHelpers.getTY(getLimelightName(limelightNumber));
+
+  //                 // This checks if the limelight reading is new. The reasoning being that if the TX
+  //                 // and TY
+  //                 // are EXACTLY the same, it hasn't updated yet with a new reading. We are doing it
+  //                 // this way,
+  //                 // because to get the timestamp of the reading, you need to parse the JSON dump
+  //                 // which can be
+  //                 // very demanding whereas this only has to get the Network Table entries for TX
+  //                 // and TY.
+  //                 if (last_TX != current_TX || last_TY != current_TY) {
+  //                   updateLimelightPoseEstimate(limelightNumber);
+  //                   // This is to keep track of the last valid pose calculated by the limelights
+  //                   // it is used when the driver resets the robot odometry to the limelight
+  //                   // calculated position
+  //                   if (canSeeAprilTags(limelightNumber)) {
+  //                     lastSeenPose = getMegaTag1PoseEstimate(limelightNumber).pose;
+  //                   }
+  //                 } else {
+  //                   limelightEstimates[limelightNumber] = new PoseEstimate();
+  //                 }
+
+  //                 last_TX = current_TX;
+  //                 last_TY = current_TY;
+  //                 try {
+  //                   Thread.sleep(20);
+  //                 } catch (Exception e) {
+  //                   e.printStackTrace();
+  //               } finally {
+  //                 poseLock.unlock();
+  //               }
+  //             }
+  //           })
+  //         .start();
+  //   } catch (Exception e) {
+  //     e.printStackTrace();
+  //   } 
+  // }
+
+  private void checkAndUpdatePoseOnce(int limelightNumber) {
+    double last_TX = 0;
+    double last_TY = 0;
+    poseLock.lock();
+    try {
+      double current_TX = LimelightHelpers.getTX(getLimelightName(limelightNumber));
+      double current_TY = LimelightHelpers.getTY(getLimelightName(limelightNumber));
+
+      if (current_TX!= last_TX || current_TY!= last_TY) {
+        updateLimelightPoseEstimate(limelightNumber);
+        if (canSeeAprilTags(limelightNumber)) {
+          lastSeenPose = getMegaTag1PoseEstimate(limelightNumber).pose;
+        }
+      } else {
+          limelightEstimates[limelightNumber] = new PoseEstimate();
+        }
+
+      last_TX = current_TX;
+      last_TY = current_TY;
+    } finally {
+      poseLock.unlock();
+    }
+  }
+
   /**
-   * This makes a thread which updates the pose estimate for the specified limelight. Because we
-   * have 3 limelights, if we are trying to parse the JSON dump for each limelight one after another
-   * every scheduler loop, we will have loop overruns, so we opted to have them run in parallel like
-   * this.
+   * Starts a thread which performs a one-time check for updates in pose for the specified limelight.
    *
    * @param limelightNumber the limelight number
    */
   public void visionThread(int limelightNumber) {
- 
-    try {
-      new Thread(
-              () -> {
-                double last_TX = 0;
-                double last_TY = 0;
-
-                while (true) {
-                  poseLock.lock(); 
-                  
-                  double current_TX = LimelightHelpers.getTX(getLimelightName(limelightNumber));
-                  double current_TY = LimelightHelpers.getTY(getLimelightName(limelightNumber));
-
-                  // This checks if the limelight reading is new. The reasoning being that if the TX
-                  // and TY
-                  // are EXACTLY the same, it hasn't updated yet with a new reading. We are doing it
-                  // this way,
-                  // because to get the timestamp of the reading, you need to parse the JSON dump
-                  // which can be
-                  // very demanding whereas this only has to get the Network Table entries for TX
-                  // and TY.
-                  if (last_TX != current_TX || last_TY != current_TY) {
-                    updateLimelightPoseEstimate(limelightNumber);
-                    // This is to keep track of the last valid pose calculated by the limelights
-                    // it is used when the driver resets the robot odometry to the limelight
-                    // calculated position
-                    if (canSeeAprilTags(limelightNumber)) {
-                      lastSeenPose = getMegaTag1PoseEstimate(limelightNumber).pose;
-                    }
-                  } else {
-                    limelightEstimates[limelightNumber] = new PoseEstimate();
-                  }
-
-                  last_TX = current_TX;
-                  last_TY = current_TY;
-                  try {
-                    Thread.sleep(20);
-                  } catch (Exception e) {
-                    e.printStackTrace();
-                } finally {
-                  poseLock.unlock();
-                }
-              }
-            })
-          .start();
-    } catch (Exception e) {
-      e.printStackTrace();
-    } 
+    new Thread(() -> {
+      checkAndUpdatePoseOnce(limelightNumber);
+    }).start();
   }
 
+  // Override periodic method to start the vision threads at the beginning of each subsystem tick
   @Override
-  public void periodic() {}
+  public void periodic() {
+    visionThread(VisionConstants.SHOOTER_LIMELIGHT_NUMBER);
+    visionThread(VisionConstants.FRONT_LEFT_LIMELIGHT_NUMBER);
+    visionThread(VisionConstants.FRONT_RIGHT_LIMELIGHT_NUMBER);
+  }
 }
