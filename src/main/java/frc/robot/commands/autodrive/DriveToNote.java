@@ -42,7 +42,7 @@ public class DriveToNote extends DriveCommandBase {
   private Translation2d cameraOffset;
   private Pose2d noteFieldRelativePose;
 
-  /** Creates a new AutoAlignWithAmp. */
+  /** Creates a new DriveToNote. */
   public DriveToNote(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem) {
     super(driveSubsystem, visionSubsystem);
     this.driveSubsystem = driveSubsystem;
