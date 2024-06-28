@@ -58,7 +58,6 @@ public class RobotContainer {
   private final IntakeSubsystem intakeSubsystem;
   private final PivotSubsystem pivotSubsystem;
   private final LEDSubsystem ledSubsystem;
-  private final NoteDetector noteDetector;
 
   private final SendableChooser<Command> autoChooser;
   
@@ -70,7 +69,6 @@ public class RobotContainer {
     intakeSubsystem = new IntakeSubsystem();
     pivotSubsystem = new PivotSubsystem();
     ledSubsystem = new LEDSubsystem();
-    noteDetector = new NoteDetector();
 
     autoChooser = new SendableChooser<Command>();
     autoChooser.setDefaultOption("red 4note", new RedFourNote(driveSubsystem, visionSubsystem, intakeSubsystem, shooterSubsystem, pivotSubsystem, ledSubsystem));
