@@ -183,7 +183,7 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public boolean isSkidding() {
-    if (getSkidRatio() > 1.0) {
+    if (getSkidRatio() > 10) {
       return true;
     }
     return false;
@@ -245,8 +245,6 @@ public class DriveSubsystem extends SubsystemBase {
          ( Math.abs(currentJerkY) >  DriveConstants.COLLISION_THRESHOLD_DELTA_G ) ) { 
        return collisionDetected = true;
     }
-    SmartDashboard.putBoolean(  "CollisionDetected", collisionDetected);
-
     return collisionDetected = false; 
   }
 

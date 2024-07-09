@@ -162,14 +162,7 @@ public class VisionSubsystem extends SubsystemBase {
     // Gets the JSON dump from the currently used limelight
     currentlyUsedLimelightResults = LimelightHelpers.getLatestResults(currentlyUsedLimelight);
 
-    // Turns the limelight LEDs on if they can't see an april tag
-    if (!canSeeAprilTags()) {
-      LimelightHelpers.setLEDMode_ForceOn(VisionConstants.FRONT_LEFT_LIMELIGHT_NAME);
-      LimelightHelpers.setLEDMode_ForceOn(VisionConstants.FRONT_RIGHT_LIMELIGHT_NAME);
-    } else {
-      LimelightHelpers.setLEDMode_ForceOff(VisionConstants.FRONT_LEFT_LIMELIGHT_NAME);
-      LimelightHelpers.setLEDMode_ForceOff(VisionConstants.FRONT_RIGHT_LIMELIGHT_NAME);
-    }
+    
   }
 
 }
