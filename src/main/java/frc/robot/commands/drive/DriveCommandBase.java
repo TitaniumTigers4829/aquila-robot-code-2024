@@ -43,8 +43,11 @@ public abstract class DriveCommandBase extends Command {
   @Override
   public void execute() {
     // Updates the pose estimator using the swerve modules
-    driveSubsystem.addPoseEstimatorSwerveMeasurement();
-
+    if (!driveSubsystem.isSkidding() && !driveSubsystem.isCollisionDetected()) {
+      driveSubsystem.addPoseEstimatorSwerveMeasurement();
+    } else {
+      driveSubsystem.setPoseEstimatorVisionConfidence(1, 1, 1);
+    }
     // Updates the robot's odometry with april tags
     double currentTimeStampSeconds = lastTimeStampSeconds;
 

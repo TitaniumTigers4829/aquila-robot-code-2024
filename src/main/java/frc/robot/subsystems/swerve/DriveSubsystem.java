@@ -178,6 +178,27 @@ public class DriveSubsystem extends SubsystemBase {
     drive(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, rotationControl, false);
   }
 
+  public double getSkidRatio() {
+    return SwerveModule.getSkiddingRatio(moduleStates(), DriveConstants.DRIVE_KINEMATICS);
+  }
+
+  public boolean isSkidding() {
+    if (getSkidRatio() > 1.0) {
+      return true;
+    }
+    return false;
+  }
+
+  public SwerveModuleState[] moduleStates() {
+    SwerveModuleState[] states = {
+      frontLeftSwerveModule.getState(),
+      frontRightSwerveModule.getState(),
+      rearLeftSwerveModule.getState(),
+      rearRightSwerveModule.getState()
+    };
+    return states;
+  }
+
   
   /** Runs in a circle at omega. */
   public void runWheelRadiusCharacterization(double omegaSpeed) {
@@ -222,15 +243,12 @@ public class DriveSubsystem extends SubsystemBase {
     
     if ( ( Math.abs(currentJerkX) > DriveConstants.COLLISION_THRESHOLD_DELTA_G ) || 
          ( Math.abs(currentJerkY) >  DriveConstants.COLLISION_THRESHOLD_DELTA_G ) ) { 
-        // stateStandardDeviations = VecBuilder.fill(0, 0, 0);
        return collisionDetected = true;
     }
     SmartDashboard.putBoolean(  "CollisionDetected", collisionDetected);
 
     return collisionDetected = false; 
   }
-
-  // public boolean skidDetected() {}
 
   /**
    * Returns a Rotation2d for the heading of the robot.
@@ -373,6 +391,8 @@ public class DriveSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("y jerk", currentJerkY);
     SmartDashboard.putNumber("x jerk", currentJerkX);
 
+    SmartDashboard.putBoolean("collision", isCollisionDetected());
+    SmartDashboard.putBoolean("skidding", isSkidding());
     // SmartDashboard.putNumber("speakerDistance", distance);
     // SmartDashboard.putNumber("passingPos", pose.getTranslation().getDistance(SmarterDashboardRegistry.getPassingPos()));
   }
