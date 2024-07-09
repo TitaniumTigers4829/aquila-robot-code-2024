@@ -34,7 +34,7 @@ import frc.robot.extras.SmarterDashboardRegistry;
 public class DriveSubsystem extends SubsystemBase {
 
   // This will stay the same throughout the match. These values are harder to test for and tune, so assume this guess is right.
-  private final Vector<N3> stateStandardDeviations = VecBuilder.fill(DriveConstants.X_POS_TRUST, DriveConstants.Y_POS_TRUST, Units.degreesToRadians(DriveConstants.ANGLE_TRUST));
+  private static final Vector<N3> stateStandardDeviations = VecBuilder.fill(DriveConstants.X_POS_TRUST, DriveConstants.Y_POS_TRUST, Units.degreesToRadians(DriveConstants.ANGLE_TRUST));
 
   // This will be changed throughout the match depending on how confident we are that the limelight is right.
   private static final Vector<N3> visionMeasurementStandardDeviations = VecBuilder.fill(VisionConstants.VISION_X_POS_TRUST,
@@ -222,7 +222,7 @@ public class DriveSubsystem extends SubsystemBase {
     
     if ( ( Math.abs(currentJerkX) > DriveConstants.COLLISION_THRESHOLD_DELTA_G ) || 
          ( Math.abs(currentJerkY) >  DriveConstants.COLLISION_THRESHOLD_DELTA_G ) ) { 
-        stateStandardDeviations = VecBuilder.fill(0, 0, 0);
+        // stateStandardDeviations = VecBuilder.fill(0, 0, 0);
        return collisionDetected = true;
     }
     SmartDashboard.putBoolean(  "CollisionDetected", collisionDetected);
@@ -230,7 +230,7 @@ public class DriveSubsystem extends SubsystemBase {
     return collisionDetected = false; 
   }
 
-  public boolean skidDetected() {}
+  // public boolean skidDetected() {}
 
   /**
    * Returns a Rotation2d for the heading of the robot.
