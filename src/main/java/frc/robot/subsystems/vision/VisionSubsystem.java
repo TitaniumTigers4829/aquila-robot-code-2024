@@ -268,7 +268,7 @@ public class VisionSubsystem extends SubsystemBase {
             checkAndUpdatePoseOnce(limelightNumber);
           }
         });
-    end();
+    end(true);
   }
 
   /**
