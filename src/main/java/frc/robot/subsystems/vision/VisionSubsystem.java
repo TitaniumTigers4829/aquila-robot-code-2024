@@ -5,17 +5,16 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.extras.LimelightHelpers;
 import frc.robot.extras.LimelightHelpers.PoseEstimate;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 public class VisionSubsystem extends SubsystemBase {
 
   private Pose2d lastSeenPose = new Pose2d();
   private double headingDegrees = 0;
   private double headingRateDegreesPerSecond = 0;
-  private Lock poseLock = new ReentrantLock();
-  // private AtomicBoolean running = new AtomicBoolean(true);
+  private final Map<Integer, AtomicBoolean> runningThreads = new ConcurrentHashMap<>();
 
   /**
    * The pose estimates from the limelights in the following order {shooterLimelight,
@@ -25,7 +24,12 @@ public class VisionSubsystem extends SubsystemBase {
     new PoseEstimate(), new PoseEstimate(), new PoseEstimate()
   };
 
-  public VisionSubsystem() {}
+  public VisionSubsystem() {
+    // Initialize the map with AtomicBooleans for each limelight
+    for (int i = 0; i < 3; i++) { // Assuming 3 limelights
+      runningThreads.put(i, new AtomicBoolean(true));
+    }
+  }
 
   /**
    * Checks if the specified limelight can fully see one or more April Tag.
@@ -183,27 +187,24 @@ public class VisionSubsystem extends SubsystemBase {
   private void checkAndUpdatePoseOnce(int limelightNumber) {
     double last_TX = 0;
     double last_TY = 0;
-    poseLock.lock();
-    try {
-    double current_TX = LimelightHelpers.getTX(getLimelightName(limelightNumber));
-    double current_TY = LimelightHelpers.getTY(getLimelightName(limelightNumber));
+    synchronized (this) { // Synchronize on 'this'
+      double current_TX = LimelightHelpers.getTX(getLimelightName(limelightNumber));
+      double current_TY = LimelightHelpers.getTY(getLimelightName(limelightNumber));
 
-    if (current_TX != last_TX || current_TY != last_TY) {
-      updateLimelightPoseEstimate(limelightNumber);
-      // running.set(true);
-      if (!canSeeAprilTags(limelightNumber)) {
-        lastSeenPose = getMegaTag1PoseEstimate(limelightNumber).pose;
+      if (current_TX != last_TX || current_TY != last_TY) {
+        updateLimelightPoseEstimate(limelightNumber);
+        runningThreads.computeIfPresent(limelightNumber, (key, value) -> new AtomicBoolean(true));
+        if (canSeeAprilTags(limelightNumber)) {
+          lastSeenPose = getMegaTag1PoseEstimate(limelightNumber).pose;
+        }
+      } else {
+        limelightEstimates[limelightNumber] = new PoseEstimate();
+        stop(limelightNumber);
       }
-    } else {
-      limelightEstimates[limelightNumber] = new PoseEstimate();
-      // stop();
-    }
 
-    last_TX = current_TX;
-    last_TY = current_TY;
-    } finally {
-    poseLock.unlock();
-  }
+      last_TX = current_TX;
+      last_TY = current_TY;
+    }
   }
 
   /**
@@ -215,26 +216,21 @@ public class VisionSubsystem extends SubsystemBase {
   public void visionThread(int limelightNumber) {
     new Thread(
             () -> {
-              checkAndUpdatePoseOnce(limelightNumber);
+              while (runningThreads.get(limelightNumber).get()) {
+                checkAndUpdatePoseOnce(limelightNumber);
+              }
             })
         .start();
   }
 
   /**
-   * runs the vision thread
+   * Stops the thread for the specified limelight.
    *
-   * @param limelightNumber
+   * @param limelightNumber the limelight number
    */
-  // public void runThread(int limelightNumber) {
-  //   while (running.get()) {
-  //     visionThread(limelightNumber);
-  //   }
-  // }
-
-  // /** sets running to false */
-  // public void stop() {
-  //   running.set(false);
-  // }
+  public void stop(int limelightNumber) {
+    runningThreads.get(limelightNumber).set(false);
+  }
 
   // Override periodic method to start the vision threads at the beginning of each subsystem tick
   @Override
