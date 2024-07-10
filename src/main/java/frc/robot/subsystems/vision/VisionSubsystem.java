@@ -285,7 +285,7 @@ public class VisionSubsystem extends SubsystemBase {
     try {
       // Wait for existing tasks to finish
       if (!executorService.awaitTermination(5, TimeUnit.SECONDS)) {
-        // Optionally, force stop tasks if they don't terminate within the timeout
+
         executorService.shutdownNow();
         // Wait a bit longer for tasks to respond to being cancelled
         if (!executorService.awaitTermination(5, TimeUnit.SECONDS))
