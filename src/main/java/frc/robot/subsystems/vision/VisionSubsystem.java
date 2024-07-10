@@ -1,12 +1,17 @@
 package frc.robot.subsystems.vision;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.extras.LimelightHelpers;
 import frc.robot.extras.LimelightHelpers.PoseEstimate;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class VisionSubsystem extends SubsystemBase {
@@ -15,6 +20,8 @@ public class VisionSubsystem extends SubsystemBase {
   private double headingDegrees = 0;
   private double headingRateDegreesPerSecond = 0;
   private final Map<Integer, AtomicBoolean> runningThreads = new ConcurrentHashMap<>();
+  private ExecutorService executorService =
+      Executors.newFixedThreadPool(3); // Adjust the pool size as needed
 
   /**
    * The pose estimates from the limelights in the following order {shooterLimelight,
@@ -64,13 +71,44 @@ public class VisionSubsystem extends SubsystemBase {
       limelightEstimates[limelightNumber] = new PoseEstimate();
     }
 
-    if (headingRateDegreesPerSecond < VisionConstants.MEGA_TAG_2_MAX_HEADING_RATE) {
+    double distanceToAprilTags = getLimelightAprilTagDistance(limelightNumber);
+
+    if (isLargeDiscrepancyBetweenMegaTag1And2(limelightNumber)
+        && distanceToAprilTags < VisionConstants.MEGA_TAG_2_DISTANCE_THRESHOLD) {
+      limelightEstimates[limelightNumber] = getMegaTag1PoseEstimate(limelightNumber);
+    } else if (headingRateDegreesPerSecond < VisionConstants.MEGA_TAG_2_MAX_HEADING_RATE) {
       LimelightHelpers.SetRobotOrientation(
           getLimelightName(limelightNumber), headingDegrees, 0, 0, 0, 0, 0);
       limelightEstimates[limelightNumber] = getMegaTag2PoseEstimate(limelightNumber);
     } else {
       limelightEstimates[limelightNumber] = getMegaTag1PoseEstimate(limelightNumber);
     }
+  }
+
+  /**
+   * Checks if there is a large discrepancy between the MegaTag1 and MegaTag2 estimates.
+   *
+   * @param limelightNumber the number of the limelight
+   * @return true if the discrepancy is larger than the defined threshold, false otherwise
+   */
+  public boolean isLargeDiscrepancyBetweenMegaTag1And2(int limelightNumber) {
+    PoseEstimate megaTag1Estimate = getMegaTag1PoseEstimate(limelightNumber);
+    PoseEstimate megaTag2Estimate = getMegaTag2PoseEstimate(limelightNumber);
+
+    // Extract the positions of the two poses
+    Translation2d mt1 = megaTag1Estimate.pose.getTranslation();
+    Translation2d mt2 = megaTag2Estimate.pose.getTranslation();
+
+    // Calculate the Euclidean distance between the two positions
+    double euclideanDistance =
+        Math.sqrt(Math.pow(mt1.getX() - mt2.getX(), 2) + Math.pow(mt1.getY() - mt2.getY(), 2));
+
+    // Define a threshold for what constitutes a "large" discrepancy
+    // This value should be determined based on your specific application and testing
+    double threshold = 0.5;
+
+    // Check if the discrepancy is larger than the threshold
+    return euclideanDistance > threshold;
   }
 
   /**
@@ -213,14 +251,23 @@ public class VisionSubsystem extends SubsystemBase {
    *
    * @param limelightNumber the limelight number
    */
+  // public void visionThread(int limelightNumber) {
+  //   new Thread(
+  //           () -> {
+  //             while (runningThreads.get(limelightNumber).get()) {
+  //               checkAndUpdatePoseOnce(limelightNumber);
+  //             }
+  //           })
+  //       .start();
+  // }
+
   public void visionThread(int limelightNumber) {
-    new Thread(
-            () -> {
-              while (runningThreads.get(limelightNumber).get()) {
-                checkAndUpdatePoseOnce(limelightNumber);
-              }
-            })
-        .start();
+    executorService.submit(
+        () -> {
+          while (runningThreads.get(limelightNumber).get()) {
+            checkAndUpdatePoseOnce(limelightNumber);
+          }
+        });
   }
 
   /**
@@ -232,11 +279,33 @@ public class VisionSubsystem extends SubsystemBase {
     runningThreads.get(limelightNumber).set(false);
   }
 
+  public void end(boolean interrupted) {
+    // Properly shut down the executor service when the subsystem ends
+    executorService.shutdown(); // Prevents new tasks from being submitted
+    try {
+      // Wait for existing tasks to finish
+      if (!executorService.awaitTermination(5, TimeUnit.SECONDS)) {
+        // Optionally, force stop tasks if they don't terminate within the timeout
+        executorService.shutdownNow();
+        // Wait a bit longer for tasks to respond to being cancelled
+        if (!executorService.awaitTermination(5, TimeUnit.SECONDS))
+          System.err.println("ExecutorService did not terminate");
+      }
+    } catch (InterruptedException e) {
+      // (Re-)Cancel if current thread also interrupted
+      executorService.shutdownNow();
+      // Preserve interrupt status
+      Thread.currentThread().interrupt();
+    }
+  }
+
   // Override periodic method to start the vision threads at the beginning of each subsystem tick
   @Override
   public void periodic() {
     visionThread(VisionConstants.SHOOTER_LIMELIGHT_NUMBER);
     visionThread(VisionConstants.FRONT_LEFT_LIMELIGHT_NUMBER);
     visionThread(VisionConstants.FRONT_RIGHT_LIMELIGHT_NUMBER);
+    SmartDashboard.putNumber("april tag dist", getLimelightAprilTagDistance(0));
+    // end(true);
   }
 }
