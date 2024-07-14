@@ -158,7 +158,7 @@ public class RobotContainer {
 
     // driving
 
-    Command driveCommand new Drive(driveSubsystem, visionSubsystem,
+    Command driveCommand = new Drive(driveSubsystem, visionSubsystem,
             driverLeftStick[1],
             driverLeftStick[0],
             () -> Util.modifyAxis(driverRightStickX, 2),
