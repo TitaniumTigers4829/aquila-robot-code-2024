@@ -61,7 +61,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void disabledInit() {
-    visionSubsystem.end(true);
+    visionSubsystem.endAllThreads();
   }
 
   @Override

@@ -2,6 +2,7 @@ package frc.robot.subsystems.vision;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.VisionConstants;
@@ -20,20 +21,17 @@ public class VisionSubsystem extends SubsystemBase {
   private double headingDegrees = 0;
   private double headingRateDegreesPerSecond = 0;
   private final Map<Integer, AtomicBoolean> runningThreads = new ConcurrentHashMap<>();
-  private ExecutorService executorService = Executors.newFixedThreadPool(3); // Adjust the pool size as needed
+  private final ExecutorService executorService = Executors.newFixedThreadPool(3); // Thread pool size of 3 for the number of limelights being threaded
 
   /**
    * The pose estimates from the limelights in the following order {shooterLimelight,
    * frontLeftLimelight, frontRightLimelight}
    */
-  private PoseEstimate[] limelightEstimates;
+  private PoseEstimate[] limelightEstimates = {new PoseEstimate(), new PoseEstimate(), new PoseEstimate()};
 
   public VisionSubsystem() {
-    limelightEstimates = new PoseEstimate[3]; 
-    
-    for (int limelightNumber = 0; limelightNumber < limelightEstimates.length; limelightNumber++) {
-      runningThreads.put(limelightNumber, new AtomicBoolean(true));
-      limelightEstimates[limelightNumber] = new PoseEstimate(); // Initialize each element
+    for (int limelightThreads = 0; limelightThreads < limelightEstimates.length; limelightThreads++) {
+      runningThreads.put(limelightThreads, new AtomicBoolean(true));
     }
   }
 
@@ -46,14 +44,11 @@ public class VisionSubsystem extends SubsystemBase {
   public boolean canSeeAprilTags(int limelightNumber) {
     // First checks if it can see an april tag, then checks if it is fully in frame
     // Different Limelights have different FOVs
-    if (getNumberOfAprilTags(limelightNumber) > 0
-        && getNumberOfAprilTags(limelightNumber) <= VisionConstants.APRIL_TAG_POSITIONS.length) {
+    if (getNumberOfAprilTags(limelightNumber) > 0 && getNumberOfAprilTags(limelightNumber) <= VisionConstants.APRIL_TAG_POSITIONS.length) {
       if (getLimelightName(limelightNumber).equals(VisionConstants.SHOOTER_LIMELIGHT_NAME)) {
-        return Math.abs(LimelightHelpers.getTX(getLimelightName(limelightNumber)))
-            <= VisionConstants.LL3G_FOV_MARGIN_OF_ERROR;
+        return Math.abs(LimelightHelpers.getTX(getLimelightName(limelightNumber))) <= VisionConstants.LL3G_FOV_MARGIN_OF_ERROR;
       } else {
-        return Math.abs(LimelightHelpers.getTX(getLimelightName(limelightNumber)))
-            <= VisionConstants.LL3_FOV_MARGIN_OF_ERROR;
+        return Math.abs(LimelightHelpers.getTX(getLimelightName(limelightNumber))) <= VisionConstants.LL3_FOV_MARGIN_OF_ERROR;
       }
     }
     return false;
@@ -96,19 +91,18 @@ public class VisionSubsystem extends SubsystemBase {
     PoseEstimate megaTag2Estimate = getMegaTag2PoseEstimate(limelightNumber);
 
     // Extract the positions of the two poses
-    Translation2d mt1 = megaTag1Estimate.pose.getTranslation();
-    Translation2d mt2 = megaTag2Estimate.pose.getTranslation();
+    Translation2d megaTag1Translation = megaTag1Estimate.pose.getTranslation();
+    Translation2d megaTag2Translation = megaTag2Estimate.pose.getTranslation();
 
-    // Calculate the Euclidean distance between the two positions
-    double euclideanDistance =
-        Math.sqrt(Math.pow(mt1.getX() - mt2.getX(), 2) + Math.pow(mt1.getY() - mt2.getY(), 2));
+    // Calculate the discrepancy between the two MegaTag translations in meters
+    double megaTagDiscrepancyMeters = megaTag1Translation.getDistance(megaTag2Translation);
 
-    // Define a threshold for what constitutes a "large" discrepancy
-    // This value should be determined based on your specific application and testing
-    double threshold = 0.5;
+    // Define a threshold (meters) for what constitutes a "large" discrepancy
+    // This value should be determined based on your testing
+    double thresholdMeters = 0.5;
 
-    // Check if the discrepancy is larger than the threshold
-    return euclideanDistance > threshold;
+    // Check if the discrepancy is larger than the threshold (meters)
+    return megaTagDiscrepancyMeters > thresholdMeters;
   }
 
   /**
@@ -202,14 +196,16 @@ public class VisionSubsystem extends SubsystemBase {
    * @return 0 = limelight-shooter, 1 = limelight-left, 2 = limelight-right
    */
   public String getLimelightName(int limelightNumber) {
-    if (limelightNumber == 0) {
-      return VisionConstants.SHOOTER_LIMELIGHT_NAME;
-    } else if (limelightNumber == 1) {
-      return VisionConstants.FRONT_LEFT_LIMELIGHT_NAME;
-    } else if (limelightNumber == 2) {
-      return VisionConstants.FRONT_RIGHT_LIMELIGHT_NAME;
+    switch (limelightNumber) {
+      case 0: 
+        return VisionConstants.SHOOTER_LIMELIGHT_NAME;    
+      case 1:
+        return VisionConstants.FRONT_LEFT_LIMELIGHT_NAME;
+      case 2: 
+        return VisionConstants.FRONT_RIGHT_LIMELIGHT_NAME;    
+      default:
+        throw new IllegalArgumentException("You entered a number for a non-existent limelight");
     }
-    throw new IllegalArgumentException("You entered a number for a non-existent limelight");
   }
 
   /** Gets the pose calculated the last time a limelight saw an April Tag */
@@ -225,13 +221,24 @@ public class VisionSubsystem extends SubsystemBase {
   private void checkAndUpdatePose(int limelightNumber) {
     double last_TX = 0;
     double last_TY = 0;
-    synchronized (this) { // Synchronize on 'this'
+
+    // Syncronization block to ensure thread safety during the critical section where pose information is read and compared.
+    // This helps prevents race conditions, where one limelight may be updating an object that another limelight is reading.
+    // A race condition could cause unpredictable things to happen. Such as causing a limelight to be unable to refrence an 
+    // object, as it's refrence was modified earlier.
+    synchronized (this) { 
       double current_TX = LimelightHelpers.getTX(getLimelightName(limelightNumber));
       double current_TY = LimelightHelpers.getTY(getLimelightName(limelightNumber));
 
+      // This checks if the limelight reading is new. The reasoning being that if the TX and TY
+      // are EXACTLY the same, it hasn't updated yet with a new reading. We are doing it this way,
+      // because to get the timestamp of the reading, you need to parse the JSON dump which can be
+      // very demanding whereas this only has to get the Network Table entries for TX and TY.
       if (current_TX != last_TX || current_TY != last_TY) {
         updateLimelightPoseEstimate(limelightNumber);
         runningThreads.computeIfPresent(limelightNumber, (key, value) -> new AtomicBoolean(true));
+        // This is to keep track of the last valid pose calculated by the limelights
+        // it is used when the driver resets the robot odometry to the limelight calculated position
         if (canSeeAprilTags(limelightNumber)) {
           lastSeenPose = getMegaTag1PoseEstimate(limelightNumber).pose;
         }
@@ -240,8 +247,10 @@ public class VisionSubsystem extends SubsystemBase {
           AtomicBoolean runningThread = runningThreads.getOrDefault(limelightNumber, new AtomicBoolean());
           // Only stop the thread if it's currently running
           if (runningThread.get()) {
+            // Since we can't see an April Tag, set the estimate for the specified limelight to an empty PoseEstimate()
             limelightEstimates[limelightNumber] = new PoseEstimate();
-            stop(limelightNumber);
+            // stop the thread for the specified limelight
+            stopThread(limelightNumber); 
           }
       }
 
@@ -251,7 +260,15 @@ public class VisionSubsystem extends SubsystemBase {
   }
 
   /**
-   * Uses an executor service to run the limelight threads
+   * Starts a separate thread dedicated to updating the pose estimate for a specified limelight.
+   * This approach is adopted to prevent loop overruns that would occur if we attempted to parse the JSON dump for each limelight sequentially within a single scheduler loop.
+   * 
+   * To achieve efficient and safe parallel execution, an ExecutorService is utilized to manage the lifecycle of these threads.
+   * 
+   * Each thread continuously runs the {@link #checkAndUpdatePose(int)} method as long as the corresponding limelight's thread is marked as "running".
+   * This ensures that pose estimates are updated in real-time, leveraging the parallel processing capabilities of the executor service.
+   *  
+   * @param limelightNumber the limelight number
    */
   public void visionThread(int limelightNumber) {
     executorService.submit(
@@ -263,25 +280,24 @@ public class VisionSubsystem extends SubsystemBase {
   }
 
   /**
+   * Sets the AtomicBoolean 'runningThreads' to false for the specified limelight.
    * Stops the thread for the specified limelight.
    *
    * @param limelightNumber the limelight number
    */
-  public void stop(int limelightNumber) {
+  public void stopThread(int limelightNumber) {
     runningThreads.get(limelightNumber).set(false);
   }
 
   /**
-   * This needs to go somewhere where it won't break the robot code.
-   * It is meant to shut down all the threads.
+   * Shuts down all the threads.
    */
-  public void end(boolean interrupted) {
+  public void endAllThreads() {
     // Properly shut down the executor service when the subsystem ends
     executorService.shutdown(); // Prevents new tasks from being submitted
     try {
       // Wait for existing tasks to finish
       if (!executorService.awaitTermination(5, TimeUnit.SECONDS)) {
-
         executorService.shutdownNow();
         // Wait a bit longer for tasks to respond to being cancelled
         if (!executorService.awaitTermination(5, TimeUnit.SECONDS))
