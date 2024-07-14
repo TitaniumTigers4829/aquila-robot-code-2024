@@ -2,7 +2,6 @@ package frc.robot.subsystems.swerve;
 
 import com.kauailabs.navx.frc.AHRS;
 import com.pathplanner.lib.auto.AutoBuilder;
-
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
@@ -132,15 +131,13 @@ public class DriveSubsystem extends SubsystemBase {
     
     // Configure AutoBuilder
     AutoBuilder.configureHolonomic(
-      this::getPose, 
-      this::resetOdometry, 
-      this::getRobotRelativeSpeeds, 
-      this::drive, 
-      TrajectoryConstants.CONFIG,
-      ()->false,
-      this
-    );
-    
+        this::getPose,
+        this::resetOdometry,
+        this::getRobotRelativeSpeeds,
+        this::drive,
+        TrajectoryConstants.CONFIG,
+        () -> false,
+        this);
   }
 
   /** gets the chassis speeds */
@@ -179,8 +176,9 @@ public class DriveSubsystem extends SubsystemBase {
         -speeds.vxMetersPerSecond, -speeds.vyMetersPerSecond, -speeds.omegaRadiansPerSecond, false);
   }
 
-  /** 
+  /**
    * Allows PID on the chassis rotation.
+   *
    * @param speeds The ChassisSpeeds of the drive to set.
    * @param rotationControl The control on the drive rotation.
    */
@@ -205,7 +203,8 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   /**
-   * Returns the heading of the robot in degrees from 0 to 360. 
+   * Returns the heading of the robot in degrees from 0 to 360.
+   *
    * @return Value is Counter-clockwise positive.
    */
   public double getHeading() {
@@ -214,15 +213,14 @@ public class DriveSubsystem extends SubsystemBase {
 
   /**
    * Gets the rate of rotation of the NavX.
+   *
    * @return The current rate in degrees per second.
    */
   public double getGyroRate() {
     return -gyro.getRate();
   }
 
-  /**
-   * Returns a Rotation2d for the heading of the robot.
-   */  
+  /** Returns a Rotation2d for the heading of the robot. */
   public Rotation2d getGyroRotation2d() {
     return Rotation2d.fromDegrees(getHeading());
   }
@@ -283,7 +281,6 @@ public class DriveSubsystem extends SubsystemBase {
   public void addPoseEstimatorVisionMeasurement(
       Pose2d visionMeasurement, double currentTimeStampSeconds) {
     odometry.addVisionMeasurement(visionMeasurement, currentTimeStampSeconds);
-    // SmarterDashboardRegistry.setLimelightPose(visionMeasurement);
   }
 
   /**
@@ -307,9 +304,9 @@ public class DriveSubsystem extends SubsystemBase {
 
   /**
    * Gets the current module positions.
-   * @return The current drivetrain position, as reported by the modules 
-   * themselves. The order is: frontLeft, frontRight, backLeft, backRight
-   * (should be the same as the kinematics).
+   *
+   * @return The current drivetrain position, as reported by the modules themselves. The order is:
+   *     frontLeft, frontRight, backLeft, backRight (should be the same as the kinematics).
    */
   public SwerveModulePosition[] getModulePositions() {
     SwerveModulePosition[] swerveModulePositions = {
@@ -364,8 +361,6 @@ public class DriveSubsystem extends SubsystemBase {
     Pose2d pose = getPose();
     SmartDashboard.putBoolean("screwed", Math.abs(pose.getX()) > 20);
     SmartDashboard.putString("odometry", pose.toString());
-
     SmartDashboard.putNumber("speakerDistance", pose.getTranslation().getDistance(SmarterDashboardRegistry.getSpeakerPos()));
   }
-
 }
