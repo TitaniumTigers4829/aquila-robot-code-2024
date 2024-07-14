@@ -21,7 +21,13 @@ import frc.robot.subsystems.vision.VisionSubsystem;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class BlueFourNote extends SequentialCommandGroup {
   /** Creates a new BlueSimpleTwoNote. */
-  public BlueFourNote(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, IntakeSubsystem intakeSubsystem, ShooterSubsystem shooterSubsystem, PivotSubsystem pivotSubsystem, LEDSubsystem leds) {
+  public BlueFourNote(
+      DriveSubsystem driveSubsystem,
+      VisionSubsystem visionSubsystem,
+      IntakeSubsystem intakeSubsystem,
+      ShooterSubsystem shooterSubsystem,
+      PivotSubsystem pivotSubsystem,
+      LEDSubsystem leds) {
     addCommands(
         new InstantCommand(()->driveSubsystem.resetOdometry(new Pose2d(1.3980597257614136, 5.493067741394043, Rotation2d.fromRadians(0.0000)))),
         new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, leds).withTimeout(1.5),
@@ -37,8 +43,7 @@ public class BlueFourNote extends SequentialCommandGroup {
         new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, leds).withTimeout(1.7),
         new ParallelCommandGroup(
             new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "blue note 2 to 3", false),
-            new IntakeAuto(intakeSubsystem, pivotSubsystem, shooterSubsystem, leds).withTimeout(3)
-        ),
+            new IntakeAuto(intakeSubsystem, pivotSubsystem, shooterSubsystem, leds).withTimeout(3)),
         new IntakeAuto(intakeSubsystem, pivotSubsystem, shooterSubsystem, leds).withTimeout(1),
         new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, leds).withTimeout(2.2),
         new StopShooterAndIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem)

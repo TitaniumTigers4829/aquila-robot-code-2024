@@ -6,7 +6,6 @@ package frc.robot.commands.auto;
 
 import com.choreo.lib.Choreo;
 import com.choreo.lib.ChoreoTrajectory;
-
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -16,7 +15,7 @@ import frc.robot.subsystems.swerve.DriveSubsystem;
 import frc.robot.subsystems.vision.VisionSubsystem;
 
 public class FollowChoreoTrajectory extends DriveCommandBase {
-  
+
   private final DriveSubsystem driveSubsystem;
   private final ChoreoTrajectory traj;
   private final Command controllerCommand;
@@ -24,24 +23,36 @@ public class FollowChoreoTrajectory extends DriveCommandBase {
 
   /**
    * Follows a trajectory made with Choreo
+   *
    * @param driveSubsystem instance of the drive subsystem
    * @param visionSubsystem instance of the vision subsystem
    * @param trajectoryName name of the path excluding the .chor and the directory path
    */
-  public FollowChoreoTrajectory(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, String trajectoryName, boolean resetOdometry) {
+  public FollowChoreoTrajectory(
+      DriveSubsystem driveSubsystem,
+      VisionSubsystem visionSubsystem,
+      String trajectoryName,
+      boolean resetOdometry) {
     super(driveSubsystem, visionSubsystem);
     this.driveSubsystem = driveSubsystem;
     traj = Choreo.getTrajectory(trajectoryName);
-    controllerCommand = Choreo.choreoSwerveCommand(
-      traj,
-      driveSubsystem::getPose, 
-      new PIDController(TrajectoryConstants.AUTO_TRANSLATION_P, 0.0, TrajectoryConstants.AUTO_TRANSLATION_D), 
-      new PIDController(TrajectoryConstants.AUTO_TRANSLATION_P, 0.0, TrajectoryConstants.AUTO_TRANSLATION_D), 
-      new PIDController(TrajectoryConstants.AUTO_THETA_P, 0, TrajectoryConstants.AUTO_THETA_D), 
-      (ChassisSpeeds speeds) -> driveSubsystem.drive(speeds),
-      ()->false,
-      driveSubsystem
-    );
+    controllerCommand =
+        Choreo.choreoSwerveCommand(
+            traj,
+            driveSubsystem::getPose,
+            new PIDController(
+                TrajectoryConstants.AUTO_TRANSLATION_P,
+                0.0,
+                TrajectoryConstants.AUTO_TRANSLATION_D),
+            new PIDController(
+                TrajectoryConstants.AUTO_TRANSLATION_P,
+                0.0,
+                TrajectoryConstants.AUTO_TRANSLATION_D),
+            new PIDController(
+                TrajectoryConstants.AUTO_THETA_P, 0, TrajectoryConstants.AUTO_THETA_D),
+            (ChassisSpeeds speeds) -> driveSubsystem.drive(speeds),
+            () -> false,
+            driveSubsystem);
     this.resetOdometry = resetOdometry;
     addRequirements(driveSubsystem, visionSubsystem);
   }
@@ -49,7 +60,7 @@ public class FollowChoreoTrajectory extends DriveCommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    if (resetOdometry) {  
+    if (resetOdometry) {
       driveSubsystem.resetOdometry(traj.getInitialPose());
     }
     controllerCommand.initialize();

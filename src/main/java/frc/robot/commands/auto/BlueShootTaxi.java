@@ -20,7 +20,13 @@ import frc.robot.subsystems.vision.VisionSubsystem;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class BlueShootTaxi extends SequentialCommandGroup {
   /** Creates a new BlueSimpleTwoNote. */
-  public BlueShootTaxi(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, IntakeSubsystem intakeSubsystem, ShooterSubsystem shooterSubsystem, PivotSubsystem pivotSubsystem, LEDSubsystem leds) {
+  public BlueShootTaxi(
+      DriveSubsystem driveSubsystem,
+      VisionSubsystem visionSubsystem,
+      IntakeSubsystem intakeSubsystem,
+      ShooterSubsystem shooterSubsystem,
+      PivotSubsystem pivotSubsystem,
+      LEDSubsystem leds) {
 
     addCommands(
       new InstantCommand(()->driveSubsystem.resetOdometry(new Pose2d(0.7696159482002258, 4.439030170440674, Rotation2d.fromRadians(-1.048231168606524)))),

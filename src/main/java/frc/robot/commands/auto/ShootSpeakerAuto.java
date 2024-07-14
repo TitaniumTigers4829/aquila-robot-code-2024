@@ -1,6 +1,5 @@
 package frc.robot.commands.auto;
 
-import java.util.Optional;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -18,6 +17,7 @@ import frc.robot.subsystems.pivot.PivotSubsystem;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.swerve.DriveSubsystem;
 import frc.robot.subsystems.vision.VisionSubsystem;
+import java.util.Optional;
 
 public class ShootSpeakerAuto extends DriveCommandBase {
   private final DriveSubsystem driveSubsystem;
@@ -30,17 +30,17 @@ public class ShootSpeakerAuto extends DriveCommandBase {
 
   private double headingError = 0;
 
-  private final ProfiledPIDController turnController = new ProfiledPIDController(
-    ShooterConstants.AUTO_SHOOT_P,
-    ShooterConstants.AUTO_SHOOT_I, 
-    ShooterConstants.AUTO_SHOOT_D, 
-    ShooterConstants.AUTO_SHOOT_CONSTRAINTS
-  );
+  private final ProfiledPIDController turnController =
+      new ProfiledPIDController(
+          ShooterConstants.AUTO_SHOOT_P,
+          ShooterConstants.AUTO_SHOOT_I,
+          ShooterConstants.AUTO_SHOOT_D,
+          ShooterConstants.AUTO_SHOOT_CONSTRAINTS);
 
   private boolean isRed = false;
   private double desiredHeading = 0;
   private Translation2d speakerPos;
-  
+
   /** Creates a new ShootSpeaker. */
   public ShootSpeakerAuto(DriveSubsystem driveSubsystem, ShooterSubsystem shooterSubsystem, PivotSubsystem pivotSubsystem, VisionSubsystem visionSubsystem, LEDSubsystem leds) {
     super(driveSubsystem, visionSubsystem);
@@ -61,9 +61,12 @@ public class ShootSpeakerAuto extends DriveCommandBase {
     pivotTimer.stop();
     pivotTimer.reset();
     Optional<Alliance> alliance = DriverStation.getAlliance();
-    //sets alliance to red
-    isRed = alliance.isPresent() && alliance.get() == Alliance.Red;  
-    speakerPos = isRed ? new Translation2d(FieldConstants.RED_SPEAKER_X, FieldConstants.RED_SPEAKER_Y) : new Translation2d(FieldConstants.BLUE_SPEAKER_X, FieldConstants.BLUE_SPEAKER_Y);
+    // sets alliance to red
+    isRed = alliance.isPresent() && alliance.get() == Alliance.Red;
+    speakerPos =
+        isRed
+            ? new Translation2d(FieldConstants.RED_SPEAKER_X, FieldConstants.RED_SPEAKER_Y)
+            : new Translation2d(FieldConstants.BLUE_SPEAKER_X, FieldConstants.BLUE_SPEAKER_Y);
     turnController.enableContinuousInput(-Math.PI, Math.PI);
   }
 
@@ -137,7 +140,7 @@ public class ShootSpeakerAuto extends DriveCommandBase {
     return pewPewCompleteTimer.hasElapsed(0.1);
     // return !shooterSubsystem.hasNote();
   }
-  
+
   public boolean isReadyToShoot() {
     return shooterSubsystem.isShooterWithinAcceptableError() && pivotTimer.hasElapsed(0.1) && Math.abs(headingError) < DriveConstants.HEADING_ACCEPTABLE_ERROR_RADIANS;
   }
@@ -148,5 +151,5 @@ public class ShootSpeakerAuto extends DriveCommandBase {
     } else {
       return val;
     }
-  } 
+  }
 }

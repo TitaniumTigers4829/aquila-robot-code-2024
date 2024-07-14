@@ -4,10 +4,6 @@
 
 package frc.robot.commands.shooter;
 
-import java.util.Optional;
-import java.util.function.BooleanSupplier;
-import java.util.function.DoubleSupplier;
-
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
@@ -27,6 +23,9 @@ import frc.robot.subsystems.pivot.PivotSubsystem;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.swerve.DriveSubsystem;
 import frc.robot.subsystems.vision.VisionSubsystem;
+import java.util.Optional;
+import java.util.function.BooleanSupplier;
+import java.util.function.DoubleSupplier;
 
 public class ShootWhileMove extends DriveCommandBase {
   private final DriveSubsystem driveSubsystem;
@@ -39,19 +38,26 @@ public class ShootWhileMove extends DriveCommandBase {
 
   private double headingError = 0;
 
-  private final ProfiledPIDController turnController = new ProfiledPIDController(
-    ShooterConstants.AUTO_SHOOT_MOVE_P,
-    ShooterConstants.AUTO_SHOOT_MOVE_I, 
-    ShooterConstants.AUTO_SHOOT_MOVE_D, 
-    ShooterConstants.AUTO_SHOOT_MOVE_CONSTRAINTS
-  );
+  private final ProfiledPIDController turnController =
+      new ProfiledPIDController(
+          ShooterConstants.AUTO_SHOOT_MOVE_P,
+          ShooterConstants.AUTO_SHOOT_MOVE_I,
+          ShooterConstants.AUTO_SHOOT_MOVE_D,
+          ShooterConstants.AUTO_SHOOT_MOVE_CONSTRAINTS);
 
   private boolean isRed = false;
   private double desiredHeading = 0;
   private Translation3d speakerPos;
-  
+
   /** Creates a new ShootSpeaker. */
-  public ShootWhileMove(DriveSubsystem driveSubsystem, ShooterSubsystem shooterSubsystem, PivotSubsystem pivotSubsystem, VisionSubsystem visionSubsystem, DoubleSupplier[] leftStick, BooleanSupplier isFieldRelative, LEDSubsystem leds) {
+  public ShootWhileMove(
+      DriveSubsystem driveSubsystem,
+      ShooterSubsystem shooterSubsystem,
+      PivotSubsystem pivotSubsystem,
+      VisionSubsystem visionSubsystem,
+      DoubleSupplier[] leftStick,
+      BooleanSupplier isFieldRelative,
+      LEDSubsystem leds) {
     super(driveSubsystem, visionSubsystem);
     this.driveSubsystem = driveSubsystem;
     this.shooterSubsystem = shooterSubsystem;
@@ -68,10 +74,18 @@ public class ShootWhileMove extends DriveCommandBase {
   public void initialize() {
     Optional<Alliance> alliance = DriverStation.getAlliance();
     // Sets isRed to true if alliance is red
-    isRed = alliance.isPresent() && alliance.get() == Alliance.Red;  
+    isRed = alliance.isPresent() && alliance.get() == Alliance.Red;
 
-    speakerPos = isRed ? new Translation3d(FieldConstants.RED_SPEAKER_X, FieldConstants.RED_SPEAKER_Y, ShooterConstants.SPEAKER_HEIGHT) 
-      : new Translation3d(FieldConstants.BLUE_SPEAKER_X, FieldConstants.BLUE_SPEAKER_Y, ShooterConstants.SPEAKER_HEIGHT);
+    speakerPos =
+        isRed
+            ? new Translation3d(
+                FieldConstants.RED_SPEAKER_X,
+                FieldConstants.RED_SPEAKER_Y,
+                ShooterConstants.SPEAKER_HEIGHT)
+            : new Translation3d(
+                FieldConstants.BLUE_SPEAKER_X,
+                FieldConstants.BLUE_SPEAKER_Y,
+                ShooterConstants.SPEAKER_HEIGHT);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -79,11 +93,12 @@ public class ShootWhileMove extends DriveCommandBase {
   public void execute() {
     // update odometry and useful things like that
     super.execute();
-    
-      // TODO: someone check my logic here
+
+    // TODO: someone check my logic here
     // current pose
     Translation2d robotPose2d = driveSubsystem.getPose().getTranslation();
-    Translation3d robotPos3d = new Translation3d(robotPose2d.getX(), robotPose2d.getY(), ShooterConstants.SHOOTER_HEIGHT);
+    Translation3d robotPos3d =
+        new Translation3d(robotPose2d.getX(), robotPose2d.getY(), ShooterConstants.SHOOTER_HEIGHT);
     // speeds
     ChassisSpeeds speeds = driveSubsystem.getRobotRelativeSpeeds();
     // this gets the time that the note will be in the air between the robot and the speaker
@@ -99,21 +114,21 @@ public class ShootWhileMove extends DriveCommandBase {
     robotPose2d.plus(new Translation2d(dx, dy).rotateBy(driveSubsystem.getOdometryRotation2d()));
     // continue the command as normal
     double distance = robotPose2d.getDistance(speakerPos.toTranslation2d());
-    desiredHeading = Math.atan2(robotPose2d.getY() - speakerPos.getY(), robotPose2d.getX() - speakerPos.getX());
+    desiredHeading =
+        Math.atan2(robotPose2d.getY() - speakerPos.getY(), robotPose2d.getX() - speakerPos.getX());
     // heading error
     headingError = desiredHeading - driveSubsystem.getOdometryRotation2d().getRadians();
-    
+
     // deadband output for a steadier shot when we are really close to the target
     double turnOutput = deadband(turnController.calculate(headingError, 0));
 
     // allow the driver to drive at full speed (fancy math go brrr (hopefully))
     // reason for using a DoubleSupplier[] here is so that the modifyAxisCubedPolar can be used
     driveSubsystem.drive(
-      leftStick[1].getAsDouble() * DriveConstants.MAX_SHOOT_SPEED_METERS_PER_SECOND, 
-      leftStick[0].getAsDouble() * DriveConstants.MAX_SHOOT_SPEED_METERS_PER_SECOND, 
-      turnOutput, 
-      !isFieldRelative.getAsBoolean()
-    );
+        leftStick[1].getAsDouble() * DriveConstants.MAX_SHOOT_SPEED_METERS_PER_SECOND,
+        leftStick[0].getAsDouble() * DriveConstants.MAX_SHOOT_SPEED_METERS_PER_SECOND,
+        turnOutput,
+        !isFieldRelative.getAsBoolean());
 
     // spin up the shooter
     shooterSubsystem.setRPM(ShooterConstants.SHOOT_SPEAKER_RPM);
@@ -141,11 +156,15 @@ public class ShootWhileMove extends DriveCommandBase {
   public boolean isFinished() {
     return false;
   }
+
   public boolean isReadyToShoot() {
     SmartDashboard.putBoolean("shooter", shooterSubsystem.isShooterWithinAcceptableError());
     SmartDashboard.putBoolean("pivot", pivotSubsystem.isPivotWithinAcceptableError());
-    SmartDashboard.putBoolean("heading", Math.abs(headingError) < DriveConstants.HEADING_ACCEPTABLE_ERROR_MOVING_RADIANS);
-    return shooterSubsystem.isShooterWithinAcceptableError() && pivotSubsystem.isPivotWithinAcceptableError() && (Math.abs(headingError) < DriveConstants.HEADING_ACCEPTABLE_ERROR_MOVING_RADIANS);
+    SmartDashboard.putBoolean(
+        "heading", Math.abs(headingError) < DriveConstants.HEADING_ACCEPTABLE_ERROR_MOVING_RADIANS);
+    return shooterSubsystem.isShooterWithinAcceptableError()
+        && pivotSubsystem.isPivotWithinAcceptableError()
+        && (Math.abs(headingError) < DriveConstants.HEADING_ACCEPTABLE_ERROR_MOVING_RADIANS);
   }
 
   private double deadband(double val) {
@@ -154,5 +173,5 @@ public class ShootWhileMove extends DriveCommandBase {
     } else {
       return val;
     }
-  } 
+  }
 }

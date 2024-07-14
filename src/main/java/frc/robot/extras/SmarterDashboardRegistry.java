@@ -4,8 +4,6 @@
 
 package frc.robot.extras;
 
-import java.util.Optional;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
@@ -15,14 +13,15 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.FieldConstants;
+import java.util.Optional;
 
 /** Add your docs here. */
 public class SmarterDashboardRegistry {
-  private static double[] pose = new double[]{0, 0, 0};
-  private static double[] limelight_pose = new double[]{0, 0, 0};
-  private static double[] orientation = new double[]{0, 0, 0};
+  private static double[] pose = new double[] {0, 0, 0};
+  private static double[] limelight_pose = new double[] {0, 0, 0};
+  private static double[] orientation = new double[] {0, 0, 0};
   // isActive, isRedAlliance, isSpeaker
-  private static boolean[] pathData = new boolean[]{false, false, false};
+  private static boolean[] pathData = new boolean[] {false, false, false};
 
   private static boolean isRed;
   private static Pose2d ampPos;
@@ -85,7 +84,8 @@ public class SmarterDashboardRegistry {
   }
 
   public static Pose2d getLimelightPose() {
-    return new Pose2d(limelight_pose[0], limelight_pose[1], Rotation2d.fromDegrees(limelight_pose[2]));
+    return new Pose2d(
+        limelight_pose[0], limelight_pose[1], Rotation2d.fromDegrees(limelight_pose[2]));
   }
 
   public static boolean[] getPathData() {

@@ -23,13 +23,15 @@ public abstract class DriveCommandBase extends Command {
 
   /**
    * An abstract class that handles pose estimation while driving.
+   *
    * @param driveSubsystem The subsystem for the swerve drive
    * @param visionSubsystem The subsystem for vision measurements
    */
   public DriveCommandBase(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem) {
     this.driveSubsystem = driveSubsystem;
     this.visionSubsystem = visionSubsystem;
-    // It is important that you do addRequirements(driveSubsystem, visionSubsystem) in whatever command extends this
+    // It is important that you do addRequirements(driveSubsystem, visionSubsystem) in whatever
+    // command extends this
   }
 
   @Override
@@ -63,5 +65,4 @@ public abstract class DriveCommandBase extends Command {
 
     lastTimeStampSeconds = currentTimeStampSeconds;
   }
-
 }

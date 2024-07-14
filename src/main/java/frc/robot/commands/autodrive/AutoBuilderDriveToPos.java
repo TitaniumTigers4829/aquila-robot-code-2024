@@ -1,8 +1,6 @@
 package frc.robot.commands.autodrive;
 
-
 import com.pathplanner.lib.auto.AutoBuilder;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -21,7 +19,12 @@ public class AutoBuilderDriveToPos extends DriveCommandBase {
   private Command controllerCommand;
 
   /** Creates a new NewDriveToPos. */
-  public AutoBuilderDriveToPos(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, double finalX, double finalY, Rotation2d finalRot) {
+  public AutoBuilderDriveToPos(
+      DriveSubsystem driveSubsystem,
+      VisionSubsystem visionSubsystem,
+      double finalX,
+      double finalY,
+      Rotation2d finalRot) {
     super(driveSubsystem, visionSubsystem);
     this.driveSubsystem = driveSubsystem;
     this.finalX = finalX;
@@ -33,15 +36,11 @@ public class AutoBuilderDriveToPos extends DriveCommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    driveSubsystem.resetOdometry(new Pose2d(0,0, Rotation2d.fromDegrees(0)));
+    driveSubsystem.resetOdometry(new Pose2d(0, 0, Rotation2d.fromDegrees(0)));
     Pose2d endPose = new Pose2d(finalX, finalY, finalRot);
 
-    controllerCommand = AutoBuilder.pathfindToPose(
-      endPose,
-      TrajectoryConstants.PATH_CONSTRAINTS,
-      0.0,
-      0.0
-    );
+    controllerCommand =
+        AutoBuilder.pathfindToPose(endPose, TrajectoryConstants.PATH_CONSTRAINTS, 0.0, 0.0);
 
     controllerCommand.initialize();
   }
@@ -52,9 +51,12 @@ public class AutoBuilderDriveToPos extends DriveCommandBase {
     super.execute();
     controllerCommand.execute();
     // TODO: LEDs
-    // if (Math.abs(endPose.getX() - driveSubsystem.getPose().getX()) < TrajectoryConstants.X_TOLERANCE
-    //   && Math.abs(endPose.getY() - driveSubsystem.getPose().getY()) < TrajectoryConstants.Y_TOLERANCE
-    //   && Math.abs(endPose.getRotation().getDegrees() - driveSubsystem.getPose().getRotation().getDegrees()) < TrajectoryConstants.THETA_TOLERANCE) {
+    // if (Math.abs(endPose.getX() - driveSubsystem.getPose().getX()) <
+    // TrajectoryConstants.X_TOLERANCE
+    //   && Math.abs(endPose.getY() - driveSubsystem.getPose().getY()) <
+    // TrajectoryConstants.Y_TOLERANCE
+    //   && Math.abs(endPose.getRotation().getDegrees() -
+    // driveSubsystem.getPose().getRotation().getDegrees()) < TrajectoryConstants.THETA_TOLERANCE) {
     // }
   }
 
@@ -67,6 +69,6 @@ public class AutoBuilderDriveToPos extends DriveCommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return controllerCommand.isFinished(); 
+    return controllerCommand.isFinished();
   }
 }

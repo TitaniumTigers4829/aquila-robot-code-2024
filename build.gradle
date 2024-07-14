@@ -109,44 +109,40 @@ tasks.withType(JavaCompile) {
 // Spotless formatting
 project.compileJava.dependsOn(spotlessApply)
 spotless {
-    java {
-        target fileTree('.') {
+   java {
+      target fileTree('.') {
             include '**/*.java'
             exclude '**/build/**', '**/build-*/**'
-        }
-        toggleOffOn()
-        googleJavaFormat()
-        removeUnusedImports()
-        trimTrailingWhitespace()
-        endWithNewline()
-    }
-    groovyGradle {
-        target fileTree('.') {
+      }
+      toggleOffOn()
+      removeUnusedImports()
+      trimTrailingWhitespace()
+      endWithNewline()
+   }
+   groovyGradle {
+      target fileTree('.') {
             include '**/*.gradle'
             exclude '**/build/**', '**/build-*/**'
-        }
-        greclipse()
-        indentWithSpaces(4)
-        trimTrailingWhitespace()
-        endWithNewline()
-    }
-    format 'xml', {
-        target fileTree('.') {
+      }
+      greclipse()
+      trimTrailingWhitespace()
+      endWithNewline()
+   }
+   format 'xml', {
+      target fileTree('.') {
             include '**/*.xml'
             exclude '**/build/**', '**/build-*/**'
-        }
-        eclipseWtp('xml')
-        trimTrailingWhitespace()
-        indentWithSpaces(2)
-        endWithNewline()
-    }
-    format 'misc', {
-        target fileTree('.') {
+      }
+      eclipseWtp('xml')
+      trimTrailingWhitespace()
+      endWithNewline()
+   }
+   format 'misc', {
+      target fileTree('.') {
             include '**/*.md', '**/.gitignore'
             exclude '**/build/**', '**/build-*/**'
-        }
-        trimTrailingWhitespace()
-        indentWithSpaces(2)
-        endWithNewline()
-    }
+      }
+      trimTrailingWhitespace()
+      endWithNewline()
+   }
 }

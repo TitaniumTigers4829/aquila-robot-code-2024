@@ -21,7 +21,13 @@ import frc.robot.subsystems.vision.VisionSubsystem;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class BlueAmpSideFourNote extends SequentialCommandGroup {
   /** Creates a new RedAmpSideFourNote. */
-  public BlueAmpSideFourNote(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, ShooterSubsystem shooterSubsystem, PivotSubsystem pivotSubsystem, IntakeSubsystem intakeSubsystem, LEDSubsystem ledSubsystem) {
+  public BlueAmpSideFourNote(
+      DriveSubsystem driveSubsystem,
+      VisionSubsystem visionSubsystem,
+      ShooterSubsystem shooterSubsystem,
+      PivotSubsystem pivotSubsystem,
+      IntakeSubsystem intakeSubsystem,
+      LEDSubsystem ledSubsystem) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
