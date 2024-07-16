@@ -13,7 +13,10 @@ public class StopShooterAndIntake extends InstantCommand {
   private ShooterSubsystem shooterSubsystem;
   private PivotSubsystem pivotSubsystem;
 
-  public StopShooterAndIntake(IntakeSubsystem intakeSubsystem, PivotSubsystem pivotSubsystem, ShooterSubsystem shooterSubsystem) {
+  public StopShooterAndIntake(
+      IntakeSubsystem intakeSubsystem,
+      PivotSubsystem pivotSubsystem,
+      ShooterSubsystem shooterSubsystem) {
     this.intakeSubsystem = intakeSubsystem;
     this.pivotSubsystem = pivotSubsystem;
     this.shooterSubsystem = shooterSubsystem;

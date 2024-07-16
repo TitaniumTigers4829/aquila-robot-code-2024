@@ -20,7 +20,13 @@ import frc.robot.subsystems.vision.VisionSubsystem;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class RedFourNote extends SequentialCommandGroup {
   /** Creates a new BlueSimpleTwoNote. */
-  public RedFourNote(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, IntakeSubsystem intakeSubsystem, ShooterSubsystem shooterSubsystem, PivotSubsystem pivotSubsystem, LEDSubsystem leds) {
+  public RedFourNote(
+      DriveSubsystem driveSubsystem,
+      VisionSubsystem visionSubsystem,
+      IntakeSubsystem intakeSubsystem,
+      ShooterSubsystem shooterSubsystem,
+      PivotSubsystem pivotSubsystem,
+      LEDSubsystem leds) {
     addCommands(
       new InstantCommand(()->driveSubsystem.resetOdometry(new Pose2d(15.156390274238586, 5.493067741394043, Rotation2d.fromRadians(3.141592653589793)))),
       // new SubwooferShot(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, ()->0, ()->0, ()->0, ()->false, leds).withTimeout(1.5),

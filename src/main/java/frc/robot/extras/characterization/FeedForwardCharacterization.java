@@ -6,7 +6,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.extras.regression.MultipleLinearRegression;
 import frc.robot.extras.regression.PolynomialRegression;
-
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Consumer;
@@ -92,13 +91,18 @@ public class FeedForwardCharacterization extends Command {
       System.out.println(String.format("\tkS=%.5f", regression.beta(0)));
       System.out.println(String.format("\tkV=%.5f", regression.beta(1)));
 
-      double[] y = velocityData.subList(1, velocityData.size())
-          .stream().mapToDouble(Double::doubleValue).toArray();
+      double[] y =
+          velocityData.subList(1, velocityData.size()).stream()
+              .mapToDouble(Double::doubleValue)
+              .toArray();
 
       double[][] x = new double[velocityData.size() - 1][3];
 
       for (int i = 0; i < velocityData.size() - 1; i++) {
-        x[i] = new double[] { velocityData.get(i), voltageData.get(i), Math.signum(velocityData.get(i)) };
+        x[i] =
+            new double[] {
+              velocityData.get(i), voltageData.get(i), Math.signum(velocityData.get(i))
+            };
       }
 
       MultipleLinearRegression regression2 = new MultipleLinearRegression(x, y);

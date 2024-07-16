@@ -13,6 +13,8 @@ import frc.robot.Constants.ShooterConstants;
 import frc.robot.commands.drive.DriveCommandBase;
 import frc.robot.subsystems.swerve.DriveSubsystem;
 import frc.robot.subsystems.vision.VisionSubsystem;
+import java.util.Optional;
+import java.util.function.DoubleSupplier;
 
 public class AutoAlignWithAmp extends DriveCommandBase {
   private final DriveSubsystem driveSubsystem;
@@ -24,8 +26,8 @@ public class AutoAlignWithAmp extends DriveCommandBase {
 
   private final ProfiledPIDController turnController = new ProfiledPIDController(
     ShooterConstants.AUTO_LINEUP_ROTATION_P,
-    ShooterConstants.AUTO_LINEUP_ROTATION_I, 
-    ShooterConstants.AUTO_LINEUP_ROTATION_D, 
+    ShooterConstants.AUTO_LINEUP_ROTATION_I,
+    ShooterConstants.AUTO_LINEUP_ROTATION_D,
     ShooterConstants.AUTO_LINEUP_ROTATION_CONSTRAINTS
   );
 
@@ -56,8 +58,16 @@ public class AutoAlignWithAmp extends DriveCommandBase {
     Optional<Alliance> alliance = DriverStation.getAlliance();
     // This will default to blue if it alliance isn't present
     isRed = alliance.isPresent() && alliance.get() == Alliance.Red;
-    ampPose = isRed ? new Pose2d(FieldConstants.RED_AMP_SHOOT_X, FieldConstants.RED_AMP_SHOOT_Y, FieldConstants.RED_AMP_ROTATION) 
-      : new Pose2d(FieldConstants.BLUE_AMP_SHOOT_X, FieldConstants.BLUE_AMP_SHOOT_Y, FieldConstants.BLUE_AMP_ROTATION);
+    ampPose =
+        isRed
+            ? new Pose2d(
+                FieldConstants.RED_AMP_SHOOT_X,
+                FieldConstants.RED_AMP_SHOOT_Y,
+                FieldConstants.RED_AMP_ROTATION)
+            : new Pose2d(
+                FieldConstants.BLUE_AMP_SHOOT_X,
+                FieldConstants.BLUE_AMP_SHOOT_Y,
+                FieldConstants.BLUE_AMP_ROTATION);
     turnController.enableContinuousInput(-Math.PI, Math.PI);
   }
 
@@ -87,11 +97,10 @@ public class AutoAlignWithAmp extends DriveCommandBase {
 
     // Drives the robot towards the amp
     driveSubsystem.drive(
-      chassisSpeeds.vxMetersPerSecond,
-      chassisSpeeds.vyMetersPerSecond,
-      chassisSpeeds.omegaRadiansPerSecond,
-      false
-    );
+        chassisSpeeds.vxMetersPerSecond,
+        chassisSpeeds.vyMetersPerSecond,
+        chassisSpeeds.omegaRadiansPerSecond,
+        false);
 
     // pivotSubsystem.setPivotAngle(PivotConstants.SHOOT_AMP_ANGLE);
     // shooterSubsystem.setRPM(ShooterConstants.SHOOT_AMP_RPM);
@@ -106,12 +115,12 @@ public class AutoAlignWithAmp extends DriveCommandBase {
   public boolean isFinished() {
     return false;
   }
-  
+
   private double deadband(double val) {
     if (Math.abs(val) < HardwareConstants.DEADBAND_VALUE) {
       return 0.0;
     } else {
       return val;
     }
-  } 
+  }
 }

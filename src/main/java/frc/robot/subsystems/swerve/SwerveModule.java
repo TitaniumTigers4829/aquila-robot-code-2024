@@ -54,6 +54,7 @@ public class SwerveModule {
 
   /**
    * Constructs a swerve module
+   *
    * @param driveMotorChannel ID of the drive motor
    * @param turnMotorChannel ID of the turn motor
    * @param turnEncoderChannel ID of the CANCoder
@@ -64,17 +65,16 @@ public class SwerveModule {
    * @param name name of the motor
    */
   public SwerveModule(
-    int driveMotorChannel,
-    int turnMotorChannel,
-    int turnEncoderChannel,
-    double angleZero,
-    SensorDirectionValue encoderReversed,
-    InvertedValue turnReversed,
-    InvertedValue driveReversed,
-    String name
-    ) {
+      int driveMotorChannel,
+      int turnMotorChannel,
+      int turnEncoderChannel,
+      double angleZero,
+      SensorDirectionValue encoderReversed,
+      InvertedValue turnReversed,
+      InvertedValue driveReversed,
+      String name) {
     this.name = name;
-    
+
     turnEncoder = new CANcoder(turnEncoderChannel, HardwareConstants.CANIVORE_CAN_BUS_STRING);
     driveMotor = new TalonFX(driveMotorChannel, HardwareConstants.CANIVORE_CAN_BUS_STRING);
     turnMotor = new TalonFX(turnMotorChannel, HardwareConstants.CANIVORE_CAN_BUS_STRING);
@@ -85,7 +85,8 @@ public class SwerveModule {
     CANcoderConfiguration turnEncoderConfig = new CANcoderConfiguration();
     turnEncoderConfig.MagnetSensor.MagnetOffset = -angleZero;
     turnEncoderConfig.MagnetSensor.SensorDirection = encoderReversed;
-    turnEncoderConfig.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Signed_PlusMinusHalf;
+    turnEncoderConfig.MagnetSensor.AbsoluteSensorRange =
+        AbsoluteSensorRangeValue.Signed_PlusMinusHalf;
     turnEncoder.getConfigurator().apply(turnEncoderConfig, HardwareConstants.TIMEOUT_S);
 
     TalonFXConfiguration driveConfig = new TalonFXConfiguration();
@@ -102,7 +103,7 @@ public class SwerveModule {
     driveConfig.CurrentLimits.SupplyCurrentLimit = ModuleConstants.DRIVE_SUPPLY_LIMIT;
     driveConfig.CurrentLimits.StatorCurrentLimit = ModuleConstants.DRIVE_STATOR_LIMIT;
     driveConfig.CurrentLimits.StatorCurrentLimitEnable = true;
-    
+
     driveMotor.getConfigurator().apply(driveConfig, HardwareConstants.TIMEOUT_S);
 
     TalonFXConfiguration turnConfig = new TalonFXConfiguration();
@@ -114,8 +115,10 @@ public class SwerveModule {
     turnConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     turnConfig.MotorOutput.Inverted = turnReversed;
     turnConfig.MotorOutput.DutyCycleNeutralDeadband = HardwareConstants.MIN_FALCON_DEADBAND;
-    turnConfig.MotionMagic.MotionMagicCruiseVelocity = ModuleConstants.MAX_ANGULAR_SPEED_ROTATIONS_PER_SECOND;
-    turnConfig.MotionMagic.MotionMagicAcceleration = ModuleConstants.MAX_ANGULAR_ACCELERATION_ROTATIONS_PER_SECOND_SQUARED;
+    turnConfig.MotionMagic.MotionMagicCruiseVelocity =
+        ModuleConstants.MAX_ANGULAR_SPEED_ROTATIONS_PER_SECOND;
+    turnConfig.MotionMagic.MotionMagicAcceleration =
+        ModuleConstants.MAX_ANGULAR_ACCELERATION_ROTATIONS_PER_SECOND_SQUARED;
     turnConfig.ClosedLoopGeneral.ContinuousWrap = true;
     turnConfig.CurrentLimits.SupplyCurrentLimit = 20;
     turnConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
@@ -185,6 +188,7 @@ public class SwerveModule {
 
   /**
    * Gets the heading of the module
+   *
    * @return the absolute position of the CANCoder
    */
   public double getModuleHeading() {
@@ -194,18 +198,23 @@ public class SwerveModule {
 
   /**
    * Returns the current state of the module.
+   *
    * @return The current state of the module.
    */
   public SwerveModuleState getState() {
     driveMotorVelocity.refresh();
 
-    double speedMetersPerSecond = ModuleConstants.DRIVE_TO_METERS_PER_SECOND * driveMotorVelocity.getValueAsDouble();
+    double speedMetersPerSecond =
+        ModuleConstants.DRIVE_TO_METERS_PER_SECOND * driveMotorVelocity.getValueAsDouble();
 
-    return new SwerveModuleState(speedMetersPerSecond, Rotation2d.fromRotations(getModuleHeading()));
+    return new SwerveModuleState(
+        speedMetersPerSecond, Rotation2d.fromRotations(getModuleHeading()));
   }
 
   /**
-   * Gets the module position consisting of the distance it has traveled and the angle it is rotated.
+   * Gets the module position consisting of the distance it has traveled and the angle it is
+   * rotated.
+   *
    * @return a SwerveModulePosition object containing position and rotation
    */
   public SwerveModulePosition getPosition() {
@@ -217,13 +226,15 @@ public class SwerveModule {
 
   /**
    * Sets the desired state for the module and sends calculated output from controller to the motor.
+   *
    * @param desiredState Desired state with speed and angle.
    */
   public void setDesiredState(SwerveModuleState desiredState) {
     double turnRadians = getTurnRadians();
- 
+
     // Optimize the reference state to avoid spinning further than 90 degrees
-    SwerveModuleState optimizedDesiredState = SwerveModuleState.optimize(desiredState, new Rotation2d(turnRadians));
+    SwerveModuleState optimizedDesiredState =
+        SwerveModuleState.optimize(desiredState, new Rotation2d(turnRadians));
 
     if (Math.abs(optimizedDesiredState.speedMetersPerSecond) < 0.01) {
       driveMotor.set(0);
@@ -243,6 +254,7 @@ public class SwerveModule {
 
   /**
    * Gets the current position of the CANCoder in relation to the magnet
+   *
    * @return current CANCoder position in radians
    */
   public double getTurnRadians() {
@@ -250,15 +262,18 @@ public class SwerveModule {
     return Rotation2d.fromRotations(turnEncoderPos.getValue()).getRadians();
   }
 
+  /**
+   * Gets the drive position using the internal encoder
+   *
+   * @return the drive position in radians
+   */
   public double getDrivePositionRadians() {
     driveMotorPosition.refresh();
-    return 2.0 * Math.PI * (driveMotorPosition.getValue() / Constants.ModuleConstants.DRIVE_GEAR_RATIO);
+    return 2.0
+        * Math.PI
+        * (driveMotorPosition.getValue() / Constants.ModuleConstants.DRIVE_GEAR_RATIO);
   }
 
-  /**
-   * This is called in the periodic of DriveSubsystem
-   */
-  public void periodicFunction() {
-  }
-
+  /** This is called in the periodic of DriveSubsystem */
+  public void periodicFunction() {}
 }

@@ -42,6 +42,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
   /**
    * Sets the intake speed
+   *
    * @param speed 1.0 being the max speed, -1.0 being the min speed
    */
   public void setIntakeSpeed(double speed) {

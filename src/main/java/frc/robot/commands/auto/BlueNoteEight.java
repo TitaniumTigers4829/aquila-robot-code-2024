@@ -21,7 +21,13 @@ import frc.robot.subsystems.vision.VisionSubsystem;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class BlueNoteEight extends SequentialCommandGroup {
   /** Creates a new BlueSimpleTwoNote. */
-  public BlueNoteEight(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, IntakeSubsystem intakeSubsystem, ShooterSubsystem shooterSubsystem, PivotSubsystem pivotSubsystem, LEDSubsystem leds) {
+  public BlueNoteEight(
+      DriveSubsystem driveSubsystem,
+      VisionSubsystem visionSubsystem,
+      IntakeSubsystem intakeSubsystem,
+      ShooterSubsystem shooterSubsystem,
+      PivotSubsystem pivotSubsystem,
+      LEDSubsystem leds) {
     addCommands(
         new InstantCommand(()->driveSubsystem.resetOdometry(new Pose2d(0.7656831390380852, 4.481170177459717, Rotation2d.fromRadians(-1.0460003824312718)))),
         new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, leds).withTimeout(1.5),
