@@ -174,16 +174,27 @@ public class SwerveModule {
         return new Translation2d(swerveModuleState.speedMetersPerSecond, swerveModuleState.angle);
     }
 
-   private void updateSlipRatio(double wheelSpeed) { //account for inertial velocity
-    // Calculate current slip ratio
-    currentSlipRatio = ((wheelSpeed));
 
-    // Check if wheel is slipping, false if disabled
-    // isSlipping = slipDebouncer.calculate(currentSlipRatio > optimalSlipRatio) & isEnabled();
+  //  private void updateSlipRatio(double wheelSpeed) { //account for inertial velocity
+  //   // Calculate current slip ratio
+  //   currentSlipRatio = ((wheelSpeed));
+
+  //   // Check if wheel is slipping, false if disabled
+  //   // isSlipping = slipDebouncer.calculate(currentSlipRatio > optimalSlipRatio) & isEnabled();
+  // }
+
+  // public boolean isSlipping() {
+  //   return isSlipping;
+  // }
+
+  public double getDriveStatorCurrent() {
+    driveMotor.getStatorCurrent().refresh();
+    return driveMotor.getStatorCurrent().getValueAsDouble();
   }
 
-  public boolean isSlipping() {
-    return isSlipping;
+  public double getTurnStatorCurrent() {
+    turnMotor.getStatorCurrent().refresh();
+    return turnMotor.getStatorCurrent().getValueAsDouble();
   }
 
   /**
@@ -249,7 +260,7 @@ public class SwerveModule {
     driveMotor.setControl(velocityRequest.withVelocity(desiredDriveRPS));
     turnMotor.setControl(mmPositionRequest.withPosition(optimizedDesiredState.angle.getRotations()));
 
-    updateSlipRatio(optimizedDesiredState.speedMetersPerSecond);
+    // updateSlipRatio(optimizedDesiredState.speedMetersPerSecond);
   }
 
   /**

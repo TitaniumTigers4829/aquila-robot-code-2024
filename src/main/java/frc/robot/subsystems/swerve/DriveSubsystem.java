@@ -371,6 +371,35 @@ public class DriveSubsystem extends SubsystemBase {
     rearRightSwerveModule.setDesiredState(desiredStates[3]);
   }
 
+  public boolean isVelocityGood() {
+    if (frontLeftSwerveModule.getState().speedMetersPerSecond != gyro.getVelocityX()) {
+      return false;
+    }
+    return true;
+  }
+
+  public double[] getDriveStatorCurrent() {
+    double[] driveStators = {
+      frontLeftSwerveModule.getDriveStatorCurrent(),
+      frontRightSwerveModule.getDriveStatorCurrent(),
+      rearLeftSwerveModule.getDriveStatorCurrent(),
+      rearRightSwerveModule.getDriveStatorCurrent()
+    };
+
+    return driveStators;
+  }
+
+  public double[] getTurnStatorCurrent() {
+    double[] turnStators = {
+      frontLeftSwerveModule.getTurnStatorCurrent(),
+      frontRightSwerveModule.getTurnStatorCurrent(),
+      rearLeftSwerveModule.getTurnStatorCurrent(),
+      rearRightSwerveModule.getTurnStatorCurrent()
+    };
+    return turnStators;
+  }
+
+
   /**
    * Gets the swerve module states
    *
