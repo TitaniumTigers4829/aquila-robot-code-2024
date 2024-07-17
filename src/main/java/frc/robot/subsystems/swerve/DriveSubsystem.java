@@ -7,6 +7,7 @@ import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -36,7 +37,7 @@ public class DriveSubsystem extends SubsystemBase {
   // This will be changed throughout the match depending on how confident we are that the limelight is right.
   private static final Vector<N3> visionMeasurementStandardDeviations = VecBuilder.fill(VisionConstants.VISION_X_POS_TRUST,
    VisionConstants.VISION_Y_POS_TRUST, Units.degreesToRadians(VisionConstants.VISION_ANGLE_TRUST));
-  
+
   private final SwerveModule frontLeftSwerveModule;
   private final SwerveModule frontRightSwerveModule;
   private final SwerveModule rearLeftSwerveModule;
@@ -46,6 +47,7 @@ public class DriveSubsystem extends SubsystemBase {
   private final SwerveDrivePoseEstimator odometry;
 
   private boolean collisionDetected = false;
+  private boolean isSlipping = false;
 
   private double lastWorldLinearAccelX;
   private double lastWorldLinearAccelY;
@@ -125,13 +127,13 @@ public class DriveSubsystem extends SubsystemBase {
 
     setpointGenerator = new SwerveSetpointGenerator(DriveConstants.DRIVE_KINEMATICS, DriveConstants.MODULE_TRANSLATIONS);
     currentSetpoint = new SwerveSetpoint(new ChassisSpeeds(), getModuleStates());
-    
+
     // Configure AutoBuilder
     AutoBuilder.configureHolonomic(
-      this::getPose, 
-      this::resetOdometry, 
-      this::getRobotRelativeSpeeds, 
-      this::drive, 
+      this::getPose,
+      this::resetOdometry,
+      this::getRobotRelativeSpeeds,
+      this::drive,
       TrajectoryConstants.CONFIG,
       ()->false,
       this
@@ -185,12 +187,51 @@ public class DriveSubsystem extends SubsystemBase {
     drive(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, rotationControl, false);
   }
 
+   /**
+     * the method comes from 1690's <a href="https://youtu.be/N6ogT5DjGOk?feature=shared&t=1674">online software session</a>
+     * gets the skidding ratio from the latest , that can be used to determine how much the chassis is skidding
+     * the skidding ratio is defined as the  ratio between the maximum and minimum magnitude of the "translational" part of the speed of the modules
+     *
+     * @param swerveStatesMeasured the swerve states measured from the modules
+     * @param swerveDriveKinematics the kinematics
+     * @return the skidding ratio, maximum/minimum, ranges from [1,INFINITY)
+     * */
+    public static double getSkiddingRatio(SwerveModuleState[] swerveStatesMeasured, SwerveDriveKinematics swerveDriveKinematics) {
+        final double angularVelocityOmegaMeasured = swerveDriveKinematics.toChassisSpeeds(swerveStatesMeasured).omegaRadiansPerSecond;
+        final SwerveModuleState[] swerveStatesRotationalPart = swerveDriveKinematics.toSwerveModuleStates(new ChassisSpeeds(0, 0, angularVelocityOmegaMeasured));
+        final double[] swerveStatesTranslationalPartMagnitudes = new double[swerveStatesMeasured.length];
+
+        for (int i =0; i < swerveStatesMeasured.length; i++) {
+            final Translation2d swerveStateMeasuredAsVector = convertSwerveStateToVelocityVector(swerveStatesMeasured[i]),
+                    swerveStatesRotationalPartAsVector = convertSwerveStateToVelocityVector(swerveStatesRotationalPart[i]),
+                    swerveStatesTranslationalPartAsVector = swerveStateMeasuredAsVector.minus(swerveStatesRotationalPartAsVector);
+            swerveStatesTranslationalPartMagnitudes[i] = swerveStatesTranslationalPartAsVector.getNorm();
+        }
+
+        double maximumTranslationalSpeed = 0, minimumTranslationalSpeed = Double.POSITIVE_INFINITY;
+        for (double translationalSpeed:swerveStatesTranslationalPartMagnitudes) {
+            maximumTranslationalSpeed = Math.max(maximumTranslationalSpeed, translationalSpeed);
+            minimumTranslationalSpeed = Math.min(minimumTranslationalSpeed, translationalSpeed);
+        }
+
+        return maximumTranslationalSpeed / minimumTranslationalSpeed;
+    }
+
+    private static Translation2d convertSwerveStateToVelocityVector(SwerveModuleState swerveModuleState) {
+        return new Translation2d(swerveModuleState.speedMetersPerSecond, swerveModuleState.angle);
+    }
+
   public double getSkidRatio() {
-    return SwerveModule.getSkiddingRatio(moduleStates(), DriveConstants.DRIVE_KINEMATICS);
+    return getSkiddingRatio(moduleStates(), DriveConstants.DRIVE_KINEMATICS);
   }
 
   public boolean isSkidding() {
-    if (getSkidRatio() > 10) {
+
+    double skidRatio = getSkidRatio();
+    boolean collisionDetected = isCollisionDetected();
+    boolean isStatorGood = getStatorCurrents();
+    // boolean 
+    if (skidRatio > 10 || collisionDetected || isStatorGood) {
       return true;
     }
     return false;
@@ -206,7 +247,7 @@ public class DriveSubsystem extends SubsystemBase {
     return states;
   }
 
-  
+
   /** Runs in a circle at omega. */
   public void runWheelRadiusCharacterization(double omegaSpeed) {
     drive(0, 0, omegaSpeed, false);
@@ -242,24 +283,24 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public boolean isCollisionDetected() {
-    
+
     double currWorldLinearAccelX = gyro.getWorldLinearAccelX();
     currentJerkX = currWorldLinearAccelX - lastWorldLinearAccelX;
     lastWorldLinearAccelX = currWorldLinearAccelX;
     double currWorldLinearAccelY = gyro.getWorldLinearAccelY();
     currentJerkY = currWorldLinearAccelY - lastWorldLinearAccelY;
     lastWorldLinearAccelY = currWorldLinearAccelY;
-    
-    if ( ( Math.abs(currentJerkX) > DriveConstants.COLLISION_THRESHOLD_DELTA_G ) || 
-         ( Math.abs(currentJerkY) >  DriveConstants.COLLISION_THRESHOLD_DELTA_G ) ) { 
+
+    if ( ( Math.abs(currentJerkX) > DriveConstants.COLLISION_THRESHOLD_DELTA_G ) ||
+         ( Math.abs(currentJerkY) >  DriveConstants.COLLISION_THRESHOLD_DELTA_G ) ) {
        return collisionDetected = true;
     }
-    return collisionDetected = false; 
+    return collisionDetected = false;
   }
 
   /**
    * Returns a Rotation2d for the heading of the robot.
-   */  
+   */
   public Rotation2d getGyroRotation2d() {
     return Rotation2d.fromDegrees(getHeading());
   }
@@ -371,34 +412,32 @@ public class DriveSubsystem extends SubsystemBase {
     rearRightSwerveModule.setDesiredState(desiredStates[3]);
   }
 
-  public boolean isVelocityGood() {
-    if (frontLeftSwerveModule.getState().speedMetersPerSecond != gyro.getVelocityX()) {
-      return false;
+  public boolean[] getStatorStatus() {
+    boolean[] stators = {
+      frontLeftSwerveModule.isDriveStatorGood() || frontLeftSwerveModule.isTurnStatorGood(),
+      frontRightSwerveModule.isDriveStatorGood() || frontRightSwerveModule.isTurnStatorGood(),
+      rearLeftSwerveModule.isDriveStatorGood() || frontLeftSwerveModule.isTurnStatorGood(),
+      rearRightSwerveModule.isDriveStatorGood() || rearRightSwerveModule.isTurnStatorGood()
+    };
+    return stators;
+  }
+
+  public boolean getStatorCurrents() {
+    boolean[] statorStatus = getStatorStatus();
+    for (int i = 0; i < statorStatus.length; i++) {
+        if (!statorStatus[i]) {
+          return true;
+        }
     }
-    return true;
+    return false;
+}
+
+public boolean isSlipping() {
+  if (getSkidRatio() > 1.0) {
+    isSlipping = true;
   }
-
-  public double[] getDriveStatorCurrent() {
-    double[] driveStators = {
-      frontLeftSwerveModule.getDriveStatorCurrent(),
-      frontRightSwerveModule.getDriveStatorCurrent(),
-      rearLeftSwerveModule.getDriveStatorCurrent(),
-      rearRightSwerveModule.getDriveStatorCurrent()
-    };
-
-    return driveStators;
-  }
-
-  public double[] getTurnStatorCurrent() {
-    double[] turnStators = {
-      frontLeftSwerveModule.getTurnStatorCurrent(),
-      frontRightSwerveModule.getTurnStatorCurrent(),
-      rearLeftSwerveModule.getTurnStatorCurrent(),
-      rearRightSwerveModule.getTurnStatorCurrent()
-    };
-    return turnStators;
-  }
-
+  return false;
+}
 
   /**
    * Gets the swerve module states
