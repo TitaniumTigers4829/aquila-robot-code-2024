@@ -224,8 +224,8 @@ public class VisionSubsystem extends SubsystemBase {
 
     // Syncronization block to ensure thread safety during the critical section where pose information is read and compared.
     // This helps prevents race conditions, where one limelight may be updating an object that another limelight is reading.
-    // A race condition could cause unpredictable things to happen. Such as causing a limelight to be unable to refrence an 
-    // object, as it's refrence was modified earlier.
+    // A race condition could cause unpredictable things to happen. Such as causing a limelight to be unable to reference an 
+    // object, as its reference was modified earlier.
     synchronized (this) { 
       double current_TX = LimelightHelpers.getTX(getLimelightName(limelightNumber));
       double current_TY = LimelightHelpers.getTY(getLimelightName(limelightNumber));

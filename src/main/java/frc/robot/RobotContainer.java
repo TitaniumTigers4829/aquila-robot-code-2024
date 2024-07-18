@@ -35,7 +35,7 @@ import frc.robot.commands.shooter.ShootSpeaker;
 import frc.robot.commands.shooter.SpinUpForSpeaker;
 import frc.robot.commands.shooter.SubwooferShot;
 import frc.robot.extras.SmarterDashboardRegistry;
-import frc.robot.extras.Util;
+import frc.robot.extras.utils.Util;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.leds.LEDSubsystem;
 import frc.robot.subsystems.pivot.PivotSubsystem;

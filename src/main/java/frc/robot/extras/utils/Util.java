@@ -1,4 +1,4 @@
-package frc.robot.extras;
+package frc.robot.extras.utils;
 
 import frc.robot.Constants.HardwareConstants;
 import java.util.function.DoubleSupplier;
