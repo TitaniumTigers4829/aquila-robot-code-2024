@@ -217,24 +217,24 @@ public class VisionSubsystem extends SubsystemBase {
    * This checks is there is new pose detected by a limelight, and if so, updates the pose estimate
    *
    * @param limelightNumber the limelight number
+   * @param lastTX the last x offset from the limelight
+   * @param lastTY the last y offset from the limelight
+   * @return the current x and y offset from the limelight as [currentTX, currentTY]
    */
-  private void checkAndUpdatePose(int limelightNumber) {
-    double last_TX = 0;
-    double last_TY = 0;
-
+  private void checkAndUpdatePose(int limelightNumber, double lastTX, double lastTY) {
     // Syncronization block to ensure thread safety during the critical section where pose information is read and compared.
     // This helps prevents race conditions, where one limelight may be updating an object that another limelight is reading.
     // A race condition could cause unpredictable things to happen. Such as causing a limelight to be unable to reference an 
     // object, as its reference was modified earlier.
     synchronized (this) { 
-      double current_TX = LimelightHelpers.getTX(getLimelightName(limelightNumber));
-      double current_TY = LimelightHelpers.getTY(getLimelightName(limelightNumber));
+      double currentTX = LimelightHelpers.getTX(getLimelightName(limelightNumber));
+      double currentTY = LimelightHelpers.getTY(getLimelightName(limelightNumber));
 
       // This checks if the limelight reading is new. The reasoning being that if the TX and TY
       // are EXACTLY the same, it hasn't updated yet with a new reading. We are doing it this way,
       // because to get the timestamp of the reading, you need to parse the JSON dump which can be
       // very demanding whereas this only has to get the Network Table entries for TX and TY.
-      if (current_TX != last_TX || current_TY != last_TY) {
+      if (currentTX != lastTX || currentTY != lastTY) {
         updateLimelightPoseEstimate(limelightNumber);
         runningThreads.computeIfPresent(limelightNumber, (key, value) -> new AtomicBoolean(true));
         // This is to keep track of the last valid pose calculated by the limelights
@@ -254,8 +254,7 @@ public class VisionSubsystem extends SubsystemBase {
           }
       }
 
-      last_TX = current_TX;
-      last_TY = current_TY;
+      return new double[]{currentTX, currentTY};
     }
   }
 
@@ -273,8 +272,12 @@ public class VisionSubsystem extends SubsystemBase {
   public void visionThread(int limelightNumber) {
     executorService.submit(
         () -> {
+          double lastTX = 0;
+          double lastTY = 0;
           while (runningThreads.get(limelightNumber).get()) {
-            checkAndUpdatePose(limelightNumber);
+            double[] currentOffset = checkAndUpdatePose(limelightNumber, lastTX, lastTY);
+            lastTX = currentOffset[0];
+            lastTY = currentOffset[1];
           }
         });
   }
