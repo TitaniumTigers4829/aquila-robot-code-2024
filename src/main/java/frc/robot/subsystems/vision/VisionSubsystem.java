@@ -221,7 +221,7 @@ public class VisionSubsystem extends SubsystemBase {
    * @param lastTY the last y offset from the limelight
    * @return the current x and y offset from the limelight as [currentTX, currentTY]
    */
-  private void checkAndUpdatePose(int limelightNumber, double lastTX, double lastTY) {
+  private double[] checkAndUpdatePose(int limelightNumber, double lastTX, double lastTY) {
     // Syncronization block to ensure thread safety during the critical section where pose information is read and compared.
     // This helps prevents race conditions, where one limelight may be updating an object that another limelight is reading.
     // A race condition could cause unpredictable things to happen. Such as causing a limelight to be unable to reference an 
