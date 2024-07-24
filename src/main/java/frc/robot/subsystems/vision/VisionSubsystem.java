@@ -256,8 +256,6 @@ public class VisionSubsystem extends SubsystemBase {
 
       return new double[]{currentTX, currentTY};
     }
-    // default value if it can't get the offsets
-    return new double[]{0, 0};
   }
 
   /**
