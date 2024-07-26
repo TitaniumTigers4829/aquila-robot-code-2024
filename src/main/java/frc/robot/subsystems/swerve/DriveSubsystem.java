@@ -165,16 +165,17 @@ public class DriveSubsystem extends SubsystemBase {
             ? ChassisSpeeds.fromFieldRelativeSpeeds(
                 xSpeed, ySpeed, rotationSpeed, getOdometryAllianceRelativeRotation2d())
             : new ChassisSpeeds(xSpeed, ySpeed, rotationSpeed);
+    desiredSpeeds = ChassisSpeeds.discretize(desiredSpeeds, 0.02);
+    
     currentSetpoint =
         setpointGenerator.generateSetpoint(
-            currentModuleLimits, currentSetpoint, desiredSpeeds, HardwareConstants.TIMEOUT_S);
+            currentModuleLimits, currentSetpoint, desiredSpeeds, 0.02);
 
     setModuleStates(currentSetpoint.moduleStates());
   }
 
   public void drive(ChassisSpeeds speeds) {
-    drive(
-        -speeds.vxMetersPerSecond, -speeds.vyMetersPerSecond, -speeds.omegaRadiansPerSecond, false);
+    drive(-speeds.vxMetersPerSecond, -speeds.vyMetersPerSecond, -speeds.omegaRadiansPerSecond, false);
   }
 
   /**
