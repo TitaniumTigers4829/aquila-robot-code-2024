@@ -232,7 +232,7 @@ public class DriveSubsystem extends SubsystemBase {
     boolean collisionDetected = isCollisionDetected();
     boolean isStatorGood = getStatorCurrents();
     // boolean 
-    if (skidRatio > 10 || collisionDetected || isStatorGood) {
+    if (skidRatio > 1 || collisionDetected || isStatorGood) {
       return true;
     }
     return false;
