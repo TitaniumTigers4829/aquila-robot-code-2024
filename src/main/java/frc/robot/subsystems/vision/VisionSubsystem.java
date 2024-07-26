@@ -1,17 +1,22 @@
 package frc.robot.subsystems.vision;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.extras.LimelightHelpers;
 import frc.robot.extras.LimelightHelpers.PoseEstimate;
+
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -20,20 +25,23 @@ public class VisionSubsystem extends SubsystemBase {
   private Pose2d lastSeenPose = new Pose2d();
   private double headingDegrees = 0;
   private double headingRateDegreesPerSecond = 0;
-  private final Map<Integer, AtomicBoolean> runningThreads = new ConcurrentHashMap<>();
-  private final ExecutorService executorService = Executors.newFixedThreadPool(3); // Thread pool size of 3 for the number of limelights being threaded
+  private final Map<Integer, AtomicBoolean> limelightThreads = new ConcurrentHashMap<>();
+  private final ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(3); // lol no clue if this'll work
 
   /**
    * The pose estimates from the limelights in the following order {shooterLimelight,
    * frontLeftLimelight, frontRightLimelight}
    */
-  private PoseEstimate[] limelightEstimates = {new PoseEstimate(), new PoseEstimate(), new PoseEstimate()};
+  private PoseEstimate[] limelightEstimates;
 
   public VisionSubsystem() {
-    for (int limelightThreads = 0; limelightThreads < limelightEstimates.length; limelightThreads++) {
-      runningThreads.put(limelightThreads, new AtomicBoolean(true));
+    limelightEstimates = new PoseEstimate[3];
+    for (int limelightNumber = 0; limelightNumber < limelightEstimates.length; limelightNumber++) {
+      limelightThreads.put(limelightNumber, new AtomicBoolean(true));
+      limelightEstimates[limelightNumber] = new PoseEstimate();
     }
   }
+
 
   /**
    * Checks if the specified limelight can fully see one or more April Tag.
@@ -61,23 +69,23 @@ public class VisionSubsystem extends SubsystemBase {
    * @param limelightNumber the number of the limelight
    */
   public void updateLimelightPoseEstimate(int limelightNumber) {
-    if (!canSeeAprilTags(limelightNumber)) {
-      limelightEstimates[limelightNumber] = new PoseEstimate();
-    }
+    // if (canSeeAprilTags(limelightNumber)) {
+    //   if (isValidPoseEstimate(limelightNumber)) {
+        // double distanceToAprilTags = getLimelightAprilTagDistance(limelightNumber);
 
-    // double distanceToAprilTags = getLimelightAprilTagDistance(limelightNumber);
-
-    // if (isLargeDiscrepancyBetweenMegaTag1And2(limelightNumber)
-    //     && distanceToAprilTags < VisionConstants.MEGA_TAG_2_DISTANCE_THRESHOLD) {
-    //   limelightEstimates[limelightNumber] = getMegaTag1PoseEstimate(limelightNumber);
-    // } else
-    if (headingRateDegreesPerSecond < VisionConstants.MEGA_TAG_2_MAX_HEADING_RATE) {
-      LimelightHelpers.SetRobotOrientation(
-          getLimelightName(limelightNumber), headingDegrees, 0, 0, 0, 0, 0);
-      limelightEstimates[limelightNumber] = getMegaTag2PoseEstimate(limelightNumber);
-    } else {
-      limelightEstimates[limelightNumber] = getMegaTag1PoseEstimate(limelightNumber);
-    }
+        // if (isLargeDiscrepancyBetweenMegaTag1And2(limelightNumber)
+        //     && distanceToAprilTags < VisionConstants.MEGA_TAG_2_DISTANCE_THRESHOLD) {
+        //   limelightEstimates[limelightNumber] = getMegaTag1PoseEstimate(limelightNumber);
+        // } else
+        if (headingRateDegreesPerSecond < VisionConstants.MEGA_TAG_2_MAX_HEADING_RATE) {
+          LimelightHelpers.SetRobotOrientation(
+              getLimelightName(limelightNumber), headingDegrees, 0, 0, 0, 0, 0);
+          limelightEstimates[limelightNumber] = getMegaTag2PoseEstimate(limelightNumber);
+        } else {
+          limelightEstimates[limelightNumber] = getMegaTag1PoseEstimate(limelightNumber);
+        }
+    //   }
+    // }
   }
 
   /**
@@ -91,18 +99,23 @@ public class VisionSubsystem extends SubsystemBase {
     PoseEstimate megaTag2Estimate = getMegaTag2PoseEstimate(limelightNumber);
 
     // Extract the positions of the two poses
-    Translation2d megaTag1Translation = megaTag1Estimate.pose.getTranslation();
-    Translation2d megaTag2Translation = megaTag2Estimate.pose.getTranslation();
+    Translation2d megaTag1TranslationMeters = megaTag1Estimate.pose.getTranslation();
+    Translation2d megaTag2TranslationMeters = megaTag2Estimate.pose.getTranslation();
+
+    double megaTag1RotationDegrees = megaTag1Estimate.pose.getRotation().getDegrees();
+    double megaTag2RotationDegrees = megaTag2Estimate.pose.getRotation().getDegrees();
 
     // Calculate the discrepancy between the two MegaTag translations in meters
-    double megaTagDiscrepancyMeters = megaTag1Translation.getDistance(megaTag2Translation);
+    double megaTagTranslationDiscrepancyMeters = megaTag1TranslationMeters.getDistance(megaTag2TranslationMeters);
+    double megaTagRotationDiscrepancyDegrees =  Math.abs(megaTag1RotationDegrees - megaTag2RotationDegrees);
 
     // Define a threshold (meters) for what constitutes a "large" discrepancy
     // This value should be determined based on your testing
     double thresholdMeters = 0.5;
+    double thresholdDegrees = 45;
 
     // Check if the discrepancy is larger than the threshold (meters)
-    return megaTagDiscrepancyMeters > thresholdMeters;
+    return megaTagTranslationDiscrepancyMeters > thresholdMeters || megaTagRotationDiscrepancyDegrees > thresholdDegrees;
   }
 
   /**
@@ -114,7 +127,12 @@ public class VisionSubsystem extends SubsystemBase {
    *     return 0 for x, y, and theta
    */
   public PoseEstimate getMegaTag1PoseEstimate(int limelightNumber) {
-    return LimelightHelpers.getBotPoseEstimate_wpiBlue(getLimelightName(limelightNumber));
+    try {
+      return LimelightHelpers.getBotPoseEstimate_wpiBlue(getLimelightName(limelightNumber));
+    } catch (Exception e) {
+        System.err.println("Error estimating MegaTag1 pose for the: " + getLimelightName(limelightNumber) + e.getMessage());
+        return new PoseEstimate(); // Return an empty PoseEstimate
+    }
   }
 
   /**
@@ -126,7 +144,54 @@ public class VisionSubsystem extends SubsystemBase {
    *     return 0 for x, y, and theta
    */
   public PoseEstimate getMegaTag2PoseEstimate(int limelightNumber) {
-    return LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(getLimelightName(limelightNumber));
+    try {
+      return LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(getLimelightName(limelightNumber));
+    } catch (Exception e) {
+        System.err.println("Error estimating MegaTag2 pose for the: " + getLimelightName(limelightNumber) + e.getMessage());
+        return new PoseEstimate(); // Return an empty PoseEstimate
+    }
+  }
+
+  /**
+   * Checks is megatag 1 and megatag 2 estimates are good
+   * @param limelightNumber
+   * @return
+   */
+  public boolean isValidPoseEstimate(int limelightNumber) {
+    if (megaTag1IsGood(limelightNumber) && megaTag2IsGood(limelightNumber)) {
+      return true;
+    }
+    return false;
+  }
+
+  /**
+   * Checks if the MegaTag1 Estimate is within the field parameters
+   * @param limelightNumber
+   * @return 
+   */
+  public boolean megaTag1IsGood(int limelightNumber) {
+    PoseEstimate megaTag1Estimate = getMegaTag1PoseEstimate(limelightNumber);
+
+    if ((megaTag1Estimate.pose.getX() > 0 && megaTag1Estimate.pose.getX() <= FieldConstants.FIELD_WIDTH_METERS) &&
+     (megaTag1Estimate.pose.getY() > 0 && megaTag1Estimate.pose.getY() <= FieldConstants.FIELD_WIDTH_METERS)) {
+      return true;
+     }
+    return false;
+  }
+
+  /**
+   * Checks if the MegaTag2 Estimate is within the field parameters
+   * @param limelightNumber
+   * @return
+   */
+  public boolean megaTag2IsGood(int limelightNumber) {
+    PoseEstimate megaTag2Estimate = getMegaTag2PoseEstimate(limelightNumber);
+
+    if ((megaTag2Estimate.pose.getX() > 0 && megaTag2Estimate.pose.getX() <= FieldConstants.FIELD_WIDTH_METERS) &&
+     (megaTag2Estimate.pose.getY() > 0 && megaTag2Estimate.pose.getY() <= FieldConstants.FIELD_WIDTH_METERS)) {
+        return true;
+     } 
+    return false;
   }
 
   /**
@@ -218,7 +283,7 @@ public class VisionSubsystem extends SubsystemBase {
    *
    * @param limelightNumber the limelight number
    */
-  private void checkAndUpdatePose(int limelightNumber) {
+  public void checkAndUpdatePose(int limelightNumber) {
     double last_TX = 0;
     double last_TY = 0;
 
@@ -227,36 +292,67 @@ public class VisionSubsystem extends SubsystemBase {
     // A race condition could cause unpredictable things to happen. Such as causing a limelight to be unable to reference an 
     // object, as its reference was modified earlier.
     synchronized (this) { 
-      double current_TX = LimelightHelpers.getTX(getLimelightName(limelightNumber));
-      double current_TY = LimelightHelpers.getTY(getLimelightName(limelightNumber));
+      try {
+        double current_TX = LimelightHelpers.getTX(getLimelightName(limelightNumber));
+        double current_TY = LimelightHelpers.getTY(getLimelightName(limelightNumber));
 
-      // This checks if the limelight reading is new. The reasoning being that if the TX and TY
-      // are EXACTLY the same, it hasn't updated yet with a new reading. We are doing it this way,
-      // because to get the timestamp of the reading, you need to parse the JSON dump which can be
-      // very demanding whereas this only has to get the Network Table entries for TX and TY.
-      if (current_TX != last_TX || current_TY != last_TY) {
-        updateLimelightPoseEstimate(limelightNumber);
-        runningThreads.computeIfPresent(limelightNumber, (key, value) -> new AtomicBoolean(true));
-        // This is to keep track of the last valid pose calculated by the limelights
-        // it is used when the driver resets the robot odometry to the limelight calculated position
-        if (canSeeAprilTags(limelightNumber)) {
-          lastSeenPose = getMegaTag1PoseEstimate(limelightNumber).pose;
-        }
-      } else {
-          // Retrieve the AtomicBoolean for the given limelight number
-          AtomicBoolean runningThread = runningThreads.getOrDefault(limelightNumber, new AtomicBoolean());
-          // Only stop the thread if it's currently running
-          if (runningThread.get()) {
-            // Since we can't see an April Tag, set the estimate for the specified limelight to an empty PoseEstimate()
-            limelightEstimates[limelightNumber] = new PoseEstimate();
-            // stop the thread for the specified limelight
-            stopThread(limelightNumber); 
+        // This checks if the limelight reading is new. The reasoning being that if the TX and TY
+        // are EXACTLY the same, it hasn't updated yet with a new reading. We are doing it this way,
+        // because to get the timestamp of the reading, you need to parse the JSON dump which can be
+        // very demanding whereas this only has to get the Network Table entries for TX and TY.
+        if (current_TX != last_TX || current_TY != last_TY) {
+          updateLimelightPoseEstimate(limelightNumber);
+          limelightThreads.computeIfPresent(limelightNumber, (key, value) -> new AtomicBoolean(true));
+          // This is to keep track of the last valid pose calculated by the limelights
+          // it is used when the driver resets the robot odometry to the limelight calculated position
+          if (canSeeAprilTags(limelightNumber)) {
+            lastSeenPose = getMegaTag1PoseEstimate(limelightNumber).pose;
           }
-      }
+        } else {
+            // Retrieve the AtomicBoolean for the given limelight number
+            AtomicBoolean threadIsRunning = limelightThreads.getOrDefault(limelightNumber, new AtomicBoolean());
+            // Only stop the thread if it's currently running
+            if (threadIsRunning.get()) {
+              // stop the thread for the specified limelight
+              stopThread(limelightNumber); 
+            }
+        }
 
-      last_TX = current_TX;
-      last_TY = current_TY;
+        last_TX = current_TX;
+        last_TY = current_TY;
+    } catch (Exception e) {
+      System.err.println("Error communicating with Limelight " + getLimelightName(limelightNumber) + ": " + e.getMessage());
+      handleLimelightDisconnect(limelightNumber);
+      }
     }
+  }
+
+  /**
+   * theoretically should handle if a limelight disconnects or not.
+   * @param limelightNumber
+   */
+  public void handleLimelightDisconnect(int limelightNumber) {
+    System.err.println(getLimelightName(limelightNumber) + " disconnected.");
+    // Schedule a task to attempt reconnection after a short delay
+    scheduledExecutorService.schedule(() -> {
+      try {
+        // Attempt to access NetworkTable associated with Limelight to check connection health
+        NetworkTableInstance limelightTableInstance = NetworkTableInstance.getDefault();
+        NetworkTable limelightTable = limelightTableInstance.getTable(getLimelightName(limelightNumber));
+        
+        // Perform a simple read operation as a health check
+        boolean isConnected = limelightTable.containsKey("tx"); 
+
+        if (isConnected) {
+            System.out.println("Successfully reconnected to " + getLimelightName(limelightNumber));
+            limelightThreads.get(limelightNumber).set(true);
+        } else {
+            throw new RuntimeException("Failed to reconnect to " + getLimelightName(limelightNumber));
+          }
+      } catch (Exception e) {
+          System.err.println("Reconnection attempt failed for " + getLimelightName(limelightNumber) + ": " + e.getMessage());
+        }
+    }, 5, TimeUnit.SECONDS); // Retry after 5 seconds
   }
 
   /**
@@ -271,12 +367,20 @@ public class VisionSubsystem extends SubsystemBase {
    * @param limelightNumber the limelight number
    */
   public void visionThread(int limelightNumber) {
-    executorService.submit(
-        () -> {
-          while (runningThreads.get(limelightNumber).get()) {
-            checkAndUpdatePose(limelightNumber);
+    
+      scheduledExecutorService.submit(
+          () -> {
+            try {
+            while (limelightThreads.get(limelightNumber).get()) {
+              checkAndUpdatePose(limelightNumber);
+            }
           }
-        });
+           catch (Exception e) {
+            System.err.println("Error executing task for the: " + getLimelightName(limelightNumber) + ": " + e.getMessage());
+      }
+          });
+
+      // endAllThreads(); <- tentative: might break bobot
   }
 
   /**
@@ -286,7 +390,9 @@ public class VisionSubsystem extends SubsystemBase {
    * @param limelightNumber the limelight number
    */
   public void stopThread(int limelightNumber) {
-    runningThreads.get(limelightNumber).set(false);
+    // Since we can't see an April Tag, set the estimate for the specified limelight to an empty PoseEstimate()
+    limelightEstimates[limelightNumber] = new PoseEstimate();
+    limelightThreads.get(limelightNumber).set(false);
   }
 
   /**
@@ -294,18 +400,18 @@ public class VisionSubsystem extends SubsystemBase {
    */
   public void endAllThreads() {
     // Properly shut down the executor service when the subsystem ends
-    executorService.shutdown(); // Prevents new tasks from being submitted
+    scheduledExecutorService.shutdown(); // Prevents new tasks from being submitted
     try {
       // Wait for existing tasks to finish
-      if (!executorService.awaitTermination(5, TimeUnit.SECONDS)) {
-        executorService.shutdownNow();
+      if (!scheduledExecutorService.awaitTermination(5, TimeUnit.SECONDS)) {
+        scheduledExecutorService.shutdownNow();
         // Wait a bit longer for tasks to respond to being cancelled
-        if (!executorService.awaitTermination(5, TimeUnit.SECONDS))
+        if (!scheduledExecutorService.awaitTermination(5, TimeUnit.SECONDS))
           System.err.println("ExecutorService did not terminate");
       }
     } catch (InterruptedException e) {
       // (Re-)Cancel if current thread also interrupted
-      executorService.shutdownNow();
+      scheduledExecutorService.shutdownNow();
       // Preserve interrupt status
       Thread.currentThread().interrupt();
     }
