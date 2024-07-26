@@ -1,20 +1,50 @@
 name: Build
 
-on:
-  push:
-  pull_request:
+on: [pull_request, push]
 
 jobs:
   build:
-    name: Build
+    name: "Build Java"
     runs-on: ubuntu-latest
     container: wpilib/roborio-cross-ubuntu:2024-22.04
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-      - name: Add repository to git safe directories
-        run: git config --global --add safe.directory $GITHUB_WORKSPACE
-      - name: Grant execute permission
-        run: chmod +x gradlew
-      - name: Build robot code
-        run: ./gradlew build
+    - uses: actions/checkout@v4
+    - name: Compile robot code
+      run: ./gradlew build
+
+  test:
+    name: "Test Java"
+    runs-on: ubuntu-latest
+    container: wpilib/roborio-cross-ubuntu:2024-22.04
+    steps:
+    - uses: actions/checkout@v4
+    - name: Run tests on robot code
+      run: ./gradlew test -PrunTests # ./gradlew simulateJava
+
+  format:
+    name: "Lint and Format Java"
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    - name: Fetch all history and metadata
+      run: |
+        git checkout -b pr
+        git branch -f master origin/master
+    - uses: actions/setup-java@v4
+      with:
+        java-version: 17
+        distribution: temurin
+    - uses: gradle/gradle-build-action@v3
+    - uses: actions/setup-python@v5
+      with:
+        python-version: 3.8
+    - name: Install wpiformat
+      run: pip3 install wpiformat
+    - name: Run
+      run: wpiformat
+    - name: Check output
+      run: git --no-pager diff --exit-code HEAD
+    - name: Run spotless
+      run: ./gradlew build -PwithJavaFormat
