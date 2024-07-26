@@ -376,7 +376,7 @@ public class VisionSubsystem extends SubsystemBase {
       }
           });
 
-      // endAllThreads(); <- tentative: might break bobot
+
   }
 
   /**
