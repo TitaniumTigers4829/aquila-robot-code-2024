@@ -1,50 +1,78 @@
 name: Build
 
-on: [pull_request, push]
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
+  # This workflow contains a single job called "build"
   build:
-    name: "Build Java"
+    name: "Build"
+    # The type of runner that the job will run on
     runs-on: ubuntu-latest
+
+    # This grabs the WPILib docker container
     container: wpilib/roborio-cross-ubuntu:2024-22.04
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
+    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v4
-    - name: Compile robot code
+
+    # Declares the repository safe and not under dubious ownership.
+    - name: Add repository to git safe directories
+      run: git config --global --add safe.directory $GITHUB_WORKSPACE
+
+    # Grant execute permission for gradlew
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+
+    # Runs a single command using the runners shell
+    - name: Compile and build robot code
       run: ./gradlew build
 
   test:
-    name: "Test Java"
+    # This workflow contains a single job called "test"
+    name: "Test"
+    # The type of runner that the job will run on
     runs-on: ubuntu-latest
+
+    # This grabs the WPILib docker container
     container: wpilib/roborio-cross-ubuntu:2024-22.04
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
+    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v4
-    - name: Run tests on robot code
-      run: ./gradlew test -PrunTests # ./gradlew simulateJava
+
+    # Declares the repository safe and not under dubious ownership.
+    - name: Add repository to git safe directories
+      run: git config --global --add safe.directory $GITHUB_WORKSPACE
+
+    # Grant execute permission for gradlew
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+
+    # Runs a single command using the runners shell
+    - name: Compile and build robot code
+      run: ./gradlew simulateJava 
 
   format:
-    name: "Lint and Format Java"
+    name: "Lint and Format"
+    spotless:
+    # The type of runner that the job will run on
     runs-on: ubuntu-latest
+    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-    - uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
-    - name: Fetch all history and metadata
-      run: |
-        git checkout -b pr
-        git branch -f master origin/master
-    - uses: actions/setup-java@v4
-      with:
-        java-version: 17
-        distribution: temurin
-    - uses: gradle/gradle-build-action@v3
-    - uses: actions/setup-python@v5
-      with:
-        python-version: 3.8
-    - name: Install wpiformat
-      run: pip3 install wpiformat
-    - name: Run
-      run: wpiformat
-    - name: Check output
-      run: git --no-pager diff --exit-code HEAD
-    - name: Run spotless
-      run: ./gradlew build -PwithJavaFormat
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: 17
+      - run: ./gradlew spotlessCheck

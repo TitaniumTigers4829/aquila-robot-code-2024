@@ -16,9 +16,9 @@ public class SpinUpForSpeakerAuto extends Command {
   private final PivotSubsystem pivotSubsystem;
   private final LEDSubsystem leds;
 
-
   /** Creates a new SpinUpForSpeaker. */
-  public SpinUpForSpeakerAuto(ShooterSubsystem shooterSubsystem, PivotSubsystem pivotSubsystem, LEDSubsystem leds) {
+  public SpinUpForSpeakerAuto(
+      ShooterSubsystem shooterSubsystem, PivotSubsystem pivotSubsystem, LEDSubsystem leds) {
     this.shooterSubsystem = shooterSubsystem;
     this.pivotSubsystem = pivotSubsystem;
     this.leds = leds;
@@ -27,15 +27,13 @@ public class SpinUpForSpeakerAuto extends Command {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-   
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     super.execute();
-    
+
     shooterSubsystem.setRPM(ShooterConstants.SHOOT_SPEAKER_RPM * 0.5);
     // if we are ready to shoot:
     if (isReadyToShoot()) {
@@ -57,7 +55,9 @@ public class SpinUpForSpeakerAuto extends Command {
   public boolean isFinished() {
     return false;
   }
+
   public boolean isReadyToShoot() {
-    return shooterSubsystem.isShooterWithinAcceptableError() && pivotSubsystem.isPivotWithinAcceptableError();
+    return shooterSubsystem.isShooterWithinAcceptableError()
+        && pivotSubsystem.isPivotWithinAcceptableError();
   }
 }

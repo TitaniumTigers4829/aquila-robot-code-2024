@@ -2,7 +2,6 @@ package frc.robot.subsystems.vision;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.VisionConstants;
@@ -21,16 +20,22 @@ public class VisionSubsystem extends SubsystemBase {
   private double headingDegrees = 0;
   private double headingRateDegreesPerSecond = 0;
   private final Map<Integer, AtomicBoolean> runningThreads = new ConcurrentHashMap<>();
-  private final ExecutorService executorService = Executors.newFixedThreadPool(3); // Thread pool size of 3 for the number of limelights being threaded
+  private final ExecutorService executorService =
+      Executors.newFixedThreadPool(
+          3); // Thread pool size of 3 for the number of limelights being threaded
 
   /**
    * The pose estimates from the limelights in the following order {shooterLimelight,
    * frontLeftLimelight, frontRightLimelight}
    */
-  private PoseEstimate[] limelightEstimates = {new PoseEstimate(), new PoseEstimate(), new PoseEstimate()};
+  private PoseEstimate[] limelightEstimates = {
+    new PoseEstimate(), new PoseEstimate(), new PoseEstimate()
+  };
 
   public VisionSubsystem() {
-    for (int limelightThreads = 0; limelightThreads < limelightEstimates.length; limelightThreads++) {
+    for (int limelightThreads = 0;
+        limelightThreads < limelightEstimates.length;
+        limelightThreads++) {
       runningThreads.put(limelightThreads, new AtomicBoolean(true));
     }
   }
@@ -44,11 +49,14 @@ public class VisionSubsystem extends SubsystemBase {
   public boolean canSeeAprilTags(int limelightNumber) {
     // First checks if it can see an april tag, then checks if it is fully in frame
     // Different Limelights have different FOVs
-    if (getNumberOfAprilTags(limelightNumber) > 0 && getNumberOfAprilTags(limelightNumber) <= VisionConstants.APRIL_TAG_POSITIONS.length) {
+    if (getNumberOfAprilTags(limelightNumber) > 0
+        && getNumberOfAprilTags(limelightNumber) <= VisionConstants.APRIL_TAG_POSITIONS.length) {
       if (getLimelightName(limelightNumber).equals(VisionConstants.SHOOTER_LIMELIGHT_NAME)) {
-        return Math.abs(LimelightHelpers.getTX(getLimelightName(limelightNumber))) <= VisionConstants.LL3G_FOV_MARGIN_OF_ERROR;
+        return Math.abs(LimelightHelpers.getTX(getLimelightName(limelightNumber)))
+            <= VisionConstants.LL3G_FOV_MARGIN_OF_ERROR;
       } else {
-        return Math.abs(LimelightHelpers.getTX(getLimelightName(limelightNumber))) <= VisionConstants.LL3_FOV_MARGIN_OF_ERROR;
+        return Math.abs(LimelightHelpers.getTX(getLimelightName(limelightNumber)))
+            <= VisionConstants.LL3_FOV_MARGIN_OF_ERROR;
       }
     }
     return false;
@@ -197,12 +205,12 @@ public class VisionSubsystem extends SubsystemBase {
    */
   public String getLimelightName(int limelightNumber) {
     switch (limelightNumber) {
-      case 0: 
-        return VisionConstants.SHOOTER_LIMELIGHT_NAME;    
+      case 0:
+        return VisionConstants.SHOOTER_LIMELIGHT_NAME;
       case 1:
         return VisionConstants.FRONT_LEFT_LIMELIGHT_NAME;
-      case 2: 
-        return VisionConstants.FRONT_RIGHT_LIMELIGHT_NAME;    
+      case 2:
+        return VisionConstants.FRONT_RIGHT_LIMELIGHT_NAME;
       default:
         throw new IllegalArgumentException("You entered a number for a non-existent limelight");
     }
@@ -222,11 +230,14 @@ public class VisionSubsystem extends SubsystemBase {
     double last_TX = 0;
     double last_TY = 0;
 
-    // Syncronization block to ensure thread safety during the critical section where pose information is read and compared.
-    // This helps prevents race conditions, where one limelight may be updating an object that another limelight is reading.
-    // A race condition could cause unpredictable things to happen. Such as causing a limelight to be unable to reference an 
+    // Syncronization block to ensure thread safety during the critical section where pose
+    // information is read and compared.
+    // This helps prevents race conditions, where one limelight may be updating an object that
+    // another limelight is reading.
+    // A race condition could cause unpredictable things to happen. Such as causing a limelight to
+    // be unable to reference an
     // object, as its reference was modified earlier.
-    synchronized (this) { 
+    synchronized (this) {
       double current_TX = LimelightHelpers.getTX(getLimelightName(limelightNumber));
       double current_TY = LimelightHelpers.getTY(getLimelightName(limelightNumber));
 
@@ -243,15 +254,17 @@ public class VisionSubsystem extends SubsystemBase {
           lastSeenPose = getMegaTag1PoseEstimate(limelightNumber).pose;
         }
       } else {
-          // Retrieve the AtomicBoolean for the given limelight number
-          AtomicBoolean runningThread = runningThreads.getOrDefault(limelightNumber, new AtomicBoolean());
-          // Only stop the thread if it's currently running
-          if (runningThread.get()) {
-            // Since we can't see an April Tag, set the estimate for the specified limelight to an empty PoseEstimate()
-            limelightEstimates[limelightNumber] = new PoseEstimate();
-            // stop the thread for the specified limelight
-            stopThread(limelightNumber); 
-          }
+        // Retrieve the AtomicBoolean for the given limelight number
+        AtomicBoolean runningThread =
+            runningThreads.getOrDefault(limelightNumber, new AtomicBoolean());
+        // Only stop the thread if it's currently running
+        if (runningThread.get()) {
+          // Since we can't see an April Tag, set the estimate for the specified limelight to an
+          // empty PoseEstimate()
+          limelightEstimates[limelightNumber] = new PoseEstimate();
+          // stop the thread for the specified limelight
+          stopThread(limelightNumber);
+        }
       }
 
       last_TX = current_TX;
@@ -261,13 +274,16 @@ public class VisionSubsystem extends SubsystemBase {
 
   /**
    * Starts a separate thread dedicated to updating the pose estimate for a specified limelight.
-   * This approach is adopted to prevent loop overruns that would occur if we attempted to parse the JSON dump for each limelight sequentially within a single scheduler loop.
-   * 
-   * To achieve efficient and safe parallel execution, an ExecutorService is utilized to manage the lifecycle of these threads.
-   * 
-   * Each thread continuously runs the {@link #checkAndUpdatePose(int)} method as long as the corresponding limelight's thread is marked as "running".
-   * This ensures that pose estimates are updated in real-time, leveraging the parallel processing capabilities of the executor service.
-   *  
+   * This approach is adopted to prevent loop overruns that would occur if we attempted to parse the
+   * JSON dump for each limelight sequentially within a single scheduler loop.
+   *
+   * <p>To achieve efficient and safe parallel execution, an ExecutorService is utilized to manage
+   * the lifecycle of these threads.
+   *
+   * <p>Each thread continuously runs the {@link #checkAndUpdatePose(int)} method as long as the
+   * corresponding limelight's thread is marked as "running". This ensures that pose estimates are
+   * updated in real-time, leveraging the parallel processing capabilities of the executor service.
+   *
    * @param limelightNumber the limelight number
    */
   public void visionThread(int limelightNumber) {
@@ -280,8 +296,8 @@ public class VisionSubsystem extends SubsystemBase {
   }
 
   /**
-   * Sets the AtomicBoolean 'runningThreads' to false for the specified limelight.
-   * Stops the thread for the specified limelight.
+   * Sets the AtomicBoolean 'runningThreads' to false for the specified limelight. Stops the thread
+   * for the specified limelight.
    *
    * @param limelightNumber the limelight number
    */
@@ -289,9 +305,7 @@ public class VisionSubsystem extends SubsystemBase {
     runningThreads.get(limelightNumber).set(false);
   }
 
-  /**
-   * Shuts down all the threads.
-   */
+  /** Shuts down all the threads. */
   public void endAllThreads() {
     // Properly shut down the executor service when the subsystem ends
     executorService.shutdown(); // Prevents new tasks from being submitted

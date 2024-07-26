@@ -31,24 +31,37 @@ public class RedAmpSideFourNote extends SequentialCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new InstantCommand(()->driveSubsystem.resetOdometry(new Pose2d(15.752967834472656, 6.664938449859619, Rotation2d.fromRadians(2.0491481821878663)))),
-      new SpinUpForSpeakerAuto(shooterSubsystem, pivotSubsystem, null),
-      new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, ledSubsystem).withTimeout(1.5),
-      new ParallelCommandGroup(
-        new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "red amp side four note 1", false),
-        new IntakeAuto(intakeSubsystem, pivotSubsystem, shooterSubsystem, ledSubsystem).withTimeout(2)
-      ),
-      new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, ledSubsystem).withTimeout(1.7),
-      new ParallelCommandGroup(
-        new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "red amp side four note 2", false),
-        new IntakeAuto(intakeSubsystem, pivotSubsystem, shooterSubsystem, ledSubsystem).withTimeout(2.8)
-      ),
-      new ParallelCommandGroup(
-        new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "red amp side four note 3", false),
-        new IntakeAuto(intakeSubsystem, pivotSubsystem, shooterSubsystem, ledSubsystem)
-      ),
-      new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, ledSubsystem).withTimeout(3),
-      new StopShooterAndIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem)
-    );
+        new InstantCommand(
+            () ->
+                driveSubsystem.resetOdometry(
+                    new Pose2d(
+                        15.752967834472656,
+                        6.664938449859619,
+                        Rotation2d.fromRadians(2.0491481821878663)))),
+        new SpinUpForSpeakerAuto(shooterSubsystem, pivotSubsystem, null),
+        new ShootSpeakerAuto(
+                driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, ledSubsystem)
+            .withTimeout(1.5),
+        new ParallelCommandGroup(
+            new FollowChoreoTrajectory(
+                driveSubsystem, visionSubsystem, "red amp side four note 1", false),
+            new IntakeAuto(intakeSubsystem, pivotSubsystem, shooterSubsystem, ledSubsystem)
+                .withTimeout(2)),
+        new ShootSpeakerAuto(
+                driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, ledSubsystem)
+            .withTimeout(1.7),
+        new ParallelCommandGroup(
+            new FollowChoreoTrajectory(
+                driveSubsystem, visionSubsystem, "red amp side four note 2", false),
+            new IntakeAuto(intakeSubsystem, pivotSubsystem, shooterSubsystem, ledSubsystem)
+                .withTimeout(2.8)),
+        new ParallelCommandGroup(
+            new FollowChoreoTrajectory(
+                driveSubsystem, visionSubsystem, "red amp side four note 3", false),
+            new IntakeAuto(intakeSubsystem, pivotSubsystem, shooterSubsystem, ledSubsystem)),
+        new ShootSpeakerAuto(
+                driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, ledSubsystem)
+            .withTimeout(3),
+        new StopShooterAndIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem));
   }
 }
