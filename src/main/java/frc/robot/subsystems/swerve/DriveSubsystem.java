@@ -232,7 +232,7 @@ public class DriveSubsystem extends SubsystemBase {
     boolean collisionDetected = isCollisionDetected();
     boolean isStatorGood = getStatorCurrents();
     // boolean 
-    if (skidRatio > 1 || collisionDetected || isStatorGood) {
+    if (skidRatio > 1 || collisionDetected || !isStatorGood) {
       return true;
     }
     return false;
@@ -426,7 +426,7 @@ public class DriveSubsystem extends SubsystemBase {
   public boolean getStatorCurrents() {
     boolean[] statorStatus = getStatorStatus();
     for (int i = 0; i < statorStatus.length; i++) {
-        if (!statorStatus[i]) {
+        if (statorStatus[i]) {
           return true;
         }
     }
@@ -435,7 +435,7 @@ public class DriveSubsystem extends SubsystemBase {
 
 public boolean isSlipping() {
   if (getSkidRatio() > 1.0) {
-    isSlipping = true;
+    return true;
   }
   return false;
 }
