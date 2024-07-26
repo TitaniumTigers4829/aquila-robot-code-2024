@@ -261,17 +261,13 @@ public class VisionSubsystem extends SubsystemBase {
    * @return 0 = limelight-shooter, 1 = limelight-left, 2 = limelight-right
    */
   public String getLimelightName(int limelightNumber) {
-    switch (limelightNumber) {
-      case 0: 
-        return VisionConstants.SHOOTER_LIMELIGHT_NAME;    
-      case 1:
-        return VisionConstants.FRONT_LEFT_LIMELIGHT_NAME;
-      case 2: 
-        return VisionConstants.FRONT_RIGHT_LIMELIGHT_NAME;    
-      default:
-        throw new IllegalArgumentException("You entered a number for a non-existent limelight");
-    }
-  }
+    return switch (limelightNumber) {
+        case 0 -> VisionConstants.SHOOTER_LIMELIGHT_NAME;
+        case 1 -> VisionConstants.FRONT_LEFT_LIMELIGHT_NAME;
+        case 2 -> VisionConstants.FRONT_RIGHT_LIMELIGHT_NAME;
+        default -> throw new IllegalArgumentException("You entered a number for a non-existent limelight");
+    };
+}
 
   /** Gets the pose calculated the last time a limelight saw an April Tag */
   public Pose2d getLastSeenPose() {
@@ -289,8 +285,8 @@ public class VisionSubsystem extends SubsystemBase {
 
     // Syncronization block to ensure thread safety during the critical section where pose information is read and compared.
     // This helps prevents race conditions, where one limelight may be updating an object that another limelight is reading.
-    // A race condition could cause unpredictable things to happen. Such as causing a limelight to be unable to reference an 
-    // object, as its reference was modified earlier.
+    // A race condition could cause unpredictable things to happen. Such as causing a limelight to be unable to refrence an 
+    // object, as it's refrence was modified earlier.
     synchronized (this) { 
       try {
         double current_TX = LimelightHelpers.getTX(getLimelightName(limelightNumber));
