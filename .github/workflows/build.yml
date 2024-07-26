@@ -34,7 +34,7 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
     # Runs a single command using the runners shell
-    - name: Compile and build robot code
+    - name: Simulate and test robot code
       run: ./gradlew simulateJava 
 
   spotless:
