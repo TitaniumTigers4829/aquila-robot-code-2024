@@ -69,6 +69,7 @@ public class VisionSubsystem extends SubsystemBase {
    * @param limelightNumber the number of the limelight
    */
   public void updateLimelightPoseEstimate(int limelightNumber) {
+      //Soon to be implemented code:
     // if (canSeeAprilTags(limelightNumber)) {
     //   if (isValidPoseEstimate(limelightNumber)) {
         // double distanceToAprilTags = getLimelightAprilTagDistance(limelightNumber);
@@ -317,7 +318,7 @@ public class VisionSubsystem extends SubsystemBase {
         last_TX = current_TX;
         last_TY = current_TY;
     } catch (Exception e) {
-      System.err.println("Error communicating with Limelight " + getLimelightName(limelightNumber) + ": " + e.getMessage());
+      System.err.println("Error communicating with the: " + getLimelightName(limelightNumber) + ": " + e.getMessage());
       handleLimelightDisconnect(limelightNumber);
       }
     }
@@ -337,16 +338,16 @@ public class VisionSubsystem extends SubsystemBase {
         NetworkTable limelightTable = limelightTableInstance.getTable(getLimelightName(limelightNumber));
         
         // Perform a simple read operation as a health check
-        boolean isConnected = limelightTable.containsKey("tx"); 
+        boolean isConnected = limelightTable.containsKey("v"); 
 
         if (isConnected) {
             System.out.println("Successfully reconnected to " + getLimelightName(limelightNumber));
-            limelightThreads.get(limelightNumber).set(true);
         } else {
             throw new RuntimeException("Failed to reconnect to " + getLimelightName(limelightNumber));
           }
-      } catch (Exception e) {
+      } catch (Exception e) { 
           System.err.println("Reconnection attempt failed for " + getLimelightName(limelightNumber) + ": " + e.getMessage());
+  
         }
     }, 5, TimeUnit.SECONDS); // Retry after 5 seconds
   }
@@ -386,9 +387,13 @@ public class VisionSubsystem extends SubsystemBase {
    * @param limelightNumber the limelight number
    */
   public void stopThread(int limelightNumber) {
-    // Since we can't see an April Tag, set the estimate for the specified limelight to an empty PoseEstimate()
-    limelightEstimates[limelightNumber] = new PoseEstimate();
-    limelightThreads.get(limelightNumber).set(false);
+    try {
+      // Since we can't see an April Tag, set the estimate for the specified limelight to an empty PoseEstimate()
+      limelightEstimates[limelightNumber] = new PoseEstimate();
+      limelightThreads.get(limelightNumber).set(false);
+    } catch (Exception e) {
+      System.err.println("Error stopping thread for the: " + getLimelightName(limelightNumber) + ": " + e.getMessage());
+    }
   }
 
   /**
