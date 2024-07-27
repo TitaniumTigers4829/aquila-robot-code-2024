@@ -33,7 +33,7 @@ public class SwerveModule {
 
   private final MotionMagicVoltage mmPositionRequest;
   private final VelocityVoltage velocityRequest;
-  
+
   private String name;
 
   /**
@@ -65,7 +65,7 @@ public class SwerveModule {
 
     mmPositionRequest = new MotionMagicVoltage(0);
     velocityRequest = new VelocityVoltage(0);
-    
+
     CANcoderConfiguration turnEncoderConfig = new CANcoderConfiguration();
     turnEncoderConfig.MagnetSensor.MagnetOffset = -angleZero;
     turnEncoderConfig.MagnetSensor.SensorDirection = encoderReversed;
@@ -178,11 +178,14 @@ public class SwerveModule {
     }
 
     // Converts meters per second to rotations per second
-    double desiredDriveRPS = optimizedDesiredState.speedMetersPerSecond 
-     * ModuleConstants.DRIVE_GEAR_RATIO / ModuleConstants.WHEEL_CIRCUMFERENCE_METERS;
-     
+    double desiredDriveRPS =
+        optimizedDesiredState.speedMetersPerSecond
+            * ModuleConstants.DRIVE_GEAR_RATIO
+            / ModuleConstants.WHEEL_CIRCUMFERENCE_METERS;
+
     driveMotor.setControl(velocityRequest.withVelocity(desiredDriveRPS));
-    turnMotor.setControl(mmPositionRequest.withPosition(optimizedDesiredState.angle.getRotations()));
+    turnMotor.setControl(
+        mmPositionRequest.withPosition(optimizedDesiredState.angle.getRotations()));
   }
 
   /**

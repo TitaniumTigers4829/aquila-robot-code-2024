@@ -8,7 +8,6 @@ import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.numbers.N3;
@@ -126,9 +125,11 @@ public class DriveSubsystem extends SubsystemBase {
 
     alliance = DriverStation.getAlliance();
 
-    setpointGenerator = new SwerveSetpointGenerator(DriveConstants.DRIVE_KINEMATICS, DriveConstants.MODULE_TRANSLATIONS);
+    setpointGenerator =
+        new SwerveSetpointGenerator(
+            DriveConstants.DRIVE_KINEMATICS, DriveConstants.MODULE_TRANSLATIONS);
     currentSetpoint = new SwerveSetpoint(new ChassisSpeeds(), getModuleStates());
-    
+
     // Configure AutoBuilder
     AutoBuilder.configureHolonomic(
         this::getPose,
@@ -361,6 +362,8 @@ public class DriveSubsystem extends SubsystemBase {
     Pose2d pose = getPose();
     SmartDashboard.putBoolean("screwed", Math.abs(pose.getX()) > 20);
     SmartDashboard.putString("odometry", pose.toString());
-    SmartDashboard.putNumber("speakerDistance", pose.getTranslation().getDistance(SmarterDashboardRegistry.getSpeakerPos()));
+    SmartDashboard.putNumber(
+        "speakerDistance",
+        pose.getTranslation().getDistance(SmarterDashboardRegistry.getSpeakerPos()));
   }
 }

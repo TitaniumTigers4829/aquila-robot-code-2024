@@ -15,15 +15,14 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import frc.robot.extras.utils.EqualsUtil;
 import frc.robot.extras.utils.GeomUtil;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 /**
  * Code modified again by FRC team 4829. hehehehhehehe
- * 
- * "Inspired" by FRC team 254. See the license file in the root directory of this project.
+ *
+ * <p>"Inspired" by FRC team 254. See the license file in the root directory of this project.
  *
  * <p>Takes a prior setpoint (ChassisSpeeds), a desired setpoint (from a driver, or from a path
  * follower), and outputs a new setpoint that respects all of the kinematic constraints on module
@@ -35,9 +34,10 @@ public class SwerveSetpointGenerator {
   private final SwerveDriveKinematics kinematics;
   private final Translation2d[] moduleLocations;
 
-  public SwerveSetpointGenerator(SwerveDriveKinematics kinematics, Translation2d[] moduleLocations) {
+  public SwerveSetpointGenerator(
+      SwerveDriveKinematics kinematics, Translation2d[] moduleLocations) {
     this.kinematics = kinematics;
-    this.moduleLocations =  moduleLocations;
+    this.moduleLocations = moduleLocations;
   }
 
   /**
@@ -255,7 +255,8 @@ public class SwerveSetpointGenerator {
       }
     }
     if (all_modules_should_flip
-        && !EqualsUtil.epsilonEquals(GeomUtil.toTwist2d(prevSetpoint.chassisSpeeds()), new Twist2d())
+        && !EqualsUtil.epsilonEquals(
+            GeomUtil.toTwist2d(prevSetpoint.chassisSpeeds()), new Twist2d())
         && !EqualsUtil.epsilonEquals(GeomUtil.toTwist2d(desiredState), new Twist2d())) {
       // It will (likely) be faster to stop the robot, rotate the modules in place to the complement
       // of the desired

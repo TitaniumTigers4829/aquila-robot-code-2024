@@ -60,9 +60,9 @@ public class SubwooferShot extends DriveCommandBase {
 
     // allow the driver to drive slowly (NOT full speed - will mess up shooter)
     // driveSubsystem.drive(
-    //   deadband(leftY.getAsDouble()) * 0.5, 
-    //   deadband(leftX.getAsDouble()) * 0.5, 
-    //   deadband(rightX.getAsDouble()) * 0.5, 
+    //   deadband(leftY.getAsDouble()) * 0.5,
+    //   deadband(leftX.getAsDouble()) * 0.5,
+    //   deadband(rightX.getAsDouble()) * 0.5,
     //   !isFieldRelative.getAsBoolean()
     // );
 

@@ -19,14 +19,44 @@ import frc.robot.subsystems.vision.VisionSubsystem;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class SimpleTxi extends SequentialCommandGroup {
   /** Creates a new SimpleTxi. */
-  public SimpleTxi(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, PivotSubsystem pivotSubsystem, ShooterSubsystem shooterSubsystem, LEDSubsystem ledSubsystem) {
+  public SimpleTxi(
+      DriveSubsystem driveSubsystem,
+      VisionSubsystem visionSubsystem,
+      PivotSubsystem pivotSubsystem,
+      ShooterSubsystem shooterSubsystem,
+      LEDSubsystem ledSubsystem) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new SubwooferShot(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, null, null, null, null, ledSubsystem).withTimeout(2),
-      new WaitCommand(7),
-      new Drive(driveSubsystem, visionSubsystem, ()->1, ()->0, ()->0, ()->false, ()->false).withTimeout(2.5),
-      new Drive(driveSubsystem, visionSubsystem, ()->0, ()->0, ()->0, ()->false, ()->false).withTimeout(1)
-    );
+        new SubwooferShot(
+                driveSubsystem,
+                shooterSubsystem,
+                pivotSubsystem,
+                visionSubsystem,
+                null,
+                null,
+                null,
+                null,
+                ledSubsystem)
+            .withTimeout(2),
+        new WaitCommand(7),
+        new Drive(
+                driveSubsystem,
+                visionSubsystem,
+                () -> 1,
+                () -> 0,
+                () -> 0,
+                () -> false,
+                () -> false)
+            .withTimeout(2.5),
+        new Drive(
+                driveSubsystem,
+                visionSubsystem,
+                () -> 0,
+                () -> 0,
+                () -> 0,
+                () -> false,
+                () -> false)
+            .withTimeout(1));
   }
 }
