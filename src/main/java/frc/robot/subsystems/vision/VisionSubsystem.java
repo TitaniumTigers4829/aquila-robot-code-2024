@@ -72,10 +72,10 @@ public class VisionSubsystem extends SubsystemBase {
     // Soon to be implemented code:
     // if (canSeeAprilTags(limelightNumber)) {
     //   if (isValidPoseEstimate(limelightNumber)) {
-    // double distanceToAprilTags = getLimelightAprilTagDistance(limelightNumber);
 
     // if (isLargeDiscrepancyBetweenMegaTag1And2(limelightNumber)
-    //     && distanceToAprilTags < VisionConstants.MEGA_TAG_2_DISTANCE_THRESHOLD) {
+    //     && getLimelightAprilTagDistance(limelightNumber) <
+    // VisionConstants.MEGA_TAG_2_DISTANCE_THRESHOLD) {
     //   limelightEstimates[limelightNumber] = getMegaTag1PoseEstimate(limelightNumber);
     // } else
     if (headingRateDegreesPerSecond < VisionConstants.MEGA_TAG_2_MAX_HEADING_RATE) {
@@ -147,10 +147,10 @@ public class VisionSubsystem extends SubsystemBase {
   }
 
   /**
-   * Checks is megatag 1 and megatag 2 estimates are good
+   * Checks if the MegaTag1 and MegaTag2 pose estimates are within the field parameters
    *
-   * @param limelightNumber
-   * @return
+   * @param limelightNumber the number of the limelight
+   * @return true if the poses are within the field, false if not.
    */
   public boolean isValidPoseEstimate(int limelightNumber) {
     if (isMegaTag1Good(limelightNumber) && isMegaTag2Good(limelightNumber)) {
@@ -160,10 +160,10 @@ public class VisionSubsystem extends SubsystemBase {
   }
 
   /**
-   * Checks if the MegaTag1 Estimate is within the field parameters
+   * Checks if the MegaTag2 pose estimate is within the field parameters
    *
-   * @param limelightNumber
-   * @return
+   * @param limelightNumber the number of the limelight
+   * @return true if the pose is within the field, false if not.
    */
   public boolean isMegaTag1Good(int limelightNumber) {
     PoseEstimate megaTag1Estimate = getMegaTag1PoseEstimate(limelightNumber);
@@ -178,10 +178,10 @@ public class VisionSubsystem extends SubsystemBase {
   }
 
   /**
-   * Checks if the MegaTag2 Estimate is within the field parameters
+   * Checks if the MegaTag2 pose estimate is within the field parameters
    *
-   * @param limelightNumber
-   * @return
+   * @param limelightNumber the number of the limelight
+   * @return true if the pose is within the field, false if not.
    */
   public boolean isMegaTag2Good(int limelightNumber) {
     PoseEstimate megaTag2Estimate = getMegaTag2PoseEstimate(limelightNumber);
@@ -228,6 +228,7 @@ public class VisionSubsystem extends SubsystemBase {
     return (limelightEstimates[limelightNumber].latency) / 1000.0;
   }
 
+  /** Gets the pose calculated the last time a limelight saw an April Tag */
   public Pose2d getLastSeenPose() {
     return lastSeenPose;
   }
@@ -334,9 +335,12 @@ public class VisionSubsystem extends SubsystemBase {
   }
 
   /**
-   * theoretically should handle if a limelight disconnects or not.
+   * Called when there is an error communicating with a limelight the ScheduledExecutorService
+   * schedules a task after 5 seconds to reconnect to the limelight NT will try to read a key from
+   * the limelight, if the read is successful, then we are connected, if not then we have failed to
+   * connect.
    *
-   * @param limelightNumber
+   * @param limelightNumber the limelight number
    */
   public void handleLimelightDisconnect(int limelightNumber) {
     System.err.println(getLimelightName(limelightNumber) + " disconnected.");
