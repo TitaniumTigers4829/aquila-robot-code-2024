@@ -128,12 +128,7 @@ public class VisionSubsystem extends SubsystemBase {
    *     return 0 for x, y, and theta
    */
   public PoseEstimate getMegaTag1PoseEstimate(int limelightNumber) {
-    try {
-      return LimelightHelpers.getBotPoseEstimate_wpiBlue(getLimelightName(limelightNumber));
-    } catch (Exception e) {
-        System.err.println("Error estimating MegaTag1 pose for the: " + getLimelightName(limelightNumber) + e.getMessage());
-        return new PoseEstimate(); // Return an empty PoseEstimate
-    }
+    return LimelightHelpers.getBotPoseEstimate_wpiBlue(getLimelightName(limelightNumber));
   }
 
   /**
@@ -145,12 +140,7 @@ public class VisionSubsystem extends SubsystemBase {
    *     return 0 for x, y, and theta
    */
   public PoseEstimate getMegaTag2PoseEstimate(int limelightNumber) {
-    try {
-      return LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(getLimelightName(limelightNumber));
-    } catch (Exception e) {
-        System.err.println("Error estimating MegaTag2 pose for the: " + getLimelightName(limelightNumber) + e.getMessage());
-        return new PoseEstimate(); // Return an empty PoseEstimate
-    }
+    return LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(getLimelightName(limelightNumber));
   }
 
   /**
@@ -159,7 +149,7 @@ public class VisionSubsystem extends SubsystemBase {
    * @return
    */
   public boolean isValidPoseEstimate(int limelightNumber) {
-    if (megaTag1IsGood(limelightNumber) && megaTag2IsGood(limelightNumber)) {
+    if (isMegaTag1Good(limelightNumber) && isMegaTag2Good(limelightNumber)) {
       return true;
     }
     return false;
@@ -170,7 +160,7 @@ public class VisionSubsystem extends SubsystemBase {
    * @param limelightNumber
    * @return 
    */
-  public boolean megaTag1IsGood(int limelightNumber) {
+  public boolean isMegaTag1Good(int limelightNumber) {
     PoseEstimate megaTag1Estimate = getMegaTag1PoseEstimate(limelightNumber);
 
     if ((megaTag1Estimate.pose.getX() > 0 && megaTag1Estimate.pose.getX() <= FieldConstants.FIELD_WIDTH_METERS) &&
@@ -185,7 +175,7 @@ public class VisionSubsystem extends SubsystemBase {
    * @param limelightNumber
    * @return
    */
-  public boolean megaTag2IsGood(int limelightNumber) {
+  public boolean isMegaTag2Good(int limelightNumber) {
     PoseEstimate megaTag2Estimate = getMegaTag2PoseEstimate(limelightNumber);
 
     if ((megaTag2Estimate.pose.getX() > 0 && megaTag2Estimate.pose.getX() <= FieldConstants.FIELD_WIDTH_METERS) &&
