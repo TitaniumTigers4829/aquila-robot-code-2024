@@ -52,11 +52,14 @@ public class VisionSubsystem extends SubsystemBase {
   public boolean canSeeAprilTags(int limelightNumber) {
     // First checks if it can see an april tag, then checks if it is fully in frame
     // Different Limelights have different FOVs
-    if (getNumberOfAprilTags(limelightNumber) > 0 && getNumberOfAprilTags(limelightNumber) <= VisionConstants.APRIL_TAG_POSITIONS.length) {
+    if (getNumberOfAprilTags(limelightNumber) > 0
+        && getNumberOfAprilTags(limelightNumber) <= VisionConstants.APRIL_TAG_POSITIONS.length) {
       if (getLimelightName(limelightNumber).equals(VisionConstants.SHOOTER_LIMELIGHT_NAME)) {
-        return Math.abs(LimelightHelpers.getTX(getLimelightName(limelightNumber))) <= VisionConstants.LL3G_FOV_MARGIN_OF_ERROR;
+        return Math.abs(LimelightHelpers.getTX(getLimelightName(limelightNumber)))
+            <= VisionConstants.LL3G_FOV_MARGIN_OF_ERROR;
       } else {
-        return Math.abs(LimelightHelpers.getTX(getLimelightName(limelightNumber))) <= VisionConstants.LL3_FOV_MARGIN_OF_ERROR;
+        return Math.abs(LimelightHelpers.getTX(getLimelightName(limelightNumber)))
+            <= VisionConstants.LL3_FOV_MARGIN_OF_ERROR;
       }
     }
     return false;
@@ -258,14 +261,9 @@ public class VisionSubsystem extends SubsystemBase {
         case 2 -> VisionConstants.FRONT_RIGHT_LIMELIGHT_NAME;
         default -> throw new IllegalArgumentException("You entered a number for a non-existent limelight");
     };
-}
-
-  /** Gets the pose calculated the last time a limelight saw an April Tag */
-  public Pose2d getLastSeenPose() {
-    return lastSeenPose;
   }
-
-  /**
+    
+  /** 
    * This checks is there is new pose detected by a limelight, and if so, updates the pose estimate
    *
    * @param limelightNumber the limelight number
@@ -304,7 +302,6 @@ public class VisionSubsystem extends SubsystemBase {
               stopThread(limelightNumber); 
             }
         }
-
         last_TX = current_TX;
         last_TY = current_TY;
     } catch (Exception e) {
@@ -344,13 +341,16 @@ public class VisionSubsystem extends SubsystemBase {
 
   /**
    * Starts a separate thread dedicated to updating the pose estimate for a specified limelight.
-   * This approach is adopted to prevent loop overruns that would occur if we attempted to parse the JSON dump for each limelight sequentially within a single scheduler loop.
-   * 
-   * To achieve efficient and safe parallel execution, an ExecutorService is utilized to manage the lifecycle of these threads.
-   * 
-   * Each thread continuously runs the {@link #checkAndUpdatePose(int)} method as long as the corresponding limelight's thread is marked as "running".
-   * This ensures that pose estimates are updated in real-time, leveraging the parallel processing capabilities of the executor service.
-   *  
+   * This approach is adopted to prevent loop overruns that would occur if we attempted to parse the
+   * JSON dump for each limelight sequentially within a single scheduler loop.
+   *
+   * <p>To achieve efficient and safe parallel execution, an ExecutorService is utilized to manage
+   * the lifecycle of these threads.
+   *
+   * <p>Each thread continuously runs the {@link #checkAndUpdatePose(int)} method as long as the
+   * corresponding limelight's thread is marked as "running". This ensures that pose estimates are
+   * updated in real-time, leveraging the parallel processing capabilities of the executor service.
+   *
    * @param limelightNumber the limelight number
    */
   public void visionThread(int limelightNumber) {
@@ -371,8 +371,8 @@ public class VisionSubsystem extends SubsystemBase {
   }
 
   /**
-   * Sets the AtomicBoolean 'runningThreads' to false for the specified limelight.
-   * Stops the thread for the specified limelight.
+   * Sets the AtomicBoolean 'runningThreads' to false for the specified limelight. Stops the thread
+   * for the specified limelight.
    *
    * @param limelightNumber the limelight number
    */
@@ -386,9 +386,7 @@ public class VisionSubsystem extends SubsystemBase {
     }
   }
 
-  /**
-   * Shuts down all the threads.
-   */
+  /** Shuts down all the threads. */
   public void endAllThreads() {
     // Properly shut down the executor service when the subsystem ends
     scheduledExecutorService.shutdown(); // Prevents new tasks from being submitted

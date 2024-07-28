@@ -47,9 +47,9 @@
 //   }
 
 //   public boolean isReadyToShoot() {
-//      return shooterSubsystem.isShooterWithinAcceptableError() && pivotSubsystem.isPivotWithinAcceptableError();
+//      return shooterSubsystem.isShooterWithinAcceptableError() &&
+// pivotSubsystem.isPivotWithinAcceptableError();
 //   }
-
 
 //   // Returns true when the command should end.
 //   @Override

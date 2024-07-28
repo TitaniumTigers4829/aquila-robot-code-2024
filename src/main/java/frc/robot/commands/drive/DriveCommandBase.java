@@ -11,10 +11,10 @@ import frc.robot.subsystems.vision.VisionSubsystem;
 
 public abstract class DriveCommandBase extends Command {
 
-  private final MultiLinearInterpolator oneAprilTagLookupTable = 
-    new MultiLinearInterpolator(VisionConstants.ONE_APRIL_TAG_LOOKUP_TABLE);
-  private final MultiLinearInterpolator twoAprilTagLookupTable = 
-    new MultiLinearInterpolator(VisionConstants.TWO_APRIL_TAG_LOOKUP_TABLE);
+  private final MultiLinearInterpolator oneAprilTagLookupTable =
+      new MultiLinearInterpolator(VisionConstants.ONE_APRIL_TAG_LOOKUP_TABLE);
+  private final MultiLinearInterpolator twoAprilTagLookupTable =
+      new MultiLinearInterpolator(VisionConstants.TWO_APRIL_TAG_LOOKUP_TABLE);
 
   private final VisionSubsystem visionSubsystem;
   private final DriveSubsystem driveSubsystem;
@@ -37,7 +37,8 @@ public abstract class DriveCommandBase extends Command {
   @Override
   public void execute() {
     driveSubsystem.addPoseEstimatorSwerveMeasurement();
-    visionSubsystem.setHeadingInfo(driveSubsystem.getOdometryRotation2d().getDegrees(), driveSubsystem.getGyroRate());
+    visionSubsystem.setHeadingInfo(
+        driveSubsystem.getOdometryRotation2d().getDegrees(), driveSubsystem.getGyroRate());
     calculatePoseFromLimelight(VisionConstants.SHOOTER_LIMELIGHT_NUMBER);
     calculatePoseFromLimelight(VisionConstants.FRONT_LEFT_LIMELIGHT_NUMBER);
     calculatePoseFromLimelight(VisionConstants.FRONT_RIGHT_LIMELIGHT_NUMBER);
@@ -50,17 +51,24 @@ public abstract class DriveCommandBase extends Command {
     if (visionSubsystem.canSeeAprilTags(limelightNumber)) {
       currentTimeStampSeconds = visionSubsystem.getTimeStampSeconds(limelightNumber);
 
-      double distanceFromClosestAprilTag = visionSubsystem.getLimelightAprilTagDistance(limelightNumber);
+      double distanceFromClosestAprilTag =
+          visionSubsystem.getLimelightAprilTagDistance(limelightNumber);
       // Sets the pose estimator confidence in vision based off of number of april tags and distance
       if (visionSubsystem.getNumberOfAprilTags(limelightNumber) == 1) {
-        double[] standardDeviations = oneAprilTagLookupTable.getLookupValue(distanceFromClosestAprilTag);
-        driveSubsystem.setPoseEstimatorVisionConfidence(standardDeviations[0], standardDeviations[1], standardDeviations[2]);
+        double[] standardDeviations =
+            oneAprilTagLookupTable.getLookupValue(distanceFromClosestAprilTag);
+        driveSubsystem.setPoseEstimatorVisionConfidence(
+            standardDeviations[0], standardDeviations[1], standardDeviations[2]);
       } else if (visionSubsystem.getNumberOfAprilTags(limelightNumber) > 1) {
-        double[] standardDeviations = twoAprilTagLookupTable.getLookupValue(distanceFromClosestAprilTag);
-        driveSubsystem.setPoseEstimatorVisionConfidence(standardDeviations[0], standardDeviations[1], standardDeviations[2]);
+        double[] standardDeviations =
+            twoAprilTagLookupTable.getLookupValue(distanceFromClosestAprilTag);
+        driveSubsystem.setPoseEstimatorVisionConfidence(
+            standardDeviations[0], standardDeviations[1], standardDeviations[2]);
       }
 
-      driveSubsystem.addPoseEstimatorVisionMeasurement(visionSubsystem.getPoseFromAprilTags(limelightNumber), Timer.getFPGATimestamp() - visionSubsystem.getLatencySeconds(limelightNumber));
+      driveSubsystem.addPoseEstimatorVisionMeasurement(
+          visionSubsystem.getPoseFromAprilTags(limelightNumber),
+          Timer.getFPGATimestamp() - visionSubsystem.getLatencySeconds(limelightNumber));
     }
 
     lastTimeStampSeconds = currentTimeStampSeconds;

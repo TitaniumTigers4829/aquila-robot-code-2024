@@ -41,10 +41,28 @@ public class SmarterDashboardRegistry {
       isRed = true;
     }
 
-    ampPos = isRed ? new Pose2d(FieldConstants.RED_AMP_X, FieldConstants.RED_AMP_Y, FieldConstants.RED_AMP_ROTATION) : new Pose2d(FieldConstants.BLUE_AMP_X, FieldConstants.BLUE_AMP_Y, FieldConstants.BLUE_AMP_ROTATION);
-    speakerPos = isRed ? new Translation2d(FieldConstants.RED_SPEAKER_X, FieldConstants.RED_SPEAKER_Y) : new Translation2d(FieldConstants.BLUE_SPEAKER_X, FieldConstants.BLUE_SPEAKER_Y);
-    loadingStationPos = isRed ? new Translation2d(FieldConstants.RED_LOADING_STATION_X, FieldConstants.RED_LOADING_STATION_Y) : new Translation2d(FieldConstants.BLUE_LOADING_STATION_X, FieldConstants.BLUE_LOADING_STATION_Y);
-    passingPos = isRed ? new Translation2d(FieldConstants.RED_PASSING_X, FieldConstants.RED_PASSING_Y) : new Translation2d(FieldConstants.BLUE_PASSING_X, FieldConstants.BLUE_PASSING_Y);
+    ampPos =
+        isRed
+            ? new Pose2d(
+                FieldConstants.RED_AMP_X, FieldConstants.RED_AMP_Y, FieldConstants.RED_AMP_ROTATION)
+            : new Pose2d(
+                FieldConstants.BLUE_AMP_X,
+                FieldConstants.BLUE_AMP_Y,
+                FieldConstants.BLUE_AMP_ROTATION);
+    speakerPos =
+        isRed
+            ? new Translation2d(FieldConstants.RED_SPEAKER_X, FieldConstants.RED_SPEAKER_Y)
+            : new Translation2d(FieldConstants.BLUE_SPEAKER_X, FieldConstants.BLUE_SPEAKER_Y);
+    loadingStationPos =
+        isRed
+            ? new Translation2d(
+                FieldConstants.RED_LOADING_STATION_X, FieldConstants.RED_LOADING_STATION_Y)
+            : new Translation2d(
+                FieldConstants.BLUE_LOADING_STATION_X, FieldConstants.BLUE_LOADING_STATION_Y);
+    passingPos =
+        isRed
+            ? new Translation2d(FieldConstants.RED_PASSING_X, FieldConstants.RED_PASSING_Y)
+            : new Translation2d(FieldConstants.BLUE_PASSING_X, FieldConstants.BLUE_PASSING_Y);
   }
 
   public static void setPose(Pose2d robotPose) {

@@ -11,7 +11,9 @@ import frc.robot.subsystems.shooter.ShooterSubsystem;
 public class IntakeFromShooter extends Command {
   /** Creates a new IntakeFromShooter. */
   private final ShooterSubsystem shooterSubsystem;
+
   private final IntakeSubsystem intakeSubsystem;
+
   public IntakeFromShooter(ShooterSubsystem shooterSubsystem, IntakeSubsystem intakeSubsystem) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.shooterSubsystem = shooterSubsystem;
@@ -27,10 +29,10 @@ public class IntakeFromShooter extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(shooterSubsystem.hasNote() && intakeSubsystem.sensorDetectsNote()){
+    if (shooterSubsystem.hasNote() && intakeSubsystem.sensorDetectsNote()) {
       shooterSubsystem.setFlywheelNeutral();
       shooterSubsystem.setRollerSpeed(0);
-    }else{
+    } else {
       shooterSubsystem.setRPM(-2000);
       shooterSubsystem.setRollerSpeed(-1);
     }
