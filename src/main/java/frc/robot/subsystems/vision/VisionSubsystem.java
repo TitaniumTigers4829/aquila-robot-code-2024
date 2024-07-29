@@ -160,7 +160,7 @@ public class VisionSubsystem extends SubsystemBase {
   }
 
   /**
-   * Checks if the MegaTag2 pose estimate is within the field parameters
+   * Checks if the MegaTag1 pose estimate is within the field parameters
    *
    * @param limelightNumber the number of the limelight
    * @return true if the pose is within the field, false if not.
