@@ -153,10 +153,7 @@ public class VisionSubsystem extends SubsystemBase {
    * @return true if the poses are within the field, false if not.
    */
   public boolean isValidPoseEstimate(int limelightNumber) {
-    if (isMegaTag1Good(limelightNumber) && isMegaTag2Good(limelightNumber)) {
-      return true;
-    }
-    return false;
+    return isMegaTag1Good(limelightNumber) && isMegaTag2Good(limelightNumber);
   }
 
   /**
