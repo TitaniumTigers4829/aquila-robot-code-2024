@@ -1,13 +1,12 @@
 // somewhat inspired by 254
 package frc.robot.extras;
 
-import java.util.function.Supplier;
-
 import com.ctre.phoenix.ErrorCode;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj.DriverStation;
+import java.util.function.Supplier;
 
 public class TalonUtil {
 
@@ -15,16 +14,16 @@ public class TalonUtil {
       TalonFX talon, TalonFXConfiguration config, double timeoutSeconds, int numTries) {
     for (int i = 0; i < numTries; i++) {
       if (checkErrorAndRetry(() -> talon.getConfigurator().apply(config, timeoutSeconds))) {
-            return true;
-        } 
-      } 
-      DriverStation.reportError(
-        "Failed to apply config for talon after " + numTries + " attempts", false);
-      return false;
+        return true;
+      }
     }
-    
+    DriverStation.reportError(
+        "Failed to apply config for talon after " + numTries + " attempts", false);
+    return false;
+  }
 
-  public static boolean applyAndCheckConfiguration(TalonFX talon, TalonFXConfiguration config, double timeoutMs) {
+  public static boolean applyAndCheckConfiguration(
+      TalonFX talon, TalonFXConfiguration config, double timeoutMs) {
     boolean result = applyAndCheckConfiguration(talon, config, timeoutMs, 5);
     return result;
   }
@@ -67,7 +66,7 @@ public class TalonUtil {
     talon.clearStickyFaults();
   }
 
-    /**
+  /**
    * checks the specified error code for issues
    *
    * @param errorCode error code

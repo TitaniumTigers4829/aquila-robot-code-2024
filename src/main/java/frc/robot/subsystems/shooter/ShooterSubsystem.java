@@ -59,8 +59,11 @@ public class ShooterSubsystem extends SubsystemBase {
 
   private void configureTalons() throws RuntimeException {
     TalonFXConfiguration shooterConfig = new TalonFXConfiguration();
-    TalonUtil.checkErrorAndRetry(() -> leaderFlywheel.getConfigurator().refresh(shooterConfig, HardwareConstants.TIMEOUT_S));
-    TalonUtil.checkErrorAndRetry(() -> followerFlywheel.getConfigurator().refresh(shooterConfig, HardwareConstants.TIMEOUT_S));
+    TalonUtil.checkErrorAndRetry(
+        () -> leaderFlywheel.getConfigurator().refresh(shooterConfig, HardwareConstants.TIMEOUT_S));
+    TalonUtil.checkErrorAndRetry(
+        () ->
+            followerFlywheel.getConfigurator().refresh(shooterConfig, HardwareConstants.TIMEOUT_S));
 
     shooterConfig.Slot0.kP = ShooterConstants.SHOOT_P;
     shooterConfig.Slot0.kI = ShooterConstants.SHOOT_I;
@@ -77,12 +80,15 @@ public class ShooterSubsystem extends SubsystemBase {
     shooterConfig.CurrentLimits.SupplyCurrentLimit = ShooterConstants.SHOOTER_SUPPLY_LIMIT;
     shooterConfig.CurrentLimits.SupplyCurrentLimitEnable = ShooterConstants.SHOOTER_SUPPLY_ENABLE;
 
-    TalonUtil.applyAndCheckConfiguration(leaderFlywheel, shooterConfig, HardwareConstants.TIMEOUT_S);
+    TalonUtil.applyAndCheckConfiguration(
+        leaderFlywheel, shooterConfig, HardwareConstants.TIMEOUT_S);
     shooterConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
-    TalonUtil.applyAndCheckConfiguration(followerFlywheel, shooterConfig, HardwareConstants.TIMEOUT_S);
+    TalonUtil.applyAndCheckConfiguration(
+        followerFlywheel, shooterConfig, HardwareConstants.TIMEOUT_S);
 
     TalonFXConfiguration rollerConfig = new TalonFXConfiguration();
-    TalonUtil.checkErrorAndRetry(() -> leaderFlywheel.getConfigurator().refresh(rollerConfig, HardwareConstants.TIMEOUT_S));
+    TalonUtil.checkErrorAndRetry(
+        () -> leaderFlywheel.getConfigurator().refresh(rollerConfig, HardwareConstants.TIMEOUT_S));
 
     rollerConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     rollerConfig.MotorOutput.DutyCycleNeutralDeadband = HardwareConstants.MIN_FALCON_DEADBAND;
