@@ -1,4 +1,4 @@
-// somewhat inspired by 254
+// moderately inspired by 254
 package frc.robot.extras;
 
 import com.ctre.phoenix.ErrorCode;
