@@ -114,6 +114,7 @@ public class SwerveModule {
 
     driveMotor.setPosition(0);
     turnMotor.setPosition(0);
+    driveMotor.optimizeBusUtilization();
 
     BaseStatusSignal.setUpdateFrequencyForAll(
         HardwareConstants.SIGNAL_FREQUENCY, turnEncoderPos, driveMotorPosition, driveMotorVelocity);

@@ -1,7 +1,6 @@
 // somewhat inspired by 254
 package frc.robot.extras;
 
-import com.ctre.phoenix.ErrorCode;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -42,7 +41,7 @@ public class TalonUtil {
     UnstableSupplyV
   }
 
-  public static void checkStickyFaults(String subsystemName, TalonFX talon) {
+  public static void checkStickyFaults(String motorName, TalonFX talon) {
     boolean[] faults = new boolean[StickyFault.values().length];
     faults[0] = talon.getStickyFault_BootDuringEnable().getValue();
     faults[1] = talon.getStickyFault_DeviceTemp().getValue();
@@ -59,23 +58,11 @@ public class TalonUtil {
     for (int i = 0; i < faults.length; i++) {
       if (faults[i]) {
         DriverStation.reportError(
-            subsystemName + ": Talon Fault! " + StickyFault.values()[i].toString(), false);
+            motorName + ": Talon Fault! " + StickyFault.values()[i].toString(), false);
       }
     }
 
     talon.clearStickyFaults();
-  }
-
-  /**
-   * checks the specified error code for issues
-   *
-   * @param errorCode error code
-   * @param message message to print if error happens
-   */
-  public static void checkError(ErrorCode errorCode, String message) {
-    if (errorCode != ErrorCode.OK) {
-      DriverStation.reportError(message + " " + errorCode, false);
-    }
   }
 
   public static boolean checkErrorAndRetry(Supplier<StatusCode> function, int numTries) {
@@ -92,18 +79,6 @@ public class TalonUtil {
       return false;
     }
     return true;
-  }
-
-  /**
-   * checks the specified error code and throws an exception if there are any issues
-   *
-   * @param errorCode error code
-   * @param message message to print if error happens
-   */
-  public static void checkErrorWithThrow(ErrorCode errorCode, String message) {
-    if (errorCode != ErrorCode.OK) {
-      throw new RuntimeException(message + " " + errorCode);
-    }
   }
 
   public static boolean checkErrorAndRetry(Supplier<StatusCode> function) {
