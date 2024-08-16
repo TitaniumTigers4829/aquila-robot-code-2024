@@ -1,4 +1,4 @@
-name: Comment Command
+name: Comment Commands
 
 on:
   issue_comment:
@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - name: React Rocket
-      - uses: actions/github-script@v7
+        uses: actions/github-script@v7
         with:
           script: |
             const {owner, repo} = context.issue
@@ -27,20 +27,28 @@ jobs:
       - name: Fetch all history and metadata
         run: |
           git checkout -b pr
-          git branch -f main origin/main
+          git branch -f main origin/master
       - name: Checkout PR
         run: |
           gh pr checkout $NUMBER
         env:
           GITHUB_TOKEN: "${{ secrets.COMMENT_COMMAND_PAT_TOKEN }}"
           NUMBER: ${{ github.event.issue.number }}
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: 17
+      - name: Install wpiformat
+        run: pip3 install wpiformat
+      - name: Run wpiformat
+        run: wpiformat
       - name: Run spotlessApply
-        run: ./gradlew spotlessApply
+        run: ./gradlew spotlessApply -PwithJavaFormat
       - name: Commit
         run: |
           # Set credentials

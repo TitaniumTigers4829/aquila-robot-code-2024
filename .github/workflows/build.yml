@@ -6,36 +6,22 @@ on:
 
 jobs:
   build:
-    name: Build
+    name: "Build Java"
     runs-on: ubuntu-latest
     container: wpilib/roborio-cross-ubuntu:2024-22.04
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-      - name: Grant execute permission
-        run: chmod +x gradlew
-      - name: Build robot code
-        run: ./gradlew build
+    - uses: actions/checkout@v4
+    - name: Compile robot code
+      run: ./gradlew build
 
   test:
-    # This workflow contains a single job called "test"
-    name: "Test"
-    # The type of runner that the job will run on
+    name: "Test Java"
     runs-on: ubuntu-latest
-
-    # This grabs the WPILib docker container
     container: wpilib/roborio-cross-ubuntu:2024-22.04
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v4
-    # Grant execute permission for gradlew
-    - name: Grant execute permission for gradlew
-      run: chmod +x gradlew
-    # Runs a single command using the runners shell
-    - name: Simulate and test robot code
-      run: ./gradlew simulateJava 
+    - name: Run tests on robot code
+      run: ./gradlew test -PrunTests
 
   formate:
     name: "Lint and Format Check"
