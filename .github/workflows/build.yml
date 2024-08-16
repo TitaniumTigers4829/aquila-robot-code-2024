@@ -23,7 +23,7 @@ jobs:
     - name: Run tests on robot code
       run: ./gradlew test -PrunTests
 
-  formate:
+  format:
     name: "Lint and Format Check"
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
@@ -38,3 +38,23 @@ jobs:
           distribution: 'zulu'
           java-version: 17
       - run: ./gradlew spotlessCheck
+  javaformat:
+    name: "Java format"
+    runs-on: ubuntu-22.04
+    container: wpilib/ubuntu-base:22.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Fetch all history and metadata
+        run: |
+          git config --global --add safe.directory /__w/allwpilib/allwpilib
+          git checkout -b pr
+          git branch -f main origin/main
+      - name: Run Java format
+        run: ./gradlew javaFormat
+      - name: Check output
+        run: git --no-pager diff --exit-code HEAD
+      - name: Generate diff
+        run: git diff HEAD > javaformat-fixes.patch
+        if: ${{ failure() }}
