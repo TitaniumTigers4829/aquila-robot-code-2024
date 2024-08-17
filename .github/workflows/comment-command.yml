@@ -20,7 +20,9 @@ jobs:
               comment_id: context.payload.comment.id,
               content: "rocket",
             });
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4  
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
         with:
           fetch-depth: 0
           token: ${{ secrets.COMMENT_COMMAND_PAT_TOKEN }}
@@ -34,19 +36,11 @@ jobs:
         env:
           GITHUB_TOKEN: "${{ secrets.COMMENT_COMMAND_PAT_TOKEN }}"
           NUMBER: ${{ github.event.issue.number }}
-      - name: Set up Python 3.10
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.10'
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: 17
-      - name: Install wpiformat
-        run: pip3 install wpiformat
-      - name: Run wpiformat
-        run: wpiformat
       - name: Run spotlessApply
         run: ./gradlew spotlessApply -PwithJavaFormat
       - name: Commit

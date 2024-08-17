@@ -28,37 +28,23 @@ jobs:
       run: ./gradlew test -PrunTests
 
   format:
-    name: "Lint and Format Check"
-    # The type of runner that the job will run on
+    name: "Lint and Format Java"
     runs-on: ubuntu-latest
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v4
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
-      - uses: actions/setup-java@v4
-        with:
-          distribution: 'zulu'
-          java-version: 17
-      - run: ./gradlew spotlessCheck
-  # javaformat:
-  #   name: "Java format"
-  #   runs-on: ubuntu-22.04
-  #   container: wpilib/ubuntu-base:22.04
-  #   steps:
-  #     - uses: actions/checkout@v4
-  #       with:
-  #         fetch-depth: 0
-  #     - name: Fetch all history and metadata
-  #       run: |
-  #         git config --global --add safe.directory /__w/allwpilib/allwpilib
-  #         git checkout -b pr
-  #         git branch -f main origin/main
-  #     - name: Run Java format
-  #       run: ./gradlew javaFormat
-  #     - name: Check output
-  #       run: git --no-pager diff --exit-code HEAD
-  #     - name: Generate diff
-  #       run: git diff HEAD > javaformat-fixes.patch
-  #       if: ${{ failure() }}
+    - uses: actions/checkout@v4
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+      with:
+        fetch-depth: 0
+    - name: Fetch all history and metadata
+      run: |
+        git checkout -b pr
+        git branch -f master origin/master
+    - uses: actions/setup-java@v4
+      with:
+        java-version: 17
+        distribution: temurin
+    - name: Check output
+      run: git --no-pager diff --exit-code HEAD
+    - name: Run formatter
+      run: ./gradlew build -PwithJavaFormat
