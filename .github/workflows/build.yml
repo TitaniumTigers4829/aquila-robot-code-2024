@@ -14,7 +14,7 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
     - name: Compile robot code
-      run: ./gradlew build
+      run: ./gradlew compileJava
 
   test:
     name: "Test Java"
@@ -28,7 +28,7 @@ jobs:
       run: ./gradlew test -PrunTests
 
   format:
-    name: "Lint and Format Java"
+    name: "Check Format Java"
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
@@ -45,4 +45,4 @@ jobs:
         java-version: 17
         distribution: temurin
     - name: Run formatter
-      run: ./gradlew build -PwithJavaFormat
+      run: ./gradlew spotlessCheck
