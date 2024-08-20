@@ -120,7 +120,7 @@ on:
 
 jobs:
   format:
-    if: startsWith(github.event.comment.body, '/format') || github.event_name == 'pull_request'
+    if: startsWith(github.event.comment.body, '/format') && github.event_name == 'pull_request'
     runs-on: ubuntu-22.04
     steps:
       - name: Check out code
