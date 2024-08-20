@@ -199,7 +199,7 @@ public class SwerveSetpointGenerator {
       final SwerveSetpoint prevSetpoint,
       ChassisSpeeds desiredState,
       double dt) {
-    final Translation2d[] modules=moduleLocations;
+    final Translation2d[] modules = moduleLocations;
 
     SwerveModuleState[] desiredModuleState = kinematics.toSwerveModuleStates(desiredState);
     // Make sure desiredState respects velocity limits.
