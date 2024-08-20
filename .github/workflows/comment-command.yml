@@ -1,5 +1,4 @@
 name: Comment Commands
-
 on:
   issue_comment:
     types: [ created ]
@@ -20,9 +19,7 @@ jobs:
               comment_id: context.payload.comment.id,
               content: "rocket",
             });
-      - uses: actions/checkout@v4  
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
           token: ${{ secrets.COMMENT_COMMAND_PAT_TOKEN }}
@@ -36,13 +33,21 @@ jobs:
         env:
           GITHUB_TOKEN: "${{ secrets.COMMENT_COMMAND_PAT_TOKEN }}"
           NUMBER: ${{ github.event.issue.number }}
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: 17
+      - name: Install wpiformat
+        run: pip3 install wpiformat==2024.40
+      - name: Run wpiformat
+        run: wpiformat
       - name: Run spotlessApply
-        run: ./gradlew spotlessApply -PwithJavaFormat
+        run: ./gradlew spotlessApply
       - name: Commit
         run: |
           # Set credentials
@@ -51,124 +56,3 @@ jobs:
           # Commit
           git commit -am "Formatting fixes"
           git push
-# name: Comment Command
-
-# on:
-#   issue_comment:
-#     types: [created]
-
-# jobs:
-#   format:
-#     if: github.event.issue.pull_request && startsWith(github.event.comment.body, '/format')
-#     runs-on: ubuntu-22.04
-#     steps:
-#       - name: Check out code
-#         uses: actions/checkout@v4
-#         with:
-#           fetch-depth: 0
-      
-#       - name: Setup Java
-#         uses: actions/setup-java@v4
-#         with:
-#           distribution: 'temurin'
-#           java-version: 17
-
-#       - name: Grant execute permission for gradlew
-#         run: chmod +x gradlew
-      
-#       - name: React Rocket
-#         uses: actions/github-script@v7
-#         with:
-#           script: |
-#             const {owner, repo} = context.issue;
-#             try {
-#               await github.rest.reactions.createForIssueComment({
-#                 owner,
-#                 repo,
-#                 comment_id: context.payload.comment.id,
-#                 content: "rocket",
-#               });
-#             } catch (error) {
-#               console.error(error);
-#             }
-      
-#       - name: Fetch all history and metadata
-#         run: |
-#           git checkout -b pr
-#           git branch -f main origin/main
-      
-#       - name: Checkout PR
-#         run: gh pr checkout ${{ github.event.issue.number }}
-#         env:
-#           GITHUB_TOKEN: ${{ secrets.COMMENT_COMMAND_PAT_TOKEN }}
-      
-#       - name: Run spotlessApply
-#         run: ./gradlew spotlessApply -PwithJavaFormat
-      
-#       - name: Commit
-#         run: |
-#           git config user.name "github-actions[bot]"
-#           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-#           git commit -am "Formatting fixes"
-#           git push
-
-# name: Comment Commands
-
-# on:
-#   pull_request:
-#     types: [opened, synchronize, reopened]
-
-# jobs:
-#   format:
-#     if: startsWith(github.event.comment.body, '/format') && github.event_name == 'pull_request'
-#     runs-on: ubuntu-22.04
-#     steps:
-#       - name: Check out code
-#         uses: actions/checkout@v4
-#         with:
-#           fetch-depth: 0
-      
-#       - name: Setup Java
-#         uses: actions/setup-java@v4
-#         with:
-#           distribution: 'temurin'
-#           java-version: 17
-      
-#       - name: React Rocket
-#         uses: actions/github-script@v7
-#         with:
-#           script: |
-#             const {owner, repo} = context.issue;
-#             try {
-#               await github.rest.reactions.createForIssueComment({
-#                 owner,
-#                 repo,
-#                 comment_id: context.payload.comment.id,
-#                 content: "rocket",
-#               });
-#             } catch (error) {
-#               console.error(error);
-#             }
-      
-#       - name: Grant execute permission for gradlew
-#         run: chmod +x gradlew
-      
-#       - name: Fetch all history and metadata
-#         run: |
-#           git checkout -b pr
-#           git branch -f main origin/main
-      
-#       - name: Checkout PR
-#         run: gh pr checkout ${{ github.event.pull_request.number }}
-#         env:
-#           GITHUB_TOKEN: ${{ secrets.COMMENT_COMMAND_PAT_TOKEN }}
-      
-#       - name: Run spotlessApply
-#         run: ./gradlew spotlessApply -PwithJavaFormat
-      
-#       - name: Commit
-#         run: |
-#           git config user.name "github-actions[bot]"
-#           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-#           git commit -am "Formatting fixes"
-#           git push
