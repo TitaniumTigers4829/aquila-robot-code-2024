@@ -6,49 +6,43 @@ on:
 
 jobs:
   build:
-    name: Build
+    name: Compile Java
     runs-on: ubuntu-latest
     container: wpilib/roborio-cross-ubuntu:2024-22.04
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-      - name: Grant execute permission
-        run: chmod +x gradlew
-      - name: Build robot code
-        run: ./gradlew build
-
-  test:
-    # This workflow contains a single job called "test"
-    name: "Test"
-    # The type of runner that the job will run on
-    runs-on: ubuntu-latest
-
-    # This grabs the WPILib docker container
-    container: wpilib/roborio-cross-ubuntu:2024-22.04
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
-    steps:
-    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-    - uses: actions/checkout@v4
-    # Grant execute permission for gradlew
-    - name: Grant execute permission for gradlew
-      run: chmod +x gradlew
-    # Runs a single command using the runners shell
-    - name: Simulate and test robot code
-      run: ./gradlew simulateJava 
-
-  formate:
-    name: "Lint and Format Check"
-    # The type of runner that the job will run on
-    runs-on: ubuntu-latest
-    # Steps represent a sequence of tasks that will be executed as part of the job
-    steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v4
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
-      - uses: actions/setup-java@v4
-        with:
-          distribution: 'zulu'
-          java-version: 17
-      - run: ./gradlew spotlessCheck
+      - name: Compile robot code
+        run: ./gradlew compileJava
+
+  test:
+    name: "Test Java"
+    runs-on: ubuntu-latest
+    container: wpilib/roborio-cross-ubuntu:2024-22.04
+    steps:
+    - uses: actions/checkout@v4
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+    - name: Run tests on robot code
+      run: ./gradlew test -PrunTests 
+
+  format:
+    name: "Check Format Java"
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+    - name: Fetch all history and metadata
+      run: |
+        git checkout -b pr
+        git branch -f main origin/main
+    - uses: actions/setup-java@v4
+      with:
+        java-version: 17
+        distribution: temurin
+    - name: Run formatter
+      run: ./gradlew spotlessCheck
