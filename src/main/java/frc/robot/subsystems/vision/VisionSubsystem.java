@@ -2,8 +2,6 @@ package frc.robot.subsystems.vision;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.FieldConstants;
@@ -12,8 +10,8 @@ import frc.robot.extras.LimelightHelpers;
 import frc.robot.extras.LimelightHelpers.PoseEstimate;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Executors;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -23,8 +21,7 @@ public class VisionSubsystem extends SubsystemBase {
   private double headingDegrees = 0;
   private double headingRateDegreesPerSecond = 0;
   private final Map<Integer, AtomicBoolean> limelightThreads = new ConcurrentHashMap<>();
-  private final ExecutorService executorService =
-      Executors.newFixedThreadPool(3); 
+  private final ExecutorService executorService = Executors.newFixedThreadPool(3);
 
   /**
    * The pose estimates from the limelights in the following order {shooterLimelight,
@@ -70,7 +67,7 @@ public class VisionSubsystem extends SubsystemBase {
    */
   public void updateLimelightPoseEstimate(int limelightNumber) {
     // this can probably be removed after testing
-    if (!canSeeAprilTags(limelightNumber)) { 
+    if (!canSeeAprilTags(limelightNumber)) {
       limelightEstimates[limelightNumber] = new PoseEstimate();
     }
     // Soon to be implemented code:
