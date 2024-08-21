@@ -13,7 +13,7 @@ import frc.robot.extras.LimelightHelpers.PoseEstimate;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -23,8 +23,8 @@ public class VisionSubsystem extends SubsystemBase {
   private double headingDegrees = 0;
   private double headingRateDegreesPerSecond = 0;
   private final Map<Integer, AtomicBoolean> limelightThreads = new ConcurrentHashMap<>();
-  private final ScheduledExecutorService scheduledExecutorService =
-      Executors.newScheduledThreadPool(3); // lol no clue if this'll work
+  private final ExecutorService executorService =
+      Executors.newFixedThreadPool(3); 
 
   /**
    * The pose estimates from the limelights in the following order {shooterLimelight,
@@ -69,6 +69,10 @@ public class VisionSubsystem extends SubsystemBase {
    * @param limelightNumber the number of the limelight
    */
   public void updateLimelightPoseEstimate(int limelightNumber) {
+    // this can probably be removed after testing
+    if (!canSeeAprilTags(limelightNumber)) { 
+      limelightEstimates[limelightNumber] = new PoseEstimate();
+    }
     // Soon to be implemented code:
     // if (canSeeAprilTags(limelightNumber)) {
     //   if (isValidPoseEstimate(limelightNumber)) {
@@ -165,13 +169,10 @@ public class VisionSubsystem extends SubsystemBase {
   public boolean isMegaTag1Good(int limelightNumber) {
     PoseEstimate megaTag1Estimate = getMegaTag1PoseEstimate(limelightNumber);
 
-    if ((megaTag1Estimate.pose.getX() > 0
+    return ((megaTag1Estimate.pose.getX() > 0
             && megaTag1Estimate.pose.getX() <= FieldConstants.FIELD_WIDTH_METERS)
         && (megaTag1Estimate.pose.getY() > 0
-            && megaTag1Estimate.pose.getY() <= FieldConstants.FIELD_WIDTH_METERS)) {
-      return true;
-    }
-    return false;
+            && megaTag1Estimate.pose.getY() <= FieldConstants.FIELD_WIDTH_METERS));
   }
 
   /**
@@ -183,13 +184,10 @@ public class VisionSubsystem extends SubsystemBase {
   public boolean isMegaTag2Good(int limelightNumber) {
     PoseEstimate megaTag2Estimate = getMegaTag2PoseEstimate(limelightNumber);
 
-    if ((megaTag2Estimate.pose.getX() > 0
+    return ((megaTag2Estimate.pose.getX() > 0
             && megaTag2Estimate.pose.getX() <= FieldConstants.FIELD_WIDTH_METERS)
         && (megaTag2Estimate.pose.getY() > 0
-            && megaTag2Estimate.pose.getY() <= FieldConstants.FIELD_WIDTH_METERS)) {
-      return true;
-    }
-    return false;
+            && megaTag2Estimate.pose.getY() <= FieldConstants.FIELD_WIDTH_METERS));
   }
 
   /**
@@ -310,10 +308,10 @@ public class VisionSubsystem extends SubsystemBase {
           }
         } else {
           // Retrieve the AtomicBoolean for the given limelight number
-          AtomicBoolean threadIsRunning =
+          AtomicBoolean isThreadRunning =
               limelightThreads.getOrDefault(limelightNumber, new AtomicBoolean());
           // Only stop the thread if it's currently running
-          if (threadIsRunning.get()) {
+          if (isThreadRunning.get()) {
             // stop the thread for the specified limelight
             stopThread(limelightNumber);
           }
@@ -326,50 +324,8 @@ public class VisionSubsystem extends SubsystemBase {
                 + getLimelightName(limelightNumber)
                 + ": "
                 + e.getMessage());
-        handleLimelightDisconnect(limelightNumber);
       }
     }
-  }
-
-  /**
-   * Called when there is an error communicating with a limelight the ScheduledExecutorService
-   * schedules a task after 5 seconds to reconnect to the limelight NT will try to read a key from
-   * the limelight, if the read is successful, then we are connected, if not then we have failed to
-   * connect.
-   *
-   * @param limelightNumber the limelight number
-   */
-  public void handleLimelightDisconnect(int limelightNumber) {
-    System.err.println(getLimelightName(limelightNumber) + " disconnected.");
-    // Schedule a task to attempt reconnection after a short delay
-    scheduledExecutorService.schedule(
-        () -> {
-          try {
-            // Attempt to access NetworkTable associated with Limelight to check connection health
-            NetworkTableInstance limelightTableInstance = NetworkTableInstance.getDefault();
-            NetworkTable limelightTable =
-                limelightTableInstance.getTable(getLimelightName(limelightNumber));
-
-            // Perform a simple read operation as a health check
-            boolean isConnected = limelightTable.containsKey("v");
-
-            if (isConnected) {
-              System.out.println(
-                  "Successfully reconnected to " + getLimelightName(limelightNumber));
-            } else {
-              throw new RuntimeException(
-                  "Failed to reconnect to " + getLimelightName(limelightNumber));
-            }
-          } catch (Exception e) {
-            System.err.println(
-                "Reconnection attempt failed for "
-                    + getLimelightName(limelightNumber)
-                    + ": "
-                    + e.getMessage());
-          }
-        },
-        5,
-        TimeUnit.SECONDS); // Retry after 5 seconds
   }
 
   /**
@@ -388,7 +344,7 @@ public class VisionSubsystem extends SubsystemBase {
    */
   public void visionThread(int limelightNumber) {
 
-    scheduledExecutorService.submit(
+    executorService.submit(
         () -> {
           try {
             while (limelightThreads.get(limelightNumber).get()) {
@@ -428,18 +384,18 @@ public class VisionSubsystem extends SubsystemBase {
   /** Shuts down all the threads. */
   public void endAllThreads() {
     // Properly shut down the executor service when the subsystem ends
-    scheduledExecutorService.shutdown(); // Prevents new tasks from being submitted
+    executorService.shutdown(); // Prevents new tasks from being submitted
     try {
       // Wait for existing tasks to finish
-      if (!scheduledExecutorService.awaitTermination(5, TimeUnit.SECONDS)) {
-        scheduledExecutorService.shutdownNow();
+      if (!executorService.awaitTermination(5, TimeUnit.SECONDS)) {
+        executorService.shutdownNow();
         // Wait a bit longer for tasks to respond to being cancelled
-        if (!scheduledExecutorService.awaitTermination(5, TimeUnit.SECONDS))
+        if (!executorService.awaitTermination(5, TimeUnit.SECONDS))
           System.err.println("ExecutorService did not terminate");
       }
     } catch (InterruptedException e) {
       // (Re-)Cancel if current thread also interrupted
-      scheduledExecutorService.shutdownNow();
+      executorService.shutdownNow();
       // Preserve interrupt status
       Thread.currentThread().interrupt();
     }

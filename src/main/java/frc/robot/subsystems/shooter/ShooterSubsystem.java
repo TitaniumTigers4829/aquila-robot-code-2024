@@ -42,24 +42,7 @@ public class ShooterSubsystem extends SubsystemBase {
     velocityRequest = new VelocityVoltage(0);
     voltageRequest = new VoltageOut(0);
 
-    try {
-      configureTalons();
-    } catch (RuntimeException e) {
-      System.out.println("Failed to configure talons :(");
-    }
-
-    leaderVelocity = leaderFlywheel.getVelocity();
-    followerVelocity = followerFlywheel.getVelocity();
-
-    BaseStatusSignal.setUpdateFrequencyForAll(
-        HardwareConstants.SIGNAL_FREQUENCY, leaderVelocity, followerVelocity);
-    ParentDevice.optimizeBusUtilizationForAll(leaderFlywheel, rollerMotor, followerFlywheel);
-  }
-
-  private void configureTalons() throws RuntimeException {
     TalonFXConfiguration shooterConfig = new TalonFXConfiguration();
-    leaderFlywheel.getConfigurator().refresh(shooterConfig, HardwareConstants.TIMEOUT_S);
-    followerFlywheel.getConfigurator().refresh(shooterConfig, HardwareConstants.TIMEOUT_S);
 
     shooterConfig.Slot0.kP = ShooterConstants.SHOOT_P;
     shooterConfig.Slot0.kI = ShooterConstants.SHOOT_I;
@@ -81,11 +64,17 @@ public class ShooterSubsystem extends SubsystemBase {
     followerFlywheel.getConfigurator().apply(shooterConfig, HardwareConstants.TIMEOUT_S);
 
     TalonFXConfiguration rollerConfig = new TalonFXConfiguration();
-    rollerMotor.getConfigurator().refresh(rollerConfig, HardwareConstants.TIMEOUT_S);
 
     rollerConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     rollerConfig.MotorOutput.DutyCycleNeutralDeadband = HardwareConstants.MIN_FALCON_DEADBAND;
     rollerMotor.getConfigurator().apply(rollerConfig, HardwareConstants.TIMEOUT_S);
+
+    leaderVelocity = leaderFlywheel.getVelocity();
+    followerVelocity = followerFlywheel.getVelocity();
+
+    BaseStatusSignal.setUpdateFrequencyForAll(
+        HardwareConstants.SIGNAL_FREQUENCY, leaderVelocity, followerVelocity);
+    ParentDevice.optimizeBusUtilizationForAll(leaderFlywheel, rollerMotor, followerFlywheel);
   }
 
   /**
