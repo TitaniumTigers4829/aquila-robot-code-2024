@@ -43,6 +43,7 @@ public class ShooterSubsystem extends SubsystemBase {
     voltageRequest = new VoltageOut(0);
 
     TalonFXConfiguration shooterConfig = new TalonFXConfiguration();
+
     shooterConfig.Slot0.kP = ShooterConstants.SHOOT_P;
     shooterConfig.Slot0.kI = ShooterConstants.SHOOT_I;
     shooterConfig.Slot0.kD = ShooterConstants.SHOOT_D;
@@ -63,6 +64,7 @@ public class ShooterSubsystem extends SubsystemBase {
     followerFlywheel.getConfigurator().apply(shooterConfig, HardwareConstants.TIMEOUT_S);
 
     TalonFXConfiguration rollerConfig = new TalonFXConfiguration();
+
     rollerConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     rollerConfig.MotorOutput.DutyCycleNeutralDeadband = HardwareConstants.MIN_FALCON_DEADBAND;
     rollerMotor.getConfigurator().apply(rollerConfig, HardwareConstants.TIMEOUT_S);
