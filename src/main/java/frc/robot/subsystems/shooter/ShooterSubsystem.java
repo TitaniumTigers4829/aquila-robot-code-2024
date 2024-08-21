@@ -16,7 +16,6 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.HardwareConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.extras.SmarterDashboardRegistry;
-import frc.robot.extras.TalonUtil;
 
 public class ShooterSubsystem extends SubsystemBase {
   private final TalonFX leaderFlywheel;
@@ -43,28 +42,7 @@ public class ShooterSubsystem extends SubsystemBase {
     velocityRequest = new VelocityVoltage(0);
     voltageRequest = new VoltageOut(0);
 
-    try {
-      configureTalons();
-    } catch (RuntimeException e) {
-      System.out.println("Failed to configure talons :(");
-    }
-
-    leaderVelocity = leaderFlywheel.getVelocity();
-    followerVelocity = followerFlywheel.getVelocity();
-
-    BaseStatusSignal.setUpdateFrequencyForAll(
-        HardwareConstants.SIGNAL_FREQUENCY, leaderVelocity, followerVelocity);
-    ParentDevice.optimizeBusUtilizationForAll(leaderFlywheel, rollerMotor, followerFlywheel);
-  }
-
-  private void configureTalons() throws RuntimeException {
     TalonFXConfiguration shooterConfig = new TalonFXConfiguration();
-    TalonUtil.checkErrorAndRetry(
-        () -> leaderFlywheel.getConfigurator().refresh(shooterConfig, HardwareConstants.TIMEOUT_S));
-    TalonUtil.checkErrorAndRetry(
-        () ->
-            followerFlywheel.getConfigurator().refresh(shooterConfig, HardwareConstants.TIMEOUT_S));
-
     shooterConfig.Slot0.kP = ShooterConstants.SHOOT_P;
     shooterConfig.Slot0.kI = ShooterConstants.SHOOT_I;
     shooterConfig.Slot0.kD = ShooterConstants.SHOOT_D;
@@ -80,19 +58,21 @@ public class ShooterSubsystem extends SubsystemBase {
     shooterConfig.CurrentLimits.SupplyCurrentLimit = ShooterConstants.SHOOTER_SUPPLY_LIMIT;
     shooterConfig.CurrentLimits.SupplyCurrentLimitEnable = ShooterConstants.SHOOTER_SUPPLY_ENABLE;
 
-    TalonUtil.applyAndCheckConfiguration(
-        leaderFlywheel, shooterConfig, HardwareConstants.TIMEOUT_S);
+    leaderFlywheel.getConfigurator().apply(shooterConfig, HardwareConstants.TIMEOUT_S);
     shooterConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
-    TalonUtil.applyAndCheckConfiguration(
-        followerFlywheel, shooterConfig, HardwareConstants.TIMEOUT_S);
+    followerFlywheel.getConfigurator().apply(shooterConfig, HardwareConstants.TIMEOUT_S);
 
     TalonFXConfiguration rollerConfig = new TalonFXConfiguration();
-    TalonUtil.checkErrorAndRetry(
-        () -> leaderFlywheel.getConfigurator().refresh(rollerConfig, HardwareConstants.TIMEOUT_S));
-
     rollerConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     rollerConfig.MotorOutput.DutyCycleNeutralDeadband = HardwareConstants.MIN_FALCON_DEADBAND;
-    TalonUtil.applyAndCheckConfiguration(rollerMotor, rollerConfig, HardwareConstants.TIMEOUT_S);
+    rollerMotor.getConfigurator().apply(rollerConfig, HardwareConstants.TIMEOUT_S);
+
+    leaderVelocity = leaderFlywheel.getVelocity();
+    followerVelocity = followerFlywheel.getVelocity();
+
+    BaseStatusSignal.setUpdateFrequencyForAll(
+        HardwareConstants.SIGNAL_FREQUENCY, leaderVelocity, followerVelocity);
+    ParentDevice.optimizeBusUtilizationForAll(leaderFlywheel, rollerMotor, followerFlywheel);
   }
 
   /**
