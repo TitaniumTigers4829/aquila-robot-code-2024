@@ -92,10 +92,10 @@ public class VisionSubsystem extends SubsystemBase {
 
   public void updatePoseEstimate(int limelightNumber) {
     limelightEstimates[limelightNumber] =
-      DriverStation.isEnabled() 
-        ? getMegaTag1PoseEstimate(limelightNumber)
-        : enabledMegaTagUpdate(limelightNumber);
-    }
+        DriverStation.isEnabled()
+            ? getMegaTag1PoseEstimate(limelightNumber)
+            : enabledMegaTagUpdate(limelightNumber);
+  }
 
   /**
    * Checks if there is a large discrepancy between the MegaTag1 and MegaTag2 estimates.
@@ -174,8 +174,11 @@ public class VisionSubsystem extends SubsystemBase {
     PoseEstimate megaTag1Estimate = getMegaTag1PoseEstimate(limelightNumber);
 
     if (LimelightHelpers.validPoseEstimate(megaTag1Estimate)) {
-      return ((megaTag1Estimate.pose.getX() > 0 && megaTag1Estimate.pose.getX() <= FieldConstants.FIELD_WIDTH_METERS)
-        && (megaTag1Estimate.pose.getY() > 0 && megaTag1Estimate.pose.getY() <= FieldConstants.FIELD_WIDTH_METERS));}
+      return ((megaTag1Estimate.pose.getX() > 0
+              && megaTag1Estimate.pose.getX() <= FieldConstants.FIELD_WIDTH_METERS)
+          && (megaTag1Estimate.pose.getY() > 0
+              && megaTag1Estimate.pose.getY() <= FieldConstants.FIELD_WIDTH_METERS));
+    }
     return false;
   }
 
@@ -188,11 +191,12 @@ public class VisionSubsystem extends SubsystemBase {
   public boolean isMegaTag2Good(int limelightNumber) {
     PoseEstimate megaTag2Estimate = getMegaTag2PoseEstimate(limelightNumber);
 
-    if (LimelightHelpers.validPoseEstimate(megaTag2Estimate)) { 
+    if (LimelightHelpers.validPoseEstimate(megaTag2Estimate)) {
       return ((megaTag2Estimate.pose.getX() > 0
-            && megaTag2Estimate.pose.getX() <= FieldConstants.FIELD_WIDTH_METERS)
-        && (megaTag2Estimate.pose.getY() > 0
-            && megaTag2Estimate.pose.getY() <= FieldConstants.FIELD_WIDTH_METERS));}
+              && megaTag2Estimate.pose.getX() <= FieldConstants.FIELD_WIDTH_METERS)
+          && (megaTag2Estimate.pose.getY() > 0
+              && megaTag2Estimate.pose.getY() <= FieldConstants.FIELD_WIDTH_METERS));
+    }
     return false;
   }
 
