@@ -553,7 +553,7 @@ public class LimelightHelpers {
     }
   }
 
-  public static Boolean validPoseEstimate(PoseEstimate pose) {
+  public static Boolean isValidPoseEstimate(PoseEstimate pose) {
     return pose != null && pose.rawFiducials != null && pose.rawFiducials.length != 0;
   }
 
