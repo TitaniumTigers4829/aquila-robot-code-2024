@@ -66,7 +66,7 @@ public class VisionSubsystem extends SubsystemBase {
    *
    * @param limelightNumber the number of the limelight
    */
-  public PoseEstimate enabledMegaTagUpdate(int limelightNumber) {
+  public PoseEstimate enabledPoseUpdate(int limelightNumber) {
     if (!canSeeAprilTags(limelightNumber)) {
       return limelightEstimates[limelightNumber] = new PoseEstimate();
     }
@@ -94,7 +94,7 @@ public class VisionSubsystem extends SubsystemBase {
     limelightEstimates[limelightNumber] =
         DriverStation.isEnabled()
             ? getMegaTag1PoseEstimate(limelightNumber)
-            : enabledMegaTagUpdate(limelightNumber);
+            : enabledPoseUpdate(limelightNumber);
   }
 
   /**
