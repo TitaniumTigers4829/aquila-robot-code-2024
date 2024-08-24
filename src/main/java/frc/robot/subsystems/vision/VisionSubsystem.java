@@ -158,17 +158,22 @@ public class VisionSubsystem extends SubsystemBase {
     PoseEstimate megaTag1Estimate = getMegaTag1PoseEstimate(limelightNumber);
     PoseEstimate megaTag2Estimate = getMegaTag2PoseEstimate(limelightNumber);
 
-    return LimelightHelpers.isValidPoseEstimate(megaTag1Estimate) &&
-           LimelightHelpers.isValidPoseEstimate(megaTag2Estimate) &&
-           isWithinFieldBounds(megaTag1Estimate, megaTag2Estimate);
-}
+    return LimelightHelpers.isValidPoseEstimate(megaTag1Estimate)
+        && LimelightHelpers.isValidPoseEstimate(megaTag2Estimate)
+        && isWithinFieldBounds(megaTag1Estimate, megaTag2Estimate);
+  }
 
-  private boolean isWithinFieldBounds(PoseEstimate megaTag1Estimate, PoseEstimate megaTag2Estimate) {
-    return (megaTag1Estimate.pose.getX() > 0 && megaTag1Estimate.pose.getX() <= FieldConstants.FIELD_WIDTH_METERS) &&
-           (megaTag1Estimate.pose.getY() > 0 && megaTag1Estimate.pose.getY() <= FieldConstants.FIELD_WIDTH_METERS) &&
-           (megaTag2Estimate.pose.getX() > 0 && megaTag2Estimate.pose.getX() <= FieldConstants.FIELD_WIDTH_METERS) &&
-           (megaTag2Estimate.pose.getY() > 0 && megaTag2Estimate.pose.getY() <= FieldConstants.FIELD_WIDTH_METERS);
-}
+  private boolean isWithinFieldBounds(
+      PoseEstimate megaTag1Estimate, PoseEstimate megaTag2Estimate) {
+    return (megaTag1Estimate.pose.getX() > 0
+            && megaTag1Estimate.pose.getX() <= FieldConstants.FIELD_WIDTH_METERS)
+        && (megaTag1Estimate.pose.getY() > 0
+            && megaTag1Estimate.pose.getY() <= FieldConstants.FIELD_WIDTH_METERS)
+        && (megaTag2Estimate.pose.getX() > 0
+            && megaTag2Estimate.pose.getX() <= FieldConstants.FIELD_WIDTH_METERS)
+        && (megaTag2Estimate.pose.getY() > 0
+            && megaTag2Estimate.pose.getY() <= FieldConstants.FIELD_WIDTH_METERS);
+  }
 
   /**
    * Gets the pose of the robot calculated by specified limelight via any April Tags it sees
