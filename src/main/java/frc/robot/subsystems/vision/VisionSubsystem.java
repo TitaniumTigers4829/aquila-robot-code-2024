@@ -158,8 +158,8 @@ public class VisionSubsystem extends SubsystemBase {
     PoseEstimate megaTag1Estimate = getMegaTag1PoseEstimate(limelightNumber);
     PoseEstimate megaTag2Estimate = getMegaTag2PoseEstimate(limelightNumber);
 
-    return LimelightHelpers.validPoseEstimate(megaTag1Estimate) &&
-           LimelightHelpers.validPoseEstimate(megaTag2Estimate) &&
+    return LimelightHelpers.isValidPoseEstimate(megaTag1Estimate) &&
+           LimelightHelpers.isValidPoseEstimate(megaTag2Estimate) &&
            isWithinFieldBounds(megaTag1Estimate, megaTag2Estimate);
 }
 
