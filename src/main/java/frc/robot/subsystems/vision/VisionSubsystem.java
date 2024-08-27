@@ -90,11 +90,15 @@ public class VisionSubsystem extends SubsystemBase {
     // }
   }
 
+  /**
+  * If the robot is not enabled, update the pose using MegaTag1 and after it is enabled, run {@link #enabledPoseUpdate(int)}
+  * @param limelightNumber the number of the limelight
+  */
   public void updatePoseEstimate(int limelightNumber) {
     limelightEstimates[limelightNumber] =
         DriverStation.isEnabled()
-            ? getMegaTag1PoseEstimate(limelightNumber)
-            : enabledPoseUpdate(limelightNumber);
+            ? enabledPoseUpdate(limelightNumber);
+            : getMegaTag1PoseEstimate(limelightNumber);
   }
 
   /**
