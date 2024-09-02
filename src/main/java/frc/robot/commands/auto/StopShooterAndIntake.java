@@ -1,7 +1,3 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot.commands.auto;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -17,7 +13,10 @@ public class StopShooterAndIntake extends InstantCommand {
   private ShooterSubsystem shooterSubsystem;
   private PivotSubsystem pivotSubsystem;
 
-  public StopShooterAndIntake(IntakeSubsystem intakeSubsystem, PivotSubsystem pivotSubsystem, ShooterSubsystem shooterSubsystem) {
+  public StopShooterAndIntake(
+      IntakeSubsystem intakeSubsystem,
+      PivotSubsystem pivotSubsystem,
+      ShooterSubsystem shooterSubsystem) {
     this.intakeSubsystem = intakeSubsystem;
     this.pivotSubsystem = pivotSubsystem;
     this.shooterSubsystem = shooterSubsystem;

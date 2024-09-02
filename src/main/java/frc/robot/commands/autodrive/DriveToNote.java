@@ -7,10 +7,10 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.TrajectoryConstants;
-import frc.robot.subsystems.swerve.DriveSubsystem;
-import frc.robot.subsystems.vision.VisionSubsystem;
 import frc.robot.commands.drive.DriveCommandBase;
 import frc.robot.extras.NoteDetector;
+import frc.robot.subsystems.swerve.DriveSubsystem;
+import frc.robot.subsystems.vision.VisionSubsystem;
 
 public class DriveToNote extends DriveCommandBase {
 
@@ -66,10 +66,11 @@ public class DriveToNote extends DriveCommandBase {
     double noteDistance = Math.sqrt(Math.pow(cameraOffset.getX(),2) + Math.pow(cameraOffset.getY(),2));
 
     // Gets the field position relative to the robot
-    noteFieldRelativePose = new Pose2d(
-      robotPos.getX() + noteDistance * Math.sin(Math.PI/2 - thetaTotal.getRadians()),
-      robotPos.getY() + noteDistance * Math.cos(Math.PI/2 - thetaTotal.getRadians()),
-      thetaTotal);
+    noteFieldRelativePose =
+        new Pose2d(
+            robotPos.getX() + noteDistance * Math.sin(Math.PI / 2 - thetaTotal.getRadians()),
+            robotPos.getY() + noteDistance * Math.cos(Math.PI / 2 - thetaTotal.getRadians()),
+            thetaTotal);
     thetaController.enableContinuousInput(-Math.PI, Math.PI);
   }
   
@@ -82,7 +83,8 @@ public class DriveToNote extends DriveCommandBase {
       // Gets the pose error
       double xPoseError = noteFieldRelativePose.getX() - robotPos.getX();
       double yPoseError = noteFieldRelativePose.getY() - robotPos.getY();
-      double thetaError = noteFieldRelativePose.getRotation().getRadians() - robotPos.getRotation().getRadians();
+      double thetaError =
+          noteFieldRelativePose.getRotation().getRadians() - robotPos.getRotation().getRadians();
 
 
       // Uses the PID controllers to calculate the drive output
@@ -107,12 +109,12 @@ public class DriveToNote extends DriveCommandBase {
   public boolean isFinished() {
     return false;
   }
-  
+
   private double deadband(double val) {
     if (Math.abs(val) < 0.05) {
       return 0.0;
     } else {
       return val;
     }
-  } 
+  }
 }

@@ -1,54 +1,52 @@
 package frc.robot.commands.autodrive;
 
-import java.util.Optional;
-import java.util.function.DoubleSupplier;
-
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.HardwareConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.commands.drive.DriveCommandBase;
 import frc.robot.subsystems.swerve.DriveSubsystem;
 import frc.robot.subsystems.vision.VisionSubsystem;
+import java.util.Optional;
 
 public class AutoAlignWithAmp extends DriveCommandBase {
   private final DriveSubsystem driveSubsystem;
-  private final DoubleSupplier[] leftStick;
+  // private final SlewRateLimiter xLimiter = new SlewRateLimiter(0.2);
+  // private final SlewRateLimiter yLimiter = new SlewRateLimiter(0.2);
 
   private boolean isRed;
   private Pose2d ampPose;
 
-  private final ProfiledPIDController turnController = new ProfiledPIDController(
-    ShooterConstants.AUTO_LINEUP_ROTATION_P,
-    ShooterConstants.AUTO_LINEUP_ROTATION_I, 
-    ShooterConstants.AUTO_LINEUP_ROTATION_D, 
-    ShooterConstants.AUTO_LINEUP_ROTATION_CONSTRAINTS
-  );
+  private final ProfiledPIDController turnController =
+      new ProfiledPIDController(
+          ShooterConstants.AUTO_LINEUP_ROTATION_P,
+          ShooterConstants.AUTO_LINEUP_ROTATION_I,
+          ShooterConstants.AUTO_LINEUP_ROTATION_D,
+          ShooterConstants.AUTO_LINEUP_ROTATION_CONSTRAINTS);
 
-  // private final ProfiledPIDController xTranslationController = new ProfiledPIDController(
-  //   ShooterConstants.AUTO_LINEUP_TRANSLATION_P,
-  //   ShooterConstants.AUTO_LINEUP_TRANSLATION_I, 
-  //   ShooterConstants.AUTO_LINEUP_TRANSLATION_D, 
-  //   ShooterConstants.AUTO_LINEUP_TRANSLATION_CONSTRAINTS
-  // );
+  private final ProfiledPIDController xTranslationController =
+      new ProfiledPIDController(
+          ShooterConstants.AUTO_LINEUP_TRANSLATION_P,
+          ShooterConstants.AUTO_LINEUP_TRANSLATION_I,
+          ShooterConstants.AUTO_LINEUP_TRANSLATION_D,
+          ShooterConstants.AUTO_LINEUP_TRANSLATION_CONSTRAINTS);
 
-  // private final ProfiledPIDController yTranslationController = new ProfiledPIDController(
-  //   ShooterConstants.AUTO_LINEUP_TRANSLATION_P,
-  //   ShooterConstants.AUTO_LINEUP_TRANSLATION_I, 
-  //   ShooterConstants.AUTO_LINEUP_TRANSLATION_D, 
-  //   ShooterConstants.AUTO_LINEUP_TRANSLATION_CONSTRAINTS
-  // );
+  private final ProfiledPIDController yTranslationController =
+      new ProfiledPIDController(
+          ShooterConstants.AUTO_LINEUP_TRANSLATION_P,
+          ShooterConstants.AUTO_LINEUP_TRANSLATION_I,
+          ShooterConstants.AUTO_LINEUP_TRANSLATION_D,
+          ShooterConstants.AUTO_LINEUP_TRANSLATION_CONSTRAINTS);
 
   /** Creates a new AutoAlignWithAmp. */
-  public AutoAlignWithAmp(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, DoubleSupplier[] leftStick) {
+  public AutoAlignWithAmp(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem) {
     super(driveSubsystem, visionSubsystem);
     this.driveSubsystem = driveSubsystem;
-    this.leftStick = leftStick;
+    // this.leftStick = leftStick;
     addRequirements(driveSubsystem, visionSubsystem);
   }
 
@@ -57,8 +55,16 @@ public class AutoAlignWithAmp extends DriveCommandBase {
     Optional<Alliance> alliance = DriverStation.getAlliance();
     // This will default to blue if it alliance isn't present
     isRed = alliance.isPresent() && alliance.get() == Alliance.Red;
-    ampPose = isRed ? new Pose2d(FieldConstants.RED_AMP_SHOOT_X, FieldConstants.RED_AMP_SHOOT_Y, FieldConstants.RED_AMP_ROTATION) 
-      : new Pose2d(FieldConstants.BLUE_AMP_SHOOT_X, FieldConstants.BLUE_AMP_SHOOT_Y, FieldConstants.BLUE_AMP_ROTATION);
+    ampPose =
+        isRed
+            ? new Pose2d(
+                FieldConstants.RED_AMP_SHOOT_X,
+                FieldConstants.RED_AMP_SHOOT_Y,
+                FieldConstants.RED_AMP_ROTATION)
+            : new Pose2d(
+                FieldConstants.BLUE_AMP_SHOOT_X,
+                FieldConstants.BLUE_AMP_SHOOT_Y,
+                FieldConstants.BLUE_AMP_ROTATION);
     turnController.enableContinuousInput(-Math.PI, Math.PI);
   }
 
@@ -68,33 +74,27 @@ public class AutoAlignWithAmp extends DriveCommandBase {
 
     // Gets the error between the desired pos (the amp) and the current pos of the robot
     Pose2d drivePose = driveSubsystem.getPose();
-    // double xPoseError = ampPose.getX() - drivePose.getX();
-    // double yPoseError = ampPose.getY() - drivePose.getY();
-    double thetaPoseError = ampPose.getRotation().getRadians() - drivePose.getRotation().getRadians();
+    double xPoseError = ampPose.getX() - drivePose.getX();
+    double yPoseError = ampPose.getY() - drivePose.getY();
+    double thetaPoseError =
+        ampPose.getRotation().getRadians() - drivePose.getRotation().getRadians();
 
     // Uses the PID controllers to calculate the drive output
-    // double xOutput = deadband(xTranslationController.calculate(xPoseError, 0));
-    // double yOutput = deadband(yTranslationController.calculate(yPoseError, 0));
-    double turnOutput = deadband(turnController.calculate(thetaPoseError, 0)); 
-    // SmartDashboard.putNumber("xOut", xOutput);
-    // SmartDashboard.putNumber("yOut", yOutput);
-    // SmartDashboard.putNumber("turnOut", turnOutput);
+    double xOutput = deadband(xTranslationController.calculate(xPoseError, 0));
+    double yOutput = deadband(yTranslationController.calculate(yPoseError, 0));
+    double turnOutput = deadband(turnController.calculate(thetaPoseError, 0));
 
     // Gets the chassis speeds for the robot using the odometry rotation (not alliance relative)
-    ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
-      leftStick[1].getAsDouble() * DriveConstants.MAX_SPEED_METERS_PER_SECOND,
-      leftStick[0].getAsDouble() * DriveConstants.MAX_SPEED_METERS_PER_SECOND,
-      turnOutput,
-      driveSubsystem.getOdometryRotation2d()
-    );
+    ChassisSpeeds chassisSpeeds =
+        ChassisSpeeds.fromFieldRelativeSpeeds(
+            xOutput, yOutput, turnOutput, driveSubsystem.getOdometryRotation2d());
 
     // Drives the robot towards the amp
     driveSubsystem.drive(
-      chassisSpeeds.vxMetersPerSecond,
-      chassisSpeeds.vyMetersPerSecond,
-      chassisSpeeds.omegaRadiansPerSecond,
-      false
-    );
+        chassisSpeeds.vxMetersPerSecond,
+        chassisSpeeds.vyMetersPerSecond,
+        chassisSpeeds.omegaRadiansPerSecond,
+        false);
 
     // pivotSubsystem.setPivotAngle(PivotConstants.SHOOT_AMP_ANGLE);
     // shooterSubsystem.setRPM(ShooterConstants.SHOOT_AMP_RPM);
@@ -109,12 +109,12 @@ public class AutoAlignWithAmp extends DriveCommandBase {
   public boolean isFinished() {
     return false;
   }
-  
+
   private double deadband(double val) {
     if (Math.abs(val) < HardwareConstants.DEADBAND_VALUE) {
       return 0.0;
     } else {
       return val;
     }
-  } 
+  }
 }

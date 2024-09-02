@@ -11,6 +11,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.VisionConstants;
+import frc.robot.extras.interpolators.BilinearInterpolator;
 
 /** Add your docs here. */
 public class NoteDetector {
@@ -22,21 +23,27 @@ public class NoteDetector {
     pixelLookupInterpolator= new BilinearInterpolator(VisionConstants.noteDetectionLookupTable);
   }
 
- /**
-  * Get the game piece x and y center of the ellipse drawn around it
-  * @return the double retrived from SmartDashboard (a network table)
-  */
+  /**
+   * Get the game piece x and y center of the ellipse drawn around it
+   *
+   * @return the double retrived from SmartDashboard (a network table)
+   */
   public static double[] update() {
     // if no number retrieved, return -1.0
-    double x_center = SmartDashboard.getNumber("EllipseCenterX", -1.0); //0.5 * camera's width for resolution in pixels
-    double y_center = SmartDashboard.getNumber("EllipseCenterY",-1.0); //0.5 * camera's height for resolution in pixels
+    double x_center =
+        SmartDashboard.getNumber(
+            "EllipseCenterX", -1.0); // 0.5 * camera's width for resolution in pixels
+    double y_center =
+        SmartDashboard.getNumber(
+            "EllipseCenterY", -1.0); // 0.5 * camera's height for resolution in pixels
 
-    return new double[]{x_center, y_center};
+    return new double[] {x_center, y_center};
   }
 
   /**
-   * This gets the position of the nearest note, relative to the robot and the direction.
-   * its facing.
+   * This gets the position of the nearest note, relative to the robot and the direction. its
+   * facing.
+   *
    * @return the offset of the note relative to the robot
    */
   public static Pose2d getNoteRobotRelativeOffset() {
