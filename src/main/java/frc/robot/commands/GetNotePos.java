@@ -1,14 +1,13 @@
 package frc.robot.commands;
 
-import java.util.Arrays;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.extras.NoteDetector;
+import java.util.Arrays;
 
-//Gets ROBOT RELATIVE POSE (NOT FIELD RELATIVE POSE) of Note
+// Gets ROBOT RELATIVE POSE (NOT FIELD RELATIVE POSE) of Note
 public class GetNotePos extends Command {
 
   public GetNotePos() {}
@@ -25,7 +24,7 @@ public class GetNotePos extends Command {
     double[] testArray = NoteDetector.getWorldPts();
     SmartDashboard.putString("x and y", Arrays.toString(testArray));
 
-    Pose2d notePose =  NoteDetector.findNotePose();
+    Pose2d notePose = NoteDetector.findNotePose();
     Translation2d cameraOffset = NoteDetector.applyCameraOffset(notePose);
     SmartDashboard.putString("note pos", cameraOffset.toString());
   }

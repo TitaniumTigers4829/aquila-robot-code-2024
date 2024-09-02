@@ -17,26 +17,26 @@ public class DriveToNote extends DriveCommandBase {
   private final DriveSubsystem driveSubsystem;
   private final VisionSubsystem visionSubsystem;
 
-  private final ProfiledPIDController xTranslationController = new ProfiledPIDController(
-    TrajectoryConstants.AUTO_ALIGN_TRANSLATIONAL_P,
-    TrajectoryConstants.AUTO_ALIGN_TRANSLATIONAL_I,
-    TrajectoryConstants.AUTO_ALIGN_TRANSLATIONAL_D,
-    TrajectoryConstants.AUTO_ALIGN_TRANSLATION_CONSTRAINTS
-  );
+  private final ProfiledPIDController xTranslationController =
+      new ProfiledPIDController(
+          TrajectoryConstants.AUTO_ALIGN_TRANSLATIONAL_P,
+          TrajectoryConstants.AUTO_ALIGN_TRANSLATIONAL_I,
+          TrajectoryConstants.AUTO_ALIGN_TRANSLATIONAL_D,
+          TrajectoryConstants.AUTO_ALIGN_TRANSLATION_CONSTRAINTS);
 
-  private final ProfiledPIDController yTranslationController = new ProfiledPIDController(
-    TrajectoryConstants.AUTO_ALIGN_TRANSLATIONAL_P,
-    TrajectoryConstants.AUTO_ALIGN_TRANSLATIONAL_I,
-    TrajectoryConstants.AUTO_ALIGN_TRANSLATIONAL_D,
-    TrajectoryConstants.AUTO_ALIGN_TRANSLATION_CONSTRAINTS
-  );
+  private final ProfiledPIDController yTranslationController =
+      new ProfiledPIDController(
+          TrajectoryConstants.AUTO_ALIGN_TRANSLATIONAL_P,
+          TrajectoryConstants.AUTO_ALIGN_TRANSLATIONAL_I,
+          TrajectoryConstants.AUTO_ALIGN_TRANSLATIONAL_D,
+          TrajectoryConstants.AUTO_ALIGN_TRANSLATION_CONSTRAINTS);
 
-  private final ProfiledPIDController thetaController = new ProfiledPIDController(
-    1.5,
-    TrajectoryConstants.AUTO_ALIGN_ROTATIONAL_I,
-    TrajectoryConstants.AUTO_ALIGN_ROTATIONAL_D,
-    TrajectoryConstants.AUTO_ALIGN_ROTATIONAL_CONSTRAINTS
-  );
+  private final ProfiledPIDController thetaController =
+      new ProfiledPIDController(
+          1.5,
+          TrajectoryConstants.AUTO_ALIGN_ROTATIONAL_I,
+          TrajectoryConstants.AUTO_ALIGN_ROTATIONAL_D,
+          TrajectoryConstants.AUTO_ALIGN_ROTATIONAL_CONSTRAINTS);
 
   private Pose2d noteRobotRelativeOffset;
   private Translation2d cameraOffset;
@@ -60,10 +60,13 @@ public class DriveToNote extends DriveCommandBase {
     SmartDashboard.putString("pose", robotPos.toString());
 
     // Uses trigonometry to get angle of note and robot relative position to the field
-    Rotation2d thetaTotal = Rotation2d.fromRadians(robotPos.getRotation().getRadians() 
-      + Math.atan(-cameraOffset.getX() / cameraOffset.getY()));
+    Rotation2d thetaTotal =
+        Rotation2d.fromRadians(
+            robotPos.getRotation().getRadians()
+                + Math.atan(-cameraOffset.getX() / cameraOffset.getY()));
 
-    double noteDistance = Math.sqrt(Math.pow(cameraOffset.getX(),2) + Math.pow(cameraOffset.getY(),2));
+    double noteDistance =
+        Math.sqrt(Math.pow(cameraOffset.getX(), 2) + Math.pow(cameraOffset.getY(), 2));
 
     // Gets the field position relative to the robot
     noteFieldRelativePose =
@@ -73,31 +76,30 @@ public class DriveToNote extends DriveCommandBase {
             thetaTotal);
     thetaController.enableContinuousInput(-Math.PI, Math.PI);
   }
-  
 
   @Override
   public void execute() {
     super.execute();
-      Pose2d robotPos = driveSubsystem.getPose();
-      SmartDashboard.putBoolean("hello", true);
-      // Gets the pose error
-      double xPoseError = noteFieldRelativePose.getX() - robotPos.getX();
-      double yPoseError = noteFieldRelativePose.getY() - robotPos.getY();
-      double thetaError =
-          noteFieldRelativePose.getRotation().getRadians() - robotPos.getRotation().getRadians();
+    Pose2d robotPos = driveSubsystem.getPose();
+    SmartDashboard.putBoolean("hello", true);
+    // Gets the pose error
+    double xPoseError = noteFieldRelativePose.getX() - robotPos.getX();
+    double yPoseError = noteFieldRelativePose.getY() - robotPos.getY();
+    double thetaError =
+        noteFieldRelativePose.getRotation().getRadians() - robotPos.getRotation().getRadians();
 
+    // Uses the PID controllers to calculate the drive output
+    double xOutput = deadband(xTranslationController.calculate(-xPoseError, 0));
+    double yOutput = deadband(yTranslationController.calculate(-yPoseError, 0));
+    double thetaOutput = thetaController.calculate(0, 0);
 
-      // Uses the PID controllers to calculate the drive output
-      double xOutput = deadband(xTranslationController.calculate(-xPoseError, 0));
-      double yOutput = deadband(yTranslationController.calculate(-yPoseError, 0));
-      double thetaOutput = thetaController.calculate(0, 0);
+    // Gets the chassis speeds for the robot using the odometry rotation (not alliance relative)
+    ChassisSpeeds chassisSpeeds =
+        ChassisSpeeds.fromFieldRelativeSpeeds(
+            xOutput, yOutput, thetaOutput, driveSubsystem.getGyroRotation2d());
 
-      // Gets the chassis speeds for the robot using the odometry rotation (not alliance relative)
-      ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xOutput, yOutput, thetaOutput, driveSubsystem.getGyroRotation2d());
-
-      // Drives the robot towards the amp
-      driveSubsystem.drive(chassisSpeeds);
-    
+    // Drives the robot towards the amp
+    driveSubsystem.drive(chassisSpeeds);
   }
 
   @Override

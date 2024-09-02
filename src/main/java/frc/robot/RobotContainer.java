@@ -11,8 +11,6 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.JoystickConstants;
 import frc.robot.Constants.LEDConstants.LEDProcess;
-import frc.robot.commands.auto.BlueNoteEight;
-import frc.robot.commands.GetNotePos;
 import frc.robot.Constants.PivotConstants;
 import frc.robot.commands.auto.BlueAmpSideFourNote;
 import frc.robot.commands.auto.BlueFiveNote;
@@ -27,14 +25,10 @@ import frc.robot.commands.auto.RedShootTaxi;
 import frc.robot.commands.auto.RedSixNote;
 import frc.robot.commands.auto.SimpleTxi;
 import frc.robot.commands.autodrive.AutoAlignWithAmp;
-import frc.robot.commands.autodrive.DriveToNote;
 import frc.robot.commands.autodrive.IntakeNote;
-import frc.robot.commands.auto.RedNoteEight;
 import frc.robot.commands.drive.Drive;
 import frc.robot.commands.intake.ManualIntake;
 import frc.robot.commands.intake.TowerIntake;
-import frc.robot.extras.NoteDetector;
-import frc.robot.extras.SmarterDashboardRegistry;
 import frc.robot.commands.shooter.ManualPivot;
 import frc.robot.commands.shooter.ShootSpeaker;
 import frc.robot.commands.shooter.SpinUpForSpeaker;
@@ -278,37 +272,59 @@ public class RobotContainer {
     // shooterSubsystem.setDefaultCommand(new FlywheelSpinUpAuto(shooterSubsystem,
     // visionSubsystem));
 
-    // driverLeftTrigger.whileTrue(new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem, false, ledSubsystem));
+    // driverLeftTrigger.whileTrue(new TowerIntake(intakeSubsystem, pivotSubsystem,
+    // shooterSubsystem, false, ledSubsystem));
     // // Amp Lineup
-    // driverAButton.whileTrue(new AutoAlignWithAmp(driveSubsystem, visionSubsystem, driverLeftStick));
+    // driverAButton.whileTrue(new AutoAlignWithAmp(driveSubsystem, visionSubsystem,
+    // driverLeftStick));
     // // Spinup for shoot
-    // // driverRightTrigger.whileTrue(new SpinUpForSpeaker(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, driverLeftStickX, driverLeftStickY, driverRightBumper, ledSubsystem));
-    
-    // driverLeftBumper.whileTrue(new ShootSpeaker(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, driverLeftStickX, operatorLeftStickY, driverRightBumper, ledSubsystem));
-    // driverRightTrigger.whileTrue(new ShootWhileMove(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, driverLeftStick, driverYButton, ledSubsystem));
+    // // driverRightTrigger.whileTrue(new SpinUpForSpeaker(driveSubsystem, shooterSubsystem,
+    // pivotSubsystem, visionSubsystem, driverLeftStickX, driverLeftStickY, driverRightBumper,
+    // ledSubsystem));
+
+    // driverLeftBumper.whileTrue(new ShootSpeaker(driveSubsystem, shooterSubsystem, pivotSubsystem,
+    // visionSubsystem, driverLeftStickX, operatorLeftStickY, driverRightBumper, ledSubsystem));
+    // driverRightTrigger.whileTrue(new ShootWhileMove(driveSubsystem, shooterSubsystem,
+    // pivotSubsystem, visionSubsystem, driverLeftStick, driverYButton, ledSubsystem));
 
     // // Resets the robot angle in the odometry, factors in which alliance the robot is on
-    // driverRightDirectionPad.onTrue(new InstantCommand(() -> driveSubsystem.resetOdometry(new Pose2d(driveSubsystem.getPose().getX(), driveSubsystem.getPose().getY(), 
+    // driverRightDirectionPad.onTrue(new InstantCommand(() -> driveSubsystem.resetOdometry(new
+    // Pose2d(driveSubsystem.getPose().getX(), driveSubsystem.getPose().getY(),
     //       Rotation2d.fromDegrees(driveSubsystem.getAllianceAngleOffset())))));
     // // Reset robot odometry based on vision pose measurement from april tags
-    // driverLeftDirectionPad.onTrue(new InstantCommand(() -> driveSubsystem.resetOdometry(visionSubsystem.getPoseFromAprilTags())));
+    // driverLeftDirectionPad.onTrue(new InstantCommand(() ->
+    // driveSubsystem.resetOdometry(visionSubsystem.getPoseFromAprilTags())));
 
-
-    driverBButton.whileTrue(new IntakeNote(intakeSubsystem, pivotSubsystem, shooterSubsystem, ledSubsystem, driveSubsystem, visionSubsystem));
+    driverBButton.whileTrue(
+        new IntakeNote(
+            intakeSubsystem,
+            pivotSubsystem,
+            shooterSubsystem,
+            ledSubsystem,
+            driveSubsystem,
+            visionSubsystem));
     // OPERATOR BUTTONS
 
     // // speaker
-    // operatorRightTrigger.whileTrue(new ShootSpeaker(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, driverLeftStickX, driverLeftStickY, driverRightBumper, ledSubsystem));
+    // operatorRightTrigger.whileTrue(new ShootSpeaker(driveSubsystem, shooterSubsystem,
+    // pivotSubsystem, visionSubsystem, driverLeftStickX, driverLeftStickY, driverRightBumper,
+    // ledSubsystem));
     // // amp
-    // operatorRightBumper.whileTrue(new ShootAmp(shooterSubsystem, pivotSubsystem, ledSubsystem, operatorBButton));
+    // operatorRightBumper.whileTrue(new ShootAmp(shooterSubsystem, pivotSubsystem, ledSubsystem,
+    // operatorBButton));
     // // fender shot
-    // operatorUpDirectionPad.whileTrue(new SubwooferShot(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, driverLeftStickX, driverLeftStickY, driverRightStickX, driverRightBumper, ledSubsystem));
+    // operatorUpDirectionPad.whileTrue(new SubwooferShot(driveSubsystem, shooterSubsystem,
+    // pivotSubsystem, visionSubsystem, driverLeftStickX, driverLeftStickY, driverRightStickX,
+    // driverRightBumper, ledSubsystem));
     // // intake (aka SUCC_BUTTON)
-    // operatorLeftTrigger.whileTrue(new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem, false, ledSubsystem));
+    // operatorLeftTrigger.whileTrue(new TowerIntake(intakeSubsystem, pivotSubsystem,
+    // shooterSubsystem, false, ledSubsystem));
     // // outtake (aka UNSUCC_BUTTON)
-    // operatorLeftBumper.whileTrue(new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem, true, ledSubsystem));
+    // operatorLeftBumper.whileTrue(new TowerIntake(intakeSubsystem, pivotSubsystem,
+    // shooterSubsystem, true, ledSubsystem));
     // // manual pivot (possible climb, unlikely)
-    // operatorAButton.whileTrue(new ManualPivot(pivotSubsystem, ()->modifyAxisCubed(operatorRightStickY)));
+    // operatorAButton.whileTrue(new ManualPivot(pivotSubsystem,
+    // ()->modifyAxisCubed(operatorRightStickY)));
     // // manual rollers
     // operatorYButton.whileTrue(new ManualRollers(intakeSubsystem, true));
     // operatorXButton.whileTrue(new ManualRollers(intakeSubsystem, false));

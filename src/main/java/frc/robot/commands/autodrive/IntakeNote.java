@@ -5,8 +5,7 @@
 package frc.robot.commands.autodrive;
 
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import frc.robot.commands.intake.TowerIntake;
-import frc.robot.extras.NoteDetector;
+import frc.robot.commands.auto.IntakeAuto;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.leds.LEDSubsystem;
 import frc.robot.subsystems.pivot.PivotSubsystem;
@@ -19,13 +18,17 @@ import frc.robot.subsystems.vision.VisionSubsystem;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class IntakeNote extends ParallelCommandGroup {
   /** Creates a new IntakeNote. */
-  
-
-  public IntakeNote(IntakeSubsystem intakeSubsystem, PivotSubsystem pivotSubsystem, ShooterSubsystem shooterSubsystem, LEDSubsystem ledSubsystem, DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem) {
+  public IntakeNote(
+      IntakeSubsystem intakeSubsystem,
+      PivotSubsystem pivotSubsystem,
+      ShooterSubsystem shooterSubsystem,
+      LEDSubsystem ledSubsystem,
+      DriveSubsystem driveSubsystem,
+      VisionSubsystem visionSubsystem) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-  addCommands(
-      new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem, false, ledSubsystem), 
-    new DriveToNote(driveSubsystem, visionSubsystem));
+    addCommands(
+        new IntakeAuto(intakeSubsystem, pivotSubsystem, shooterSubsystem, ledSubsystem),
+        new DriveToNote(driveSubsystem, visionSubsystem));
   }
 }
