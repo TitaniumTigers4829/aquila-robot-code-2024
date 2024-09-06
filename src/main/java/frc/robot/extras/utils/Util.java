@@ -5,7 +5,7 @@ import java.util.function.DoubleSupplier;
 
 
 public class Util {
-    
+
   /**
    * Deadbands a value to 0
    * @param value Value to input

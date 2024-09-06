@@ -1,14 +1,11 @@
 package frc.robot.commands.shooter;
 
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.ShooterConstants;
-import frc.robot.commands.drive.Drive;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.swerve.DriveSubsystem;
-import frc.robot.subsystems.vision.VisionSubsystem;
 
 public class FlywheelSpinUpAuto extends Command {
   /** Creates a new FlywheelSpinUpAuto. */
@@ -29,7 +26,7 @@ public class FlywheelSpinUpAuto extends Command {
   @Override
   public void initialize() {
 
-       
+
     speakerPos = isRed ? new Translation2d(FieldConstants.RED_SPEAKER_X, FieldConstants.RED_SPEAKER_Y) : new Translation2d(FieldConstants.BLUE_SPEAKER_X, FieldConstants.BLUE_SPEAKER_Y);
 
   }

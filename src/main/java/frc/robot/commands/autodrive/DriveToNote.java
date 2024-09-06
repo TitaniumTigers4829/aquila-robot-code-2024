@@ -56,7 +56,7 @@ public class DriveToNote extends DriveCommandBase {
     Pose2d robotPos = driveSubsystem.getPose();
 
     // Uses trigonometry to get angle of note and robot relative position to the field
-    Rotation2d thetaTotal = Rotation2d.fromRadians(robotPos.getRotation().getRadians() 
+    Rotation2d thetaTotal = Rotation2d.fromRadians(robotPos.getRotation().getRadians()
       + Math.atan(-noteRobotRelativeOffset.getX() / noteRobotRelativeOffset.getY()));
 
     double noteDistance = Math.sqrt(Math.pow(noteRobotRelativeOffset.getX(),2) + Math.pow(noteRobotRelativeOffset.getY(),2));
@@ -102,12 +102,12 @@ public class DriveToNote extends DriveCommandBase {
   public boolean isFinished() {
     return false;
   }
-  
+
   private double deadband(double val) {
     if (Math.abs(val) < 0.05) {
       return 0.0;
     } else {
       return val;
     }
-  } 
+  }
 }

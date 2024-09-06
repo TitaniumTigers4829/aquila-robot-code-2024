@@ -90,9 +90,9 @@ public class ShootSpeakerAuto extends DriveCommandBase {
     double turnOutput = deadband(turnController.calculate(headingError, 0));
 
     driveSubsystem.drive(
-      0, 
-      0, 
-      turnOutput, 
+      0,
+      0,
+      turnOutput,
       false
     );
 

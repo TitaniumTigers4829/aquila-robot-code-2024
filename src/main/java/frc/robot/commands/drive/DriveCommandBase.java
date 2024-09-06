@@ -11,9 +11,9 @@ import frc.robot.subsystems.vision.VisionSubsystem;
 
 public abstract class DriveCommandBase extends Command {
 
-  private final MultiLinearInterpolator oneAprilTagLookupTable = 
+  private final MultiLinearInterpolator oneAprilTagLookupTable =
     new MultiLinearInterpolator(VisionConstants.ONE_APRIL_TAG_LOOKUP_TABLE);
-  private final MultiLinearInterpolator twoAprilTagLookupTable = 
+  private final MultiLinearInterpolator twoAprilTagLookupTable =
     new MultiLinearInterpolator(VisionConstants.TWO_APRIL_TAG_LOOKUP_TABLE);
 
   private final VisionSubsystem visionSubsystem;

@@ -93,7 +93,7 @@ public class PivotSubsystem extends SubsystemBase {
   }
 
   /**
-   * Returns if the pivot is within an acceptable rotation 
+   * Returns if the pivot is within an acceptable rotation
    * in relation to the target position
    * @return pivot error between desired and actual state in rotations
    */
@@ -139,7 +139,7 @@ public class PivotSubsystem extends SubsystemBase {
     pivotTargetAngle = passAngle;
     setPivotAngle(passAngle);
   }
-  
+
   /**
    * Sets the pivot using the leader/follower motors
    *

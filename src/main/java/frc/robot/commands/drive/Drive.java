@@ -6,7 +6,6 @@ import frc.robot.subsystems.vision.VisionSubsystem;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
-import edu.wpi.first.math.filter.SlewRateLimiter;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.vision.VisionSubsystem;
 import frc.robot.subsystems.swerve.DriveSubsystem;
@@ -53,7 +52,7 @@ public class Drive extends DriveCommandBase {
     } else {
       angularSpeed = DriveConstants.LOW_ANGULAR_SPEED_RADIANS_PER_SECOND;
     }
-    
+
     driveSubsystem.drive(
       leftJoystickY.getAsDouble() * DriveConstants.MAX_SPEED_METERS_PER_SECOND,
       leftJoystickX.getAsDouble() * DriveConstants.MAX_SPEED_METERS_PER_SECOND,

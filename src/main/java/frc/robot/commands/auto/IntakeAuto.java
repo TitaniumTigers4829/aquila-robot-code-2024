@@ -21,7 +21,7 @@ public class IntakeAuto extends Command {
   private final ShooterSubsystem shooterSubsystem;
   private final LEDSubsystem leds;
   private boolean intakeSensorLatch;
-  
+
   public IntakeAuto(IntakeSubsystem intakeSubsystem, PivotSubsystem pivotSubsystem, ShooterSubsystem shooterSubsystem, LEDSubsystem leds) {
     this.intakeSubsystem = intakeSubsystem;
     this.pivotSubsystem = pivotSubsystem;
@@ -40,7 +40,7 @@ public class IntakeAuto extends Command {
     // If it were done the way it was before this, they would briefly flash yellow before going back to red
     leds.setProcess(LEDProcess.INTAKE);
   }
-  
+
   @Override
   public void execute() {
     pivotSubsystem.setPivotAngle(PivotConstants.PIVOT_INTAKE_ANGLE);

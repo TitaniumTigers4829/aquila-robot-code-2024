@@ -8,7 +8,6 @@ import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.numbers.N3;
@@ -128,7 +127,7 @@ public class DriveSubsystem extends SubsystemBase {
 
     setpointGenerator = new SwerveSetpointGenerator(DriveConstants.DRIVE_KINEMATICS, DriveConstants.MODULE_TRANSLATIONS);
     currentSetpoint = new SwerveSetpoint(new ChassisSpeeds(), getModuleStates());
-    
+
     // Configure AutoBuilder
     AutoBuilder.configureHolonomic(
         this::getPose,
