@@ -97,7 +97,7 @@ public class VisionSubsystem extends SubsystemBase {
   public void updatePoseEstimate(int limelightNumber) {
     limelightEstimates[limelightNumber] =
         DriverStation.isEnabled()
-            ? enabledPoseUpdate(limelightNumber);
+            ? enabledPoseUpdate(limelightNumber)
             : getMegaTag1PoseEstimate(limelightNumber);
   }
 
