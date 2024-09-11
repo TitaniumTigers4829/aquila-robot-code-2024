@@ -27,7 +27,7 @@ import frc.robot.Constants.ModuleConstants;
  * kinematically infeasible (and can result in wheel slip or robot heading drift
  * as a result).
  */
-public class SwerveSetpointProcessor {
+public class SwerveSetpointGenerator {
     private static final ChassisSpeeds ZERO_CHASSIS_SPEED = new ChassisSpeeds();
     private static final SwerveModuleState ZERO_MODULE_STATE = new SwerveModuleState(0, GeomUtil.ROTATION2D_ZERO);
 
@@ -188,7 +188,7 @@ public class SwerveSetpointProcessor {
 
     /**
      * Set the disabled flag, which will cause the next call to
-     * processSetpoint() to skip the optimizations and constraint considerations.
+     * generateSetpoint() to skip the optimizations and constraint considerations.
      * 
      * @param disabled True to disable the optimizations and constraints.
      *                 Default is false.
@@ -206,7 +206,7 @@ public class SwerveSetpointProcessor {
      * @return A Setpoint object that satisfies all of the KinematicLimits while
      *         converging to desiredState quickly.
      */
-    public SwerveSetpoint processSetpoint(ChassisSpeeds desiredState) {
+    public SwerveSetpoint generateSetpoint(ChassisSpeeds desiredState) {
         if (disabled) {
             return new SwerveSetpoint(
                     desiredState,

@@ -53,7 +53,7 @@ public class DriveSubsystem extends SubsystemBase {
   private final AHRS gyro;
   private final SwerveDrivePoseEstimator odometry;
 
-  private SwerveSetpointProcessor SwerveSetpointProcessor;
+  private SwerveSetpointGenerator SwerveSetpointProcessor;
 
   private Optional<DriverStation.Alliance> alliance;
 
@@ -157,7 +157,7 @@ public class DriveSubsystem extends SubsystemBase {
                 xSpeed, ySpeed, rotationSpeed, getOdometryAllianceRelativeRotation2d())
             : new ChassisSpeeds(xSpeed, ySpeed, rotationSpeed);
     currentSetpoint =
-        setpointGenerator.processSetpoint(desiredSpeeds);
+        setpointGenerator.generateSetpoint(desiredSpeeds);
 
     setModuleStates(DriveConstants.DRIVE_KINEMATICS.toSwerveModuleStates(currentSetpoint.chassisSpeeds()));
   }
