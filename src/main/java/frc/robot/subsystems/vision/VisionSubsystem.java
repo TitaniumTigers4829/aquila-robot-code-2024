@@ -67,33 +67,31 @@ public class VisionSubsystem extends SubsystemBase {
    * @param limelightNumber the number of the limelight
    */
   public PoseEstimate enabledPoseUpdate(int limelightNumber) {
-    if (!canSeeAprilTags(limelightNumber)) {
-      return limelightEstimates[limelightNumber] = new PoseEstimate();
-    }
+    // if (!canSeeAprilTags(limelightNumber)) {
+    //   return limelightEstimates[limelightNumber] = new PoseEstimate();
+    // }
     // Soon to be implemented code:
-    // if (canSeeAprilTags(limelightNumber)) {
-    //   if (isValidPoseEstimate(limelightNumber)) {
-
-    // if (isLargeDiscrepancyBetweenMegaTag1And2(limelightNumber)
-    //     && getLimelightAprilTagDistance(limelightNumber) <
-    // VisionConstants.MEGA_TAG_2_DISTANCE_THRESHOLD) {
-    //   limelightEstimates[limelightNumber] = getMegaTag1PoseEstimate(limelightNumber);
-    // } else
-    if (headingRateDegreesPerSecond < VisionConstants.MEGA_TAG_2_MAX_HEADING_RATE) {
+    if (canSeeAprilTags(limelightNumber) && isValidPoseEstimate(limelightNumber)) {
+      if (isLargeDiscrepancyBetweenMegaTag1And2(limelightNumber)
+          && getLimelightAprilTagDistance(limelightNumber) <
+      VisionConstants.MEGA_TAG_2_DISTANCE_THRESHOLD) {
+        return limelightEstimates[limelightNumber] = getMegaTag1PoseEstimate(limelightNumber);
+      } else if (headingRateDegreesPerSecond < VisionConstants.MEGA_TAG_2_MAX_HEADING_RATE) {
       LimelightHelpers.SetRobotOrientation(
           getLimelightName(limelightNumber), headingDegrees, 0, 0, 0, 0, 0);
       return limelightEstimates[limelightNumber] = getMegaTag2PoseEstimate(limelightNumber);
     } else {
       return limelightEstimates[limelightNumber] = getMegaTag1PoseEstimate(limelightNumber);
     }
-    //   }
-    // }
+      }
   }
 
   /**
-  * If the robot is not enabled, update the pose using MegaTag1 and after it is enabled, run {@link #enabledPoseUpdate(int)}
-  * @param limelightNumber the number of the limelight
-  */
+   * If the robot is not enabled, update the pose using MegaTag1 and after it is enabled, run {@link
+   * #enabledPoseUpdate(int)}
+   *
+   * @param limelightNumber the number of the limelight
+   */
   public void updatePoseEstimate(int limelightNumber) {
     limelightEstimates[limelightNumber] =
         DriverStation.isEnabled()
@@ -336,9 +334,9 @@ public class VisionSubsystem extends SubsystemBase {
     executorService.submit(
         () -> {
           try {
-            while (limelightThreads.get(limelightNumber).get()) {
-              checkAndUpdatePose(limelightNumber);
-            }
+            // while (limelightThreads.get(limelightNumber).get()) {
+            checkAndUpdatePose(limelightNumber);
+            // }
           } catch (Exception e) {
             System.err.println(
                 "Error executing task for the: "
