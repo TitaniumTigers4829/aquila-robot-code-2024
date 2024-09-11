@@ -22,9 +22,7 @@ import frc.robot.Constants.HardwareConstants;
 import frc.robot.Constants.TrajectoryConstants;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.extras.SmarterDashboardRegistry;
-import frc.robot.extras.swerve.ModuleLimits;
-import frc.robot.extras.swerve.SwerveSetpoint;
-import frc.robot.extras.swerve.SwerveSetpointGenerator;
+import frc.robot.subsystems.swerve.SwerveSetpointGenerator;
 import java.util.Optional;
 
 public class DriveSubsystem extends SubsystemBase {
@@ -53,13 +51,7 @@ public class DriveSubsystem extends SubsystemBase {
   private final AHRS gyro;
   private final SwerveDrivePoseEstimator odometry;
 
-  private static final ModuleLimits currentModuleLimits =
-      new ModuleLimits(
-          DriveConstants.MAX_SPEED_METERS_PER_SECOND,
-          4,
-          DriveConstants.MAX_ANGULAR_SPEED_RADIANS_PER_SECOND);
-  private SwerveSetpointGenerator setpointGenerator;
-  private SwerveSetpoint currentSetpoint;
+  private SwerveSetpointGenerator swerveSetpointGenerator;
 
   private Optional<DriverStation.Alliance> alliance;
 
@@ -125,10 +117,7 @@ public class DriveSubsystem extends SubsystemBase {
 
     alliance = DriverStation.getAlliance();
 
-    setpointGenerator =
-        new SwerveSetpointGenerator(
-            DriveConstants.DRIVE_KINEMATICS, DriveConstants.MODULE_TRANSLATIONS);
-    currentSetpoint = new SwerveSetpoint(new ChassisSpeeds(), getModuleStates());
+    setpointGenerator = new SwerveSetpointGenerator();
 
     // Configure AutoBuilder
     AutoBuilder.configureHolonomic(
@@ -166,10 +155,9 @@ public class DriveSubsystem extends SubsystemBase {
                 xSpeed, ySpeed, rotationSpeed, getOdometryAllianceRelativeRotation2d())
             : new ChassisSpeeds(xSpeed, ySpeed, rotationSpeed);
     currentSetpoint =
-        setpointGenerator.generateSetpoint(
-            currentModuleLimits, currentSetpoint, desiredSpeeds, HardwareConstants.TIMEOUT_S);
+        setpointGenerator.generateSetpoint(desiredSpeeds);
 
-    setModuleStates(currentSetpoint.moduleStates());
+    setModuleStates(DriveConstants.DRIVE_KINEMATICS.toSwerveModuleStates(currentSetpoint.chassisSpeeds()));
   }
 
   public void drive(ChassisSpeeds speeds) {
