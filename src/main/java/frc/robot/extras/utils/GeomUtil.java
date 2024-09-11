@@ -1,8 +1,8 @@
 // inspired/copied from 6328
 
-package com.igknighters.util.geom;
+package frc.robot.extras.utils;
 
-import com.igknighters.constants.FieldConstants;
+import frc.robot.Constants.FieldConstants;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
@@ -22,8 +22,8 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 public class GeomUtil {
     public static final Translation2d TRANSLATION2D_ZERO = new Translation2d();
     public static final Translation2d TRANSLATION2D_CENTER = new Translation2d(
-        FieldConstants.FIELD_LENGTH / 2.0,
-        FieldConstants.FIELD_WIDTH / 2.0
+        FieldConstants.FIELD_LENGTH_METERS / 2.0,
+        FieldConstants.FIELD_WIDTH_METERS / 2.0
     );
     public static final Rotation2d ROTATION2D_ZERO = new Rotation2d();
     public static final Rotation2d ROTATION2D_PI = Rotation2d.fromDegrees(180.0);

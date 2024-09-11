@@ -9,6 +9,8 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.ModuleConstants;
 
 /**
  * "Inspired" by FRC team 254.
@@ -41,17 +43,13 @@ public class SwerveSetpointProcessor {
             double maxSteeringVelocity) {
     }
 
-    private final SwerveDriveKinematics kinematics = kSwerve.SWERVE_KINEMATICS;
-    private final Translation2d[] moduleLocations = new Translation2d[] {
-            kSwerve.kMod0.CHASSIS_OFFSET,
-            kSwerve.kMod1.CHASSIS_OFFSET,
-            kSwerve.kMod2.CHASSIS_OFFSET,
-            kSwerve.kMod3.CHASSIS_OFFSET
-    };
-    private final ModuleLimits limits = new ModuleLimits(
-            kSwerve.MAX_DRIVE_VELOCITY,
-            kSwerve.MAX_DRIVE_ACCELERATION * 5.0,
-            kSwerve.MAX_STEERING_VELOCITY);
+    private final SwerveDriveKinematics swerveDriveKinematics = DriveConstants.DRIVE_KINEMATICS;
+
+    private final ModuleLimits moduleLimits = new ModuleLimits(
+            ModuleConstants.MAX_SPEED_METERS_PER_SECOND,
+            5.0,
+            ModuleConstants.MAX_ANGULAR_SPEED_RADIANS_PER_SECOND);
+
     private SwerveSetpoint prevSetpoint = new SwerveSetpoint(
             ZERO_CHASSIS_SPEED,
             new SwerveModuleState[] {
@@ -87,24 +85,6 @@ public class SwerveSetpointProcessor {
         } else {
             return angle;
         }
-    }
-
-    private boolean epsilonEquals(Twist2d twist, Twist2d other) {
-        return epsilonEquals(twist.dx, other.dx)
-                && epsilonEquals(twist.dy, other.dy);
-    }
-
-    private boolean epsilonEquals(double a, double b, double epsilon) {
-        return (a - epsilon <= b) && (a + epsilon >= b);
-    }
-
-    private boolean epsilonEquals(double a, double b) {
-        return epsilonEquals(a, b, 1e-9);
-    }
-
-    private Twist2d toTwist2d(ChassisSpeeds speeds) {
-        return new Twist2d(
-                speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, speeds.omegaRadiansPerSecond);
     }
 
     @FunctionalInterface
@@ -144,7 +124,7 @@ public class SwerveSetpointProcessor {
             double y_1,
             double f_1,
             int iterations_left) {
-        if (iterations_left < 0 || epsilonEquals(f_0, f_1)) {
+        if (iterations_left < 0 || EqualsUtil.epsilonEquals(f_0, f_1)) {
             return 1.0;
         }
         var s_guess = Math.max(0.0, Math.min(1.0, -f_0 / (f_1 - f_0)));
@@ -232,12 +212,7 @@ public class SwerveSetpointProcessor {
                     desiredState,
                     kinematics.toSwerveModuleStates(desiredState));
         }
-        try {
-            Tracer.startTrace("GenerateSetpoint");
             return generateSetpointInner(desiredState, ConstValues.PERIODIC_TIME);
-        } finally {
-            Tracer.endTrace();
-        }
     }
 
     private SwerveSetpoint generateSetpointInner(
@@ -257,7 +232,7 @@ public class SwerveSetpointProcessor {
         // Special case: desiredState is a complete stop. In this case, module angle is
         // arbitrary, so just use the previous angle.
         boolean need_to_steer = true;
-        if (epsilonEquals(toTwist2d(desiredState), GeomUtil.TWIST2D_ZERO)) {
+        if (EqualsUtil.epsilonEquals(GeomUtil.toTwist2d(desiredState), GeomUtil.TWIST2D_ZERO)) {
             need_to_steer = false;
             for (int i = 0; i < moduleCount; ++i) {
                 desiredModuleState[i].angle = prevSetpoint.moduleStates()[i].angle;
@@ -299,10 +274,10 @@ public class SwerveSetpointProcessor {
         }
 
         if (all_modules_should_flip
-                && !epsilonEquals(prevSetpoint.chassisSpeeds().vxMetersPerSecond, 0.0)
-                && !epsilonEquals(prevSetpoint.chassisSpeeds().vyMetersPerSecond, 0.0)
-                && !epsilonEquals(desiredState.vxMetersPerSecond, 0.0)
-                && !epsilonEquals(desiredState.vyMetersPerSecond, 0.0)) {
+                && !EqualsUtil.epsilonEquals(prevSetpoint.chassisSpeeds().vxMetersPerSecond, 0.0)
+                && !EqualsUtil.epsilonEquals(prevSetpoint.chassisSpeeds().vyMetersPerSecond, 0.0)
+                && !EqualsUtil.epsilonEquals(desiredState.vxMetersPerSecond, 0.0)
+                && !EqualsUtil.epsilonEquals(desiredState.vyMetersPerSecond, 0.0)) {
             // It will (likely) be faster to stop the robot, rotate the modules in place to
             // the complement
             // of the desired
@@ -350,13 +325,13 @@ public class SwerveSetpointProcessor {
             }
 
             // if the module last targeted a speed of 0
-            if (epsilonEquals(prevSetpoint.moduleStates()[i].speedMetersPerSecond, 0.0)) {
+            if (EqualsUtil.epsilonEquals(prevSetpoint.moduleStates()[i].speedMetersPerSecond, 0.0)) {
 
                 // If module is stopped, we know that we will need to move straight to the final
                 // steering
                 // angle, so limit based
                 // purely on rotation in place.
-                if (epsilonEquals(desiredModuleState[i].speedMetersPerSecond, 0.0)) {
+                if (EqualsUtil.epsilonEquals(desiredModuleState[i].speedMetersPerSecond, 0.0)) {
                     // Goal angle doesn't matter. Just leave module at its current angle.
                     overrideSteering.set(i, Optional.of(prevSetpoint.moduleStates()[i].angle));
                     continue;
