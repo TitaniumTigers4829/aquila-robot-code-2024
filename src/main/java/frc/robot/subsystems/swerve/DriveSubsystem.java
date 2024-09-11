@@ -22,9 +22,7 @@ import frc.robot.Constants.HardwareConstants;
 import frc.robot.Constants.TrajectoryConstants;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.extras.SmarterDashboardRegistry;
-import frc.robot.extras.swerve.ModuleLimits;
-import frc.robot.extras.swerve.SwerveSetpoint;
-import frc.robot.extras.swerve.SwerveSetpointGenerator;
+import frc.robot.subsystems.swerve.SwerveSetpointGenerator;
 import java.util.Optional;
 
 public class DriveSubsystem extends SubsystemBase {
@@ -53,7 +51,7 @@ public class DriveSubsystem extends SubsystemBase {
   private final AHRS gyro;
   private final SwerveDrivePoseEstimator odometry;
 
-  private SwerveSetpointGenerator SwerveSetpointProcessor;
+  private SwerveSetpointGenerator swerveSetpointGenerator;
 
   private Optional<DriverStation.Alliance> alliance;
 
@@ -116,7 +114,7 @@ public class DriveSubsystem extends SubsystemBase {
             // resetOdometry() to set it in autonomous init
             stateStandardDeviations,
             visionMeasurementStandardDeviations);
-//comit plz
+
     alliance = DriverStation.getAlliance();
 
     setpointGenerator = new SwerveSetpointGenerator();

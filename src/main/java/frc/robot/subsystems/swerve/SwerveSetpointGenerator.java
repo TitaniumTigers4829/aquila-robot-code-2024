@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.Optional;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ModuleConstants;
+import frc.robot.extras.utils.EqualsUtil;
+import frc.robot.extras.utils.GeomUtil;
 
 /**
  * "Inspired" by FRC team 254.
@@ -210,7 +212,7 @@ public class SwerveSetpointGenerator {
         if (disabled) {
             return new SwerveSetpoint(
                     desiredState,
-                    kinematics.toSwerveModuleStates(desiredState));
+                    swerveDriveKinematics.toSwerveModuleStates(desiredState));
         }
             return generateSetpointInner(desiredState, ConstValues.PERIODIC_TIME);
     }
@@ -221,12 +223,12 @@ public class SwerveSetpointGenerator {
     ) {
         final int moduleCount = moduleLocations.length;
 
-        SwerveModuleState[] desiredModuleState = kinematics.toSwerveModuleStates(desiredState);
+        SwerveModuleState[] desiredModuleState = swerveDriveKinematics.toSwerveModuleStates(desiredState);
 
         // Make sure desiredState respects velocity limits.
-        if (limits.maxDriveVelocity() > 0.0) {
-            SwerveDriveKinematics.desaturateWheelSpeeds(desiredModuleState, limits.maxDriveVelocity());
-            desiredState = kinematics.toChassisSpeeds(desiredModuleState);
+        if (moduleLimits.maxDriveVelocity() > 0.0) {
+            swerveDriveKinematics.desaturateWheelSpeeds(desiredModuleState, moduleLimits.maxDriveVelocity());
+            desiredState = swerveDriveKinematics.toChassisSpeeds(desiredModuleState);
         }
 
         // Special case: desiredState is a complete stop. In this case, module angle is
@@ -314,7 +316,7 @@ public class SwerveSetpointGenerator {
         // We remember the
         // minimum across all modules, since
         // that is the active constraint.
-        final double max_theta_step = dt * limits.maxSteeringVelocity();
+        final double max_theta_step = dt * moduleLimits.maxSteeringVelocity();
 
         for (int i = 0; i < moduleCount; ++i) {
             if (!need_to_steer) {
@@ -384,7 +386,7 @@ public class SwerveSetpointGenerator {
         }
 
         // Enforce drive wheel acceleration limits.
-        final double max_vel_step = dt * limits.maxDriveAcceleration();
+        final double max_vel_step = dt * moduleLimits.maxDriveAcceleration();
         for (int i = 0; i < moduleCount; ++i) {
             if (min_s == 0.0) {
                 // No need to carry on.
@@ -414,7 +416,7 @@ public class SwerveSetpointGenerator {
                 prevSetpoint.chassisSpeeds().vxMetersPerSecond + min_s * dx,
                 prevSetpoint.chassisSpeeds().vyMetersPerSecond + min_s * dy,
                 prevSetpoint.chassisSpeeds().omegaRadiansPerSecond + min_s * dtheta);
-        var retStates = kinematics.toSwerveModuleStates(retSpeeds);
+        var retStates = swerveDriveKinematics.toSwerveModuleStates(retSpeeds);
         for (int i = 0; i < moduleCount; ++i) {
             final var maybeOverride = overrideSteering.get(i);
             if (maybeOverride.isPresent()) {
