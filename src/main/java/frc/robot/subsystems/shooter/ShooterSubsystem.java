@@ -43,6 +43,7 @@ public class ShooterSubsystem extends SubsystemBase {
     voltageRequest = new VoltageOut(0);
 
     TalonFXConfiguration shooterConfig = new TalonFXConfiguration();
+
     shooterConfig.Slot0.kP = ShooterConstants.SHOOT_P;
     shooterConfig.Slot0.kI = ShooterConstants.SHOOT_I;
     shooterConfig.Slot0.kD = ShooterConstants.SHOOT_D;
@@ -63,6 +64,7 @@ public class ShooterSubsystem extends SubsystemBase {
     followerFlywheel.getConfigurator().apply(shooterConfig, HardwareConstants.TIMEOUT_S);
 
     TalonFXConfiguration rollerConfig = new TalonFXConfiguration();
+
     rollerConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     rollerConfig.MotorOutput.DutyCycleNeutralDeadband = HardwareConstants.MIN_FALCON_DEADBAND;
     rollerMotor.getConfigurator().apply(rollerConfig, HardwareConstants.TIMEOUT_S);
@@ -86,6 +88,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
   /**
    * Gets if the tower has a note in it
+   *
    * @return True if there is a note
    */
   public boolean hasNote() {
@@ -94,6 +97,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
   /**
    * Directly sets the voltage to the shooter flywheels
+   *
    * @param volts Voltage to set
    */
   public void setVolts(double volts) {
@@ -141,6 +145,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
   /**
    * Sets the flywheel speed
+   *
    * @param speed 1.0 being the max speed, -1.0 being the min speed
    */
   public void setSpeed(double speed) {
@@ -158,10 +163,11 @@ public class ShooterSubsystem extends SubsystemBase {
     return leaderVelocity.getValueAsDouble() * 60.0;
   }
 
- /**
- * Gets the velocity of the flywheel motors
- * @return velocity (rot/s) of the flywheel motors
- */
+  /**
+   * Gets the velocity of the flywheel motors
+   *
+   * @return velocity (rot/s) of the flywheel motors
+   */
   public double getFlywheelVelocity() {
     leaderVelocity.refresh();
     return leaderVelocity.getValueAsDouble();

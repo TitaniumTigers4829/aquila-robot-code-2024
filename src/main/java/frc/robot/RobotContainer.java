@@ -16,21 +16,20 @@ import frc.robot.commands.auto.BlueAmpSideFourNote;
 import frc.robot.commands.auto.BlueFiveNote;
 import frc.robot.commands.auto.BlueFourNote;
 import frc.robot.commands.auto.BlueShootTaxi;
-import frc.robot.commands.auto.RedFiveNote;
 import frc.robot.commands.auto.RedAmpSideFourNote;
 import frc.robot.commands.auto.RedFarSideFourNote;
+import frc.robot.commands.auto.RedFiveNote;
 import frc.robot.commands.auto.RedFourNote;
 import frc.robot.commands.auto.RedNoteEight;
 import frc.robot.commands.auto.RedShootTaxi;
 import frc.robot.commands.auto.RedSixNote;
 import frc.robot.commands.auto.SimpleTxi;
 import frc.robot.commands.autodrive.AutoAlignWithAmp;
+import frc.robot.commands.autodrive.IntakeNote;
 import frc.robot.commands.drive.Drive;
 import frc.robot.commands.intake.ManualIntake;
 import frc.robot.commands.intake.TowerIntake;
 import frc.robot.commands.shooter.ManualPivot;
-import frc.robot.commands.shooter.ShootAmp;
-import frc.robot.commands.shooter.ShootPass;
 import frc.robot.commands.shooter.ShootSpeaker;
 import frc.robot.commands.shooter.SpinUpForSpeaker;
 import frc.robot.commands.shooter.SubwooferShot;
@@ -49,8 +48,10 @@ public class RobotContainer {
   private final VisionSubsystem visionSubsystem;
   private final ShooterSubsystem shooterSubsystem;
   private final DriveSubsystem driveSubsystem;
-  private final XboxController driverController = new XboxController(JoystickConstants.DRIVER_JOYSTICK_ID);
-  private final XboxController operatorController = new XboxController(JoystickConstants.OPERATOR_JOYSTICK_ID);
+  private final XboxController driverController =
+      new XboxController(JoystickConstants.DRIVER_JOYSTICK_ID);
+  private final XboxController operatorController =
+      new XboxController(JoystickConstants.OPERATOR_JOYSTICK_ID);
   private final IntakeSubsystem intakeSubsystem;
   private final PivotSubsystem pivotSubsystem;
   private final LEDSubsystem ledSubsystem;
@@ -67,27 +68,125 @@ public class RobotContainer {
     ledSubsystem = new LEDSubsystem();
 
     autoChooser = new SendableChooser<Command>();
-    autoChooser.setDefaultOption("red 4note", new RedFourNote(driveSubsystem, visionSubsystem, intakeSubsystem, shooterSubsystem, pivotSubsystem, ledSubsystem));
-    autoChooser.addOption("blue 4note", new BlueFourNote(driveSubsystem, visionSubsystem, intakeSubsystem, shooterSubsystem, pivotSubsystem, ledSubsystem));
-    autoChooser.addOption("red shoot+taxi", new RedShootTaxi(driveSubsystem, visionSubsystem, shooterSubsystem, pivotSubsystem, ledSubsystem));
-    autoChooser.addOption("blue shoot+taxi", new BlueShootTaxi(driveSubsystem, visionSubsystem, intakeSubsystem, shooterSubsystem, pivotSubsystem, ledSubsystem));
-    autoChooser.addOption("fendershot", new SubwooferShot(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, ()->0, ()->0, ()->0, ()->false, ledSubsystem));
-    autoChooser.addOption("Red far note 8", new RedNoteEight(driveSubsystem, visionSubsystem, intakeSubsystem, shooterSubsystem, pivotSubsystem, ledSubsystem));
-    // autoChooser.addOption("blue far note 8", new BlueNoteEight(driveSubsystem, visionSubsystem, intakeSubsystem, shooterSubsystem, pivotSubsystem, ledSubsystem));
-    autoChooser.addOption("blue amp side 4 note", new BlueAmpSideFourNote(driveSubsystem, visionSubsystem, shooterSubsystem, pivotSubsystem, intakeSubsystem, ledSubsystem));
-    autoChooser.addOption("red amp side 4 note", new RedAmpSideFourNote(driveSubsystem, visionSubsystem, shooterSubsystem, pivotSubsystem, intakeSubsystem, ledSubsystem));
-    // autoChooser.addOption("simple fwdback", new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "simple fwdback", true));
-    // autoChooser.addOption("1mtrrot", new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "1mtrrot", true));
-    autoChooser.addOption("red five note", new RedFiveNote(driveSubsystem, visionSubsystem, shooterSubsystem,intakeSubsystem, pivotSubsystem, ledSubsystem));
-    autoChooser.addOption("blue five note", new BlueFiveNote(driveSubsystem, visionSubsystem, shooterSubsystem,intakeSubsystem, pivotSubsystem, ledSubsystem));
-    autoChooser.addOption("red six", new RedSixNote(driveSubsystem, visionSubsystem, shooterSubsystem, intakeSubsystem, pivotSubsystem, ledSubsystem));
-    autoChooser.addOption("red far side four", new RedFarSideFourNote(driveSubsystem, visionSubsystem, shooterSubsystem, intakeSubsystem, pivotSubsystem, ledSubsystem));
-    autoChooser.addOption("simpleT", new SimpleTxi(driveSubsystem, visionSubsystem, pivotSubsystem, shooterSubsystem, ledSubsystem));
+    autoChooser.setDefaultOption(
+        "red 4note",
+        new RedFourNote(
+            driveSubsystem,
+            visionSubsystem,
+            intakeSubsystem,
+            shooterSubsystem,
+            pivotSubsystem,
+            ledSubsystem));
+    autoChooser.addOption(
+        "blue 4note",
+        new BlueFourNote(
+            driveSubsystem,
+            visionSubsystem,
+            intakeSubsystem,
+            shooterSubsystem,
+            pivotSubsystem,
+            ledSubsystem));
+    autoChooser.addOption(
+        "red shoot+taxi",
+        new RedShootTaxi(
+            driveSubsystem, visionSubsystem, shooterSubsystem, pivotSubsystem, ledSubsystem));
+    autoChooser.addOption(
+        "blue shoot+taxi",
+        new BlueShootTaxi(
+            driveSubsystem,
+            visionSubsystem,
+            intakeSubsystem,
+            shooterSubsystem,
+            pivotSubsystem,
+            ledSubsystem));
+    autoChooser.addOption(
+        "fendershot",
+        new SubwooferShot(
+            driveSubsystem,
+            shooterSubsystem,
+            pivotSubsystem,
+            visionSubsystem,
+            () -> 0,
+            () -> 0,
+            () -> 0,
+            () -> false,
+            ledSubsystem));
+    autoChooser.addOption(
+        "Red far note 8",
+        new RedNoteEight(
+            driveSubsystem,
+            visionSubsystem,
+            intakeSubsystem,
+            shooterSubsystem,
+            pivotSubsystem,
+            ledSubsystem));
+    // autoChooser.addOption("blue far note 8", new BlueNoteEight(driveSubsystem, visionSubsystem,
+    // intakeSubsystem, shooterSubsystem, pivotSubsystem, ledSubsystem));
+    autoChooser.addOption(
+        "blue amp side 4 note",
+        new BlueAmpSideFourNote(
+            driveSubsystem,
+            visionSubsystem,
+            shooterSubsystem,
+            pivotSubsystem,
+            intakeSubsystem,
+            ledSubsystem));
+    autoChooser.addOption(
+        "red amp side 4 note",
+        new RedAmpSideFourNote(
+            driveSubsystem,
+            visionSubsystem,
+            shooterSubsystem,
+            pivotSubsystem,
+            intakeSubsystem,
+            ledSubsystem));
+    // autoChooser.addOption("simple fwdback", new FollowChoreoTrajectory(driveSubsystem,
+    // visionSubsystem, "simple fwdback", true));
+    // autoChooser.addOption("1mtrrot", new FollowChoreoTrajectory(driveSubsystem, visionSubsystem,
+    // "1mtrrot", true));
+    autoChooser.addOption(
+        "red five note",
+        new RedFiveNote(
+            driveSubsystem,
+            visionSubsystem,
+            shooterSubsystem,
+            intakeSubsystem,
+            pivotSubsystem,
+            ledSubsystem));
+    autoChooser.addOption(
+        "blue five note",
+        new BlueFiveNote(
+            driveSubsystem,
+            visionSubsystem,
+            shooterSubsystem,
+            intakeSubsystem,
+            pivotSubsystem,
+            ledSubsystem));
+    autoChooser.addOption(
+        "red six",
+        new RedSixNote(
+            driveSubsystem,
+            visionSubsystem,
+            shooterSubsystem,
+            intakeSubsystem,
+            pivotSubsystem,
+            ledSubsystem));
+    autoChooser.addOption(
+        "red far side four",
+        new RedFarSideFourNote(
+            driveSubsystem,
+            visionSubsystem,
+            shooterSubsystem,
+            intakeSubsystem,
+            pivotSubsystem,
+            ledSubsystem));
+    autoChooser.addOption(
+        "simpleT",
+        new SimpleTxi(
+            driveSubsystem, visionSubsystem, pivotSubsystem, shooterSubsystem, ledSubsystem));
     autoChooser.addOption("nothing", null);
 
     SmartDashboard.putData("autoChooser", autoChooser);
-
-    ledSubsystem.setProcess(LEDProcess.DEFAULT);
 
     ledSubsystem.setProcess(LEDProcess.DEFAULT);
   }
@@ -136,7 +235,8 @@ public class RobotContainer {
     // amp and speaker
     Trigger operatorBButton = new Trigger(operatorController::getBButton);
     Trigger operatorRightBumper = new Trigger(operatorController::getRightBumper);
-    Trigger operatorRightTrigger = new Trigger(() -> operatorController.getRightTriggerAxis() > 0.2);
+    Trigger operatorRightTrigger =
+        new Trigger(() -> operatorController.getRightTriggerAxis() > 0.2);
     Trigger driverRightTrigger = new Trigger(() -> driverController.getRightTriggerAxis() > 0.2);
 
     // manual pivot and intake rollers
@@ -158,7 +258,10 @@ public class RobotContainer {
 
     // driving
 
-    Command driveCommand = new Drive(driveSubsystem, visionSubsystem,
+    Command driveCommand =
+        new Drive(
+            driveSubsystem,
+            visionSubsystem,
             driverLeftStick[1],
             driverLeftStick[0],
             () -> Util.modifyAxis(driverRightStickX, 2),
@@ -169,7 +272,70 @@ public class RobotContainer {
     // shooterSubsystem.setDefaultCommand(new FlywheelSpinUpAuto(shooterSubsystem,
     // visionSubsystem));
 
-    driverLeftTrigger.whileTrue(new TowerIntake(intakeSubsystem, pivotSubsystem, shooterSubsystem, false, ledSubsystem, this::intakeCallback));
+    // driverLeftTrigger.whileTrue(new TowerIntake(intakeSubsystem, pivotSubsystem,
+    // shooterSubsystem, false, ledSubsystem));
+    // // Amp Lineup
+    // driverAButton.whileTrue(new AutoAlignWithAmp(driveSubsystem, visionSubsystem,
+    // driverLeftStick));
+    // // Spinup for shoot
+    // // driverRightTrigger.whileTrue(new SpinUpForSpeaker(driveSubsystem, shooterSubsystem,
+    // pivotSubsystem, visionSubsystem, driverLeftStickX, driverLeftStickY, driverRightBumper,
+    // ledSubsystem));
+
+    // driverLeftBumper.whileTrue(new ShootSpeaker(driveSubsystem, shooterSubsystem, pivotSubsystem,
+    // visionSubsystem, driverLeftStickX, operatorLeftStickY, driverRightBumper, ledSubsystem));
+    // driverRightTrigger.whileTrue(new ShootWhileMove(driveSubsystem, shooterSubsystem,
+    // pivotSubsystem, visionSubsystem, driverLeftStick, driverYButton, ledSubsystem));
+
+    // // Resets the robot angle in the odometry, factors in which alliance the robot is on
+    // driverRightDirectionPad.onTrue(new InstantCommand(() -> driveSubsystem.resetOdometry(new
+    // Pose2d(driveSubsystem.getPose().getX(), driveSubsystem.getPose().getY(),
+    //       Rotation2d.fromDegrees(driveSubsystem.getAllianceAngleOffset())))));
+    // // Reset robot odometry based on vision pose measurement from april tags
+    // driverLeftDirectionPad.onTrue(new InstantCommand(() ->
+    // driveSubsystem.resetOdometry(visionSubsystem.getPoseFromAprilTags())));
+
+    driverBButton.whileTrue(
+        new IntakeNote(
+            intakeSubsystem,
+            pivotSubsystem,
+            shooterSubsystem,
+            ledSubsystem,
+            driveSubsystem,
+            visionSubsystem));
+    // OPERATOR BUTTONS
+
+    // // speaker
+    // operatorRightTrigger.whileTrue(new ShootSpeaker(driveSubsystem, shooterSubsystem,
+    // pivotSubsystem, visionSubsystem, driverLeftStickX, driverLeftStickY, driverRightBumper,
+    // ledSubsystem));
+    // // amp
+    // operatorRightBumper.whileTrue(new ShootAmp(shooterSubsystem, pivotSubsystem, ledSubsystem,
+    // operatorBButton));
+    // // fender shot
+    // operatorUpDirectionPad.whileTrue(new SubwooferShot(driveSubsystem, shooterSubsystem,
+    // pivotSubsystem, visionSubsystem, driverLeftStickX, driverLeftStickY, driverRightStickX,
+    // driverRightBumper, ledSubsystem));
+    // // intake (aka SUCC_BUTTON)
+    // operatorLeftTrigger.whileTrue(new TowerIntake(intakeSubsystem, pivotSubsystem,
+    // shooterSubsystem, false, ledSubsystem));
+    // // outtake (aka UNSUCC_BUTTON)
+    // operatorLeftBumper.whileTrue(new TowerIntake(intakeSubsystem, pivotSubsystem,
+    // shooterSubsystem, true, ledSubsystem));
+    // // manual pivot (possible climb, unlikely)
+    // operatorAButton.whileTrue(new ManualPivot(pivotSubsystem,
+    // ()->modifyAxisCubed(operatorRightStickY)));
+    // // manual rollers
+    // operatorYButton.whileTrue(new ManualRollers(intakeSubsystem, true));
+    // operatorXButton.whileTrue(new ManualRollers(intakeSubsystem, false));
+    driverLeftTrigger.whileTrue(
+        new TowerIntake(
+            intakeSubsystem,
+            pivotSubsystem,
+            shooterSubsystem,
+            false,
+            ledSubsystem,
+            this::intakeCallback));
     driverLeftTrigger.whileFalse(
         new TowerIntake(
                 intakeSubsystem,
@@ -216,25 +382,35 @@ public class RobotContainer {
     // visionSubsystem, driverLeftStickX, driverLeftStickY, driverRightBumper, ledSubsystem));
 
     // driverXButton.
-    driverBButton.whileTrue(
-        new ShootPass(
-            driveSubsystem,
-            shooterSubsystem,
-            pivotSubsystem,
-            visionSubsystem,
-            driverLeftStickY,
-            operatorLeftStickY,
-            driverYButton,
-            ledSubsystem));
+    // driverBButton.whileTrue(
+    //     new ShootPass(
+    //         driveSubsystem,
+    //         shooterSubsystem,
+    //         pivotSubsystem,
+    //         visionSubsystem,
+    //         driverLeftStickY,
+    //         operatorLeftStickY,
+    //         driverYButton,
+    //         ledSubsystem));
     // driverDownDirectionPad.whileTrue(new IntakeFromShooter(shooterSubsystem, intakeSubsystem));
     // driverYButton.whileTrue(new ShootSpeaker(driveSubsystem, shooterSubsystem, pivotSubsystem,
     // visionSubsystem, driverLeftStickX, operatorLeftStickY, driverRightBumper, ledSubsystem));
     // OPERATOR BUTTONS
 
     // speaker
-    operatorRightTrigger.whileTrue(new ShootSpeaker(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, driverLeftStickX, driverLeftStickY, driverRightBumper, ledSubsystem));
+    operatorRightTrigger.whileTrue(
+        new ShootSpeaker(
+            driveSubsystem,
+            shooterSubsystem,
+            pivotSubsystem,
+            visionSubsystem,
+            driverLeftStickX,
+            driverLeftStickY,
+            driverRightBumper,
+            ledSubsystem));
     // amp
-    operatorRightBumper.whileTrue(new ShootAmp(shooterSubsystem, pivotSubsystem, ledSubsystem, operatorBButton));
+    // operatorRightBumper.whileTrue(
+    //     new ShootAmp(shooterSubsystem, pivotSubsystem, ledSubsystem, operatorBButton));
     // fender shot
     operatorUpDirectionPad.whileTrue(
         new SubwooferShot(
@@ -287,11 +463,13 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    SmarterDashboardRegistry.initialize();
     // Resets the pose factoring in the robot side
     // This is just a failsafe, pose should be reset at the beginning of auto
-    driveSubsystem.resetOdometry(new Pose2d(driveSubsystem.getPose().getX(), driveSubsystem.getPose().getY(),
-     Rotation2d.fromDegrees(driveSubsystem.getAllianceAngleOffset())));
+    driveSubsystem.resetOdometry(
+        new Pose2d(
+            driveSubsystem.getPose().getX(),
+            driveSubsystem.getPose().getY(),
+            Rotation2d.fromDegrees(driveSubsystem.getAllianceAngleOffset())));
     return autoChooser.getSelected();
   }
 }

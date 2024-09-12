@@ -3,11 +3,11 @@ package frc.robot.extras.utils;
 import frc.robot.Constants.HardwareConstants;
 import java.util.function.DoubleSupplier;
 
-
 public class Util {
 
   /**
    * Deadbands a value to 0
+   *
    * @param value Value to input
    * @param deadband If the the input is within this value, the function will return 0.
    * @return 0.0 if the value is within specified deadband range
@@ -26,6 +26,7 @@ public class Util {
 
   /**
    * Function to modify a singular joystick axis.
+   *
    * @param supplierValue Supplies a double, usually by a joystick.
    * @param exponent Exponent to raise the supplied value to.
    * @return Returns the modified value.
@@ -43,14 +44,16 @@ public class Util {
   }
 
   /**
-   * Converts the two axis coordinates to polar
-   *  to get both the angle and radius, so they can work in a double[] list.
+   * Converts the two axis coordinates to polar to get both the angle and radius, so they can work
+   * in a double[] list.
+   *
    * @param xJoystick The supplied input of the xJoystick.
    * @param yJoystick The supplied input of the yJoystick.
    * @param exponent The exponent to raise the supplied value to.
    * @return The modified axises of both joysticks in polar form.
    */
-  public static double[] modifyAxisPolar(DoubleSupplier xJoystick, DoubleSupplier yJoystick, int exponent) {
+  public static double[] modifyAxisPolar(
+      DoubleSupplier xJoystick, DoubleSupplier yJoystick, int exponent) {
     double xInput = deadband(xJoystick.getAsDouble(), HardwareConstants.DEADBAND_VALUE);
     double yInput = deadband(yJoystick.getAsDouble(), HardwareConstants.DEADBAND_VALUE);
     if (Math.abs(xInput) > 0 && Math.abs(yInput) > 0) {
@@ -59,9 +62,11 @@ public class Util {
       double raisedHypotenuse = Math.pow(hypotenuse, exponent);
       xInput = Math.copySign(Math.sin(theta) * raisedHypotenuse, xInput);
       yInput = Math.copySign(Math.cos(theta) * raisedHypotenuse, yInput);
-      return new double[]{xInput, yInput};
+      return new double[] {xInput, yInput};
     }
-    return new double[]{ Math.copySign(Math.pow(xInput, exponent), xInput),  Math.copySign(Math.pow(yInput, exponent), yInput)};
+    return new double[] {
+      Math.copySign(Math.pow(xInput, exponent), xInput),
+      Math.copySign(Math.pow(yInput, exponent), yInput)
+    };
   }
-
 }

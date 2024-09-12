@@ -1,7 +1,5 @@
 package frc.robot.commands.autodrive;
 
-import java.util.Optional;
-
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -23,26 +21,26 @@ public class AutoAlignWithAmp extends DriveCommandBase {
   private boolean isRed;
   private Pose2d ampPose;
 
-  private final ProfiledPIDController turnController = new ProfiledPIDController(
-    ShooterConstants.AUTO_LINEUP_ROTATION_P,
-    ShooterConstants.AUTO_LINEUP_ROTATION_I,
-    ShooterConstants.AUTO_LINEUP_ROTATION_D,
-    ShooterConstants.AUTO_LINEUP_ROTATION_CONSTRAINTS
-  );
+  private final ProfiledPIDController turnController =
+      new ProfiledPIDController(
+          ShooterConstants.AUTO_LINEUP_ROTATION_P,
+          ShooterConstants.AUTO_LINEUP_ROTATION_I,
+          ShooterConstants.AUTO_LINEUP_ROTATION_D,
+          ShooterConstants.AUTO_LINEUP_ROTATION_CONSTRAINTS);
 
-  private final ProfiledPIDController xTranslationController = new ProfiledPIDController(
-    ShooterConstants.AUTO_LINEUP_TRANSLATION_P,
-    ShooterConstants.AUTO_LINEUP_TRANSLATION_I,
-    ShooterConstants.AUTO_LINEUP_TRANSLATION_D,
-    ShooterConstants.AUTO_LINEUP_TRANSLATION_CONSTRAINTS
-  );
+  private final ProfiledPIDController xTranslationController =
+      new ProfiledPIDController(
+          ShooterConstants.AUTO_LINEUP_TRANSLATION_P,
+          ShooterConstants.AUTO_LINEUP_TRANSLATION_I,
+          ShooterConstants.AUTO_LINEUP_TRANSLATION_D,
+          ShooterConstants.AUTO_LINEUP_TRANSLATION_CONSTRAINTS);
 
-  private final ProfiledPIDController yTranslationController = new ProfiledPIDController(
-    ShooterConstants.AUTO_LINEUP_TRANSLATION_P,
-    ShooterConstants.AUTO_LINEUP_TRANSLATION_I,
-    ShooterConstants.AUTO_LINEUP_TRANSLATION_D,
-    ShooterConstants.AUTO_LINEUP_TRANSLATION_CONSTRAINTS
-  );
+  private final ProfiledPIDController yTranslationController =
+      new ProfiledPIDController(
+          ShooterConstants.AUTO_LINEUP_TRANSLATION_P,
+          ShooterConstants.AUTO_LINEUP_TRANSLATION_I,
+          ShooterConstants.AUTO_LINEUP_TRANSLATION_D,
+          ShooterConstants.AUTO_LINEUP_TRANSLATION_CONSTRAINTS);
 
   /** Creates a new AutoAlignWithAmp. */
   public AutoAlignWithAmp(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem) {
@@ -78,7 +76,8 @@ public class AutoAlignWithAmp extends DriveCommandBase {
     Pose2d drivePose = driveSubsystem.getPose();
     double xPoseError = ampPose.getX() - drivePose.getX();
     double yPoseError = ampPose.getY() - drivePose.getY();
-    double thetaPoseError = ampPose.getRotation().getRadians() - drivePose.getRotation().getRadians();
+    double thetaPoseError =
+        ampPose.getRotation().getRadians() - drivePose.getRotation().getRadians();
 
     // Uses the PID controllers to calculate the drive output
     double xOutput = deadband(xTranslationController.calculate(xPoseError, 0));
@@ -86,13 +85,9 @@ public class AutoAlignWithAmp extends DriveCommandBase {
     double turnOutput = deadband(turnController.calculate(thetaPoseError, 0));
 
     // Gets the chassis speeds for the robot using the odometry rotation (not alliance relative)
-    ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
-      xOutput,
-      yOutput,
-      turnOutput,
-      driveSubsystem.getOdometryRotation2d()
-    );
-
+    ChassisSpeeds chassisSpeeds =
+        ChassisSpeeds.fromFieldRelativeSpeeds(
+            xOutput, yOutput, turnOutput, driveSubsystem.getOdometryRotation2d());
 
     // Drives the robot towards the amp
     driveSubsystem.drive(

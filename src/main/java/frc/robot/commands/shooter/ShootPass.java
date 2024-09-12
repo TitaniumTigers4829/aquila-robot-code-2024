@@ -1,9 +1,5 @@
 package frc.robot.commands.shooter;
 
-import java.util.Optional;
-import java.util.function.BooleanSupplier;
-import java.util.function.DoubleSupplier;
-
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
@@ -20,10 +16,13 @@ import frc.robot.subsystems.pivot.PivotSubsystem;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.swerve.DriveSubsystem;
 import frc.robot.subsystems.vision.VisionSubsystem;
+import java.util.Optional;
+import java.util.function.BooleanSupplier;
+import java.util.function.DoubleSupplier;
 
 public class ShootPass extends DriveCommandBase {
 
-//initiates the variables
+  // initiates the variables
   private final DriveSubsystem driveSubsystem;
   private final ShooterSubsystem shooterSubsystem;
   private final PivotSubsystem pivotSubsystem;
@@ -34,18 +33,26 @@ public class ShootPass extends DriveCommandBase {
 
   private double headingError = 0;
 
-  private final ProfiledPIDController turnController = new ProfiledPIDController(
-    ShooterConstants.AUTO_SHOOT_P,
-    ShooterConstants.AUTO_SHOOT_I,
-    ShooterConstants.AUTO_SHOOT_D,
-    ShooterConstants.AUTO_SHOOT_CONSTRAINTS
-  );
+  private final ProfiledPIDController turnController =
+      new ProfiledPIDController(
+          ShooterConstants.AUTO_SHOOT_P,
+          ShooterConstants.AUTO_SHOOT_I,
+          ShooterConstants.AUTO_SHOOT_D,
+          ShooterConstants.AUTO_SHOOT_CONSTRAINTS);
 
   private boolean isRed = false;
   private double desiredHeading = 0;
   private Translation2d passingPos;
 
-  public ShootPass(DriveSubsystem driveSubsystem, ShooterSubsystem shooterSubsystem, PivotSubsystem pivotSubsystem, VisionSubsystem visionSubsystem, DoubleSupplier leftX, DoubleSupplier leftY, BooleanSupplier isFieldRelative, LEDSubsystem leds) {
+  public ShootPass(
+      DriveSubsystem driveSubsystem,
+      ShooterSubsystem shooterSubsystem,
+      PivotSubsystem pivotSubsystem,
+      VisionSubsystem visionSubsystem,
+      DoubleSupplier leftX,
+      DoubleSupplier leftY,
+      BooleanSupplier isFieldRelative,
+      LEDSubsystem leds) {
     super(driveSubsystem, visionSubsystem);
     this.driveSubsystem = driveSubsystem;
     this.shooterSubsystem = shooterSubsystem;
@@ -57,32 +64,37 @@ public class ShootPass extends DriveCommandBase {
     addRequirements(shooterSubsystem, driveSubsystem, pivotSubsystem, visionSubsystem);
   }
 
-@Override
+  @Override
   public void initialize() {
     Optional<Alliance> alliance = DriverStation.getAlliance();
-    //sets alliance to red
+    // sets alliance to red
     isRed = alliance.isPresent() && alliance.get() == Alliance.Red;
 
-    passingPos = isRed ? new Translation2d(FieldConstants.RED_PASSING_X, FieldConstants.RED_PASSING_Y) : new Translation2d(FieldConstants.BLUE_PASSING_X, FieldConstants.BLUE_PASSING_Y);
+    passingPos =
+        isRed
+            ? new Translation2d(FieldConstants.RED_PASSING_X, FieldConstants.RED_PASSING_Y)
+            : new Translation2d(FieldConstants.BLUE_PASSING_X, FieldConstants.BLUE_PASSING_Y);
   }
 
   @Override
   public void execute() {
     super.execute();
-
-    //positions + distance
+    // positions + distance
     Translation2d robotPos = driveSubsystem.getPose().getTranslation();
     double distance = robotPos.getDistance(passingPos);
 
-    desiredHeading = Math.atan2((robotPos.getY() - passingPos.getY()), (robotPos.getX() - passingPos.getX()));
+    desiredHeading =
+        Math.atan2((robotPos.getY() - passingPos.getY()), (robotPos.getX() - passingPos.getX()));
     headingError = desiredHeading - driveSubsystem.getOdometryRotation2d().getRadians();
 
     turnController.enableContinuousInput(-Math.PI, Math.PI);
     double turnOutput = turnController.calculate(headingError, 0);
 
     driveSubsystem.drive(
-      deadband(leftY.getAsDouble()) * 0.5, deadband(leftX.getAsDouble()) * 0.5, turnOutput,!isFieldRelative.getAsBoolean()
-    );
+        deadband(leftY.getAsDouble()) * 0.5,
+        deadband(leftX.getAsDouble()) * 0.5,
+        turnOutput,
+        !isFieldRelative.getAsBoolean());
 
     shooterSubsystem.setRPM(3700);
     pivotSubsystem.setPivotFromPassDistance(distance);
@@ -108,8 +120,11 @@ public class ShootPass extends DriveCommandBase {
   public boolean isFinished() {
     return false;
   }
+
   public boolean isReadyToShoot() {
-     return shooterSubsystem.isShooterWithinAcceptableError() && pivotSubsystem.isPivotWithinAcceptableError() && (Math.abs(headingError) < Units.degreesToRadians(1));
+    return shooterSubsystem.isShooterWithinAcceptableError()
+        && pivotSubsystem.isPivotWithinAcceptableError()
+        && (Math.abs(headingError) < Units.degreesToRadians(1));
   }
 
   private double deadband(double val) {
@@ -119,5 +134,4 @@ public class ShootPass extends DriveCommandBase {
       return val;
     }
   }
-
-  }
+}

@@ -85,6 +85,7 @@ public class PivotSubsystem extends SubsystemBase {
 
   /**
    * Gets the angle of the pivot
+   *
    * @return angle of pivot in rotations
    */
   public double getAngle() {
@@ -93,8 +94,8 @@ public class PivotSubsystem extends SubsystemBase {
   }
 
   /**
-   * Returns if the pivot is within an acceptable rotation
-   * in relation to the target position
+   * Returns if the pivot is within an acceptable rotation in relation to the target position
+   *
    * @return pivot error between desired and actual state in rotations
    */
   public boolean isPivotWithinAcceptableError() {
@@ -122,6 +123,7 @@ public class PivotSubsystem extends SubsystemBase {
 
   /**
    * Uses distance in meters from the speaker to set the pivot angle (degrees) of the shooter
+   *
    * @param speakerDistance the distance in meters from the speaker
    */
   public void setPivotFromSpeakerDistance(double speakerDistance) {
@@ -131,7 +133,9 @@ public class PivotSubsystem extends SubsystemBase {
   }
 
   /**
-   * Uses distance in meters from the passing position to set the pivot angle (degrees) of the shooter
+   * Uses distance in meters from the passing position to set the pivot angle (degrees) of the
+   * shooter
+   *
    * @param passDistance the distance in meters from the passing position
    */
   public void setPivotFromPassDistance(double passDistance) {

@@ -38,10 +38,10 @@ public class ShootAmp extends Command {
     pivotSubsystem.setPivotAngle(PivotConstants.SHOOT_AMP_ANGLE);
     shooterSubsystem.setRPM(ShooterConstants.SHOOT_AMP_RPM);
 
-      if (shoot.getAsBoolean()) {
-        shooterSubsystem.setRollerSpeed(ShooterConstants.ROLLER_SHOOT_SPEED);
-        leds.setProcess(LEDProcess.SHOOT);
-      }
+    if (shoot.getAsBoolean()) {
+      shooterSubsystem.setRollerSpeed(ShooterConstants.ROLLER_SHOOT_SPEED);
+      leds.setProcess(LEDProcess.SHOOT);
+    }
   }
 
   // Called once the command ends or is interrupted.

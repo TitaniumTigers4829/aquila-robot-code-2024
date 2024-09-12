@@ -6,15 +6,43 @@ on:
 
 jobs:
   build:
-    name: Build
+    name: Compile Java
     runs-on: ubuntu-latest
     container: wpilib/roborio-cross-ubuntu:2024-22.04
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-      - name: Add repository to git safe directories
-        run: git config --global --add safe.directory $GITHUB_WORKSPACE
-      - name: Grant execute permission
+      - uses: actions/checkout@v4
+      - name: Grant execute permission for gradlew
         run: chmod +x gradlew
-      - name: Build robot code
-        run: ./gradlew build
+      - name: Compile robot code
+        run: ./gradlew compileJava
+
+  test:
+    name: "Test Java"
+    runs-on: ubuntu-latest
+    container: wpilib/roborio-cross-ubuntu:2024-22.04
+    steps:
+    - uses: actions/checkout@v4
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+    - name: Run tests on robot code
+      run: ./gradlew test -PrunTests 
+
+  format:
+    name: "Check Format Java"
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+    - name: Fetch all history and metadata
+      run: |
+        git checkout -b pr
+        git branch -f main origin/main
+    - uses: actions/setup-java@v4
+      with:
+        java-version: 17
+        distribution: temurin
+    - name: Run formatter
+      run: ./gradlew spotlessCheck

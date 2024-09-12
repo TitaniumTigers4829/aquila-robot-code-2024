@@ -114,6 +114,7 @@ public class SwerveModule {
 
     driveMotor.setPosition(0);
     turnMotor.setPosition(0);
+    driveMotor.optimizeBusUtilization();
 
     BaseStatusSignal.setUpdateFrequencyForAll(
         HardwareConstants.SIGNAL_FREQUENCY, turnEncoderPos, driveMotorPosition, driveMotorVelocity);
@@ -178,11 +179,14 @@ public class SwerveModule {
     }
 
     // Converts meters per second to rotations per second
-    double desiredDriveRPS = optimizedDesiredState.speedMetersPerSecond
-     * ModuleConstants.DRIVE_GEAR_RATIO / ModuleConstants.WHEEL_CIRCUMFERENCE_METERS;
+    double desiredDriveRPS =
+        optimizedDesiredState.speedMetersPerSecond
+            * ModuleConstants.DRIVE_GEAR_RATIO
+            / ModuleConstants.WHEEL_CIRCUMFERENCE_METERS;
 
     driveMotor.setControl(velocityRequest.withVelocity(desiredDriveRPS));
-    turnMotor.setControl(mmPositionRequest.withPosition(optimizedDesiredState.angle.getRotations()));
+    turnMotor.setControl(
+        mmPositionRequest.withPosition(optimizedDesiredState.angle.getRotations()));
   }
 
   /**

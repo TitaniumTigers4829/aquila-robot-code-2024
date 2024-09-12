@@ -50,7 +50,8 @@ public final class Constants {
           new Translation2d(-WHEEL_BASE / 2, -TRACK_WIDTH / 2) // Rear Right
         };
 
-    public static final SwerveDriveKinematics DRIVE_KINEMATICS = new SwerveDriveKinematics(MODULE_TRANSLATIONS);
+    public static final SwerveDriveKinematics DRIVE_KINEMATICS =
+        new SwerveDriveKinematics(MODULE_TRANSLATIONS);
 
     public static final int FRONT_LEFT_DRIVE_MOTOR_ID = 22;
     public static final int FRONT_RIGHT_DRIVE_MOTOR_ID = 24;
@@ -72,20 +73,32 @@ public final class Constants {
     public static final double REAR_LEFT_ZERO_ANGLE = -0.475341796875;
     public static final double REAR_RIGHT_ZERO_ANGLE = -0.05078125;
 
-    public static final SensorDirectionValue FRONT_LEFT_CANCODER_REVERSED =  SensorDirectionValue.CounterClockwise_Positive;
-    public static final SensorDirectionValue FRONT_RIGHT_CANCODER_REVERSED =  SensorDirectionValue.CounterClockwise_Positive;
-    public static final SensorDirectionValue REAR_LEFT_CANCODER_REVERSED =  SensorDirectionValue.CounterClockwise_Positive;
-    public static final SensorDirectionValue REAR_RIGHT_CANCODER_REVERSED =  SensorDirectionValue.CounterClockwise_Positive;
+    public static final SensorDirectionValue FRONT_LEFT_CANCODER_REVERSED =
+        SensorDirectionValue.CounterClockwise_Positive;
+    public static final SensorDirectionValue FRONT_RIGHT_CANCODER_REVERSED =
+        SensorDirectionValue.CounterClockwise_Positive;
+    public static final SensorDirectionValue REAR_LEFT_CANCODER_REVERSED =
+        SensorDirectionValue.CounterClockwise_Positive;
+    public static final SensorDirectionValue REAR_RIGHT_CANCODER_REVERSED =
+        SensorDirectionValue.CounterClockwise_Positive;
 
-    public static final InvertedValue FRONT_LEFT_TURN_MOTOR_REVERSED =  InvertedValue.CounterClockwise_Positive;
-    public static final InvertedValue FRONT_RIGHT_TURN_MOTOR_REVERSED =  InvertedValue.CounterClockwise_Positive;
-    public static final InvertedValue REAR_LEFT_TURN_MOTOR_REVERSED =  InvertedValue.Clockwise_Positive;
-    public static final InvertedValue REAR_RIGHT_TURN_MOTOR_REVERSED =  InvertedValue.Clockwise_Positive;
+    public static final InvertedValue FRONT_LEFT_TURN_MOTOR_REVERSED =
+        InvertedValue.CounterClockwise_Positive;
+    public static final InvertedValue FRONT_RIGHT_TURN_MOTOR_REVERSED =
+        InvertedValue.CounterClockwise_Positive;
+    public static final InvertedValue REAR_LEFT_TURN_MOTOR_REVERSED =
+        InvertedValue.Clockwise_Positive;
+    public static final InvertedValue REAR_RIGHT_TURN_MOTOR_REVERSED =
+        InvertedValue.Clockwise_Positive;
 
-    public static final InvertedValue FRONT_LEFT_DRIVE_ENCODER_REVERSED =  InvertedValue.CounterClockwise_Positive;
-    public static final InvertedValue FRONT_RIGHT_DRIVE_ENCODER_REVERSED =  InvertedValue.Clockwise_Positive;
-    public static final InvertedValue REAR_LEFT_DRIVE_ENCODER_REVERSED =  InvertedValue.Clockwise_Positive;
-    public static final InvertedValue REAR_RIGHT_DRIVE_ENCODER_REVERSED =  InvertedValue.CounterClockwise_Positive;
+    public static final InvertedValue FRONT_LEFT_DRIVE_ENCODER_REVERSED =
+        InvertedValue.CounterClockwise_Positive;
+    public static final InvertedValue FRONT_RIGHT_DRIVE_ENCODER_REVERSED =
+        InvertedValue.Clockwise_Positive;
+    public static final InvertedValue REAR_LEFT_DRIVE_ENCODER_REVERSED =
+        InvertedValue.Clockwise_Positive;
+    public static final InvertedValue REAR_RIGHT_DRIVE_ENCODER_REVERSED =
+        InvertedValue.CounterClockwise_Positive;
 
     public static final double MAX_ANGULAR_SPEED_RADIANS_PER_SECOND = 20;
     public static final double LOW_ANGULAR_SPEED_RADIANS_PER_SECOND = 5;
@@ -103,7 +116,8 @@ public final class Constants {
 
     public static final double WHEEL_CIRCUMFERENCE_METERS = WHEEL_DIAMETER_METERS * Math.PI;
     public static final double DRIVE_TO_METERS = WHEEL_CIRCUMFERENCE_METERS / DRIVE_GEAR_RATIO;
-    public static final double DRIVE_TO_METERS_PER_SECOND = WHEEL_CIRCUMFERENCE_METERS / DRIVE_GEAR_RATIO;
+    public static final double DRIVE_TO_METERS_PER_SECOND =
+        WHEEL_CIRCUMFERENCE_METERS / DRIVE_GEAR_RATIO;
 
     public static final double DRIVE_SUPPLY_LIMIT = 45.0;
     public static final double DRIVE_STATOR_LIMIT = 50.0;
@@ -123,8 +137,10 @@ public final class Constants {
     // These values were gotten using recalc, then converted to the correct units & were confirmed
     // through testing and characterization
     // https://www.reca.lc/drive?appliedVoltageRamp=%7B%22s%22%3A1200%2C%22u%22%3A%22V%2Fs%22%7D&batteryAmpHours=%7B%22s%22%3A18%2C%22u%22%3A%22A%2Ah%22%7D&batteryResistance=%7B%22s%22%3A0.018%2C%22u%22%3A%22Ohm%22%7D&batteryVoltageAtRest=%7B%22s%22%3A12.6%2C%22u%22%3A%22V%22%7D&efficiency=97&filtering=1&gearRatioMax=%7B%22magnitude%22%3A15%2C%22ratioType%22%3A%22Reduction%22%7D&gearRatioMin=%7B%22magnitude%22%3A3%2C%22ratioType%22%3A%22Reduction%22%7D&maxSimulationTime=%7B%22s%22%3A4%2C%22u%22%3A%22s%22%7D&maxSpeedAccelerationThreshold=%7B%22s%22%3A0.15%2C%22u%22%3A%22ft%2Fs2%22%7D&motor=%7B%22quantity%22%3A4%2C%22name%22%3A%22Kraken%20X60%2A%22%7D&motorCurrentLimit=%7B%22s%22%3A60%2C%22u%22%3A%22A%22%7D&numCyclesPerMatch=24&peakBatteryDischarge=20&ratio=%7B%22magnitude%22%3A4.59%2C%22ratioType%22%3A%22Reduction%22%7D&sprintDistance=%7B%22s%22%3A25%2C%22u%22%3A%22ft%22%7D&swerve=1&targetTimeToGoal=%7B%22s%22%3A2%2C%22u%22%3A%22s%22%7D&throttleResponseMax=0.99&throttleResponseMin=0.5&weightAuxilliary=%7B%22s%22%3A24%2C%22u%22%3A%22lbs%22%7D&weightDistributionFrontBack=0.5&weightDistributionLeftRight=0.5&weightInspected=%7B%22s%22%3A125%2C%22u%22%3A%22lbs%22%7D&wheelBaseLength=%7B%22s%22%3A27%2C%22u%22%3A%22in%22%7D&wheelBaseWidth=%7B%22s%22%3A20%2C%22u%22%3A%22in%22%7D&wheelCOFDynamic=0.9&wheelCOFLateral=1.1&wheelCOFStatic=1.1&wheelDiameter=%7B%22s%22%3A4%2C%22u%22%3A%22in%22%7D
-    public static final double DRIVE_V = 1.73 * WHEEL_CIRCUMFERENCE_METERS / DRIVE_GEAR_RATIO; // = 0.1203 V*s/m
-    public static final double DRIVE_A = 0.32 * WHEEL_CIRCUMFERENCE_METERS / DRIVE_GEAR_RATIO; // = 0.02225 V*s^2/m
+    public static final double DRIVE_V =
+        1.73 * WHEEL_CIRCUMFERENCE_METERS / DRIVE_GEAR_RATIO; // = 0.1203 V*s/m
+    public static final double DRIVE_A =
+        0.32 * WHEEL_CIRCUMFERENCE_METERS / DRIVE_GEAR_RATIO; // = 0.02225 V*s^2/m
   }
 
   public static final class VisionConstants {
@@ -137,7 +153,8 @@ public final class Constants {
     public static final double LL3_FOV_MARGIN_OF_ERROR = 27;
     public static final double LL3G_FOV_MARGIN_OF_ERROR = 38;
 
-    public static final double MEGA_TAG_2_MAX_HEADING_RATE = 180; // degrees/s // TODO: This can be tested more
+    public static final double MEGA_TAG_2_MAX_HEADING_RATE =
+        180; // degrees/s // TODO: This can be tested more
 
     public static final double MEGA_TAG_2_DISTANCE_THRESHOLD = 5; // TODO: Tune
 
@@ -150,22 +167,54 @@ public final class Constants {
 
     public static final double[][] APRIL_TAG_POSITIONS = {
       // {x, y, z, rotation (degrees)}
-      {Units.inchesToMeters(593.68), Units.inchesToMeters(9.68), Units.inchesToMeters(53.38), 120}, // 1
-      {Units.inchesToMeters(637.21), Units.inchesToMeters(34.79), Units.inchesToMeters(53.38), 120}, // 2
-      {Units.inchesToMeters(652.73), Units.inchesToMeters(196.17), Units.inchesToMeters(57.13), 180}, // 3
-      {Units.inchesToMeters(652.73), Units.inchesToMeters(218.42), Units.inchesToMeters(57.13), 180}, // 4
-      {Units.inchesToMeters(578.77), Units.inchesToMeters(323.0), Units.inchesToMeters(53.38), 270}, // 5
-      {Units.inchesToMeters(72.5), Units.inchesToMeters(323.0), Units.inchesToMeters(53.38), 270}, // 6
-      {-Units.inchesToMeters(1.5), Units.inchesToMeters(218.42), Units.inchesToMeters(57.13), 0}, // 7
-      {-Units.inchesToMeters(1.5), Units.inchesToMeters(196.17), Units.inchesToMeters(57.13), 0}, // 8
-      {Units.inchesToMeters(14.02), Units.inchesToMeters(34.79), Units.inchesToMeters(53.38), 60}, // 9
-      {Units.inchesToMeters(57.54), Units.inchesToMeters(9.68), Units.inchesToMeters(53.38), 60}, // 10
-      {Units.inchesToMeters(468.69), Units.inchesToMeters(146.19), Units.inchesToMeters(52.0), 300}, // 11
-      {Units.inchesToMeters(468.69), Units.inchesToMeters(177.1), Units.inchesToMeters(52.0), 60}, // 12
-      {Units.inchesToMeters(441.74), Units.inchesToMeters(161.62), Units.inchesToMeters(52.0), 180}, // 13
-      {Units.inchesToMeters(209.48), Units.inchesToMeters(161.62), Units.inchesToMeters(52.0), 0}, // 14
-      {Units.inchesToMeters(182.73), Units.inchesToMeters(177.1), Units.inchesToMeters(52.0), 120}, // 15
-      {Units.inchesToMeters(182.73), Units.inchesToMeters(146.19), Units.inchesToMeters(52.0), 240}, // 16
+      {
+        Units.inchesToMeters(593.68), Units.inchesToMeters(9.68), Units.inchesToMeters(53.38), 120
+      }, // 1
+      {
+        Units.inchesToMeters(637.21), Units.inchesToMeters(34.79), Units.inchesToMeters(53.38), 120
+      }, // 2
+      {
+        Units.inchesToMeters(652.73), Units.inchesToMeters(196.17), Units.inchesToMeters(57.13), 180
+      }, // 3
+      {
+        Units.inchesToMeters(652.73), Units.inchesToMeters(218.42), Units.inchesToMeters(57.13), 180
+      }, // 4
+      {
+        Units.inchesToMeters(578.77), Units.inchesToMeters(323.0), Units.inchesToMeters(53.38), 270
+      }, // 5
+      {
+        Units.inchesToMeters(72.5), Units.inchesToMeters(323.0), Units.inchesToMeters(53.38), 270
+      }, // 6
+      {
+        -Units.inchesToMeters(1.5), Units.inchesToMeters(218.42), Units.inchesToMeters(57.13), 0
+      }, // 7
+      {
+        -Units.inchesToMeters(1.5), Units.inchesToMeters(196.17), Units.inchesToMeters(57.13), 0
+      }, // 8
+      {
+        Units.inchesToMeters(14.02), Units.inchesToMeters(34.79), Units.inchesToMeters(53.38), 60
+      }, // 9
+      {
+        Units.inchesToMeters(57.54), Units.inchesToMeters(9.68), Units.inchesToMeters(53.38), 60
+      }, // 10
+      {
+        Units.inchesToMeters(468.69), Units.inchesToMeters(146.19), Units.inchesToMeters(52.0), 300
+      }, // 11
+      {
+        Units.inchesToMeters(468.69), Units.inchesToMeters(177.1), Units.inchesToMeters(52.0), 60
+      }, // 12
+      {
+        Units.inchesToMeters(441.74), Units.inchesToMeters(161.62), Units.inchesToMeters(52.0), 180
+      }, // 13
+      {
+        Units.inchesToMeters(209.48), Units.inchesToMeters(161.62), Units.inchesToMeters(52.0), 0
+      }, // 14
+      {
+        Units.inchesToMeters(182.73), Units.inchesToMeters(177.1), Units.inchesToMeters(52.0), 120
+      }, // 15
+      {
+        Units.inchesToMeters(182.73), Units.inchesToMeters(146.19), Units.inchesToMeters(52.0), 240
+      }, // 16
     };
 
     public static final double[][] ONE_APRIL_TAG_LOOKUP_TABLE = {
@@ -200,15 +249,21 @@ public final class Constants {
       {179.44638061523438, 137.10073852539062, Units.inchesToMeters(4), Units.inchesToMeters(13.5)},
       {202.794921875, 136.00408935546875, Units.inchesToMeters(8), Units.inchesToMeters(13.5)},
       {221.5397491455078, 133.6504364013672, Units.inchesToMeters(12), Units.inchesToMeters(13.5)},
-      {238.55738830566406, 131.46266174316406, Units.inchesToMeters(16), Units.inchesToMeters(13.5)},
-      {251.65420532226562, 128.71676635742188, Units.inchesToMeters(20), Units.inchesToMeters(13.5)},
+      {
+        238.55738830566406, 131.46266174316406, Units.inchesToMeters(16), Units.inchesToMeters(13.5)
+      },
+      {
+        251.65420532226562, 128.71676635742188, Units.inchesToMeters(20), Units.inchesToMeters(13.5)
+      },
       {262.49658203125, 126.91678619384766, Units.inchesToMeters(24), Units.inchesToMeters(13.5)},
       {155.79156494140625, 110.67668914794922, Units.inchesToMeters(0), Units.inchesToMeters(19.5)},
       {176.4880828857422, 111.09066009521484, Units.inchesToMeters(4), Units.inchesToMeters(19.5)},
       {197.07095336914062, 111.10057067871094, Units.inchesToMeters(8), Units.inchesToMeters(19.5)},
       {213.2230682373047, 111.08323669433594, Units.inchesToMeters(12), Units.inchesToMeters(19.5)},
       {227.31912231445312, 110.8406982421875, Units.inchesToMeters(16), Units.inchesToMeters(19.5)},
-      {241.66949462890625, 110.21771240234375, Units.inchesToMeters(20), Units.inchesToMeters(19.5)},
+      {
+        241.66949462890625, 110.21771240234375, Units.inchesToMeters(20), Units.inchesToMeters(19.5)
+      },
       {252.04759216308594, 109.3546142578125, Units.inchesToMeters(24), Units.inchesToMeters(19.5)},
       {156.43348693847656, 92.26092529296875, Units.inchesToMeters(0), Units.inchesToMeters(25.5)},
       {173.71957397460938, 92.69190216064453, Units.inchesToMeters(4), Units.inchesToMeters(25.5)},
@@ -256,7 +311,9 @@ public final class Constants {
       {166.42056274414062, 57.79549789428711, Units.inchesToMeters(4), Units.inchesToMeters(49.5)},
       {177.30941772460938, 58.38725280761719, Units.inchesToMeters(8), Units.inchesToMeters(49.5)},
       {186.7626953125, 59.280269622802734, Units.inchesToMeters(12), Units.inchesToMeters(49.5)},
-      {196.08949279785156, 60.245914459228516, Units.inchesToMeters(16), Units.inchesToMeters(49.5)},
+      {
+        196.08949279785156, 60.245914459228516, Units.inchesToMeters(16), Units.inchesToMeters(49.5)
+      },
       {205.2306671142578, 61.16556930541992, Units.inchesToMeters(20), Units.inchesToMeters(49.5)},
       {213.36785888671875, 62.33674621582031, Units.inchesToMeters(24), Units.inchesToMeters(49.5)},
       {156.1303253173828, 54.62651443481445, Units.inchesToMeters(0), Units.inchesToMeters(53.5)},
@@ -264,7 +321,9 @@ public final class Constants {
       {175.65347290039062, 55.44529724121094, Units.inchesToMeters(8), Units.inchesToMeters(53.5)},
       {184.98977661132812, 56.34360885620117, Units.inchesToMeters(12), Units.inchesToMeters(53.5)},
       {193.63018798828125, 57.18233108520508, Units.inchesToMeters(16), Units.inchesToMeters(53.5)},
-      {201.44790649414062, 58.028751373291016, Units.inchesToMeters(20), Units.inchesToMeters(53.5)},
+      {
+        201.44790649414062, 58.028751373291016, Units.inchesToMeters(20), Units.inchesToMeters(53.5)
+      },
       {209.90614318847656, 59.1672477722168, Units.inchesToMeters(24), Units.inchesToMeters(53.5)},
     };
   }
@@ -383,8 +442,8 @@ public final class Constants {
       // Distance, Angle (rotations)
       {10.680643009839416, 0.037400390625},
       {9.11398136590441, 0.038},
-      {0-9, 0-9},
-      {0-9, 0-9},
+      {0 - 9, 0 - 9},
+      {0 - 9, 0 - 9},
     };
   }
 

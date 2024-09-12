@@ -5,7 +5,6 @@ import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.HardwareConstants;
@@ -52,6 +51,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
   /**
    * Gets whether or not the intake sensor detects a note
+   *
    * @return whether or not it detects a note
    */
   public boolean sensorDetectsNote() {
@@ -61,6 +61,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
   /**
    * Sets the flapper speed
+   *
    * @param speed 1.0 being the max speed, -1.0 being the min speed
    */
   public void setFlapperSpeed(double speed) {

@@ -10,11 +10,11 @@ import frc.robot.subsystems.swerve.DriveSubsystem;
 public class FlywheelSpinUpAuto extends Command {
   /** Creates a new FlywheelSpinUpAuto. */
   private final ShooterSubsystem shooterSubsystem;
+
   private final DriveSubsystem driveSubsystem;
 
   private boolean isRed = false;
   private Translation2d speakerPos;
-
 
   public FlywheelSpinUpAuto(ShooterSubsystem shooterSubsystem, DriveSubsystem driveSubsystem) {
     // Use addRequirements() here to declare subsystem dependencies.
@@ -25,10 +25,10 @@ public class FlywheelSpinUpAuto extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-
-
-    speakerPos = isRed ? new Translation2d(FieldConstants.RED_SPEAKER_X, FieldConstants.RED_SPEAKER_Y) : new Translation2d(FieldConstants.BLUE_SPEAKER_X, FieldConstants.BLUE_SPEAKER_Y);
-
+    speakerPos =
+        isRed
+            ? new Translation2d(FieldConstants.RED_SPEAKER_X, FieldConstants.RED_SPEAKER_Y)
+            : new Translation2d(FieldConstants.BLUE_SPEAKER_X, FieldConstants.BLUE_SPEAKER_Y);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

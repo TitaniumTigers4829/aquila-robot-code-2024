@@ -3,8 +3,8 @@ package frc.robot.commands.auto;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.HardwareConstants;
@@ -42,7 +42,12 @@ public class ShootSpeakerAuto extends DriveCommandBase {
   private Translation2d speakerPos;
 
   /** Creates a new ShootSpeaker. */
-  public ShootSpeakerAuto(DriveSubsystem driveSubsystem, ShooterSubsystem shooterSubsystem, PivotSubsystem pivotSubsystem, VisionSubsystem visionSubsystem, LEDSubsystem leds) {
+  public ShootSpeakerAuto(
+      DriveSubsystem driveSubsystem,
+      ShooterSubsystem shooterSubsystem,
+      PivotSubsystem pivotSubsystem,
+      VisionSubsystem visionSubsystem,
+      LEDSubsystem leds) {
     super(driveSubsystem, visionSubsystem);
     this.driveSubsystem = driveSubsystem;
     this.shooterSubsystem = shooterSubsystem;
@@ -82,19 +87,15 @@ public class ShootSpeakerAuto extends DriveCommandBase {
     // distance (for speaker lookups)
     double distance = robotPos.getDistance(speakerPos);
     // arctangent for desired heading
-    desiredHeading = Math.atan2((robotPos.getY() - speakerPos.getY()), (robotPos.getX() - speakerPos.getX()));
+    desiredHeading =
+        Math.atan2((robotPos.getY() - speakerPos.getY()), (robotPos.getX() - speakerPos.getX()));
 
     headingError = desiredHeading - driveSubsystem.getOdometryRotation2d().getRadians();
 
     turnController.enableContinuousInput(-Math.PI, Math.PI);
     double turnOutput = deadband(turnController.calculate(headingError, 0));
 
-    driveSubsystem.drive(
-      0,
-      0,
-      turnOutput,
-      false
-    );
+    driveSubsystem.drive(0, 0, turnOutput, false);
 
     if (distance > 3.2) {
       shooterSubsystem.setRPM(ShooterConstants.SHOOT_SPEAKER_FAR_RPM);
@@ -142,7 +143,9 @@ public class ShootSpeakerAuto extends DriveCommandBase {
   }
 
   public boolean isReadyToShoot() {
-    return shooterSubsystem.isShooterWithinAcceptableError() && pivotTimer.hasElapsed(0.1) && Math.abs(headingError) < DriveConstants.HEADING_ACCEPTABLE_ERROR_RADIANS;
+    return shooterSubsystem.isShooterWithinAcceptableError()
+        && pivotTimer.hasElapsed(0.1)
+        && Math.abs(headingError) < DriveConstants.HEADING_ACCEPTABLE_ERROR_RADIANS;
   }
 
   private double deadband(double val) {

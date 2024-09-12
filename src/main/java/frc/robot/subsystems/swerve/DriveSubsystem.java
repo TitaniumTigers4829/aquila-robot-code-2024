@@ -125,7 +125,9 @@ public class DriveSubsystem extends SubsystemBase {
 
     alliance = DriverStation.getAlliance();
 
-    setpointGenerator = new SwerveSetpointGenerator(DriveConstants.DRIVE_KINEMATICS, DriveConstants.MODULE_TRANSLATIONS);
+    setpointGenerator =
+        new SwerveSetpointGenerator(
+            DriveConstants.DRIVE_KINEMATICS, DriveConstants.MODULE_TRANSLATIONS);
     currentSetpoint = new SwerveSetpoint(new ChassisSpeeds(), getModuleStates());
 
     // Configure AutoBuilder
@@ -360,6 +362,8 @@ public class DriveSubsystem extends SubsystemBase {
     Pose2d pose = getPose();
     SmartDashboard.putBoolean("screwed", Math.abs(pose.getX()) > 20);
     SmartDashboard.putString("odometry", pose.toString());
-    SmartDashboard.putNumber("speakerDistance", pose.getTranslation().getDistance(SmarterDashboardRegistry.getSpeakerPos()));
+    SmartDashboard.putNumber(
+        "speakerDistance",
+        pose.getTranslation().getDistance(SmarterDashboardRegistry.getSpeakerPos()));
   }
 }

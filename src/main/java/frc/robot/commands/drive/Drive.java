@@ -6,10 +6,6 @@ import frc.robot.subsystems.vision.VisionSubsystem;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
-import frc.robot.Constants.DriveConstants;
-import frc.robot.subsystems.vision.VisionSubsystem;
-import frc.robot.subsystems.swerve.DriveSubsystem;
-
 public class Drive extends DriveCommandBase {
 
   private final DriveSubsystem driveSubsystem;
@@ -26,11 +22,17 @@ public class Drive extends DriveCommandBase {
    * @param leftJoystickY The joystick input for driving forward and backwards
    * @param leftJoystickX The joystick input for driving left and right
    * @param rightJoystickX The joystick input for turning
-   * @param isFieldRelative The boolean supplier if the robot should drive
-   * field relative
+   * @param isFieldRelative The boolean supplier if the robot should drive field relative
    * @param isHighRotation The boolean supplier for if the robot should drive with a higher rotation
    */
-  public Drive(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, DoubleSupplier leftJoystickY, DoubleSupplier leftJoystickX, DoubleSupplier rightJoystickX, BooleanSupplier isFieldRelative, BooleanSupplier isHighRotation) {
+  public Drive(
+      DriveSubsystem driveSubsystem,
+      VisionSubsystem visionSubsystem,
+      DoubleSupplier leftJoystickY,
+      DoubleSupplier leftJoystickX,
+      DoubleSupplier rightJoystickX,
+      BooleanSupplier isFieldRelative,
+      BooleanSupplier isHighRotation) {
     super(driveSubsystem, visionSubsystem);
     this.driveSubsystem = driveSubsystem;
     addRequirements(driveSubsystem, visionSubsystem);
@@ -54,11 +56,10 @@ public class Drive extends DriveCommandBase {
     }
 
     driveSubsystem.drive(
-      leftJoystickY.getAsDouble() * DriveConstants.MAX_SPEED_METERS_PER_SECOND,
-      leftJoystickX.getAsDouble() * DriveConstants.MAX_SPEED_METERS_PER_SECOND,
-      rightJoystickX.getAsDouble() * angularSpeed,
-      isFieldRelative.getAsBoolean()
-    );
+        leftJoystickY.getAsDouble() * DriveConstants.MAX_SPEED_METERS_PER_SECOND,
+        leftJoystickX.getAsDouble() * DriveConstants.MAX_SPEED_METERS_PER_SECOND,
+        rightJoystickX.getAsDouble() * angularSpeed,
+        isFieldRelative.getAsBoolean());
 
     // Runs all the code from DriveCommandBase that estimates pose
     super.execute();

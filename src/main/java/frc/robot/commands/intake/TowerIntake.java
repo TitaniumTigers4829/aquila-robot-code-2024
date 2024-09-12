@@ -1,7 +1,5 @@
 package frc.robot.commands.intake;
 
-import java.util.function.Consumer;
-
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.LEDConstants.LEDProcess;
@@ -12,6 +10,7 @@ import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.leds.LEDSubsystem;
 import frc.robot.subsystems.pivot.PivotSubsystem;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
+import java.util.function.Consumer;
 
 public class TowerIntake extends Command {
   private final IntakeSubsystem intakeSubsystem;
@@ -22,7 +21,13 @@ public class TowerIntake extends Command {
   private final Consumer<Boolean> hasNoteCallback;
   private boolean intakeSensorLatch;
 
-  public TowerIntake(IntakeSubsystem intakeSubsystem, PivotSubsystem pivotSubsystem, ShooterSubsystem shooterSubsystem, boolean intakeReverse, LEDSubsystem leds, Consumer<Boolean> hasNoteCallback) {
+  public TowerIntake(
+      IntakeSubsystem intakeSubsystem,
+      PivotSubsystem pivotSubsystem,
+      ShooterSubsystem shooterSubsystem,
+      boolean intakeReverse,
+      LEDSubsystem leds,
+      Consumer<Boolean> hasNoteCallback) {
     this.intakeSubsystem = intakeSubsystem;
     this.pivotSubsystem = pivotSubsystem;
     this.shooterSubsystem = shooterSubsystem;
@@ -36,10 +41,13 @@ public class TowerIntake extends Command {
   public void initialize() {
     intakeSensorLatch = false;
     // the reason for doing the ledprocess for the intake here is a little complicated:
-    // when a note passes by the sensor, it will briefly be tripped, causing intakeSubsystem.sensorDetectsNote()
-    // to briefly return true. By doing it this way, the LEDs will be red (LEDProcess.INTAKE) until the
+    // when a note passes by the sensor, it will briefly be tripped, causing
+    // intakeSubsystem.sensorDetectsNote()
+    // to briefly return true. By doing it this way, the LEDs will be red (LEDProcess.INTAKE) until
+    // the
     // intake sensor detects the note, causing the LEDs to turn yellow (LEDProcess.NOTE_HALFWAY_IN)
-    // If it were done the way it was before this, they would briefly flash yellow before going back to red
+    // If it were done the way it was before this, they would briefly flash yellow before going back
+    // to red
     leds.setProcess(LEDProcess.INTAKE);
   }
 
@@ -80,7 +88,7 @@ public class TowerIntake extends Command {
         }
       }
     }
-    hasNoteCallback.accept((Boolean)intakeSensorLatch || shooterSubsystem.hasNote());
+    hasNoteCallback.accept((Boolean) intakeSensorLatch || shooterSubsystem.hasNote());
   }
 
   @Override
