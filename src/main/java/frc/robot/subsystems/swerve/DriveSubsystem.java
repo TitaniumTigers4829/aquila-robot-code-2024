@@ -18,11 +18,10 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
-import frc.robot.Constants.HardwareConstants;
 import frc.robot.Constants.TrajectoryConstants;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.extras.SmarterDashboardRegistry;
-import frc.robot.subsystems.swerve.SwerveSetpointGenerator;
+import frc.robot.subsystems.swerve.SwerveSetpointGenerator.SwerveSetpoint;
 import java.util.Optional;
 
 public class DriveSubsystem extends SubsystemBase {
@@ -117,7 +116,7 @@ public class DriveSubsystem extends SubsystemBase {
 
     alliance = DriverStation.getAlliance();
 
-    setpointGenerator = new SwerveSetpointGenerator();
+    swerveSetpointGenerator = new SwerveSetpointGenerator();
 
     // Configure AutoBuilder
     AutoBuilder.configureHolonomic(
@@ -154,10 +153,10 @@ public class DriveSubsystem extends SubsystemBase {
             ? ChassisSpeeds.fromFieldRelativeSpeeds(
                 xSpeed, ySpeed, rotationSpeed, getOdometryAllianceRelativeRotation2d())
             : new ChassisSpeeds(xSpeed, ySpeed, rotationSpeed);
-    currentSetpoint =
-        setpointGenerator.generateSetpoint(desiredSpeeds);
+    SwerveSetpoint currentSetpoint = swerveSetpointGenerator.generateSetpoint(desiredSpeeds);
 
-    setModuleStates(DriveConstants.DRIVE_KINEMATICS.toSwerveModuleStates(currentSetpoint.chassisSpeeds()));
+    setModuleStates(
+        DriveConstants.DRIVE_KINEMATICS.toSwerveModuleStates(currentSetpoint.chassisSpeeds()));
   }
 
   public void drive(ChassisSpeeds speeds) {

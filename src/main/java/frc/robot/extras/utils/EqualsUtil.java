@@ -9,9 +9,7 @@ package frc.robot.extras.utils;
 
 import edu.wpi.first.math.geometry.Twist2d;
 
-/**
- * Checks if value a is very close to b.
- */
+/** Checks if value a is very close to b. */
 public class EqualsUtil {
   public static boolean epsilonEquals(double a, double b, double epsilon) {
     return (a - epsilon <= b) && (a + epsilon >= b);
