@@ -17,7 +17,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
   private final DigitalInput noteSensor;
 
-  /** Creates a new IntakeSubsystem. */
+  /** Creates a new IntakeSubsystem. Initiates the motors,  */ 
   public IntakeSubsystem() {
     leftIntakeMotor = new TalonFX(IntakeConstants.LEFT_INTAKE_MOTOR_ID);
     rightIntakeMotor = new TalonFX(IntakeConstants.RIGHT_INTAKE_MOTOR_ID);
