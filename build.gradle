@@ -161,4 +161,3 @@ pmd {
     ruleSetFiles = files(file("$rootDir/pmd-ruleset.xml"))
     ruleSets = []
 }
-
