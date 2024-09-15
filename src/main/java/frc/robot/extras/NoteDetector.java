@@ -15,7 +15,7 @@ public class NoteDetector {
   private static Pose2d notePos;
   private static BilinearInterpolator pixelLookupInterpolator;
 
-  public NoteDetector() {
+  private NoteDetector() {
     pixelLookupInterpolator = new BilinearInterpolator(VisionConstants.noteDetectionLookupTable);
   }
 

@@ -109,7 +109,6 @@ public class BilinearInterpolator {
           };
         }
       }
-
       // check for first row for only x interpolation
       for (int i = 0; i < 7; i++) {
         if (inputYValue == lookupTable[i][1]) {
@@ -128,7 +127,6 @@ public class BilinearInterpolator {
           }
         }
       }
-
       // check for last row just to check for x only interpolation or point checking. (You can't do
       // y_interpolation or diagonal)
       for (int i = lookupTable.length - 7; i < lookupTable.length; i++) {

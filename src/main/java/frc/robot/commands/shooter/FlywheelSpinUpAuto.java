@@ -25,7 +25,6 @@ public class FlywheelSpinUpAuto extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-
     speakerPos =
         isRed
             ? new Translation2d(FieldConstants.RED_SPEAKER_X, FieldConstants.RED_SPEAKER_Y)

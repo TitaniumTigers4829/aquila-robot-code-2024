@@ -79,7 +79,6 @@ public class ShootPass extends DriveCommandBase {
   @Override
   public void execute() {
     super.execute();
-
     // positions + distance
     Translation2d robotPos = driveSubsystem.getPose().getTranslation();
     double distance = robotPos.getDistance(passingPos);

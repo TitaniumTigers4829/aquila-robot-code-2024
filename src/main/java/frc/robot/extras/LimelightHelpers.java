@@ -27,7 +27,6 @@ import java.util.concurrent.CompletableFuture;
 public class LimelightHelpers {
 
   public static class LimelightTarget_Retro {
-
     @JsonProperty("t6c_ts")
     private double[] cameraPose_TargetSpace;
 
@@ -261,7 +260,6 @@ public class LimelightHelpers {
   }
 
   public static class Results {
-
     @JsonProperty("pID")
     public double pipelineID;
 
