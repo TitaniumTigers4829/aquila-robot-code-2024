@@ -55,7 +55,7 @@ public class RobotContainer {
   private final IntakeSubsystem intakeSubsystem;
   private final PivotSubsystem pivotSubsystem;
   private final LEDSubsystem ledSubsystem;
-
+  private final MaxCarsonLearningExperience MaxCarsonLearningExperience;
   private final SendableChooser<Command> autoChooser;
 
   public RobotContainer() {
@@ -66,7 +66,7 @@ public class RobotContainer {
     intakeSubsystem = new IntakeSubsystem();
     pivotSubsystem = new PivotSubsystem();
     ledSubsystem = new LEDSubsystem();
-
+    MaxCarsonLearningExperience = new MaxCarsonLearningExperience();
     autoChooser = new SendableChooser<Command>();
     autoChooser.setDefaultOption(
         "red 4note",
@@ -196,8 +196,9 @@ public class RobotContainer {
     SmarterDashboardRegistry.initialize();
     shooterSubsystem.setFlywheelNeutral();
     shooterSubsystem.setRollerSpeed(0);
-    intakeSubsystem.setFlapperSpeed(0);
-    intakeSubsystem.setIntakeSpeed(0);
+    //*intakeSubsystem.setFlapperSpeed(0);
+    //*intakeSubsystem.setIntakeSpeed(0);
+    MaxCarsonLearningExperience.setSpeed(0.5);
     pivotSubsystem.setPivotAngle(PivotConstants.PIVOT_INTAKE_ANGLE);
   }
 

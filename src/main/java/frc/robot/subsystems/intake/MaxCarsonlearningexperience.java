@@ -28,8 +28,10 @@ public class MaxCarsonLearningExperience extends SubsystemBase {
         rightIntakeMotor.getConfigurator(motorConfigs);
         flapperMotor.getConfigurator(motorConfigs);
 
-    public setSpeed(){
-        leftIntakeMotor
+    public setSpeed(double speed){
+        leftIntakeMotor.set(speed);
+        rightIntakeMotor.set(speed);
+        flapperMotor.set(speed);
     }
         
 
