@@ -73,17 +73,18 @@ public class VisionSubsystem extends SubsystemBase {
     // Soon to be implemented code:
     if (canSeeAprilTags(limelightNumber) && isValidPoseEstimate(limelightNumber)) {
       if (isLargeDiscrepancyBetweenMegaTag1And2(limelightNumber)
-          && getLimelightAprilTagDistance(limelightNumber) <
-      VisionConstants.MEGA_TAG_2_DISTANCE_THRESHOLD) {
+          && getLimelightAprilTagDistance(limelightNumber)
+              < VisionConstants.MEGA_TAG_2_DISTANCE_THRESHOLD) {
         return limelightEstimates[limelightNumber] = getMegaTag1PoseEstimate(limelightNumber);
       } else if (headingRateDegreesPerSecond < VisionConstants.MEGA_TAG_2_MAX_HEADING_RATE) {
-      LimelightHelpers.SetRobotOrientation(
-          getLimelightName(limelightNumber), headingDegrees, 0, 0, 0, 0, 0);
-      return limelightEstimates[limelightNumber] = getMegaTag2PoseEstimate(limelightNumber);
-    } else {
-      return limelightEstimates[limelightNumber] = getMegaTag1PoseEstimate(limelightNumber);
-    }
+        LimelightHelpers.SetRobotOrientation(
+            getLimelightName(limelightNumber), headingDegrees, 0, 0, 0, 0, 0);
+        return limelightEstimates[limelightNumber] = getMegaTag2PoseEstimate(limelightNumber);
+      } else {
+        return limelightEstimates[limelightNumber] = getMegaTag1PoseEstimate(limelightNumber);
       }
+    }
+    return new PoseEstimate();
   }
 
   /**
