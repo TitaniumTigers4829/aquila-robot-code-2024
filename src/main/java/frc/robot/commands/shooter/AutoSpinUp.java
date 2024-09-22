@@ -26,16 +26,12 @@ public class AutoSpinUp extends DriveCommandBase {
   private final DriveSubsystem driveSubsystem;
   private final ShooterSubsystem shooterSubsystem;
   private final PivotSubsystem pivotSubsystem;
-  private final VisionSubsystem visionSubsystem;
   private final LEDSubsystem leds;
 
   private final DoubleSupplier leftX, leftY, rightX;
   private final BooleanSupplier isFieldRelative;
 
-  private double headingError = 0;
-
-  private boolean isRed = false;
-  private double desiredHeading = 0;
+  private double desiredHeading;
   private Translation2d speakerPos;
 
   /** Creates a new SpinUpForSpeaker. */
@@ -53,7 +49,6 @@ public class AutoSpinUp extends DriveCommandBase {
     this.driveSubsystem = driveSubsystem;
     this.shooterSubsystem = shooterSubsystem;
     this.pivotSubsystem = pivotSubsystem;
-    this.visionSubsystem = visionSubsystem;
     this.leftX = leftX;
     this.leftY = leftY;
     this.rightX = rightX;
@@ -66,14 +61,8 @@ public class AutoSpinUp extends DriveCommandBase {
   @Override
   public void initialize() {
     Optional<Alliance> alliance = DriverStation.getAlliance();
-    // if alliance is detected
-    if (alliance.isPresent()) {
-      // and if it's red, we're red
-      isRed = alliance.get() == Alliance.Red;
-    } else {
-      // otherwise default to red alliance
-      isRed = true;
-    }
+    boolean isRed = alliance.get() == Alliance.Red;
+
     // SmartDashboard.putBoolean("red", isRed);
     speakerPos =
         isRed
@@ -89,14 +78,9 @@ public class AutoSpinUp extends DriveCommandBase {
 
     // get positions of various things
     Translation2d robotPos = driveSubsystem.getPose().getTranslation();
-    // distance (for speaker lookups)
-    double distance = robotPos.getDistance(speakerPos);
     // arctangent for desired heading
     desiredHeading =
         Math.atan2((robotPos.getY() - speakerPos.getY()), (robotPos.getX() - speakerPos.getX()));
-
-    // current
-    headingError = desiredHeading - driveSubsystem.getOdometryRotation2d().getRadians();
 
     // allow the driver to drive slowly (NOT full speed - will mess up shooter)
     driveSubsystem.drive(
@@ -129,10 +113,7 @@ public class AutoSpinUp extends DriveCommandBase {
   }
 
   public boolean isInRange() {
-    if (desiredHeading > 25) {
-      return true;
-    }
-    return false;
+    return (desiredHeading > 25);
   }
 
   private double deadband(double val) {

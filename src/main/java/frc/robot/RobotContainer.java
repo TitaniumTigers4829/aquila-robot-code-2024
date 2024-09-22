@@ -223,7 +223,7 @@ public class RobotContainer {
 
     Trigger driverRightBumper = new Trigger(driverController::getRightBumper);
     Trigger driverRightDirectionPad = new Trigger(() -> driverController.getPOV() == 90);
-    Trigger driverDownDirectionPad = new Trigger(() -> driverController.getPOV() == 180);
+    // Trigger driverDownDirectionPad = new Trigger(() -> driverController.getPOV() == 180);
     Trigger driverLeftDirectionPad = new Trigger(() -> driverController.getPOV() == 270);
 
     // autodrive
@@ -233,8 +233,8 @@ public class RobotContainer {
     Trigger operatorLeftTrigger = new Trigger(() -> operatorController.getLeftTriggerAxis() > 0.2);
     Trigger operatorLeftBumper = new Trigger(operatorController::getLeftBumper);
     // amp and speaker
-    Trigger operatorBButton = new Trigger(operatorController::getBButton);
-    Trigger operatorRightBumper = new Trigger(operatorController::getRightBumper);
+    // Trigger operatorBButton = new Trigger(operatorController::getBButton);
+    // Trigger operatorRightBumper = new Trigger(operatorController::getRightBumper);
     Trigger operatorRightTrigger =
         new Trigger(() -> operatorController.getRightTriggerAxis() > 0.2);
     Trigger driverRightTrigger = new Trigger(() -> driverController.getRightTriggerAxis() > 0.2);
@@ -246,13 +246,13 @@ public class RobotContainer {
     DoubleSupplier operatorRightStickY = operatorController::getRightY;
     // unused
     Trigger operatorUpDirectionPad = new Trigger(() -> operatorController.getPOV() == 0);
-    Trigger operatorLeftDirectionPad = new Trigger(() -> operatorController.getPOV() == 270);
+    // Trigger operatorLeftDirectionPad = new Trigger(() -> operatorController.getPOV() == 270);
     Trigger operatorDownDirectionPad = new Trigger(() -> operatorController.getPOV() == 180);
     Trigger driverLeftTrigger = new Trigger(() -> driverController.getLeftTriggerAxis() > 0.2);
     Trigger driverLeftBumper = new Trigger(driverController::getLeftBumper);
     Trigger driverBButton = new Trigger(driverController::getBButton);
-    Trigger driverYButton = new Trigger(driverController::getYButton);
-    DoubleSupplier operatorLeftStickY = operatorController::getLeftY;
+    // Trigger driverYButton = new Trigger(driverController::getYButton);
+    // DoubleSupplier operatorLeftStickY = operatorController::getLeftY;
 
     // DRIVER BUTTONS
 
