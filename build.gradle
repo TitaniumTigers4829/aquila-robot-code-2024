@@ -150,3 +150,14 @@ spotless {
         endWithNewline()
     }
 }
+
+apply plugin: "pmd"
+
+pmd {
+    toolVersion = "7.3.0"
+    consoleOutput = true
+    sourceSets = [project.sourceSets["main"]]
+    reportsDir = file("${project.buildDir}/reports/pmd")
+    ruleSetFiles = files(file("$rootDir/pmd-ruleset.xml"))
+    ruleSets = []
+}

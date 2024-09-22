@@ -415,7 +415,7 @@ public final class Constants {
     public static final double SHOOT_TRAP_ANGLE = 0;
     public static final double PIVOT_ACCEPTABLE_ERROR = 0.015;
 
-    public static double[][] SPEAKER_PIVOT_POSITION = {
+    public static final double[][] SPEAKER_PIVOT_POSITION = {
       // Distance, Angle (rotations)
       {1.3, 0.029},
       {1.5, 0.037265625},
@@ -438,7 +438,7 @@ public final class Constants {
       {4.9, 0.1135}
     };
 
-    public static double[][] PASS_PIVOT_POSITION = {
+    public static final double[][] PASS_PIVOT_POSITION = {
       // Distance, Angle (rotations)
       {10.680643009839416, 0.037400390625},
       {9.11398136590441, 0.038},
@@ -482,24 +482,24 @@ public final class Constants {
     public static final double AUTO_SHOOT_P = 5; // 7 --> 4.5 --> 5
     public static final double AUTO_SHOOT_I = 0.0;
     public static final double AUTO_SHOOT_D = 0.0;
-    public static Constraints AUTO_SHOOT_CONSTRAINTS =
+    public static final Constraints AUTO_SHOOT_CONSTRAINTS =
         new Constraints(DriveConstants.MAX_ANGULAR_SPEED_RADIANS_PER_SECOND, 2);
 
     public static final double AUTO_SHOOT_MOVE_P = 10.0;
     public static final double AUTO_SHOOT_MOVE_I = 0.0;
     public static final double AUTO_SHOOT_MOVE_D = 0.0;
-    public static Constraints AUTO_SHOOT_MOVE_CONSTRAINTS = new Constraints(10, 5);
+    public static final Constraints AUTO_SHOOT_MOVE_CONSTRAINTS = new Constraints(10, 5);
 
     public static final double AUTO_LINEUP_ROTATION_P = 3;
     public static final double AUTO_LINEUP_ROTATION_I = 0.0;
     public static final double AUTO_LINEUP_ROTATION_D = 0.0;
-    public static Constraints AUTO_LINEUP_ROTATION_CONSTRAINTS =
+    public static final Constraints AUTO_LINEUP_ROTATION_CONSTRAINTS =
         new Constraints(DriveConstants.MAX_ANGULAR_SPEED_RADIANS_PER_SECOND, 2);
 
     public static final double AUTO_LINEUP_TRANSLATION_P = 10; // 4.5, 4.0
     public static final double AUTO_LINEUP_TRANSLATION_I = 0.0;
     public static final double AUTO_LINEUP_TRANSLATION_D = 0.0;
-    public static Constraints AUTO_LINEUP_TRANSLATION_CONSTRAINTS = new Constraints(1, 1);
+    public static final Constraints AUTO_LINEUP_TRANSLATION_CONSTRAINTS = new Constraints(1, 1);
 
     // TODO: calc
     public static final double NOTE_LAUNCH_VELOCITY_METERS_PER_SECOND = 10.8;
@@ -552,13 +552,13 @@ public final class Constants {
     public static final double AUTO_ALIGN_TRANSLATIONAL_I = 0;
     public static final double AUTO_ALIGN_TRANSLATIONAL_D = 0;
 
-    public static Constraints AUTO_ALIGN_TRANSLATION_CONSTRAINTS = new Constraints(5, 2);
+    public static final Constraints AUTO_ALIGN_TRANSLATION_CONSTRAINTS = new Constraints(5, 2);
 
     public static final double AUTO_ALIGN_ROTATIONAL_P = 3;
     public static final double AUTO_ALIGN_ROTATIONAL_I = 0;
     public static final double AUTO_ALIGN_ROTATIONAL_D = 0;
 
-    public static Constraints AUTO_ALIGN_ROTATIONAL_CONSTRAINTS =
+    public static final Constraints AUTO_ALIGN_ROTATIONAL_CONSTRAINTS =
         new Constraints(DriveConstants.MAX_ANGULAR_SPEED_RADIANS_PER_SECOND, 2);
   }
 

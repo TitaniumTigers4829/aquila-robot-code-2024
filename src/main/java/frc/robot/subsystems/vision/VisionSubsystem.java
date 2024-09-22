@@ -27,7 +27,7 @@ public class VisionSubsystem extends SubsystemBase {
    * The pose estimates from the limelights in the following order {shooterLimelight,
    * frontLeftLimelight, frontRightLimelight}
    */
-  private PoseEstimate[] limelightEstimates;
+  private final PoseEstimate[] limelightEstimates;
 
   public VisionSubsystem() {
     limelightEstimates = new PoseEstimate[3];
