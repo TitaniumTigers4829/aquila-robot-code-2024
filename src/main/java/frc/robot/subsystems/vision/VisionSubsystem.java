@@ -67,10 +67,6 @@ public class VisionSubsystem extends SubsystemBase {
    * @param limelightNumber the number of the limelight
    */
   public PoseEstimate enabledPoseUpdate(int limelightNumber) {
-    // if (!canSeeAprilTags(limelightNumber)) {
-    //   return limelightEstimates[limelightNumber] = new PoseEstimate();
-    // }
-    // Soon to be implemented code:
     if (canSeeAprilTags(limelightNumber) && isValidPoseEstimate(limelightNumber)) {
       if (isLargeDiscrepancyBetweenMegaTag1And2(limelightNumber)
           && getLimelightAprilTagDistance(limelightNumber)
@@ -84,7 +80,7 @@ public class VisionSubsystem extends SubsystemBase {
         return limelightEstimates[limelightNumber] = getMegaTag1PoseEstimate(limelightNumber);
       }
     }
-    return new PoseEstimate();
+    return limelightEstimates[limelightNumber] = new PoseEstimate();
   }
 
   /**
@@ -396,5 +392,9 @@ public class VisionSubsystem extends SubsystemBase {
     visionThread(VisionConstants.FRONT_LEFT_LIMELIGHT_NUMBER);
     visionThread(VisionConstants.FRONT_RIGHT_LIMELIGHT_NUMBER);
     SmartDashboard.putNumber("april tag dist", getLimelightAprilTagDistance(0));
+    SmartDashboard.putString("shooter ll odom", getPoseFromAprilTags(0).toString());
+    SmartDashboard.putString("left ll odom", getPoseFromAprilTags(1).toString());
+
+    SmartDashboard.putString("right ll odom", getPoseFromAprilTags(2).toString());
   }
 }
