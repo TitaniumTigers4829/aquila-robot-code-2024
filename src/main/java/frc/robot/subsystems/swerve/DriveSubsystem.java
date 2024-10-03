@@ -20,7 +20,6 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
-import frc.robot.Constants.HardwareConstants;
 import frc.robot.Constants.TrajectoryConstants;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.extras.SmarterDashboardRegistry;
@@ -166,7 +165,7 @@ public class DriveSubsystem extends SubsystemBase {
                 xSpeed, ySpeed, rotationSpeed, getOdometryAllianceRelativeRotation2d())
             : new ChassisSpeeds(xSpeed, ySpeed, rotationSpeed);
     desiredSpeeds = ChassisSpeeds.discretize(desiredSpeeds, 0.02);
-    
+
     currentSetpoint =
         setpointGenerator.generateSetpoint(
             currentModuleLimits, currentSetpoint, desiredSpeeds, 0.02);
@@ -231,7 +230,7 @@ public class DriveSubsystem extends SubsystemBase {
     double skidRatio = getSkidRatio();
     boolean collisionDetected = isCollisionDetected();
     boolean isStatorGood = getStatorCurrents();
-    // boolean 
+    // boolean
     if (skidRatio > 1 || collisionDetected || !isStatorGood) {
       return true;
     }

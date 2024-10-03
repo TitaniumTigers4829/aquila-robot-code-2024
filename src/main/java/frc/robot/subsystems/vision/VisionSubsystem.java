@@ -2,7 +2,6 @@ package frc.robot.subsystems.vision;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.VisionConstants;
@@ -197,12 +196,12 @@ public class VisionSubsystem extends SubsystemBase {
    */
   public String getLimelightName(int limelightNumber) {
     switch (limelightNumber) {
-      case 0: 
-        return VisionConstants.SHOOTER_LIMELIGHT_NAME;    
+      case 0:
+        return VisionConstants.SHOOTER_LIMELIGHT_NAME;
       case 1:
         return VisionConstants.FRONT_LEFT_LIMELIGHT_NAME;
-      case 2: 
-        return VisionConstants.FRONT_RIGHT_LIMELIGHT_NAME;    
+      case 2:
+        return VisionConstants.FRONT_RIGHT_LIMELIGHT_NAME;
       default:
         throw new IllegalArgumentException("You entered a number for a non-existent limelight");
     }
@@ -224,9 +223,9 @@ public class VisionSubsystem extends SubsystemBase {
 
     // Syncronization block to ensure thread safety during the critical section where pose information is read and compared.
     // This helps prevents race conditions, where one limelight may be updating an object that another limelight is reading.
-    // A race condition could cause unpredictable things to happen. Such as causing a limelight to be unable to refrence an 
+    // A race condition could cause unpredictable things to happen. Such as causing a limelight to be unable to refrence an
     // object, as it's refrence was modified earlier.
-    synchronized (this) { 
+    synchronized (this) {
       double current_TX = LimelightHelpers.getTX(getLimelightName(limelightNumber));
       double current_TY = LimelightHelpers.getTY(getLimelightName(limelightNumber));
 
@@ -250,7 +249,7 @@ public class VisionSubsystem extends SubsystemBase {
             // Since we can't see an April Tag, set the estimate for the specified limelight to an empty PoseEstimate()
             limelightEstimates[limelightNumber] = new PoseEstimate();
             // stop the thread for the specified limelight
-            stopThread(limelightNumber); 
+            stopThread(limelightNumber);
           }
       }
 
@@ -262,12 +261,12 @@ public class VisionSubsystem extends SubsystemBase {
   /**
    * Starts a separate thread dedicated to updating the pose estimate for a specified limelight.
    * This approach is adopted to prevent loop overruns that would occur if we attempted to parse the JSON dump for each limelight sequentially within a single scheduler loop.
-   * 
+   *
    * To achieve efficient and safe parallel execution, an ExecutorService is utilized to manage the lifecycle of these threads.
-   * 
+   *
    * Each thread continuously runs the {@link #checkAndUpdatePose(int)} method as long as the corresponding limelight's thread is marked as "running".
    * This ensures that pose estimates are updated in real-time, leveraging the parallel processing capabilities of the executor service.
-   *  
+   *
    * @param limelightNumber the limelight number
    */
   public void visionThread(int limelightNumber) {

@@ -36,15 +36,15 @@ public class ShootPass extends DriveCommandBase {
 
   private final ProfiledPIDController turnController = new ProfiledPIDController(
     ShooterConstants.AUTO_SHOOT_P,
-    ShooterConstants.AUTO_SHOOT_I, 
-    ShooterConstants.AUTO_SHOOT_D, 
+    ShooterConstants.AUTO_SHOOT_I,
+    ShooterConstants.AUTO_SHOOT_D,
     ShooterConstants.AUTO_SHOOT_CONSTRAINTS
   );
 
   private boolean isRed = false;
   private double desiredHeading = 0;
   private Translation2d passingPos;
-  
+
   public ShootPass(DriveSubsystem driveSubsystem, ShooterSubsystem shooterSubsystem, PivotSubsystem pivotSubsystem, VisionSubsystem visionSubsystem, DoubleSupplier leftX, DoubleSupplier leftY, BooleanSupplier isFieldRelative, LEDSubsystem leds) {
     super(driveSubsystem, visionSubsystem);
     this.driveSubsystem = driveSubsystem;
@@ -56,12 +56,12 @@ public class ShootPass extends DriveCommandBase {
     this.leds = leds;
     addRequirements(shooterSubsystem, driveSubsystem, pivotSubsystem, visionSubsystem);
   }
-  
+
 @Override
   public void initialize() {
     Optional<Alliance> alliance = DriverStation.getAlliance();
     //sets alliance to red
-    isRed = alliance.isPresent() && alliance.get() == Alliance.Red;  
+    isRed = alliance.isPresent() && alliance.get() == Alliance.Red;
 
     passingPos = isRed ? new Translation2d(FieldConstants.RED_PASSING_X, FieldConstants.RED_PASSING_Y) : new Translation2d(FieldConstants.BLUE_PASSING_X, FieldConstants.BLUE_PASSING_Y);
   }
@@ -69,21 +69,21 @@ public class ShootPass extends DriveCommandBase {
   @Override
   public void execute() {
     super.execute();
-    
+
     //positions + distance
     Translation2d robotPos = driveSubsystem.getPose().getTranslation();
     double distance = robotPos.getDistance(passingPos);
-    
+
     desiredHeading = Math.atan2((robotPos.getY() - passingPos.getY()), (robotPos.getX() - passingPos.getX()));
     headingError = desiredHeading - driveSubsystem.getOdometryRotation2d().getRadians();
-  
+
     turnController.enableContinuousInput(-Math.PI, Math.PI);
     double turnOutput = turnController.calculate(headingError, 0);
-    
+
     driveSubsystem.drive(
       deadband(leftY.getAsDouble()) * 0.5, deadband(leftX.getAsDouble()) * 0.5, turnOutput,!isFieldRelative.getAsBoolean()
     );
-    
+
     shooterSubsystem.setRPM(3700);
     pivotSubsystem.setPivotFromPassDistance(distance);
 
@@ -118,6 +118,6 @@ public class ShootPass extends DriveCommandBase {
     } else {
       return val;
     }
-  } 
-  
+  }
+
   }

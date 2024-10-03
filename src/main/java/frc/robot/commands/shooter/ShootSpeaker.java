@@ -72,23 +72,23 @@ public class ShootSpeaker extends DriveCommandBase {
   @Override
   public void execute() {
     super.execute();
-    
+
     // get positions of various things
     Translation2d robotPos = driveSubsystem.getPose().getTranslation();
     // distance (for speaker lookups)
     double distance = robotPos.getDistance(speakerPos);
     // arctangent for desired heading
     desiredHeading = Math.atan2((robotPos.getY() - speakerPos.getY()), (robotPos.getX() - speakerPos.getX()));
-  
+
     headingError = desiredHeading - driveSubsystem.getOdometryRotation2d().getRadians();
-  
+
     double turnOutput = deadband(turnController.calculate(headingError, 0));
 
     // allow the driver to drive slowly (NOT full speed - will mess up shooter)
     driveSubsystem.drive(
-      deadband(leftY.getAsDouble()) * 0.5, 
-      deadband(leftX.getAsDouble()) * 0.5, 
-      turnOutput, 
+      deadband(leftY.getAsDouble()) * 0.5,
+      deadband(leftX.getAsDouble()) * 0.5,
+      turnOutput,
       !isFieldRelative.getAsBoolean()
     );
 

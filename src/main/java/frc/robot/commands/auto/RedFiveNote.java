@@ -28,7 +28,7 @@ public class RedFiveNote extends SequentialCommandGroup {
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
       new InstantCommand(()->driveSubsystem.resetOdometry(new Pose2d(15.215974807739258, 5.519354820251465, Rotation2d.fromRadians(3.141592653589793)))),
-      new SpinUpForSpeakerAuto(shooterSubsystem, pivotSubsystem, null).withTimeout(0.01),  
+      new SpinUpForSpeakerAuto(shooterSubsystem, pivotSubsystem, null).withTimeout(0.01),
       new FollowChoreoTrajectory(driveSubsystem, visionSubsystem, "red to shoot pos", false),
       new ShootSpeakerAuto(driveSubsystem, shooterSubsystem, pivotSubsystem, visionSubsystem, ledSubsystem).withTimeout(1.3),
       new ParallelCommandGroup(

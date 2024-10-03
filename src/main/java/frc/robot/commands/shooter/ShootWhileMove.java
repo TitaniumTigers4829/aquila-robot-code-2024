@@ -137,7 +137,7 @@ public class ShootWhileMove extends DriveCommandBase {
     if (isReadyToShoot()) {
       leds.setProcess(LEDProcess.SHOOT);
       shooterSubsystem.setRollerSpeed(ShooterConstants.ROLLER_SHOOT_SPEED);
-    } else {      
+    } else {
       leds.setProcess(LEDProcess.FINISH_LINE_UP);
     }
   }

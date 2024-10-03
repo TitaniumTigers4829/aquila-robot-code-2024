@@ -28,14 +28,14 @@ public class SpinUpForSpeakerAuto extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-   
+
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     super.execute();
-    
+
     shooterSubsystem.setRPM(ShooterConstants.SHOOT_SPEAKER_RPM * 0.5);
     // if we are ready to shoot:
     if (isReadyToShoot()) {

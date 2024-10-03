@@ -24,7 +24,7 @@ public class IntakeSubsystem extends SubsystemBase {
     rightIntakeMotor = new TalonFX(IntakeConstants.RIGHT_INTAKE_MOTOR_ID);
     flapperMotor = new TalonFX(IntakeConstants.FLAPPER_MOTOR_ID);
     noteSensor = new DigitalInput(IntakeConstants.NOTE_SENSOR_ID);
-    
+
     TalonFXConfiguration intakeConfig = new TalonFXConfiguration();
     intakeConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     intakeConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;

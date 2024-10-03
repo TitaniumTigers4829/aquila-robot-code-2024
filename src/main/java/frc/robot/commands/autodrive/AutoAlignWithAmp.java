@@ -14,7 +14,6 @@ import frc.robot.commands.drive.DriveCommandBase;
 import frc.robot.subsystems.swerve.DriveSubsystem;
 import frc.robot.subsystems.vision.VisionSubsystem;
 import java.util.Optional;
-import java.util.function.DoubleSupplier;
 
 public class AutoAlignWithAmp extends DriveCommandBase {
   private final DriveSubsystem driveSubsystem;
@@ -33,15 +32,15 @@ public class AutoAlignWithAmp extends DriveCommandBase {
 
   private final ProfiledPIDController xTranslationController = new ProfiledPIDController(
     ShooterConstants.AUTO_LINEUP_TRANSLATION_P,
-    ShooterConstants.AUTO_LINEUP_TRANSLATION_I, 
-    ShooterConstants.AUTO_LINEUP_TRANSLATION_D, 
+    ShooterConstants.AUTO_LINEUP_TRANSLATION_I,
+    ShooterConstants.AUTO_LINEUP_TRANSLATION_D,
     ShooterConstants.AUTO_LINEUP_TRANSLATION_CONSTRAINTS
   );
 
   private final ProfiledPIDController yTranslationController = new ProfiledPIDController(
     ShooterConstants.AUTO_LINEUP_TRANSLATION_P,
-    ShooterConstants.AUTO_LINEUP_TRANSLATION_I, 
-    ShooterConstants.AUTO_LINEUP_TRANSLATION_D, 
+    ShooterConstants.AUTO_LINEUP_TRANSLATION_I,
+    ShooterConstants.AUTO_LINEUP_TRANSLATION_D,
     ShooterConstants.AUTO_LINEUP_TRANSLATION_CONSTRAINTS
   );
 
@@ -84,7 +83,7 @@ public class AutoAlignWithAmp extends DriveCommandBase {
     // Uses the PID controllers to calculate the drive output
     double xOutput = deadband(xTranslationController.calculate(xPoseError, 0));
     double yOutput = deadband(yTranslationController.calculate(yPoseError, 0));
-    double turnOutput = deadband(turnController.calculate(thetaPoseError, 0)); 
+    double turnOutput = deadband(turnController.calculate(thetaPoseError, 0));
 
     // Gets the chassis speeds for the robot using the odometry rotation (not alliance relative)
     ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(

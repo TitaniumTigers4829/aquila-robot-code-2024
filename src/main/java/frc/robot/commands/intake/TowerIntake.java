@@ -21,7 +21,7 @@ public class TowerIntake extends Command {
   private final boolean intakeReverse;
   private final Consumer<Boolean> hasNoteCallback;
   private boolean intakeSensorLatch;
-  
+
   public TowerIntake(IntakeSubsystem intakeSubsystem, PivotSubsystem pivotSubsystem, ShooterSubsystem shooterSubsystem, boolean intakeReverse, LEDSubsystem leds, Consumer<Boolean> hasNoteCallback) {
     this.intakeSubsystem = intakeSubsystem;
     this.pivotSubsystem = pivotSubsystem;
@@ -42,7 +42,7 @@ public class TowerIntake extends Command {
     // If it were done the way it was before this, they would briefly flash yellow before going back to red
     leds.setProcess(LEDProcess.INTAKE);
   }
-  
+
   /** Creates a new TowerIntake. */
   @Override
   public void execute() {
@@ -51,7 +51,7 @@ public class TowerIntake extends Command {
     if (pivotSubsystem.isPivotWithinAcceptableError()) {
       if (intakeReverse) {
         leds.setProcess(LEDProcess.REVERSE_INTAKE);
-        shooterSubsystem.setRollerSpeed(-ShooterConstants.ROLLER_INTAKE_BEFORE_LATCH_SPEED); 
+        shooterSubsystem.setRollerSpeed(-ShooterConstants.ROLLER_INTAKE_BEFORE_LATCH_SPEED);
         intakeSubsystem.setIntakeSpeed(-IntakeConstants.INTAKE_SPEED);
         intakeSubsystem.setFlapperSpeed(-IntakeConstants.FLAPPER_SPEED);
         SmarterDashboardRegistry.noNote();
@@ -82,7 +82,7 @@ public class TowerIntake extends Command {
     }
     hasNoteCallback.accept((Boolean)intakeSensorLatch || shooterSubsystem.hasNote());
   }
-  
+
   @Override
   public void end(boolean interrupted) {
     leds.setProcess(LEDProcess.DEFAULT);
