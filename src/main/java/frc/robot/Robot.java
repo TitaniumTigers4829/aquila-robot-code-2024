@@ -21,7 +21,6 @@ import frc.robot.subsystems.vision.VisionSubsystem;
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
   private RobotContainer m_robotContainer;
-  private VisionSubsystem visionSubsystem;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -32,7 +31,6 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
-    visionSubsystem = new VisionSubsystem();
 //    uncomment the line below if there is a USB camera plugged into the RoboRIO
 //    CameraServer.startAutomaticCapture();
   }
@@ -56,7 +54,6 @@ public class Robot extends TimedRobot {
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
   public void disabledInit() {
-    visionSubsystem.endAllThreads();
   }
 
   @Override
