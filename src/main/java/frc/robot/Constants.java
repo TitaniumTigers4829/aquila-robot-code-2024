@@ -371,7 +371,7 @@ public final class Constants {
 
   public static final class IntakeConstants {
     public static final int LEFT_INTAKE_MOTOR_ID = 18;
-    public static final int RIGHT_INTAKE_MOTOR_ID = 19;
+    public static final int RIGHT_INTAKE_MOTOR_ID = 2;
     public static final int FLAPPER_MOTOR_ID = 1;
     public static final int NOTE_SENSOR_ID = 6;
 
@@ -450,7 +450,7 @@ public final class Constants {
   public static final class ShooterConstants {
     public static final int LEADER_FLYWHEEL_ID = 4;
     public static final int FOLLOWER_FLYWHEEL_ID = 12;
-    public static final int ROLLER_MOTOR_ID = 2;
+    public static final int ROLLER_MOTOR_ID = 50;
 
     public static final double SHOOTER_SUPPLY_LIMIT = 60;
     public static final double SHOOTER_STATOR_LIMIT = 60;
