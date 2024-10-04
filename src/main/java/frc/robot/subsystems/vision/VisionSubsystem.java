@@ -2,6 +2,7 @@ package frc.robot.subsystems.vision;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.FieldConstants;
@@ -65,29 +66,34 @@ public class VisionSubsystem extends SubsystemBase {
    *
    * @param limelightNumber the number of the limelight
    */
-  public void updateLimelightPoseEstimate(int limelightNumber) {
-    // this can probably be removed after testing
-    if (!canSeeAprilTags(limelightNumber)) {
-      limelightEstimates[limelightNumber] = new PoseEstimate();
+  public PoseEstimate enabledPoseUpdate(int limelightNumber) {
+    if (canSeeAprilTags(limelightNumber) && isValidPoseEstimate(limelightNumber)) {
+      if (isLargeDiscrepancyBetweenMegaTag1And2(limelightNumber)
+          && getLimelightAprilTagDistance(limelightNumber)
+              < VisionConstants.MEGA_TAG_2_DISTANCE_THRESHOLD) {
+        return limelightEstimates[limelightNumber] = getMegaTag1PoseEstimate(limelightNumber);
+      } else if (headingRateDegreesPerSecond < VisionConstants.MEGA_TAG_2_MAX_HEADING_RATE) {
+        LimelightHelpers.SetRobotOrientation(
+            getLimelightName(limelightNumber), headingDegrees, 0, 0, 0, 0, 0);
+        return limelightEstimates[limelightNumber] = getMegaTag2PoseEstimate(limelightNumber);
+      } else {
+        return limelightEstimates[limelightNumber] = getMegaTag1PoseEstimate(limelightNumber);
+      }
     }
-    // Soon to be implemented code:
-    // if (canSeeAprilTags(limelightNumber)) {
-    //   if (isValidPoseEstimate(limelightNumber)) {
+    return limelightEstimates[limelightNumber] = new PoseEstimate();
+  }
 
-    // if (isLargeDiscrepancyBetweenMegaTag1And2(limelightNumber)
-    //     && getLimelightAprilTagDistance(limelightNumber) <
-    // VisionConstants.MEGA_TAG_2_DISTANCE_THRESHOLD) {
-    //   limelightEstimates[limelightNumber] = getMegaTag1PoseEstimate(limelightNumber);
-    // } else
-    if (headingRateDegreesPerSecond < VisionConstants.MEGA_TAG_2_MAX_HEADING_RATE) {
-      LimelightHelpers.SetRobotOrientation(
-          getLimelightName(limelightNumber), headingDegrees, 0, 0, 0, 0, 0);
-      limelightEstimates[limelightNumber] = getMegaTag2PoseEstimate(limelightNumber);
-    } else {
-      limelightEstimates[limelightNumber] = getMegaTag1PoseEstimate(limelightNumber);
-    }
-    //   }
-    // }
+  /**
+   * If the robot is not enabled, update the pose using MegaTag1 and after it is enabled, run {@link
+   * #enabledPoseUpdate(int)}
+   *
+   * @param limelightNumber the number of the limelight
+   */
+  public void updatePoseEstimate(int limelightNumber) {
+    limelightEstimates[limelightNumber] =
+        DriverStation.isEnabled()
+            ? enabledPoseUpdate(limelightNumber)
+            : getMegaTag1PoseEstimate(limelightNumber);
   }
 
   /**
@@ -148,43 +154,36 @@ public class VisionSubsystem extends SubsystemBase {
   }
 
   /**
-   * Checks if the MegaTag1 and MegaTag2 pose estimates are within the field parameters
+   * Checks if the MT1 and MT2 pose estimate exists and whether it is within the field
    *
    * @param limelightNumber the number of the limelight
-   * @return true if the poses are within the field, false if not.
+   * @return true if the pose estimate exists within the field and the pose estimate is not null
    */
   public boolean isValidPoseEstimate(int limelightNumber) {
-    return isMegaTag1Good(limelightNumber) && isMegaTag2Good(limelightNumber);
-  }
-
-  /**
-   * Checks if the MegaTag1 pose estimate is within the field parameters
-   *
-   * @param limelightNumber the number of the limelight
-   * @return true if the pose is within the field, false if not.
-   */
-  public boolean isMegaTag1Good(int limelightNumber) {
     PoseEstimate megaTag1Estimate = getMegaTag1PoseEstimate(limelightNumber);
-
-    return ((megaTag1Estimate.pose.getX() > 0
-            && megaTag1Estimate.pose.getX() <= FieldConstants.FIELD_WIDTH_METERS)
-        && (megaTag1Estimate.pose.getY() > 0
-            && megaTag1Estimate.pose.getY() <= FieldConstants.FIELD_WIDTH_METERS));
-  }
-
-  /**
-   * Checks if the MegaTag2 pose estimate is within the field parameters
-   *
-   * @param limelightNumber the number of the limelight
-   * @return true if the pose is within the field, false if not.
-   */
-  public boolean isMegaTag2Good(int limelightNumber) {
     PoseEstimate megaTag2Estimate = getMegaTag2PoseEstimate(limelightNumber);
 
-    return ((megaTag2Estimate.pose.getX() > 0
+    return LimelightHelpers.isValidPoseEstimate(megaTag1Estimate)
+        && LimelightHelpers.isValidPoseEstimate(megaTag2Estimate)
+        && isWithinFieldBounds(megaTag1Estimate, megaTag2Estimate);
+  }
+
+  /**
+   * Checks whether the pose estimate for MT1 and MT2 is within the field
+   *
+   * @param megaTag1Estimate the MT1 pose estimate to check
+   * @param megaTag2Estimate the MT2 pose estimate to check
+   */
+  private boolean isWithinFieldBounds(
+      PoseEstimate megaTag1Estimate, PoseEstimate megaTag2Estimate) {
+    return (megaTag1Estimate.pose.getX() > 0
+            && megaTag1Estimate.pose.getX() <= FieldConstants.FIELD_WIDTH_METERS)
+        && (megaTag1Estimate.pose.getY() > 0
+            && megaTag1Estimate.pose.getY() <= FieldConstants.FIELD_WIDTH_METERS)
+        && (megaTag2Estimate.pose.getX() > 0
             && megaTag2Estimate.pose.getX() <= FieldConstants.FIELD_WIDTH_METERS)
         && (megaTag2Estimate.pose.getY() > 0
-            && megaTag2Estimate.pose.getY() <= FieldConstants.FIELD_WIDTH_METERS));
+            && megaTag2Estimate.pose.getY() <= FieldConstants.FIELD_WIDTH_METERS);
   }
 
   /**
@@ -294,7 +293,7 @@ public class VisionSubsystem extends SubsystemBase {
         // because to get the timestamp of the reading, you need to parse the JSON dump which can be
         // very demanding whereas this only has to get the Network Table entries for TX and TY.
         if (current_TX != last_TX || current_TY != last_TY) {
-          updateLimelightPoseEstimate(limelightNumber);
+          updatePoseEstimate(limelightNumber);
           limelightThreads.computeIfPresent(
               limelightNumber, (key, value) -> new AtomicBoolean(true));
           // This is to keep track of the last valid pose calculated by the limelights
@@ -344,9 +343,9 @@ public class VisionSubsystem extends SubsystemBase {
     executorService.submit(
         () -> {
           try {
-            while (limelightThreads.get(limelightNumber).get()) {
-              checkAndUpdatePose(limelightNumber);
-            }
+            // while (limelightThreads.get(limelightNumber).get()) {
+            checkAndUpdatePose(limelightNumber);
+            // }
           } catch (Exception e) {
             System.err.println(
                 "Error executing task for the: "
@@ -405,5 +404,9 @@ public class VisionSubsystem extends SubsystemBase {
     visionThread(VisionConstants.FRONT_LEFT_LIMELIGHT_NUMBER);
     visionThread(VisionConstants.FRONT_RIGHT_LIMELIGHT_NUMBER);
     SmartDashboard.putNumber("april tag dist", getLimelightAprilTagDistance(0));
+    SmartDashboard.putString("shooter ll odom", getPoseFromAprilTags(0).toString());
+    SmartDashboard.putString("left ll odom", getPoseFromAprilTags(1).toString());
+
+    SmartDashboard.putString("right ll odom", getPoseFromAprilTags(2).toString());
   }
 }

@@ -551,6 +551,10 @@ public class LimelightHelpers {
     }
   }
 
+  public static Boolean isValidPoseEstimate(PoseEstimate pose) {
+    return pose != null && pose.rawFiducials != null && pose.rawFiducials.length != 0;
+  }
+
   public static NetworkTable getLimelightNTTable(String tableName) {
     return NetworkTableInstance.getDefault().getTable(sanitizeName(tableName));
   }
