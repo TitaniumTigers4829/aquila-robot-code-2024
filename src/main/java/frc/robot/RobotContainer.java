@@ -118,8 +118,8 @@ public class RobotContainer {
     DoubleSupplier driverRightStickX = driverController::getRightX;
     DoubleSupplier driverLeftStick[] =
         new DoubleSupplier[] {
-          () -> Util.modifyAxisPolar(driverLeftStickX, driverLeftStickY, 2)[0],
-          () -> Util.modifyAxisPolar(driverLeftStickX, driverLeftStickY, 2)[1]
+          () -> Util.modifyAxisPolar(driverLeftStickX, driverLeftStickY, 3)[0],
+          () -> Util.modifyAxisPolar(driverLeftStickX, driverLeftStickY, 3)[1]
         };
 
     Trigger driverRightBumper = new Trigger(driverController::getRightBumper);
@@ -161,7 +161,7 @@ public class RobotContainer {
     Command driveCommand = new Drive(driveSubsystem, visionSubsystem,
             driverLeftStick[1],
             driverLeftStick[0],
-            () -> Util.modifyAxis(driverRightStickX, 2),
+            () -> Util.modifyAxis(driverRightStickX, 3),
             () -> !driverRightBumper.getAsBoolean(),
             () -> driverLeftBumper.getAsBoolean());
 

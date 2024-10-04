@@ -55,7 +55,7 @@ public class DriveSubsystem extends SubsystemBase {
   private static final ModuleLimits currentModuleLimits =
       new ModuleLimits(
           DriveConstants.MAX_SPEED_METERS_PER_SECOND,
-          4,
+          10,
           DriveConstants.MAX_ANGULAR_SPEED_RADIANS_PER_SECOND);
   private SwerveSetpointGenerator setpointGenerator;
   private SwerveSetpoint currentSetpoint;
@@ -222,7 +222,7 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
   public double getSkidRatio() {
-    return getSkiddingRatio(moduleStates(), DriveConstants.DRIVE_KINEMATICS);
+    return getSkiddingRatio(getModuleStates(), DriveConstants.DRIVE_KINEMATICS);
   }
 
   public boolean isSkidding() {
@@ -469,5 +469,7 @@ public boolean isSlipping() {
     SmartDashboard.putBoolean("screwed", Math.abs(pose.getX()) > 20);
     SmartDashboard.putString("odometry", pose.toString());
     SmartDashboard.putNumber("speakerDistance", pose.getTranslation().getDistance(SmarterDashboardRegistry.getSpeakerPos()));
+
+    SmartDashboard.putNumber("skid ratio", getSkidRatio());
   }
 }
