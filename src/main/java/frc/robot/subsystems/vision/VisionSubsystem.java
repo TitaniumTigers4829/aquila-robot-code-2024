@@ -153,6 +153,12 @@ public class VisionSubsystem extends SubsystemBase {
     return LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(getLimelightName(limelightNumber));
   }
 
+  /**
+  * Checks if the MT1 and MT2 pose estimate exists and whether it is within the field
+  *
+  * @param limelightNumber the number of the limelight
+  * @return true if the pose estimate exists within the field and the pose estimate is not null
+  */
   public boolean isValidPoseEstimate(int limelightNumber) {
     PoseEstimate megaTag1Estimate = getMegaTag1PoseEstimate(limelightNumber);
     PoseEstimate megaTag2Estimate = getMegaTag2PoseEstimate(limelightNumber);
@@ -162,6 +168,12 @@ public class VisionSubsystem extends SubsystemBase {
         && isWithinFieldBounds(megaTag1Estimate, megaTag2Estimate);
   }
 
+  /**
+  * Checks whether the pose estimate for MT1 and MT2 is within the field
+  *
+  * @param megaTag1Estimate the MT1 pose estimate to check
+  * @param megaTag2Estimate the MT2 pose estimate to check
+  */
   private boolean isWithinFieldBounds(
       PoseEstimate megaTag1Estimate, PoseEstimate megaTag2Estimate) {
     return (megaTag1Estimate.pose.getX() > 0
